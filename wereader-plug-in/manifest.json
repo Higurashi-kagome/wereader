@@ -1,0 +1,32 @@
+{	
+   "manifest_version": 2,
+   "name": "wereader",
+   "version": "1.0.0",
+   "description": "测试",
+   "background": {
+	"scripts": ["background.js"],
+	"persisten": false
+   },
+   "browser_action": {
+      "default_popup": "popup.html",
+      "default_title": "一个测试"
+   },
+   "content_scripts": 
+	[
+		{
+			"matches": ["*://weread.qq.com/web/reader/*"],
+			"js": ["content-script-bid.js"],
+			"run_at": "document_idle"
+      }
+	],
+	"permissions":
+	[
+		"tabs",
+		"notifications",
+		"webRequest",
+		"webRequestBlocking",
+      "storage",
+      "cookies",
+      "*://*/*"
+   ]
+}
