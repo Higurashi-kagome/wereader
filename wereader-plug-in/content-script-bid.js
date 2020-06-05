@@ -19,6 +19,7 @@ function getClass(classname){
 var element = getClass("wr_bookCover_img");
 var list = element.item(0).src.split("/");
 var bookId = list[list.length - 2]
-chrome.runtime.sendMessage({bid: bookId}, function(response) {
-	console.warn('收到来自后台的回复：' + response);
+//向后台发送消息：bookId
+chrome.runtime.sendMessage({isBookPage: "1", isHomePage: "0", bid: bookId ,vid: "null"}, function(response) {
+	console.log('收到来自后台的回复：' + response);
 });
