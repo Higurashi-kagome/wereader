@@ -20,14 +20,14 @@
       },
       {
 			"matches": ["*://weread.qq.com/"],
-			"js": ["content-script-vid.js"],
+			"js": ["content-script-login.js"],
 			"run_at": "document_idle"
       }
    ],
-   "web_accessible_resources": ["inject.js"],
+   "web_accessible_resources": ["inject-login.js","inject-bid.js"],
 	"permissions":
 	[
-		"tabs",
+      "tabs",
 		"notifications",
 		"webRequest",
 		"webRequestBlocking",

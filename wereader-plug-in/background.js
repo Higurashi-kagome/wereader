@@ -1,5 +1,5 @@
 //获取数据
-function getData(){
+function getData(url,callback){
 	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
 	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
 	httpRequest.withCredentials = true;
@@ -9,71 +9,66 @@ function getData(){
 	 */
 	httpRequest.onreadystatechange = function () {
 		var data = httpRequest.responseText;//获取到json字符串，还需解析
-		return data;
+		callback(data);
 	};
 }
 
-//在主页面获取userVid并设置为input值，uservid按情况设置，bookId一律设置为"null"
-function setuserVid1(){
-	chrome.cookies.get({
-		url: 'https://weread.qq.com/',
-		name: 'wr_vid'
-	},function(cookie){
-		if(cookie == null){
-			console.warn("主页面获取userVid失败，请登录");
-			document.getElementById('userVid').value = "null";
-			document.getElementById('bookId').value = "null";
-		}else{
-			var userVid = cookie.value.toString();
-            console.warn(userVid);
-			document.getElementById('userVid').value = userVid;
-			document.getElementById('bookId').value = "null";
-		}
-    });
+//复制内容
+function copy(text){
+	var inputText = document.getElementById("formatted_text");
+	var copyBtn = document.getElementById("btn_copy");
+	var clipboard = new Clipboard('.btn');
+	clipboard.on('success', function (e) {
+		console.log(e);
+	});
+	clipboard.on('error', function (e) {
+		console.log(e);
+		alert(e);
+	});
+	inputText.innerHTML = text;
+	copyBtn.click();
 }
 
-//在BookPage获取userVid并设置为input值
-function setuserVid2(){
+//获取userVid并设置为input值
+function setuserVid(){
 	//获取当前页面
-	chrome.tabs.getSelected(null, function(tab){
-		var url = tab.url;
+	chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+		var url = tabs[0].url;
 		//获取当前页面的cookie然后设置bookId和userVid
 		chrome.cookies.get({
 			url: url,
 			name: 'wr_vid'
 		},function(cookie){
 			if(cookie == null){
-				console.warn("BookPage获取cookie失败，请检查");
+				console.log("BookPage获取cookie失败，请检查");
+				document.getElementById('userVid').value = "null";
 			}else{
 				var userVid = cookie.value.toString();
-				console.warn(userVid);
+				console.log("userVid为：" + userVid);
 				document.getElementById('userVid').value = userVid;
-				console.warn(document.getElementById('userVid').value);
 			}
 		});
 	});
 }
 
 //获取书评
-function getComment(url){
-	var httpRequest = new XMLHttpRequest();
-	httpRequest.open('GET', url, true);
-	httpRequest.withCredentials = true;
-	httpRequest.send();
-	httpRequest.onreadystatechange = function () {
-		var data = httpRequest.responseText;
-		var commentData = /"bookId"[\s\S]*?"isPrivate":0/.exec(data)
-		var s = new String(commentData);
-		var comment = s.replace(/"isPrivate":[\s\S]*/,"").replace(/"friendship":[\s\S]*?,/,"").replace(/"bookVersion":[\s\S]*?,/,"");
-		console.warn(comment);
-		var bookId = /"bookId"[\s\S]*?,/.exec(comment)[0].slice(10,-2);
-		var content = /"content[\s\S]*"htmlContent"/.exec(comment)[0].slice(11,-15);
+function getComment(url,bookId,isHtml){
+	getData(url,function(data){
+		var r = RegExp(bookId + "[\\s\\S]*?\"isPrivate\":0");
+		try{
+			var commentData = r.exec(data)[0];
+		}catch{
+			return;
+		}
+		var comment = commentData.replace(/"isPrivate":[\s\S]*/,"").replace(/"friendship":[\s\S]*?,/,"").replace(/"bookVersion":[\s\S]*?,/,"");
+		var content = /"content[\s\S]*"htmlContent"/.exec(comment)[0].slice(11,-15).replace(/\\n/g,"\n\n");
 		var htmlContent = /"htmlContent[\s\S]*/.exec(comment)[0].slice(15,-2);
-		console.warn(bookId);
-		console.warn(content);
-		console.warn(htmlContent);
-		return {"bookId":bookId,"content":content,"htmlContent":htmlContent}
-	};
+		if(isHtml == true){
+			copy(htmlContent);
+		}else{
+			copy(content);
+		}
+	});
 }
 
 //打开登录界面
@@ -81,39 +76,27 @@ function newPage(url){
 	chrome.tabs.create({url: url});
 }
 
-
-//监听来自content-script的消息
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
-{
-	if(request.isHomePage == "1"){//如果在主页面(HomePage)
-		setuserVid1();
-	}else if(request.isBookPage == "1"){//如果在BookPage
-		//设置从content获取的bid
-		document.getElementById('bookId').value = request.bid;
-		//设置vid
-		setuserVid2()
-		console.warn(document.getElementById('bookId').value);
-		console.warn(document.getElementById('userVid').value);
-		sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
-	}
-});
-
-
+//获取vid
 function getuserVid(){
 	return document.getElementById("userVid").value;
 }
 
+//获取bid
 function getbookId(){
 	return document.getElementById('bookId').value;
 }
 
-function getCurrentPage(){
-	chrome.tabs.getSelected(null, function(tab){
-		var url = tab.url;
-		document.getElementById('currentPage').value = url;
-	});
-	return document.getElementById('currentPage').value;
-}
+//监听来自content-script的消息：是不是在BookPage、是的话bid是多少
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
+{
+	if(request.isBookPage == "1"){//如果在BookPage
+		//设置从content获取的bid
+		document.getElementById('bookId').value = request.bid;
+		//设置vid
+		setuserVid();
+		sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
+	}
+});
 
 //页面监测：是否在已打开页面之间切换
 chrome.tabs.onActivated.addListener(function(moveInfo){
@@ -134,7 +117,17 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 			chrome.browserAction.setPopup({ popup: '' });
 		}else{
 			chrome.browserAction.setPopup({ popup: 'popup.html' });
-	}
+			chrome.tabs.sendMessage(tab.id, {getBid: "true"}, function(response){
+				if(response != undefined){
+					document.getElementById('bookId').value = response;
+				}
+				setuserVid();
+			});
+			//用于处理无content.js注入的情况（刚打开插件且直接切换到已经打开的BookPage上的情况）
+			if(document.getElementById('bookId').value == "null" && document.getElementById('bookId').value == "null"){
+				chrome.tabs.executeScript(tab.id, {file: 'inject-bid.js'});
+			}
+		}
 	});
 });
 
@@ -155,6 +148,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			document.getElementById('userVid').value = "null";
 			chrome.browserAction.setPopup({ popup: '' });
 		}else{
+			chrome.tabs.sendMessage(tabId, {getBid: "true"}, function(response){
+				document.getElementById('bookId').value = response;
+				setuserVid();
+			});
 			chrome.browserAction.setPopup({ popup: 'popup.html' });
 	}
 });

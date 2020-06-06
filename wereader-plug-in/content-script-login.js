@@ -1,7 +1,3 @@
-//向后台发送消息：userVid
-chrome.runtime.sendMessage({isBookPage: "0", isHomePage: "1", bid: "null" ,vid: "null"}, function(response) {
-	console.log('收到来自后台的回复：' + response);
-});
 //注入inject.js
 function injectCustomJs(jsPath)
 {
@@ -18,4 +14,4 @@ function injectCustomJs(jsPath)
 	document.head.appendChild(temp);
 }
 
-injectCustomJs("inject.js");
+injectCustomJs("inject-login.js");

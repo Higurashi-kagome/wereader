@@ -3,9 +3,12 @@
 <html>
     <head>
         <style type="text/css">
-            #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts {
+            #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts,#getBookContents,#getComment_text,#getComment_html {
                 cursor: pointer;
                 color: black;
+            }
+            #choose {
+                display: none;
             }
             p {
                 padding: 2px 8px;
@@ -23,8 +26,34 @@
                 white-space: nowrap;
                 border-radius: 4px;
             }
-            div:hover {
+            #getComment:hover {
                 background-color: rgb(227,227,227);
+            }
+            #getBookMarks:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getBestBookMarks:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getMyThoughts:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getBookContents:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getComment_text:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getComment_html:hover {
+                background-color: rgb(227,227,227);
+            }
+            #choose {
+                padding: 0px 0px;
+                margin: 2px;
+                font-family: 'Arial';
+                font-size: small;
+                white-space: nowrap;
+                border-radius: 0px;
             }
         </style>
         <p><strong>wereader</strong></p>
@@ -33,6 +62,10 @@
         <p id='bookId'>bid：null</div>
         <p id='userVid'>vid：null</div>
         <div id='getComment'>获取书评</div>
+        <div id='choose'>
+        <div id='getComment_text'>纯文本</div>
+        <div id='getComment_html'>HTML</div>
+        </div>
         <div id='getBookMarks'>获取标注</div>
         <div id='getBookContents'>获取目录</div>
         <div id='getBestBookMarks'>获取热门标注</div>

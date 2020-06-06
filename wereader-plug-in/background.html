@@ -8,9 +8,12 @@
     </head>
     <br>
     <body>
-        <input id='bookId'>
-        <input id='userVid'>
-        <input id='currentPage'>
+        <input id='bookId' value="null">
+        <input id='userVid' value="null">
+        <br>
+        <textarea id='formatted_text'></textarea>
+        <button class="btn" id="btn_copy" data-clipboard-target="#formatted_text">copy</button>
     </body>
     <script type="text/javascript" src="background.js"></script>
+    <script type="text/javascript" src="clipboard.js"></script>
 </html>

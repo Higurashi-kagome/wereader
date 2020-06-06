@@ -1,4 +1,5 @@
-//用于获取bid
+//用于在刚打开插件不久并直接切换到已打开BookPage时获取bid
+console.log("inject-bid.js被注入了");
 function getClass(classname){
 	if (document.getElementsByClassName) {
         //使用现有方法
@@ -20,23 +21,6 @@ function getClass(classname){
 var element = getClass("wr_bookCover_img");
 var list = element.item(0).src.split("/");
 var bookId = list[list.length - 2];
-//向后台发送消息：bookId
 chrome.runtime.sendMessage({isBookPage: "1", isHomePage: "0", bid: bookId ,vid: "null"}, function(response) {
 	console.log('收到来自后台的回复：' + response);
-});
-
-//接收来自后台的消息
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
-{
-	try{
-		if(request.getBid == "true"){
-			var element = getClass("wr_bookCover_img");
-			var list = element.item(0).src.split("/");
-			var bookId = list[list.length - 2];
-			//回复bookId
-			sendResponse(bookId);
-		}
-	}catch{
-
-	}
 });
