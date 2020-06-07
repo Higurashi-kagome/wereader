@@ -13,18 +13,19 @@
    },
    "content_scripts": 
 	[
-		{
-			"matches": ["*://weread.qq.com/web/reader/*"],
-			"js": ["content-script-bid.js"],
-			"run_at": "document_idle"
-      },
       {
 			"matches": ["*://weread.qq.com/"],
 			"js": ["content-script-login.js"],
 			"run_at": "document_idle"
       }
    ],
-   "web_accessible_resources": ["inject-login.js","inject-bid.js"],
+   "options_page": "options.html",
+   "options_ui":
+	{
+    	"page": "options.html",
+    	"chrome_style": true
+	},
+   "web_accessible_resources": ["inject-login.js","inject-bid.js","inject-contents.js"],
 	"permissions":
 	[
       "tabs",

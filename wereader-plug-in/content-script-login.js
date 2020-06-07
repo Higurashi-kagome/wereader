@@ -1,4 +1,5 @@
 //注入inject.js
+//该函数由https://github.com/sxei/chrome-plugin-demo提供，感谢原作者
 function injectCustomJs(jsPath)
 {
 	jsPath = jsPath || 'js/inject.js';

@@ -3,11 +3,11 @@
 <html>
     <head>
         <style type="text/css">
-            #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts,#getBookContents,#getComment_text,#getComment_html {
+            #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts,#getBookContents,#getComment_text,#getComment_html,#getThisChapter,#getAll {
                 cursor: pointer;
                 color: black;
             }
-            #choose {
+            #choose,#choose_mark {
                 display: none;
             }
             p {
@@ -47,13 +47,25 @@
             #getComment_html:hover {
                 background-color: rgb(227,227,227);
             }
-            #choose {
+            #getThisChapter:hover {
+                background-color: rgb(227,227,227);
+            }
+            #getAll:hover {
+                background-color: rgb(227,227,227);
+            }
+            #choose,#choose_mark {
                 padding: 0px 0px;
+                margin: 2px;
+                white-space: nowrap;
+                border-radius: 0px;
+            }
+            #getComment_html,#getComment_text,#getThisChapter,#getAll {
+                padding: 2px 11px;
                 margin: 2px;
                 font-family: 'Arial';
                 font-size: small;
                 white-space: nowrap;
-                border-radius: 0px;
+                border-radius: 4px;
             }
         </style>
         <p><strong>wereader</strong></p>
@@ -63,10 +75,14 @@
         <p id='userVid'>vid：null</div>
         <div id='getComment'>获取书评</div>
         <div id='choose'>
-        <div id='getComment_text'>纯文本</div>
-        <div id='getComment_html'>HTML</div>
+            <div id='getComment_text'>纯文本</div>
+            <div id='getComment_html'>HTML</div>
         </div>
         <div id='getBookMarks'>获取标注</div>
+        <div id='choose_mark'>
+            <div id='getThisChapter'>本章</div>
+            <div id='getAll'>全部</div>
+        </div>
         <div id='getBookContents'>获取目录</div>
         <div id='getBestBookMarks'>获取热门标注</div>
         <div id='getMyThoughts'>获取我的想法</div>
