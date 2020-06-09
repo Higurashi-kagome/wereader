@@ -10,7 +10,8 @@ for (var i = 0; i < childsLength; i++){
     var innerHtml = childs[i].childNodes[0].childNodes[0].innerHTML;
     texts.push(level + innerHtml);
 }
+var currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].innerHTML;
 //传消息给后台
-chrome.runtime.sendMessage({getContents: true, contents: texts}, function(response) {
+chrome.runtime.sendMessage({getContents: true, contents: texts,currentContent:currentContent}, function(response) {
 	console.log('收到来自后台的回复：' + response);
 });

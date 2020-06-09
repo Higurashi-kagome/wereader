@@ -95,7 +95,10 @@ function sendMessage(id){
     }
 }
 
+//初始化
 initialize();
+
+//设置监听
 document.getElementById("first_level_pre").onchange = function(){
     sendMessage("first_level_pre")
 }

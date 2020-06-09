@@ -1,73 +1,14 @@
-//获取数据
-function getData(url,callback){
-	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
-	httpRequest.withCredentials = true;
-	httpRequest.send();//第三步：发送请求  将请求参数写在URL中
-	/**
-	 * 获取数据后的处理程序
-	 */
-	httpRequest.onreadystatechange = function () {
-		var data = httpRequest.responseText;//获取到json字符串，还需解析
-		callback(data);
-	};
-}
-
-//复制内容
-function copy(text){
-	var inputText = document.getElementById("formatted_text");
-	var copyBtn = document.getElementById("btn_copy");
-	var clipboard = new Clipboard('.btn');
-	clipboard.on('success', function (e) {
-		console.log(e);
-	});
-	clipboard.on('error', function (e) {
-		console.log(e);
-		alert(e);
-	});
-	inputText.innerHTML = text;
-	copyBtn.click();
-}
-
-//获取书评
-function getComment(url,bookId,isHtml){
-	getData(url,function(data){
-		var r = RegExp(bookId + "[\\s\\S]*?\"isPrivate\":0");
-		try{
-			var commentData = r.exec(data)[0];
-		}catch{
-			alert("无书评，可能原因：此书无书评/插件暂不支持公众号");
-			return;
-		}
-		var comment = commentData.replace(/"isPrivate":[\s\S]*/,"").replace(/"friendship":[\s\S]*?,/,"").replace(/"bookVersion":[\s\S]*?,/,"");
-		var content = /"content[\s\S]*"htmlContent"/.exec(comment)[0].slice(11,-15).replace(/\\n/g,"\n\n");
-		var htmlContent = /"htmlContent[\s\S]*/.exec(comment)[0].slice(15,-2);
-		if(isHtml == true){
-			copy(htmlContent);
-		}else{
-			copy(content);
-		}
-	});
-}
-
-//获取目录
-function getBookContents(){
-	chrome.tabs.query({active:true}, function(tab){
-		chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
-	});
-}
-
-//popup获取vid
+//popup获取vid：OK
 function getuserVid(){
 	return document.getElementById("userVid").value;
 }
 
-//popup获取bid
+//popup获取bid：OK
 function getbookId(){
 	return document.getElementById('bookId').value;
 }
 
-//获取userVid并设置为input值
+//获取userVid并设置到背景页：OK
 function setuserVid(){
 	//获取当前页面
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
@@ -89,85 +30,324 @@ function setuserVid(){
 	});
 }
 
-//获取标题前缀
-function getTitlePre(level){
-	if(level == "1"){
-		return document.getElementById("level1").value;
-	}else if(level == "2"){
-		return document.getElementById("level2").value;
-	}else if(level == "3"){
-		return document.getElementById("level3").value;
+//获取数据：OK
+function getData(url,callback){
+	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+	httpRequest.withCredentials = true;
+	httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+	/**
+	 * 获取数据后的处理程序
+	 */
+	httpRequest.onreadystatechange = function () {
+		if (httpRequest.readyState==4 && httpRequest.status==200){
+			var data = httpRequest.responseText;//获取到json字符串，还需解析
+			callback(data);
+		}
+	};
+}
+
+//复制内容：OK
+function copy(text){
+	var inputText = document.getElementById("formatted_text");
+	var copyBtn = document.getElementById("btn_copy");
+	var clipboard = new Clipboard('.btn');
+	clipboard.on('success', function (e) {
+		console.log("复制成功" + JSON.stringify(e));
+	});
+	clipboard.on('error', function (e) {
+		console.log("复制出错" + JSON.stringify(e));
+		alert("复制出错" + JSON.stringify(e));
+	});
+	inputText.innerHTML = text;
+	copyBtn.click();
+}
+
+//获取书评：OK
+function getComment(url,bookId,isHtml){
+	getData(url,function(data){
+		var r = RegExp(bookId + "[\\s\\S]*?\"isPrivate\":0");
+		try{
+			var commentData = r.exec(data)[0];
+		}catch{
+		}
+		var comment = commentData.replace(/"isPrivate":[\s\S]*/,"").replace(/"friendship":[\s\S]*?,/,"").replace(/"bookVersion":[\s\S]*?,/,"");
+		var content = /"content[\s\S]*"htmlContent"/.exec(comment)[0].slice(11,-15).replace(/\\n/g,"\n\n");
+		var htmlContent = /"htmlContent[\s\S]*/.exec(comment)[0].slice(15,-2);
+		if(isHtml == true){
+			copy(htmlContent);
+		}else{
+			copy(content);
+		}
+	});
+}
+
+//获取目录：OK
+function getBookContents(){
+	console.log("getBookContents被调用")
+	chrome.tabs.query({active:true}, function(tab){
+		chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
+	});
+}
+
+/*//获取标题前缀
+function getTitlePre(){
+	if(request.lev1 != undefined){
+		document.getElementById("level1").innerHTML = request.lev1;
 	}
+	if(request.lev2 != undefined){
+		document.getElementById("level2").innerHTML = request.lev2;
+	}
+	if(request.lev3 != undefined){
+		document.getElementById("level3").innerHTML = request.lev3;
+	}
+}*/
+
+//获取标注
+function getBookMarks(url,isAll){
+	getData(url,function(data){
+		console.log("isAll:" + isAll)
+		//获取章节并排序
+		var chapterData =  data.match(/"chapterUid":[0-9]*,"chapterIdx":[0-9]*?,"title":"[\s\S]*?"/g);
+		if(chapterData == null){
+			console.log("获取章节失败")
+			return
+		}
+		var chapterList = [];
+		for(i=0,len=chapterData.length;i<len;i++){
+			var str = "{" + chapterData[i] +"}";
+			chapterList.push(JSON.parse(str));
+		}
+		var colId = "chapterUid";
+		var asc = function(x,y){
+			return (x[colId] > y[colId]) ? 1 : -1
+		}
+		chapterList.sort(asc);
+		//获取标注
+		for(var i=0,len1=chapterList.length;i<len1;i++){
+			//获取章内标注
+			var chapterUid = chapterList[i].chapterUid.toString();
+			var r = RegExp("\"chapterUid\":" + chapterUid + "[\\s\\S]*?\"createTime\"","g");
+			var chapterMarkList = data.match(r);
+			//处理(去除多余字符、排序)章内标注并加入到章节内
+			var chapterMarkArray = [];
+			for(var j=0,len2=chapterMarkList.length;j<len2;j++){
+				var str = "{" + chapterMarkList[j].replace("\"range\":\"","\"range\":").replace(/-[0-9]*?"/,"").replace(",\"createTime\"","") + "}";
+				chapterMarkArray.push(JSON.parse(str));
+			}
+			var colId = "range";
+			chapterMarkArray.sort(asc);
+			chapterList[i].marks = chapterMarkArray;
+		}
+		//遍历标注得到res
+		res = '';
+		//获取目录
+		//遍历章节
+		for(var i=0,len1=chapterList.length;i<len1;i++){
+			var getMarkPre = function(style){
+				if(style == 0){
+					return document.getElementById("style1Pre").innerHTML;
+				}else if(style == 1){
+					return document.getElementById("style2Pre").innerHTML;
+				}else if(style == 2){
+					return document.getElementById("style3Pre").innerHTML;
+				}
+			};
+			var getMarkSuf = function(style){
+				if(style == 0){
+					return document.getElementById("style1Pre").innerHTML;
+				}else if(style == 1){
+					return document.getElementById("style2Suf").innerHTML;
+				}else if(style == 2){
+					return document.getElementById("style3Suf").innerHTML;
+				}
+			};
+			var getTitleAddedPre = function(title){
+				var bookContents = document.getElementById("Bookcontents").innerHTML;
+				if(bookContents != "Bookcontents"){
+					var r = RegExp("\n.*?" + title + "[\\s\\S]*?\n");
+					var titleAddedPre = bookContents.match(r)[0].replace("\n","");
+					return titleAddedPre;
+				}else{
+					console.warn("获取目录失败：Bookcontents")
+					return "获取目录失败：Bookcontents"
+				}
+			}
+			var title = chapterList[i].title;
+			//导入本章还是导入全部
+			if(isAll == true){
+				res += getTitleAddedPre(title) + "\n\n";
+				var marks = chapterList[i].marks;
+				//遍历章内标注
+				for(var j=0,len2=marks.length;j<len2;j++){
+					res += getMarkPre(marks[j].style) + marks[j].markText + getMarkSuf(marks[j].style) + "\n\n";
+				}
+			}else{
+				if(document.getElementById("currentContent").innerHTML.indexOf(title) != -1){
+					res += getTitleAddedPre(title) + "\n\n";
+					var marks = chapterList[i].marks;
+					//遍历章内标注
+					for(var j=0,len2=marks.length;j<len2;j++){
+						res += getMarkPre(marks[j].style) + marks[j].markText + getMarkSuf(marks[j].style) + "\n\n";
+					}
+					break
+				}else{
+					continue
+				}
+			}
+			
+		}
+		copy(res);
+	});
+}
+
+//获取想法
+function getMyThought(url){
+	getData(url,function(data){
+		var json = JSON.parse(data)
+		console.log("json:" + JSON.stringify(json))
+		//获取章节并排序
+		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
+		var colId = "chapterUid";
+		var asc = function(x,y){
+			return (x[colId] > y[colId]) ? 1 : -1
+		}
+		chapterList.sort(asc)
+		console.log("chapterList:" + chapterList)
+		//遍历章节
+		for(var i=0,len1=chapterList.length;i<len1;i++){
+			var index = chapterList[i].indexOf(":")
+			var chapterUid = chapterList[i].slice(index+1)
+			console.log("chapterUid:" + chapterUid)
+			for(var item in json.reviews){
+				if(item.review.chapterUid == chapterUid){
+					var abstract = item.review.abstract
+					var content = item.review.content
+				}
+			}
+			/*var r = RegExp("\"abstract\"[\\s\\S]*?\"chapterUid\":" + chapterUid + "[\\s\\S]*?\"range\":\"[0-9]*?-","g")
+			var marks = data.match(r)
+			console.log("marks:" + marks)*/
+		}
+		/*thoughts = defaultdict(dict)
+		for item in data['reviews']:
+			#获取想法所在章节id
+			chapterUid = item['review']['chapterUid']
+			#获取原文内容
+			abstract = item['review']['abstract']
+			#获取想法
+			text = item['review']['content']
+			#获取想法开始位置
+			text_positon = int(item['review']['range'].split('-')[0])
+			#以位置为键，以标注为值添加到字典中,获得{chapterUid:{text_positon:"text分开想法和原文内容abstract"}}
+			thoughts[chapterUid][text_positon] = text + '分开想法和原文内容' + abstract*/
+	});
 }
 
 //监听来自inject.js、option的消息：是不是在BookPage、是的话bid是多少；如何设置变量
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 {
-	if(request.getBid == true){
-		//设置从content获取的bid
+	if(request.getBid == true){//信息为bid
 		document.getElementById('bookId').value = request.bid;
-		//设置vid
 		setuserVid();
-		sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
-	}else if(request.getContents == true){
+		sendResponse('我是后台，我已收到你返回bid的消息：' + JSON.stringify(request));
+	}else if(request.getContents == true){//信息为来自inject-content.js的目录信息
+		console.log("接收到目录信息")
 		var texts = request.contents;
-		sendResponse('我是后台，我已收到你的消息，消息有点长，就不详细回复了！');
-	}else if(request.getSetting == true){//获取设置的消息
-		sendResponse(
-				{
-				s1Pre: document.getElementById("style1Pre").value, 
-				s1Suf: document.getElementById("style1Suf").value, 
-				s2Pre: document.getElementById("style2Pre").value, 
-				s2Suf: document.getElementById("style2Suf").value, 
-				s3Pre: document.getElementById("style3Pre").value, 
-				s3Suf: document.getElementById("style3Suf").value, 
-				lev1: document.getElementById("level1").value, 
-				lev2: document.getElementById("level2").value, 
-				lev3: document.getElementById("level3").value, 
-				thouPre: document.getElementById("thoughtPre").value, 
-				thouSuf: document.getElementById("thoughtSuf").value, 
-				displayN: document.getElementById("displayNumber").value
-				}
-			);
-	}else if(request.set == true){//设置变量的消息
+		var res = '';
+		//生成目录res
+		for(var i = 0, len = texts.length; i < len; i++){
+			var level = texts[i].charAt(0);
+			var chapterInfo = texts[i].substr(1);
+			if(level == "1"){
+				res = res +  document.getElementById("level1").innerHTML + chapterInfo + "\n\n";
+			}else if(level == "2"){
+				res = res +  document.getElementById("level2").innerHTML + chapterInfo + "\n\n";
+			}else if(level == "3"){
+				res = res +  document.getElementById("level3").innerHTML + chapterInfo + "\n\n";
+			}
+		}
+		//复制/设置目录res
+		var copy = function(text){
+			var inputText = document.getElementById("formatted_text");
+			var copyBtn = document.getElementById("btn_copy");
+			var clipboard = new Clipboard('.btn');
+			clipboard.on('success', function (e) {
+				console.log("复制成功" + JSON.stringify(e));
+			});
+			clipboard.on('error', function (e) {
+				console.log("复制出错" + JSON.stringify(e));
+				alert("复制出错" + JSON.stringify(e));
+			});
+			inputText.innerHTML = text;
+			copyBtn.click();
+		};
+		if(document.getElementById("Bookcontents").innerHTML == "getBookContents"){//如果需要获取目录
+			console.log("开始设置Bookcontents");
+			document.getElementById("Bookcontents").innerHTML = res;
+		}else{//如果不需要获取目录，直接复制
+			console.log("准备复制目录");
+			copy(res);
+		}
+		//设置当前目录
+		document.getElementById("currentContent").innerHTML = request.currentContent
+		sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
+	}else if(request.getSetting == true){//信息为option页面获取初始化信息
+		console.log("接收到设置页初始化请求");
+		sendResponse({
+				s1Pre: document.getElementById("style1Pre").innerHTML, 
+				s1Suf: document.getElementById("style1Suf").innerHTML, 
+				s2Pre: document.getElementById("style2Pre").innerHTML, 
+				s2Suf: document.getElementById("style2Suf").innerHTML, 
+				s3Pre: document.getElementById("style3Pre").innerHTML, 
+				s3Suf: document.getElementById("style3Suf").innerHTML, 
+				lev1: document.getElementById("level1").innerHTML, 
+				lev2: document.getElementById("level2").innerHTML, 
+				lev3: document.getElementById("level3").innerHTML, 
+				thouPre: document.getElementById("thoughtPre").innerHTML, 
+				thouSuf: document.getElementById("thoughtSuf").innerHTML, 
+				displayN: document.getElementById("displayNumber").innerHTML
+				});
+	}else if(request.set == true){//信息为option页面设置改变值
+		console.log("接收到设置页改变信息");
 		if(request.s1Pre != undefined){
-			document.getElementById("style1Pre").value = request.s1Pre;
+			document.getElementById("style1Pre").innerHTML = request.s1Pre;
 		}
 		if(request.s1Suf != undefined){
-			document.getElementById("style1Suf").value = request.s1Suf;
+			document.getElementById("style1Suf").innerHTML = request.s1Suf;
 		}
 		if(request.s2Pre != undefined){
-			document.getElementById("style2Pre").value = request.s2Pre;
+			document.getElementById("style2Pre").innerHTML = request.s2Pre;
 		}
 		if(request.s2Suf != undefined){
-			document.getElementById("style2Suf").value = request.s2Suf;
+			document.getElementById("style2Suf").innerHTML = request.s2Suf;
 		}
 		if(request.s3Pre != undefined){
-			document.getElementById("style3Pre").value = request.s3Pre;
+			document.getElementById("style3Pre").innerHTML = request.s3Pre;
 		}
 		if(request.s3Suf != undefined){
-			document.getElementById("style3Suf").value = request.s3Suf;
+			document.getElementById("style3Suf").innerHTML = request.s3Suf;
 		}
 		if(request.lev1 != undefined){
-			document.getElementById("level1").value = request.lev1;
+			document.getElementById("level1").innerHTML = request.lev1;
 		}
 		if(request.lev2 != undefined){
-			document.getElementById("level2").value = request.lev2;
+			document.getElementById("level2").innerHTML = request.lev2;
 		}
 		if(request.lev3 != undefined){
-			document.getElementById("level3").value = request.lev3;
+			document.getElementById("level3").innerHTML = request.lev3;
 		}
 		if(request.thouPre != undefined){
-			document.getElementById("thoughtPre").value = request.thouPre;
+			document.getElementById("thoughtPre").innerHTML = request.thouPre;
 		}
 		if(request.thouSuf != undefined){
-			document.getElementById("thoughtSuf").value = request.thouSuf;
+			document.getElementById("thoughtSuf").innerHTML = request.thouSuf;
 		}
 		if(request.displayN != undefined){
-			if(document.getElementById("displayNumber").value == "true"){
-				document.getElementById("displayNumber").value = "false";
+			if(document.getElementById("displayNumber").innerHTML == "true"){
+				document.getElementById("displayNumber").innerHTML = "false";
 			}else{
-				document.getElementById("displayNumber").value = "true";
+				document.getElementById("displayNumber").innerHTML = "true";
 			}
 		}
 	}
@@ -191,6 +371,11 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 			document.getElementById('userVid').value = "null";
 			chrome.browserAction.setPopup({ popup: '' });
 		}else{
+			//获取目录到background-page
+			if(document.getElementById("Bookcontents").innerHTML != "getBookContents"){
+				document.getElementById("Bookcontents").innerHTML = "getBookContents";
+			}
+			getBookContents();
 			chrome.tabs.executeScript(tab.id, {file: 'inject-bid.js'});
 			chrome.browserAction.setPopup({ popup: 'popup.html' });
 			setuserVid();
@@ -216,7 +401,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			document.getElementById('userVid').value = "null";
 			chrome.browserAction.setPopup({ popup: '' });
 		}else{
+			//获取目录到background-page
+			if(document.getElementById("Bookcontents").innerHTML != "getBookContents"){
+				document.getElementById("Bookcontents").innerHTML = "getBookContents";
+			}
+			getBookContents();
 			chrome.tabs.executeScript(tab.id, {file: 'inject-bid.js'});
+			//chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
 			setuserVid();
 			chrome.browserAction.setPopup({ popup: 'popup.html' });
 			}

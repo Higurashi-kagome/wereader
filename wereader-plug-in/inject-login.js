@@ -2,6 +2,6 @@
 try{
     document.getElementsByClassName("navBar_link navBar_link_Login")[0].click();
 }catch(err){
-    console.log("inject.js" + err);
+    console.log("inject-login.js" + err);
 }
 
