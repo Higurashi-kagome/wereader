@@ -56,7 +56,13 @@ function copy(text){
 	var copyBtn = document.getElementById("btn_copy");
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
-		console.log("复制成功:\n" + JSON.stringify(e));
+		console.log("复制成功:\n");
+		/* chrome.tabs.query({active:true}, function(tab){
+			chrome.runtime.sendMessage({toast: true}, function(response) {})
+		}); */
+		chrome.tabs.query({active:true}, function(tab){
+			chrome.tabs.executeScript(tab.id, {file: 'inject-toast.js'});
+		})
 	});
 	clipboard.on('error', function (e) {
 		console.log("复制出错:\n" + JSON.stringify(e));
@@ -88,9 +94,9 @@ function getComment(url,bookId,isHtml){
 		}
 		if(htmlContent != "" || content != "" || title != ""){
 			if(isHtml == true){
-				copy("### " + title + "\n\n" + htmlContent);
+				copy("# " + title + "\n\n" + htmlContent);
 			}else{
-				copy("# " + title + "\n\n" + content);
+				copy("### " + title + "\n\n" + content);
 			}
 		}else{
 			alert("该书无书评")
@@ -101,9 +107,6 @@ function getComment(url,bookId,isHtml){
 //获取目录：OK
 function getBookContents(){
 	console.log("getBookContents被调用")
-	chrome.tabs.query({active:true}, function(tab){
-		chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
-	});
 }
 
 //获取标注：OK
@@ -297,9 +300,9 @@ function copyBestBookMarks(url){
 
 //获取想法：OK
 function getMyThought(url,callback){
+	console.log("getMyThought()被调用")
 	getData(url,function(data){
 		var json = JSON.parse(data)
-		console.log("json:\n" + JSON.stringify(json))
 		//获取章节并排序
 		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
 		var colId = "chapterUid";
@@ -313,11 +316,15 @@ function getMyThought(url,callback){
 		//遍历章节
 		for(var i=0,len1=chapterList.length;i<len1;i++){
 			var index = chapterList[i].indexOf(":")
-			var chapterUid = chapterList[i].slice(index+1)
+			var chapterUid = chapterList[i].substring(index+1)
 			console.log("chapterUid:\n" + chapterUid)
 			var thoughtsInAChapter = []
 			//遍历所有标注
 			for(var j=0,len2=json.reviews.length;j<len2;j++){
+				//处理有书评的情况
+				if(json.reviews[j].review.chapterUid == undefined){
+					continue
+				}
 				if(json.reviews[j].review.chapterUid.toString() == chapterUid){
 					var abstract = json.reviews[j].review.abstract
 					var content = json.reviews[j].review.content
@@ -336,8 +343,10 @@ function getMyThought(url,callback){
 
 //处理数据，复制想法：OK
 function copyThought(url){
+	console.log("copyThought被调用")
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(data){
+		console.log("传入getMythought()的url:" + url)
 		getMyThought(url,function(thoughts){
 			var json = JSON.parse(data)
 			var contentData = json.data[0].updated
