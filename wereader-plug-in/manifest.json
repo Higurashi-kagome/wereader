@@ -14,7 +14,7 @@
 		"128": "icons/icon128.png"
 	},
    "browser_action": {
-      "default_popup": "popup.html",
+      "default_popup": "",
       "default_title": "wereader"
    },
    "content_scripts": 

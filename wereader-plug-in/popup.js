@@ -38,13 +38,13 @@ window.onload=function(){
     //本章
     document.getElementById("getThisChapter").addEventListener('click', function(){
         var bg = chrome.extension.getBackgroundPage();
-        bg.getBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,false);
+        bg.copyBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,false);
         window.close();
     }, false);
     //全部
     document.getElementById("getAll").addEventListener('click', function(){
         var bg = chrome.extension.getBackgroundPage();
-        bg.getBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,true);
+        bg.copyBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,true);
         window.close();
     }, false);
     //获取目录
@@ -56,13 +56,13 @@ window.onload=function(){
     //获取热门标注
     document.getElementById("getBestBookMarks").addEventListener('click', function(){
         var bg = chrome.extension.getBackgroundPage();
-        bg.getData("https://i.weread.qq.com/book/bestbookmarks?bookId=" + bookId);
+        bg.copyBestBookMarks("https://i.weread.qq.com/book/bestbookmarks?bookId=" + bookId);
         window.close();
     }, false);
     //获取我的想法
     document.getElementById("getMyThoughts").addEventListener('click', function(){
         var bg = chrome.extension.getBackgroundPage();
-        bg.getMyThought("https://i.weread.qq.com/review/list?bookId=" + bookId + "&listType=11&mine=1&synckey=0&listMode=0");
+        bg.copyThought("https://i.weread.qq.com/review/list?bookId=" + bookId + "&listType=11&mine=1&synckey=0&listMode=0");
         window.close();
     }, false);
 }

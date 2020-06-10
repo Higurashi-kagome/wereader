@@ -13,20 +13,23 @@ function setuserVid(){
 	//获取当前页面
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
 		var url = tabs[0].url;
-		//获取当前页面的cookie然后设置bookId和userVid
-		chrome.cookies.get({
-			url: url,
-			name: 'wr_vid'
-		},function(cookie){
-			if(cookie == null){
-				console.log("BookPage获取cookie失败，请检查");
-				document.getElementById('userVid').value = "null";
-			}else{
-				var userVid = cookie.value.toString();
-				console.log("userVid为：" + userVid);
-				document.getElementById('userVid').value = userVid;
-			}
-		});
+		var list = url.split("/")
+		if(list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != ""){
+			//获取当前页面的cookie然后设置bookId和userVid
+			chrome.cookies.get({
+				url: url,
+				name: 'wr_vid'
+			},function(cookie){
+				if(cookie == null){
+					console.log("BookPage获取cookie失败，请检查");
+					document.getElementById('userVid').value = "null";
+				}else{
+					var userVid = cookie.value.toString();
+					console.log("userVid为：" + userVid);
+					document.getElementById('userVid').value = userVid;
+				}
+			});
+		}
 	});
 }
 
@@ -53,11 +56,11 @@ function copy(text){
 	var copyBtn = document.getElementById("btn_copy");
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
-		console.log("复制成功" + JSON.stringify(e));
+		console.log("复制成功:\n" + JSON.stringify(e));
 	});
 	clipboard.on('error', function (e) {
-		console.log("复制出错" + JSON.stringify(e));
-		alert("复制出错" + JSON.stringify(e));
+		console.log("复制出错:\n" + JSON.stringify(e));
+		alert("复制出错\n" + JSON.stringify(e));
 	});
 	inputText.innerHTML = text;
 	copyBtn.click();
@@ -66,18 +69,31 @@ function copy(text){
 //获取书评：OK
 function getComment(url,bookId,isHtml){
 	getData(url,function(data){
-		var r = RegExp(bookId + "[\\s\\S]*?\"isPrivate\":0");
-		try{
-			var commentData = r.exec(data)[0];
-		}catch{
+		var json = JSON.parse(data)
+		var reviews = json.reviews
+		var htmlContent = ""
+		var content = ""
+		var title = ""
+		//遍历书评
+		for(var i=0,len=reviews.length;i<len;i++){
+			var bookid = reviews[i].review.bookId
+			if(bookid == bookId.toString()){
+				htmlContent = reviews[i].review.htmlContent
+				content = reviews[i].review.content
+				title = reviews[i].review.title
+				break
+			}else{
+				continue
+			}
 		}
-		var comment = commentData.replace(/"isPrivate":[\s\S]*/,"").replace(/"friendship":[\s\S]*?,/,"").replace(/"bookVersion":[\s\S]*?,/,"");
-		var content = /"content[\s\S]*"htmlContent"/.exec(comment)[0].slice(11,-15).replace(/\\n/g,"\n\n");
-		var htmlContent = /"htmlContent[\s\S]*/.exec(comment)[0].slice(15,-2);
-		if(isHtml == true){
-			copy(htmlContent);
+		if(htmlContent != "" || content != "" || title != ""){
+			if(isHtml == true){
+				copy("### " + title + "\n\n" + htmlContent);
+			}else{
+				copy("# " + title + "\n\n" + content);
+			}
 		}else{
-			copy(content);
+			alert("该书无书评")
 		}
 	});
 }
@@ -90,60 +106,54 @@ function getBookContents(){
 	});
 }
 
-/*//获取标题前缀
-function getTitlePre(){
-	if(request.lev1 != undefined){
-		document.getElementById("level1").innerHTML = request.lev1;
-	}
-	if(request.lev2 != undefined){
-		document.getElementById("level2").innerHTML = request.lev2;
-	}
-	if(request.lev3 != undefined){
-		document.getElementById("level3").innerHTML = request.lev3;
-	}
-}*/
-
-//获取标注
-function getBookMarks(url,isAll){
+//获取标注：OK
+function getBookMarks(url,callback){
 	getData(url,function(data){
-		console.log("isAll:" + isAll)
+		var json = JSON.parse(data)
 		//获取章节并排序
-		var chapterData =  data.match(/"chapterUid":[0-9]*,"chapterIdx":[0-9]*?,"title":"[\s\S]*?"/g);
-		if(chapterData == null){
-			console.log("获取章节失败")
-			return
-		}
-		var chapterList = [];
-		for(i=0,len=chapterData.length;i<len;i++){
-			var str = "{" + chapterData[i] +"}";
-			chapterList.push(JSON.parse(str));
-		}
+		var chapters = json.chapters
 		var colId = "chapterUid";
-		var asc = function(x,y){
+		//排序函数
+		var rank = function(x,y){
 			return (x[colId] > y[colId]) ? 1 : -1
 		}
-		chapterList.sort(asc);
+		chapters.sort(rank);
 		//获取标注
-		for(var i=0,len1=chapterList.length;i<len1;i++){
-			//获取章内标注
-			var chapterUid = chapterList[i].chapterUid.toString();
-			var r = RegExp("\"chapterUid\":" + chapterUid + "[\\s\\S]*?\"createTime\"","g");
-			var chapterMarkList = data.match(r);
-			//处理(去除多余字符、排序)章内标注并加入到章节内
-			var chapterMarkArray = [];
-			for(var j=0,len2=chapterMarkList.length;j<len2;j++){
-				var str = "{" + chapterMarkList[j].replace("\"range\":\"","\"range\":").replace(/-[0-9]*?"/,"").replace(",\"createTime\"","") + "}";
-				chapterMarkArray.push(JSON.parse(str));
-			}
-			var colId = "range";
-			chapterMarkArray.sort(asc);
-			chapterList[i].marks = chapterMarkArray;
-		}
-		//遍历标注得到res
-		res = '';
-		//获取目录
 		//遍历章节
-		for(var i=0,len1=chapterList.length;i<len1;i++){
+		for(var i=0,len1=chapters.length;i<len1;i++){
+			var chapterUid = chapters[i].chapterUid.toString()
+			var updated = json.updated
+			var marksInAChapter = []
+			//遍历标注获得章内标注
+			for(var j=0,len2=updated.length;j<len2;j++){
+				if(updated[j].chapterUid.toString() == chapterUid){
+					updated[j].range = parseInt(updated[j].range.replace("-[0-9]*?\"","").replace("\"",""))
+					marksInAChapter.push(updated[j])
+				}
+			}
+			//排序章内标注并加入到章节内
+			var colId = "range"
+			marksInAChapter.sort(rank)
+			chapters[i].marks = marksInAChapter
+		}
+		callback(chapters)
+	});
+}
+
+//处理数据，复制标注：OK
+function copyBookMarks(url,isAll){
+	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
+	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(chaptersData){
+		getBookMarks(url,function(chaptersAndMarks){
+			var json = JSON.parse(chaptersData)
+			var contentData = json.data[0].updated
+			var contents = []
+			//获取contents——————[{"title":"封面","chapterUid":1,"level":1},...]
+			for(var i=0,len=contentData.length;i<len;i++){
+				contents.push({title:contentData[i].title,chapterUid:contentData[i].chapterUid,level:parseInt(contentData[i].level)})
+			}
+			//得到res
+			res = ""
 			var getMarkPre = function(style){
 				if(style == 0){
 					return document.getElementById("style1Pre").innerHTML;
@@ -162,86 +172,209 @@ function getBookMarks(url,isAll){
 					return document.getElementById("style3Suf").innerHTML;
 				}
 			};
-			var getTitleAddedPre = function(title){
-				var bookContents = document.getElementById("Bookcontents").innerHTML;
-				if(bookContents != "Bookcontents"){
-					var r = RegExp("\n.*?" + title + "[\\s\\S]*?\n");
-					var titleAddedPre = bookContents.match(r)[0].replace("\n","");
-					return titleAddedPre;
-				}else{
-					console.warn("获取目录失败：Bookcontents")
-					return "获取目录失败：Bookcontents"
+			var getTitleAddedPre = function(title,level){
+				if(level == 1){
+					return document.getElementById("level1").innerHTML + title
+				}else if(level == 2){
+					return document.getElementById("level2").innerHTML + title
+				}else if(level == 3){
+					return document.getElementById("level3").innerHTML + title
 				}
 			}
-			var title = chapterList[i].title;
-			//导入本章还是导入全部
 			if(isAll == true){
-				res += getTitleAddedPre(title) + "\n\n";
-				var marks = chapterList[i].marks;
-				//遍历章内标注
-				for(var j=0,len2=marks.length;j<len2;j++){
-					res += getMarkPre(marks[j].style) + marks[j].markText + getMarkSuf(marks[j].style) + "\n\n";
+				for(var i=0,len1=chaptersAndMarks.length;i<len1;i++){
+					var chapterUid = chaptersAndMarks[i].chapterUid
+					for(var j=0,len2=contents.length;j<len2;j++){
+						if(chapterUid == contents[j].chapterUid){
+							res += getTitleAddedPre(contents[j].title,contents[j].level) + "\n\n"
+							//遍历章内标注
+							for(var k=0,len3=chaptersAndMarks[i].marks.length;k<len3;k++){
+								var markText = chaptersAndMarks[i].marks[k].markText
+								var style = chaptersAndMarks[i].marks[k].style
+								res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
+							}
+						}
+					}
 				}
 			}else{
-				if(document.getElementById("currentContent").innerHTML.indexOf(title) != -1){
-					res += getTitleAddedPre(title) + "\n\n";
-					var marks = chapterList[i].marks;
-					//遍历章内标注
-					for(var j=0,len2=marks.length;j<len2;j++){
-						res += getMarkPre(marks[j].style) + marks[j].markText + getMarkSuf(marks[j].style) + "\n\n";
+				//遍历目录
+				for(var j=0,len2=contents.length;j<len2;j++){
+					if(contents[j].title == document.getElementById("currentContent").innerHTML.substring(1)){
+						console.log("contents[j].title:\n" + contents[j].title)
+						console.log("document.getElementById(\"currentContent\").innerHTML.substring(1):\n" + document.getElementById("currentContent").innerHTML.substring(1))
+						res += getTitleAddedPre(contents[j].title,contents[j].level) + "\n\n"
+						var chapterUid = contents[j].chapterUid
+						//遍历标注
+						for(var i=0,len1=chaptersAndMarks.length;i<len1;i++){
+							if(chaptersAndMarks[i].chapterUid == chapterUid){
+								//遍历章内标注
+								for(var k=0,len3=chaptersAndMarks[i].marks.length;k<len3;k++){
+									res += chaptersAndMarks[i].marks[k].markText + "\n\n"
+								}
+								break
+							}
+						}
+						break
 					}
-					break
-				}else{
-					continue
 				}
 			}
-			
-		}
-		copy(res);
-	});
+			copy(res)
+		})
+	})
 }
 
-//获取想法
-function getMyThought(url){
+//获取热门标注：OK
+function getBestBookMarks(url,callback){
 	getData(url,function(data){
 		var json = JSON.parse(data)
-		console.log("json:" + JSON.stringify(json))
+		var chapters = json.chapters
+		//查找每章节热门标注
+		var bestMarks = {}
+		//遍历章节
+		for(var i=0,len1=chapters.length;i<len1;i++){
+			var chapterUid = chapters[i].chapterUid
+			var bestMarksInAChapter = []
+			//遍历所有热门标注
+			for(var j=0,len2=json.items.length;j<len2;j++){
+				if(json.items[j].chapterUid == chapterUid){
+					var markText = json.items[j].markText
+					var totalCount = json.items[j].totalCount
+					var range = json.items[j].range.replace(/-[0-9]*?"/,"").replace("\"","")
+					bestMarksInAChapter.push({markText:markText,totalCount:totalCount,range:parseInt(range)})
+				}
+			}
+			var colId = "range"
+			var rank = function(x,y){
+				return (x[colId] > y[colId]) ? 1 : -1
+			}
+			bestMarksInAChapter.sort(rank)
+			bestMarks[chapterUid.toString()] = bestMarksInAChapter
+		}
+		callback(bestMarks)
+	})
+}
+
+//处理数据，复制热门标注：OK
+function copyBestBookMarks(url){
+	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
+	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(data){
+		getBestBookMarks(url,function(bestMarks){
+			var json = JSON.parse(data)
+			var contentData = json.data[0].updated
+			var contents = []
+			//获取contents——————[{"title":"封面","chapterUid":1,"level":1},...]
+			for(var i=0,len=contentData.length;i<len;i++){
+				contents.push({title:contentData[i].title,chapterUid:contentData[i].chapterUid,level:parseInt(contentData[i].level)})
+			}
+			//得到res
+			res = ""
+			//遍历bestMark
+			for(var key in bestMarks){
+				//遍历章节
+				for(var i=0,len1=contents.length;i<len1;i++){
+					//如果找到某章热门标注对应章节
+					if(key == contents[i].chapterUid){
+						var title =  ""
+						if(contents[i].level == 1){
+							title = document.getElementById("level1").innerHTML + contents[i].title
+						}else if(contents[i].level == 2){
+							title = document.getElementById("level2").innerHTML + contents[i].title
+						}else if(contents[i].level == 3){
+							title = document.getElementById("level3").innerHTML + contents[i].title
+						}
+						res += title + "\n\n"
+						//遍历章内标注
+						for(var j=0,len2=bestMarks[key].length;j<len2;j++){
+							res += bestMarks[key][j].markText + "  <u>" + bestMarks[key][j].totalCount + "</u>" + "\n\n"
+						}
+					}
+				}
+			}
+			copy(res)
+		})
+	})
+}
+
+//获取想法：OK
+function getMyThought(url,callback){
+	getData(url,function(data){
+		var json = JSON.parse(data)
+		console.log("json:\n" + JSON.stringify(json))
 		//获取章节并排序
 		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
 		var colId = "chapterUid";
-		var asc = function(x,y){
+		var rank = function(x,y){
 			return (x[colId] > y[colId]) ? 1 : -1
 		}
-		chapterList.sort(asc)
-		console.log("chapterList:" + chapterList)
+		chapterList.sort(rank)
+		console.log("chapterList:\n" + chapterList)
+		//查找每章节标注并总结好
+		var thoughts = {}
 		//遍历章节
 		for(var i=0,len1=chapterList.length;i<len1;i++){
 			var index = chapterList[i].indexOf(":")
 			var chapterUid = chapterList[i].slice(index+1)
-			console.log("chapterUid:" + chapterUid)
-			for(var item in json.reviews){
-				if(item.review.chapterUid == chapterUid){
-					var abstract = item.review.abstract
-					var content = item.review.content
+			console.log("chapterUid:\n" + chapterUid)
+			var thoughtsInAChapter = []
+			//遍历所有标注
+			for(var j=0,len2=json.reviews.length;j<len2;j++){
+				if(json.reviews[j].review.chapterUid.toString() == chapterUid){
+					var abstract = json.reviews[j].review.abstract
+					var content = json.reviews[j].review.content
+					var range = json.reviews[j].review.range.replace(/-[0-9]*?"/,"").replace("\"","")
+					thoughtsInAChapter.push({abstract:abstract,content:content,range:parseInt(range)})
 				}
 			}
-			/*var r = RegExp("\"abstract\"[\\s\\S]*?\"chapterUid\":" + chapterUid + "[\\s\\S]*?\"range\":\"[0-9]*?-","g")
-			var marks = data.match(r)
-			console.log("marks:" + marks)*/
+			var colId = "range"
+			thoughtsInAChapter.sort(rank)
+			thoughts[chapterUid] = thoughtsInAChapter
 		}
-		/*thoughts = defaultdict(dict)
-		for item in data['reviews']:
-			#获取想法所在章节id
-			chapterUid = item['review']['chapterUid']
-			#获取原文内容
-			abstract = item['review']['abstract']
-			#获取想法
-			text = item['review']['content']
-			#获取想法开始位置
-			text_positon = int(item['review']['range'].split('-')[0])
-			#以位置为键，以标注为值添加到字典中,获得{chapterUid:{text_positon:"text分开想法和原文内容abstract"}}
-			thoughts[chapterUid][text_positon] = text + '分开想法和原文内容' + abstract*/
+		console.log("thoughts:\n" + JSON.stringify(thoughts))
+		callback(thoughts)
 	});
+}
+
+//处理数据，复制想法：OK
+function copyThought(url){
+	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
+	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(data){
+		getMyThought(url,function(thoughts){
+			var json = JSON.parse(data)
+			var contentData = json.data[0].updated
+			var contents = []
+			//获取contents——————[{"title":"封面","chapterUid":1,"level":1},...]
+			for(var i=0,len=contentData.length;i<len;i++){
+				contents.push({title:contentData[i].title,chapterUid:contentData[i].chapterUid,level:parseInt(contentData[i].level)})
+			}
+			//得到res
+			res = ""
+			//遍历thoughts
+			for(var key in thoughts){
+				//遍历章节
+				for(var i=0,len1=contents.length;i<len1;i++){
+					//如果找到某章想法对应章节
+					if(key == contents[i].chapterUid){
+						var title =  ""
+						if(contents[i].level == 1){
+							title = document.getElementById("level1").innerHTML + contents[i].title
+						}else if(contents[i].level == 2){
+							title = document.getElementById("level2").innerHTML + contents[i].title
+						}else if(contents[i].level == 3){
+							title = document.getElementById("level3").innerHTML + contents[i].title
+						}
+						res += title + "\n\n"
+						//遍历章内想法
+						for(var j=0,len2=thoughts[key].length;j<len2;j++){
+							res += thoughts[key][j].abstract + "\n\n"
+							res += document.getElementById("thoughtPre").innerHTML + thoughts[key][j].content + document.getElementById("thoughtSuf").innerHTML + "\n\n"
+						}
+					}
+				}
+			}
+			console.log("res:\n" + res)
+			copy(res)
+		})
+	})
 }
 
 //监听来自inject.js、option的消息：是不是在BookPage、是的话bid是多少；如何设置变量
@@ -267,21 +400,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 				res = res +  document.getElementById("level3").innerHTML + chapterInfo + "\n\n";
 			}
 		}
-		//复制/设置目录res
-		var copy = function(text){
-			var inputText = document.getElementById("formatted_text");
-			var copyBtn = document.getElementById("btn_copy");
-			var clipboard = new Clipboard('.btn');
-			clipboard.on('success', function (e) {
-				console.log("复制成功" + JSON.stringify(e));
-			});
-			clipboard.on('error', function (e) {
-				console.log("复制出错" + JSON.stringify(e));
-				alert("复制出错" + JSON.stringify(e));
-			});
-			inputText.innerHTML = text;
-			copyBtn.click();
-		};
 		if(document.getElementById("Bookcontents").innerHTML == "getBookContents"){//如果需要获取目录
 			console.log("开始设置Bookcontents");
 			document.getElementById("Bookcontents").innerHTML = res;
@@ -357,6 +475,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 chrome.tabs.onActivated.addListener(function(moveInfo){
 	chrome.tabs.get(moveInfo.tabId,function(tab){
 		var currentUrl = tab.url;
+		console.log("当前页面：" + currentUrl)
 		var list = currentUrl.split('/');
 		var isBookPage = false;
 		try{
@@ -387,6 +506,7 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	if(changeInfo.status == "loading"){
 		var loadingUrl = tab.url;
+		console.log("当前页面：" + loadingUrl)
 		var list = loadingUrl.split('/');
 		var isBookPage = false;
 		try{
