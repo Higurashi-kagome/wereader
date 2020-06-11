@@ -14,7 +14,7 @@ function getbookId(){
 function setuserVid(){
 	console.log("setuserVid()被调用")
 	//获取当前页面
-	chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+	chrome.tabs.query({active: true, currentWindow: true}, tabs => {
 		var url = tabs[0].url;
 		console.log("setuserVid()中的chrome.tabs.query()获取到页面：" + url)
 		var list = url.split("/")
@@ -66,9 +66,9 @@ function copy(text){
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
 		console.log("复制成功");
-		chrome.tabs.query({active:true}, function(tab){
+		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
-			chrome.tabs.executeScript(tab.id, {file: 'inject-toast.js'});
+			chrome.tabs.executeScript(tab[0].id, {file: 'inject-toast.js'});
 			console.log("inject-toast.js注入结束")
 		})
 	});
@@ -117,9 +117,9 @@ function getComment(url,bookId,isHtml){
 //获取目录：OK
 function getBookContents(){
 	console.log("getBookContents()被调用")
-	chrome.tabs.query({active:true}, function(tab){
+	chrome.tabs.query({active:true,currentWindow:true}, function(tab){
 		console.log("getBookContents()调用下的chrome.tabs.query()的回调函数被调用，开始注入inject-contents.js")
-		chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject-contents.js'});
 		console.log("inject-contents.js注入结束")
 	})
 }
