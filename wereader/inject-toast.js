@@ -1,7 +1,6 @@
 function toast(){
-    //alert("toast()函数被调用")
+    console.log("toast()函数被调用")
     if(document.getElementById("toast") == null){
-        //alert("document.getElementById(\"toast\") == null")
         var toast = document.createElement("div")
         toast.id = "toast"
         toast.innerHTML = "📚 成功导出到剪贴板"
@@ -15,33 +14,12 @@ function toast(){
             toast.style.display = "none"
         }, 2000);
     }else{
-        //alert("document.getElementById(\"toast\") != null")
         document.getElementById("toast").style.display = "block"
         setTimeout(function () {
             var toast = document.getElementById("toast")
             toast.style.display = "none"
         }, 2000);
-        /* if(document.getElementById("toast").style.display == "none"){
-            document.getElementById("toast").style.display == "block"
-            setTimeout(function () {
-                var toast = document.getElementById("toast")
-                toast.style.display = "none"
-            }, 2000);
-        }else{
-            setTimeout(function () {
-                var toast = document.getElementById("toast")
-                toast.style.display = "none"
-            }, 2000);
-        } */
     }
 }
-//alert("inject-toast.js被注入了")
+console.log("inject-toast.js被注入")
 toast()
-/* chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
-    alert("inject-toast.js收到信息")
-    alert("信息：" + JSON.stringify(msg))
-    if(msg.toast == true){
-        alert("msg.toast == true")
-        toast()
-    }
-}) */

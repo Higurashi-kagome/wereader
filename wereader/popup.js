@@ -81,8 +81,8 @@ var bookId = bg.getbookId();
 document.getElementById("bookId").innerHTML = "bid：" + bookId;
 document.getElementById("userVid").innerHTML = "vid：" + userVid;
 if(document.getElementById("userVid").innerHTML == "vid：null"){//当未获得userVid
-    alert("userVid == \"null\"，请重试");
+    alert("userVid == \"null\"，请刷新重试");
 }
 if(document.getElementById("bookId").innerHTML == "bid：null"){
-    alert("bookId == \"null\"，请重试");
+    alert("bookId == \"null\"，请刷新重试");
 }

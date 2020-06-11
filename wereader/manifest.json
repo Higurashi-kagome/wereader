@@ -30,7 +30,8 @@
 	{
     	"page": "options.html",
     	"chrome_style": true
-	},
+   },
+   "homepage_url": "https://github.com/liuhao326/wereader",
    "web_accessible_resources": ["inject-login.js","inject-bid.js","inject-contents.js"],
 	"permissions":
 	[
@@ -38,7 +39,6 @@
 		"notifications",
 		"webRequest",
 		"webRequestBlocking",
-      "storage",
       "cookies",
       "*://*/*"
    ]
