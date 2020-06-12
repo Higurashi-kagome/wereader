@@ -66,11 +66,11 @@ function copy(text){
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
 		console.log("复制成功");
-		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
+		/* chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
 			chrome.tabs.executeScript(tab[0].id, {file: 'inject-toast.js'});
 			console.log("inject-toast.js注入结束")
-		})
+		}) */
 	});
 	clipboard.on('error', function (e) {
 		console.error("复制出错:\n" + JSON.stringify(e));
@@ -95,7 +95,7 @@ function getComment(url,bookId,isHtml){
 			var bookid = reviews[i].review.bookId
 			if(bookid == bookId.toString()){
 				htmlContent = reviews[i].review.htmlContent
-				content = reviews[i].review.content
+				content = reviews[i].review.content.replace("\n","\n\n")
 				title = reviews[i].review.title
 				break
 			}else{
@@ -104,9 +104,17 @@ function getComment(url,bookId,isHtml){
 		}
 		if(htmlContent != "" || content != "" || title != ""){
 			if(isHtml == true){
-				copy("# " + title + "\n\n" + htmlContent);
+				if(title != ""){
+					copy("# " + title + "\n\n" + htmlContent);
+				}else{
+					copy(htmlContent);
+				}
 			}else{
-				copy("### " + title + "\n\n" + content);
+				if(title != ""){
+					copy("### " + title + "\n\n" + content);
+				}else{
+					copy(content);
+				}
 			}
 		}else{
 			alert("该书无书评")
