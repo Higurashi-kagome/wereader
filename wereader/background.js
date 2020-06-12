@@ -187,29 +187,29 @@ function copyBookMarks(url,isAll){
 			res = ""
 			var getMarkPre = function(style){
 				if(style == 0){
-					return document.getElementById("style1Pre").innerHTML;
+					return document.getElementById("style1Pre").value;
 				}else if(style == 1){
-					return document.getElementById("style2Pre").innerHTML;
+					return document.getElementById("style2Pre").value;
 				}else if(style == 2){
-					return document.getElementById("style3Pre").innerHTML;
+					return document.getElementById("style3Pre").value;
 				}
 			};
 			var getMarkSuf = function(style){
 				if(style == 0){
-					return document.getElementById("style1Pre").innerHTML;
+					return document.getElementById("style1Suf").value;
 				}else if(style == 1){
-					return document.getElementById("style2Suf").innerHTML;
+					return document.getElementById("style2Suf").value;
 				}else if(style == 2){
-					return document.getElementById("style3Suf").innerHTML;
+					return document.getElementById("style3Suf").value;
 				}
 			};
 			var getTitleAddedPre = function(title,level){
 				if(level == 1){
-					return document.getElementById("level1").innerHTML + title
+					return document.getElementById("level1").value + title
 				}else if(level == 2){
-					return document.getElementById("level2").innerHTML + title
+					return document.getElementById("level2").value + title
 				}else if(level == 3){
-					return document.getElementById("level3").innerHTML + title
+					return document.getElementById("level3").value + title
 				}
 			}
 			if(isAll == true){
@@ -232,7 +232,7 @@ function copyBookMarks(url,isAll){
 				//遍历目录
 				console.log("isAll == false")
 				for(var j=0,len2=contents.length;j<len2;j++){
-					if(contents[j].title == document.getElementById("currentContent").innerHTML.substring(1)){
+					if(contents[j].title == document.getElementById("currentContent").value.substring(1)){
 						console.log("找到目标章节")
 						res += getTitleAddedPre(contents[j].title,contents[j].level) + "\n\n"
 						var chapterUid = contents[j].chapterUid
@@ -241,7 +241,8 @@ function copyBookMarks(url,isAll){
 							if(chaptersAndMarks[i].chapterUid == chapterUid){
 								//遍历章内标注
 								for(var k=0,len3=chaptersAndMarks[i].marks.length;k<len3;k++){
-									res += chaptersAndMarks[i].marks[k].markText + "\n\n"
+									var style = chaptersAndMarks[i].marks[k].style
+									res += getMarkPre(style) + chaptersAndMarks[i].marks[k].markText + getMarkSuf(style) + "\n\n"
 								}
 								break
 							}
@@ -321,8 +322,14 @@ function copyBestBookMarks(url){
 						}
 						res += title + "\n\n"
 						//遍历章内标注
-						for(var j=0,len2=bestMarks[key].length;j<len2;j++){
-							res += bestMarks[key][j].markText + "  <u>" + bestMarks[key][j].totalCount + "</u>" + "\n\n"
+						if(document.getElementById("displayNumber").value == "true"){
+							for(var j=0,len2=bestMarks[key].length;j<len2;j++){
+								res += bestMarks[key][j].markText + "  <u>" + bestMarks[key][j].totalCount + "</u>" + "\n\n"
+							}
+						}else{
+							for(var j=0,len2=bestMarks[key].length;j<len2;j++){
+								res += bestMarks[key][j].markText + "\n\n"
+							}
 						}
 					}
 				}
@@ -456,18 +463,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}else if(request.getSetting == true){//信息为option页面获取初始化信息
 		console.log("request.getSetting == true，接收到设置页初始化请求");
 		sendResponse({
-				s1Pre: document.getElementById("style1Pre").innerHTML, 
-				s1Suf: document.getElementById("style1Suf").innerHTML, 
-				s2Pre: document.getElementById("style2Pre").innerHTML, 
-				s2Suf: document.getElementById("style2Suf").innerHTML, 
-				s3Pre: document.getElementById("style3Pre").innerHTML, 
-				s3Suf: document.getElementById("style3Suf").innerHTML, 
-				lev1: document.getElementById("level1").innerHTML, 
-				lev2: document.getElementById("level2").innerHTML, 
-				lev3: document.getElementById("level3").innerHTML, 
-				thouPre: document.getElementById("thoughtPre").innerHTML, 
-				thouSuf: document.getElementById("thoughtSuf").innerHTML, 
-				displayN: document.getElementById("displayNumber").innerHTML
+				s1Pre: document.getElementById("style1Pre").value, 
+				s1Suf: document.getElementById("style1Suf").value, 
+				s2Pre: document.getElementById("style2Pre").value, 
+				s2Suf: document.getElementById("style2Suf").value, 
+				s3Pre: document.getElementById("style3Pre").value, 
+				s3Suf: document.getElementById("style3Suf").value, 
+				lev1: document.getElementById("level1").value, 
+				lev2: document.getElementById("level2").value, 
+				lev3: document.getElementById("level3").value, 
+				thouPre: document.getElementById("thoughtPre").value, 
+				thouSuf: document.getElementById("thoughtSuf").value, 
+				displayN: document.getElementById("displayNumber").value
 				});
 	}else if(request.set == true){//信息为option页面设置改变值
 		console.log("request.set == true，接收到设置页改变信息");

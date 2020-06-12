@@ -1,3 +1,4 @@
+//初始化
 function initialize(){
     chrome.runtime.sendMessage({getSetting: true}, function(response) {
         console.log('收到来自后台的回复：' + response);
