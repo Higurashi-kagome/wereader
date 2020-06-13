@@ -66,7 +66,8 @@ function copy(text){
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
 		console.log("复制成功");
-		/* chrome.tabs.query({active: true,currentWindow: true}, function(tab){
+		/* toast复制成功提示
+		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
 			chrome.tabs.executeScript(tab[0].id, {file: 'inject-toast.js'});
 			console.log("inject-toast.js注入结束")
@@ -168,6 +169,18 @@ function getBookMarks(url,callback){
 	});
 }
 
+//获取添加级别的标题：OK
+var getTitleAddedPre = function(title,level){
+	console.log("getTitleAddedPre(title,level)被调用")
+	if(level == 1){
+		return document.getElementById("level1").value + title
+	}else if(level == 2){
+		return document.getElementById("level2").value + title
+	}else if(level == 3){
+		return document.getElementById("level3").value + title
+	}
+}
+
 //处理数据，复制标注：OK
 function copyBookMarks(url,isAll){
 	console.log("copyBookMarks(url,isAll)被调用")
@@ -203,15 +216,6 @@ function copyBookMarks(url,isAll){
 					return document.getElementById("style3Suf").value;
 				}
 			};
-			var getTitleAddedPre = function(title,level){
-				if(level == 1){
-					return document.getElementById("level1").value + title
-				}else if(level == 2){
-					return document.getElementById("level2").value + title
-				}else if(level == 3){
-					return document.getElementById("level3").value + title
-				}
-			}
 			if(isAll == true){
 				console.log("isAll == true")
 				for(var i=0,len1=chaptersAndMarks.length;i<len1;i++){
@@ -312,14 +316,7 @@ function copyBestBookMarks(url){
 				for(var i=0,len1=contents.length;i<len1;i++){
 					//如果找到某章热门标注对应章节
 					if(key == contents[i].chapterUid){
-						var title =  ""
-						if(contents[i].level == 1){
-							title = document.getElementById("level1").innerHTML + contents[i].title
-						}else if(contents[i].level == 2){
-							title = document.getElementById("level2").innerHTML + contents[i].title
-						}else if(contents[i].level == 3){
-							title = document.getElementById("level3").innerHTML + contents[i].title
-						}
+						var title = getTitleAddedPre(contents[i].title,contents[i].level)
 						res += title + "\n\n"
 						//遍历章内标注
 						if(document.getElementById("displayNumber").value == "true"){
@@ -403,14 +400,7 @@ function copyThought(url){
 				for(var i=0,len1=contents.length;i<len1;i++){
 					//如果找到某章想法对应章节
 					if(key == contents[i].chapterUid){
-						var title =  ""
-						if(contents[i].level == 1){
-							title = document.getElementById("level1").innerHTML + contents[i].title
-						}else if(contents[i].level == 2){
-							title = document.getElementById("level2").innerHTML + contents[i].title
-						}else if(contents[i].level == 3){
-							title = document.getElementById("level3").innerHTML + contents[i].title
-						}
+						var title = getTitleAddedPre(contents[i].title,contents[i].level)
 						res += title + "\n\n"
 						//遍历章内想法
 						for(var j=0,len2=thoughts[key].length;j<len2;j++){
@@ -442,13 +432,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		for(var i = 0, len = texts.length; i < len; i++){
 			var level = texts[i].charAt(0);
 			var chapterInfo = texts[i].substr(1);
-			if(level == "1"){
-				res = res +  document.getElementById("level1").innerHTML + chapterInfo + "\n\n";
-			}else if(level == "2"){
-				res = res +  document.getElementById("level2").innerHTML + chapterInfo + "\n\n";
-			}else if(level == "3"){
-				res = res +  document.getElementById("level3").innerHTML + chapterInfo + "\n\n";
-			}
+			res += getTitleAddedPre(chapterInfo,parseInt(level)) + "\n\n";
 		}
 		if(document.getElementById("Bookcontents").innerHTML == "getBookContents"){//如果需要获取目录
 			console.log("开始设置Bookcontents");
