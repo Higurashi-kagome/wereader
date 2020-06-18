@@ -73,6 +73,12 @@
 
 最后一个选项是`是否显示热门标注标注人数`正如它所说的，你可以设置导出的热门标注中是否带标注人数。
 
+## TODO
+
+- [ ] 批量导出
+- [ ] 想法中包含HTML内容的问题
+- [ ] 报错：Unchecked runtime.lastError: The message port closed before a response was received.
+
 ## 补充
 
 [Github](https://github.com/liuhao326/wereader)
