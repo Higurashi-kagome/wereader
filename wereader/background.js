@@ -170,7 +170,7 @@ function getBookMarks(url,callback){
 }
 
 //获取添加级别的标题：OK
-var getTitleAddedPre = function(title,level){
+function getTitleAddedPre(title,level){
 	console.log("getTitleAddedPre(title,level)被调用")
 	if(level == 1){
 		return document.getElementById("level1").value + title
@@ -415,6 +415,53 @@ function copyThought(url){
 	})
 }
 
+//存储/初始化设置：OK
+function Setting(){
+	console.log("Setting()被调用")
+	chrome.storage.sync.get(null, function(setting) {
+		console.log("获取到设置")
+		if(setting.s1Pre == undefined){
+			console.log("setting.s1Pre == undefined，开始存储初始化设置")
+			chrome.storage.sync.set({
+				s1Pre: document.getElementById("style1Pre").value, 
+				s1Suf: document.getElementById("style1Suf").value, 
+				s2Pre: document.getElementById("style2Pre").value, 
+				s2Suf: document.getElementById("style2Suf").value, 
+				s3Pre: document.getElementById("style3Pre").value, 
+				s3Suf: document.getElementById("style3Suf").value, 
+				lev1: document.getElementById("level1").value, 
+				lev2: document.getElementById("level2").value, 
+				lev3: document.getElementById("level3").value, 
+				thouPre: document.getElementById("thoughtPre").value, 
+				thouSuf: document.getElementById("thoughtSuf").value, 
+				displayN: document.getElementById("displayNumber").value
+				}, function() {
+					console.log("设置存储完毕")
+			  });
+		}else{
+			console.log("setting.s1Pre != undefined，准备同步设置到背景页")
+			chrome.storage.sync.get(null, function(setting) {
+				console.log("设置获取成功，开始同步设置到背景页")
+				document.getElementById("style1Pre").innerHTML = setting.s1Pre;
+				document.getElementById("style1Suf").innerHTML = setting.s1Suf;
+				document.getElementById("style2Pre").innerHTML = setting.s2Pre;
+				document.getElementById("style2Suf").innerHTML = setting.s2Suf;
+				document.getElementById("style3Pre").innerHTML = setting.s3Pre;
+				document.getElementById("style3Suf").innerHTML = setting.s3Suf;
+				document.getElementById("level1").innerHTML = setting.lev1;
+				document.getElementById("level2").innerHTML = setting.lev2;
+				document.getElementById("level3").innerHTML = setting.lev3;
+				document.getElementById("thoughtPre").innerHTML = setting.thouPre;
+				document.getElementById("thoughtSuf").innerHTML = setting.thouSuf;
+				document.getElementById("displayNumber").innerHTML = setting.displayN;
+				console.log("同步设置完毕")
+			});
+		}
+	});
+}
+
+Setting();
+
 //监听来自inject.js、option的消息：是不是在BookPage、是的话bid是多少；如何设置变量
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	console.log("chrome.runtime.onMessage.addListener()监听到消息")
@@ -444,63 +491,88 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		//设置当前目录
 		document.getElementById("currentContent").innerHTML = request.currentContent
 		sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
-	}else if(request.getSetting == true){//信息为option页面获取初始化信息
-		console.log("request.getSetting == true，接收到设置页初始化请求");
-		sendResponse({
-				s1Pre: document.getElementById("style1Pre").value, 
-				s1Suf: document.getElementById("style1Suf").value, 
-				s2Pre: document.getElementById("style2Pre").value, 
-				s2Suf: document.getElementById("style2Suf").value, 
-				s3Pre: document.getElementById("style3Pre").value, 
-				s3Suf: document.getElementById("style3Suf").value, 
-				lev1: document.getElementById("level1").value, 
-				lev2: document.getElementById("level2").value, 
-				lev3: document.getElementById("level3").value, 
-				thouPre: document.getElementById("thoughtPre").value, 
-				thouSuf: document.getElementById("thoughtSuf").value, 
-				displayN: document.getElementById("displayNumber").value
-				});
 	}else if(request.set == true){//信息为option页面设置改变值
 		console.log("request.set == true，接收到设置页改变信息");
 		if(request.s1Pre != undefined){
 			document.getElementById("style1Pre").innerHTML = request.s1Pre;
+			chrome.storage.sync.set({s1Pre: request.s1Pre}, function() {
+				console.log("s1Pre: request.s1Pre设置完毕")
+			  });
 		}
 		if(request.s1Suf != undefined){
 			document.getElementById("style1Suf").innerHTML = request.s1Suf;
+			chrome.storage.sync.set({s1Suf: request.s1Suf}, function() {
+				console.log("s1Suf: request.s1Suf设置完毕")
+			});
 		}
 		if(request.s2Pre != undefined){
 			document.getElementById("style2Pre").innerHTML = request.s2Pre;
+			chrome.storage.sync.set({s2Pre: request.s2Pre}, function() {
+				console.log("s2Pre: request.s2Pre设置完毕")
+			});
 		}
 		if(request.s2Suf != undefined){
 			document.getElementById("style2Suf").innerHTML = request.s2Suf;
+			chrome.storage.sync.set({s2Suf: request.s2Suf}, function() {
+				console.log("s2Suf: request.s2Suf设置完毕")
+			});
 		}
 		if(request.s3Pre != undefined){
 			document.getElementById("style3Pre").innerHTML = request.s3Pre;
+			chrome.storage.sync.set({s3Pre: request.s3Pre}, function() {
+				console.log("s3Pre: request.s3Pre设置完毕")
+			});
 		}
 		if(request.s3Suf != undefined){
 			document.getElementById("style3Suf").innerHTML = request.s3Suf;
+			chrome.storage.sync.set({s3Suf: request.s3Suf}, function() {
+				console.log("s3Suf: request.s3Suf设置完毕")
+			});
 		}
 		if(request.lev1 != undefined){
 			document.getElementById("level1").innerHTML = request.lev1;
+			chrome.storage.sync.set({lev1: request.lev1}, function() {
+				console.log("lev1: request.lev1设置完毕")
+			});
 		}
 		if(request.lev2 != undefined){
 			document.getElementById("level2").innerHTML = request.lev2;
+			chrome.storage.sync.set({lev2: request.lev2}, function() {
+				console.log("lev2: request.lev2设置完毕")
+			});
 		}
 		if(request.lev3 != undefined){
 			document.getElementById("level3").innerHTML = request.lev3;
+			chrome.storage.sync.set({lev3: request.lev3}, function() {
+				console.log("lev3: request.lev3设置完毕")
+			});
 		}
 		if(request.thouPre != undefined){
 			document.getElementById("thoughtPre").innerHTML = request.thouPre;
+			chrome.storage.sync.set({thouPre: request.thouPre}, function() {
+				console.log("thouPre: request.thouPre设置完毕")
+			});
 		}
 		if(request.thouSuf != undefined){
 			document.getElementById("thoughtSuf").innerHTML = request.thouSuf;
+			chrome.storage.sync.set({thouSuf: request.thouSuf}, function() {
+				console.log("thouSuf: request.thouSuf设置完毕")
+			});
 		}
 		if(request.displayN != undefined){
-			if(document.getElementById("displayNumber").innerHTML == "true"){
-				document.getElementById("displayNumber").innerHTML = "false";
-			}else{
-				document.getElementById("displayNumber").innerHTML = "true";
-			}
+			chrome.storage.sync.get(["displayN"], function(setting) {
+				if(setting.displayN == "true"){
+					document.getElementById("displayNumber").innerHTML = "false";
+					chrome.storage.sync.set({displayN: "false"}, function() {
+						console.log("displayN: \"false\"设置完毕")
+					});
+				}else{
+					document.getElementById("displayNumber").innerHTML = "true";
+					chrome.storage.sync.set({displayN: "true"}, function() {
+						console.log("displayN: \"true\"设置完毕")
+					});
+				}
+			});
 		}
 	}
 });
