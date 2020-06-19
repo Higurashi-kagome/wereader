@@ -22,5 +22,5 @@ var element = getClass("wr_bookCover_img");
 var list = element.item(0).src.split("/");
 var bookId = list[list.length - 2];
 chrome.runtime.sendMessage({getBid: true, bid: bookId}, function(response) {
-	console.log('收到来自后台的回复：' + response);
+	console.log('inject-bid.js收到来自后台的回复：' + response);
 });
