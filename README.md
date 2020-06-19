@@ -78,6 +78,7 @@
 - [ ] 批量导出
 - [ ] 想法中包含HTML内容的问题
 - [ ] 报错：Unchecked runtime.lastError: The message port closed before a response was received.
+- [ ] 完善图片复制：支持各种图片
 
 ## 补充
 
