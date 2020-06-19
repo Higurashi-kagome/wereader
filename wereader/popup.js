@@ -65,6 +65,12 @@ window.onload=function(){
         bg.copyThought("https://i.weread.qq.com/review/list?bookId=" + bookId + "&listType=11&mine=1&synckey=0&listMode=0");
         window.close();
     }, false);
+    //开启复制图片
+    document.getElementById("inject").addEventListener('click', function(){
+        var bg = chrome.extension.getBackgroundPage();
+        bg.injectCopy();
+        window.close();
+    }, false);
 }
 
 var getText = document.getElementById("getComment_text");

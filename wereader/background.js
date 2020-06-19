@@ -1,3 +1,12 @@
+//注入复制脚本：OK
+function injectCopy(){
+	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
+		console.log("开始注入inject-copy.js")
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject-copy.js'});
+		console.log("inject-copy.js注入结束")
+	}) 
+}
+
 //popup获取vid：OK
 function getuserVid(){
 	console.log("getuserVid()被调用")
@@ -574,6 +583,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				}
 			});
 		}
+	}else if(request.picText != undefined){
+		copy(request.picText)
 	}
 });
 
