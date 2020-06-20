@@ -1,31 +1,31 @@
 //注入复制脚本：OK
 function injectCopy(){
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
-		console.log("开始注入inject-copy.js")
+		console.log("injectCopy()：开始注入inject-copy.js")
 		chrome.tabs.executeScript(tab[0].id, {file: 'inject-copy.js'});
-		console.log("inject-copy.js注入结束")
+		console.log("injectCopy()：inject-copy.js注入结束")
 	}) 
 }
 
 //popup获取vid：OK
 function getuserVid(){
-	console.log("getuserVid()被调用")
+	console.log("getuserVid()：被调用")
 	return document.getElementById("userVid").value;
 }
 
 //popup获取bid：OK
 function getbookId(){
-	console.log("getbookId()被调用")
+	console.log("getbookId()：被调用")
 	return document.getElementById('bookId').value;
 }
 
 //获取userVid并设置到背景页：OK
 function setuserVid(){
-	console.log("setuserVid()被调用")
+	console.log("setuserVid()：被调用")
 	//获取当前页面
 	chrome.tabs.query({active: true, currentWindow: true}, tabs => {
 		var url = tabs[0].url;
-		console.log("setuserVid()中的chrome.tabs.query()获取到页面：" + url)
+		console.log("setuserVid()：chrome.tabs.query()获取到页面：" + url)
 		var list = url.split("/")
 		if(list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != ""){
 			//获取当前页面的cookie然后设置bookId和userVid
@@ -34,12 +34,12 @@ function setuserVid(){
 				name: 'wr_vid'
 			},function(cookie){
 				if(cookie == null){
-					console.log("setuserVid()获取cookie失败，请检查");
+					console.log("setuserVid()：获取cookie失败，请检查");
 					document.getElementById('userVid').value = "null";
 				}else{
-					console.log("setuserVid()获取cookie成功")
+					console.log("setuserVid()：获取cookie成功")
 					var userVid = cookie.value.toString();
-					console.log("userVid为：" + userVid);
+					console.log("setuserVid()：userVid为" + userVid);
 					document.getElementById('userVid').value = userVid;
 				}
 			});
@@ -49,7 +49,7 @@ function setuserVid(){
 
 //获取数据：OK
 function getData(url,callback){
-	console.log("getData(url,callback)被调用")
+	console.log("getData(url,callback)：被调用")
 	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
 	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
 	httpRequest.withCredentials = true;
@@ -58,9 +58,9 @@ function getData(url,callback){
 	 * 获取数据后的处理程序
 	 */
 	httpRequest.onreadystatechange = function () {
-		console.log("getData(url,callback)中的httpRequest.onreadystatechange触发")
+		console.log("getData(url,callback)：httpRequest.onreadystatechange触发")
 		if (httpRequest.readyState==4 && httpRequest.status==200){
-			console.log("getData(url,callback)中的httpRequest.onreadystatechange获取数据结束")
+			console.log("getData(url,callback)：httpRequest.onreadystatechange获取数据结束")
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
 			callback(data);
 		}
@@ -69,12 +69,13 @@ function getData(url,callback){
 
 //复制内容：OK
 function copy(text){
-	console.log("copy(text)被调用")
+	console.log("copy(text)：被调用")
 	var inputText = document.getElementById("formatted_text");
 	var copyBtn = document.getElementById("btn_copy");
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
-		console.log("复制成功");
+		console.log("copy(text)：复制成功");
+		//alert("复制成功")
 		/* toast复制成功提示
 		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
@@ -92,9 +93,9 @@ function copy(text){
 
 //获取书评：OK
 function getComment(url,bookId,isHtml){
-	console.log("getComment(url,bookId,isHtml)被调用")
+	console.log("getComment(url,bookId,isHtml)：被调用")
 	getData(url,function(data){
-		console.log("在getComment(url,bookId,isHtml)的调用下getData(url,callback)的回调函数被调用")
+		console.log("getComment(url,bookId,isHtml)：getData(url,callback)的回调函数被调用")
 		var json = JSON.parse(data)
 		var reviews = json.reviews
 		var htmlContent = ""
@@ -134,19 +135,33 @@ function getComment(url,bookId,isHtml){
 
 //获取目录：OK
 function getBookContents(){
-	console.log("getBookContents()被调用")
+	console.log("getBookContents()：被调用")
 	chrome.tabs.query({active:true,currentWindow:true}, function(tab){
-		console.log("getBookContents()调用下的chrome.tabs.query()的回调函数被调用，开始注入inject-contents.js")
+		console.log("getBookContents()：chrome.tabs.query()的回调函数被调用，开始注入inject-contents.js")
 		chrome.tabs.executeScript(tab[0].id, {file: 'inject-contents.js'});
-		console.log("inject-contents.js注入结束")
+		console.log("getBookContents()：inject-contents.js注入结束")
 	})
 }
 
+//获取imgs
+function requestImgsArray(){
+	console.log("requestImgsArray()：被调用")
+	//注入脚本
+	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
+		console.log("requestImgsArray()：开始注入inject-imgs.js")
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject-imgs.js'});
+		console.log("requestImgsArray()：inject-imgs.js注入结束")
+	}) 
+}
+
+//保存图片Markdown文本数组
+var imgsArr = []
+var imgsArrIndext = 0
 //获取标注：OK
 function getBookMarks(url,callback){
-	console.log("getBookMarks(url,callback)被调用")
+	console.log("getBookMarks(url,callback)：被调用")
 	getData(url,function(data){
-		console.log("getBookMarks(url,callback)调用下getData()的回调函数被调用")
+		console.log("getBookMarks(url,callback)：getData()的回调函数被调用")
 		var json = JSON.parse(data)
 		//获取章节并排序
 		var chapters = json.chapters
@@ -180,7 +195,7 @@ function getBookMarks(url,callback){
 
 //获取添加级别的标题：OK
 function getTitleAddedPre(title,level){
-	console.log("getTitleAddedPre(title,level)被调用")
+	console.log("getTitleAddedPre(title,level)：被调用")
 	if(level == 1){
 		return document.getElementById("level1").value + title
 	}else if(level == 2){
@@ -192,12 +207,13 @@ function getTitleAddedPre(title,level){
 
 //处理数据，复制标注：OK
 function copyBookMarks(url,isAll){
-	console.log("copyBookMarks(url,isAll)被调用")
+	requestImgsArray();
+	console.log("copyBookMarks(url,isAll)：被调用")
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(chaptersData){
-		console.log("copyBookMarks(url,isAll)调用了getData(url,callback)并进入了getData(url,callback)的回调函数")
+		console.log("copyBookMarks(url,isAll)：getData(url,callback)的回调函数被调用")
 		getBookMarks(url,function(chaptersAndMarks){
-			console.log("getData(url,callback)的回调函数调用了getBookMarks(url,callback)并进入了getBookMarks(url,callback)的回调函数")
+			console.log("copyBookMarks(url,isAll)：getData(url,callback)的回调函数：getBookMarks(url,callback)的回调函数被调用")
 			var json = JSON.parse(chaptersData)
 			var contentData = json.data[0].updated
 			var contents = []
@@ -226,7 +242,7 @@ function copyBookMarks(url,isAll){
 				}
 			};
 			if(isAll == true){
-				console.log("isAll == true")
+				console.log("copyBookMarks(url,isAll)：isAll == true")
 				for(var i=0,len1=chaptersAndMarks.length;i<len1;i++){
 					var chapterUid = chaptersAndMarks[i].chapterUid
 					for(var j=0,len2=contents.length;j<len2;j++){
@@ -243,10 +259,10 @@ function copyBookMarks(url,isAll){
 				}
 			}else{
 				//遍历目录
-				console.log("isAll == false")
+				console.log("copyBookMarks(url,isAll)：isAll == false")
 				for(var j=0,len2=contents.length;j<len2;j++){
 					if(contents[j].title == document.getElementById("currentContent").value.substring(1)){
-						console.log("找到目标章节")
+						console.log("copyBookMarks(url,isAll)：找到目标章节")
 						res += getTitleAddedPre(contents[j].title,contents[j].level) + "\n\n"
 						var chapterUid = contents[j].chapterUid
 						//遍历标注
@@ -254,9 +270,16 @@ function copyBookMarks(url,isAll){
 							if(chaptersAndMarks[i].chapterUid == chapterUid){
 								//遍历章内标注
 								for(var k=0,len3=chaptersAndMarks[i].marks.length;k<len3;k++){
+									var markText = chaptersAndMarks[i].marks[k].markText
+									//判断是否为对图片的标注
+									if(markText == "[插图]"){
+										markText = imgsArr[imgsArrIndext]
+										imgsArrIndext = imgsArrIndext + 1
+									}
 									var style = chaptersAndMarks[i].marks[k].style
-									res += getMarkPre(style) + chaptersAndMarks[i].marks[k].markText + getMarkSuf(style) + "\n\n"
+									res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
 								}
+								imgsArrIndext = 0
 								break
 							}
 						}
@@ -271,9 +294,9 @@ function copyBookMarks(url,isAll){
 
 //获取热门标注：OK
 function getBestBookMarks(url,callback){
-	console.log("getBestBookMarks(url,callback)被调用")
+	console.log("getBestBookMarks(url,callback)：被调用")
 	getData(url,function(data){
-		console.log("getBestBookMarks(url,callback)调用了getData(url,callback)并进入了getData(url,callback)的回调函数")
+		console.log("getBestBookMarks(url,callback)：getData(url,callback)：getData(url,callback)的回调函数被调用")
 		var json = JSON.parse(data)
 		var chapters = json.chapters
 		//查找每章节热门标注
@@ -304,12 +327,12 @@ function getBestBookMarks(url,callback){
 
 //处理数据，复制热门标注：OK
 function copyBestBookMarks(url){
-	console.log("copyBestBookMarks(url)被调用了")
+	console.log("copyBestBookMarks(url)：被调用")
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(data){
-		console.log("copyBestBookMarks(url)调用了getData()并进入了getData()的回调函数")
+		console.log("copyBestBookMarks(url)：getData()：getData()的回调函数被调用")
 		getBestBookMarks(url,function(bestMarks){
-			console.log("copyBestBookMarks(url)中getData()调用了getBestBookMarks(url,callback)并进入了getBestBookMarks(url,callback)的回调函数")
+			console.log("copyBestBookMarks(url)：getData()：getBestBookMarks(url,callback)：getBestBookMarks(url,callback)的回调函数被调用")
 			var json = JSON.parse(data)
 			var contentData = json.data[0].updated
 			var contents = []
@@ -347,9 +370,9 @@ function copyBestBookMarks(url){
 
 //获取想法：OK
 function getMyThought(url,callback){
-	console.log("getMyThought(url,callback)被调用")
+	console.log("getMyThought(url,callback)：被调用")
 	getData(url,function(data){
-		console.log("getMyThought(url,callback)调用了getData()并进入了getData()的回调函数")
+		console.log("getMyThought(url,callback)：getData()：getData()的回调函数被调用")
 		var json = JSON.parse(data)
 		//获取章节并排序
 		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
@@ -388,12 +411,12 @@ function getMyThought(url,callback){
 
 //处理数据，复制想法：OK
 function copyThought(url){
-	console.log("copyThought(url)被调用")
+	console.log("copyThought(url)：被调用")
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=","")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0",function(data){
-		console.log("copyThought(url)调用了getData()并进入了它的回调函数")
+		console.log("copyThought(url)：getData()：getData()的回调函数被调用")
 		getMyThought(url,function(thoughts){
-			console.log("copyThought(url)下的getData()的回调函数调用了getMyThought()并进入了它的回调函数")
+			console.log("copyThought(url)：getData()：getData()的回调函数：getMyThought()：getMyThought()的回调函数被调用")
 			var json = JSON.parse(data)
 			var contentData = json.data[0].updated
 			var contents = []
@@ -426,11 +449,11 @@ function copyThought(url){
 
 //存储/初始化设置：OK
 function Setting(){
-	console.log("Setting()被调用")
+	console.log("Setting()：被调用")
 	chrome.storage.sync.get(null, function(setting) {
-		console.log("获取到设置")
+		console.log("Setting()：获取到设置")
 		if(setting.s1Pre == undefined){
-			console.log("setting.s1Pre == undefined，开始存储初始化设置")
+			console.log("Setting()：setting.s1Pre == undefined，开始存储初始化设置")
 			chrome.storage.sync.set({
 				s1Pre: document.getElementById("style1Pre").value, 
 				s1Suf: document.getElementById("style1Suf").value, 
@@ -445,12 +468,12 @@ function Setting(){
 				thouSuf: document.getElementById("thoughtSuf").value, 
 				displayN: document.getElementById("displayNumber").value
 				}, function() {
-					console.log("设置存储完毕")
+					console.log("Setting()：设置存储完毕")
 			  });
 		}else{
-			console.log("setting.s1Pre != undefined，准备同步设置到背景页")
+			console.log("Setting()：setting.s1Pre != undefined，准备同步设置到背景页")
 			chrome.storage.sync.get(null, function(setting) {
-				console.log("设置获取成功，开始同步设置到背景页")
+				console.log("Setting()：设置获取成功，开始同步设置到背景页")
 				document.getElementById("style1Pre").innerHTML = setting.s1Pre;
 				document.getElementById("style1Suf").innerHTML = setting.s1Suf;
 				document.getElementById("style2Pre").innerHTML = setting.s2Pre;
@@ -463,25 +486,24 @@ function Setting(){
 				document.getElementById("thoughtPre").innerHTML = setting.thouPre;
 				document.getElementById("thoughtSuf").innerHTML = setting.thouSuf;
 				document.getElementById("displayNumber").innerHTML = setting.displayN;
-				console.log("同步设置完毕")
+				console.log("Setting()：同步设置完毕")
 			});
 		}
 	});
 }
-
 Setting();
 
 //监听来自inject.js、option的消息：是不是在BookPage、是的话bid是多少；如何设置变量
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-	console.log("chrome.runtime.onMessage.addListener()监听到消息")
-	console.log("request:\n" + JSON.stringify(request))
+	console.log("chrome.runtime.onMessage.addListener()：监听到消息")
+	console.log("消息:\n" + request)//JSON.stringify(request)
 	if(request.getBid == true){//信息为bid
-		console.log("request.getBid == true，接收到bid信息")
+		console.log("chrome.runtime.onMessage.addListener()：request.getBid == true，接收到bid信息")
 		document.getElementById('bookId').value = request.bid;
 		setuserVid();
-		sendResponse('我是后台，我已收到你返回bid的消息：' + JSON.stringify(request));
+		sendResponse('后台：我已收到你返回bid的消息：' + JSON.stringify(request));
 	}else if(request.getContents == true){//信息为来自inject-content.js的目录信息
-		console.log("request.getContents == true，接收到目录信息")
+		console.log("chrome.runtime.onMessage.addListener()：request.getContents == true，接收到目录信息")
 		var texts = request.contents;
 		var res = '';
 		//生成目录res
@@ -491,17 +513,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			res += getTitleAddedPre(chapterInfo,parseInt(level)) + "\n\n";
 		}
 		if(document.getElementById("Bookcontents").innerHTML == "getBookContents"){//如果需要获取目录
-			console.log("开始设置Bookcontents");
+			console.log("chrome.runtime.onMessage.addListener()：开始设置Bookcontents");
 			document.getElementById("Bookcontents").innerHTML = res;
 		}else{//如果不需要获取目录，直接复制
-			console.log("准备复制目录");
+			console.log("chrome.runtime.onMessage.addListener()：准备复制目录");
 			copy(res);
 		}
 		//设置当前目录
 		document.getElementById("currentContent").innerHTML = request.currentContent
 		sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
 	}else if(request.set == true){//信息为option页面设置改变值
-		console.log("request.set == true，接收到设置页改变信息");
+		console.log("chrome.runtime.onMessage.addListener()：request.set == true，接收到设置页改变信息");
 		if(request.s1Pre != undefined){
 			document.getElementById("style1Pre").innerHTML = request.s1Pre;
 			chrome.storage.sync.set({s1Pre: request.s1Pre}, function() {
@@ -583,8 +605,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				}
 			});
 		}
-	}else if(request.picText != undefined){
+	}else if(request.picText != undefined){//信息为图片的Markdown文本
 		copy(request.picText)
+	}else if(request.RimgsArr != undefined){//信息为图片的Markdown文本数组
+		console.log("chrome.runtime.onMessage.addListener()：收到图片Markdown文本数组")
+		imgsArr = request.RimgsArr
 	}
 });
 
@@ -592,9 +617,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 chrome.tabs.onActivated.addListener(function(moveInfo){
 	console.log("chrome.tabs.onActivated.addListener()监听到消息")
 	chrome.tabs.get(moveInfo.tabId,function(tab){
-		console.log("chrome.tabs.get()获取到页面信息，并进入了它的回调函数")
+		console.log("chrome.tabs.onActivated.addListener()：chrome.tabs.get()获取到页面信息，并进入了它的回调函数")
 		var currentUrl = tab.url;
-		console.log("当前页面：" + currentUrl)
+		console.log("chrome.tabs.onActivated.addListener()：当前页面：" + currentUrl)
 		var list = currentUrl.split('/');
 		var isBookPage = false;
 		try{
@@ -627,9 +652,9 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	console.log("chrome.tabs.onUpdated.addListener()监听到消息")
 	if(changeInfo.status == "loading"){
-		console.log("changeInfo.status == \"loading\"")
+		console.log("chrome.tabs.onUpdated.addListener()：changeInfo.status == \"loading\"")
 		var loadingUrl = tab.url;
-		console.log("当前页面：" + loadingUrl)
+		console.log("chrome.tabs.onUpdated.addListener()：当前页面：" + loadingUrl)
 		var list = loadingUrl.split('/');
 		var isBookPage = false;
 		try{
