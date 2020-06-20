@@ -60,7 +60,7 @@
 
 右击插件点击`选项`进入插件设置设置页面：
 
-<img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111212QQ%E6%88%AA%E5%9B%BE.png" alt="img"  />
+<div align=center><img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111212QQ%E6%88%AA%E5%9B%BE.png" alt="img"  /></div>
 
 在设置页面，你可以设置导出效果。
 
