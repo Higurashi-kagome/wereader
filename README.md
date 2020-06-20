@@ -8,6 +8,10 @@
 
 图片无法加载可以到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看。
 
+项目地址：[Github](https://github.com/liuhao326/wereader)
+
+**现在已更新至v1.2.1，支持图片、注释一键复制。**
+
 欢迎PR或star:star:， 有什么问题也可以提 issue。
 
 你的支持将使我更加专注于开源和完善代码:two_hearts:。
@@ -82,11 +86,9 @@
 - [ ] 批量导出
 - [ ] 想法中包含HTML内容的问题
 - [ ] 报错：Unchecked runtime.lastError: The message port closed before a response was received.
-- [ ] 完善图片复制：支持各种图片
+- [ ] 支持"关闭复制按钮"
 
 ## 补充
-
-[Github](https://github.com/liuhao326/wereader)
 
 相关仓库：[pythontools](https://github.com/liuhao326/pythontools)
 
@@ -97,4 +99,6 @@ v1.0.1：初次发布
 v1.1.0：添加同步设置能力
 
 v1.2.0：添加图片复制功能
+
+v1.2.1：支持大图、左侧小图及注释一键复制
 
