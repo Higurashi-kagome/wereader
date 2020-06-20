@@ -18,54 +18,55 @@
 
 ## 使用
 
+- 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
+
+- 接下来，进入Chrome，按下图进入扩展程序页面：
+
+  <img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111930image-20200620191746304.png" alt="img" style="zoom: 80%;" />
+
+- 进入页面后，先打开`开发者模式`开关，再点击`加载已解压的扩展程序`，找到前面解压得到的文件夹`wereader`，双击进入该文件夹，进入后单击里面的（不是双击）`wereader`文件夹，这时候文件夹被选中，点击`选择文件夹`即可。
+
+## 功能
+
+下面简单介绍，可到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看部分GIF演示。
+
 1. **导出(个人)书评**
 
-   你可以选择导出为*纯文本*：
+   - 导出为纯文本
 
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114259768-85692994.gif)
-
-   或是*HTML*：
-
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114316763-17826461.gif)
+   - 导出为HTML
 
 2. **导出标注**
 
-   你可以选择导出*本章标注*：
+   - 导出本章标注
 
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114351533-675081384.gif)
-
-
-   或是*全书标注*：
-
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114407848-397256265.gif)
+   - 导出全书标注
 
 
-3. **导出目录：**
-
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114425308-696058996.gif)
+3. **导出目录**
 
 
-4. **导出热门标注：**
-
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114444223-868074929.gif)
+4. **导出热门标注**
 
 
-5. **导出个人想法：**
+5. **导出个人想法**
 
-   ![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114501133-919555285.gif)
+6. **开启复制按钮**
+
+   用于一键书中复制图片或注释内容。
 
 
 ## 设置
 
 右击插件点击`选项`进入插件设置设置页面：
 
-![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611111402853-277977098.gif)
+<img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111212QQ%E6%88%AA%E5%9B%BE.png" alt="img"  />
 
 在设置页面，你可以设置导出效果。
 
 在微信读书中，标注分三类，分别是波浪线、马克笔和直线：
 
-![](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611111602972-2146860992.png)
+<img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620110908QQ%E6%88%AA%E5%9B%BE20200620190842.png" alt="img" style="zoom:80%;" />
 
 其中直线就是设置页面中所谓`一级标注`，马克笔是`二级标注`，波浪线是`三级标注`，你可以在输入框中设置标注前后缀。
 
@@ -87,6 +88,7 @@
 - [ ] 想法中包含HTML内容的问题
 - [ ] 报错：Unchecked runtime.lastError: The message port closed before a response was received.
 - [ ] 支持"关闭复制按钮"
+- [ ] 彩蛋
 
 ## 补充
 
