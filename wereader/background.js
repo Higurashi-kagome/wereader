@@ -8,16 +8,6 @@ function injectCopy(){
 	}) 
 }
 
-//注入获取本章脚本（舍弃）
-/* function injectGetAll(){
-	console.log("injectGetAll()：被调用")
-	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
-		console.log("injectGetAll()：开始注入inject-all.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject-all.js'});
-		console.log("injectGetAll()：inject-all.js注入结束")
-	}) 
-} */
-
 //popup获取vid：OK
 function getuserVid(){
 	console.log("getuserVid()：被调用")
