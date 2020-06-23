@@ -1,3 +1,4 @@
+/*获取被标注的图片的Markdown文本数组，用于支持导出被标注的图片*/
 //发送消息给后台
 function setMesToBg(imgsArray){
     console.log("setMesToBg(imgsArray)：被调用，参数imgsArray：\n" + imgsArray)
