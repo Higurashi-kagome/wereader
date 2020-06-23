@@ -1,5 +1,6 @@
 //注入复制脚本：OK
 function injectCopy(){
+	console.log("injectCopy()：被调用")
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 		console.log("injectCopy()：开始注入inject-copy.js")
 		chrome.tabs.executeScript(tab[0].id, {file: 'inject-copy.js'});
@@ -143,7 +144,7 @@ function getBookContents(){
 	})
 }
 
-//获取imgs
+//获取imgs：OK
 function requestImgsArray(){
 	console.log("requestImgsArray()：被调用")
 	//注入脚本
@@ -269,6 +270,9 @@ function copyBookMarks(url,isAll){
 						for(var i=0,len1=chaptersAndMarks.length;i<len1;i++){
 							if(chaptersAndMarks[i].chapterUid == chapterUid){
 								//遍历章内标注
+								if(imgsArr.length == 0){//如果页面中有图片却没有得到图片数据，结束函数
+									return
+								}
 								for(var k=0,len3=chaptersAndMarks[i].marks.length;k<len3;k++){
 									var markText = chaptersAndMarks[i].marks[k].markText
 									//判断是否为对图片的标注
@@ -280,6 +284,7 @@ function copyBookMarks(url,isAll){
 									res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
 								}
 								imgsArrIndext = 0
+								imgsArr = []
 								break
 							}
 						}

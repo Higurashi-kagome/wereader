@@ -67,7 +67,7 @@ function requestImgsArray(imgs,s0,s1,s2){
             }
         }
     }
-    return imgsArray
+    return imgsArray.length==0?["noImg"]:imgsArray//页面中没有图片则返回["noImg"]，否则返回imgsArray
 }
 
 //入口
