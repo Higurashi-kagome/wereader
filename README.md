@@ -84,11 +84,14 @@
 
 ## TODO
 
-- [ ] 批量导出
+- [ ] 批量导出（缓）
 - [ ] 想法中包含HTML内容的问题
-- [ ] 报错：Unchecked runtime.lastError: The message port closed before a response was received.
-- [ ] 支持"关闭复制按钮"
-- [ ] 彩蛋
+- [ ] 报错：
+  - [ ] Unchecked runtime.lastError: The message port closed before a response was received.
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
+- [ ] 支持"关闭复制按钮"（缓）
+- [ ] 匹配功能
+- [ ] 文件名改善，文件组织，函数名改善
 
 ## 补充
 
