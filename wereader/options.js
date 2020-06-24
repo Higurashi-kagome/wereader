@@ -29,97 +29,48 @@ function initialize(){
     });
 }
 
-//改变则发消息到后台
-function sendMessage(id){
-    switch(id){
-        case "first_level_pre":
-            chrome.runtime.sendMessage({set: true, s1Pre: document.getElementById("first_level_pre").value}, function(response) {
-            });
-            break;
-        case "first_level_suf":
-            chrome.runtime.sendMessage({set: true, s1Suf: document.getElementById("first_level_suf").value}, function(response) {
-            });
-            break;
-        case "second_level_pre":
-            chrome.runtime.sendMessage({set: true, s2Pre: document.getElementById("second_level_pre").value}, function(response) {
-            });
-            break;
-        case "second_level_suf":
-            chrome.runtime.sendMessage({set: true, s2Suf: document.getElementById("second_level_suf").value}, function(response) {
-            });
-            break;
-        case "third_level_pre":
-            chrome.runtime.sendMessage({set: true, s3Pre: document.getElementById("third_level_pre").value}, function(response) {
-            });
-            break;
-        case "third_level_suf":
-            chrome.runtime.sendMessage({set: true, s3Pre: document.getElementById("first_level_suf").value}, function(response) {
-            });
-            break;
-        case "first_header":
-            chrome.runtime.sendMessage({set: true, lev1: document.getElementById("first_header").value}, function(response) {
-            });
-            break;
-        case "second_header":
-            chrome.runtime.sendMessage({set: true, lev2: document.getElementById("second_header").value}, function(response) {
-            });
-            break;
-        case "third_header":
-            chrome.runtime.sendMessage({set: true, lev3: document.getElementById("third_header").value}, function(response) {
-            });
-            break;
-        case "thought_pre":
-            chrome.runtime.sendMessage({set: true, thouPre: document.getElementById("thought_pre").value}, function(response) {
-            });
-            break;
-        case "thought_suf":
-            chrome.runtime.sendMessage({set: true, thouSuf: document.getElementById("thought_suf").value}, function(response) {
-            });
-            break;
-        case "add_number":
-            chrome.runtime.sendMessage({set: true,displayN: "change"}, function(response) {
-            });
-            break;
-    }
-}
-
-//初始化
+//初始化设置页
 initialize();
 
-//设置监听
+function sendMsgToBg(msg){
+    chrome.runtime.sendMessage(msg, function(response) {
+    });
+}
+
+//监听设置页，更改设置则发送消息到后台
 document.getElementById("first_level_pre").onchange = function(){
-    sendMessage("first_level_pre")
+    sendMsgToBg({set: true, s1Pre: document.getElementById("first_level_pre").value})
 }
 document.getElementById("first_level_suf").onchange = function(){
-    sendMessage("first_level_suf")
+    sendMsgToBg({set: true, s1Suf: document.getElementById("first_level_suf").value})
 }
 document.getElementById("second_level_pre").onchange = function(){
-    sendMessage("second_level_pre")
+    sendMsgToBg({set: true, s2Pre: document.getElementById("second_level_pre").value})
 }
 document.getElementById("second_level_suf").onchange = function(){
-    sendMessage("second_level_suf")
+    sendMsgToBg({set: true, s2Suf: document.getElementById("second_level_suf").value})
 }
 document.getElementById("third_level_pre").onchange = function(){
-    sendMessage("third_level_pre")
+    sendMsgToBg({set: true, s3Pre: document.getElementById("third_level_pre").value})
 }
 document.getElementById("third_level_suf").onchange = function(){
-    sendMessage("third_level_suf")
+    sendMsgToBg({set: true, s3Pre: document.getElementById("first_level_suf").value})
 }
 document.getElementById("first_header").onchange = function(){
-    sendMessage("first_header")
+    sendMsgToBg({set: true, lev1: document.getElementById("first_header").value})
 }
 document.getElementById("second_header").onchange = function(){
-    sendMessage("second_header")
+    sendMsgToBg({set: true, lev2: document.getElementById("second_header").value})
 }
 document.getElementById("third_header").onchange = function(){
-    sendMessage("third_header")
+    sendMsgToBg({set: true, lev3: document.getElementById("third_header").value})
 }
 document.getElementById("thought_pre").onchange = function(){
-    sendMessage("thought_pre")
+    sendMsgToBg({set: true, thouPre: document.getElementById("thought_pre").value})
 }
 document.getElementById("thought_suf").onchange = function(){
-    sendMessage("thought_suf")
+    sendMsgToBg({set: true, thouSuf: document.getElementById("thought_suf").value})
 }
 document.getElementById("add_number").onchange = function(){
-    sendMessage("add_number")
+    sendMsgToBg({set: true,displayN: "change"})
 }
