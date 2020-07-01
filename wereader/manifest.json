@@ -36,11 +36,9 @@
 	"permissions":
 	[
       "tabs",
-		"notifications",
-		"webRequest",
-		"webRequestBlocking",
       "cookies",
       "storage",
-      "*://*/*"
+	  "*://weread.qq.com/web/reader/*",
+      "*://weread.qq.com/*"
    ]
 }
