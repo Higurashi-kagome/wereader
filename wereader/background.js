@@ -158,7 +158,7 @@ function requestImgsArray(){
 //保存图片Markdown文本数组
 var imgsArr = []
 var imgsArrIndext = 0
-//获取标注：OK
+//获取标注数据：OK
 function getBookMarks(url,callback){
 	console.log("getBookMarks(url,callback)：被调用")
 	getData(url,function(data){
@@ -205,8 +205,21 @@ function getTitleAddedPre(title,level){
 		return document.getElementById("level3").value + title
 	}
 }
-
-//处理数据，复制标注：OK
+/* 
+function getLineUnderRegExp(lineText){
+	var regExps = {"^·.*$":["- ",""]}
+	for(var key in regExps){
+		var r = new RegExp(regExps[key], 'g')
+		var mtch = r.exec(lineText)
+		if(mtch.length > 0){
+			return regExps[key][0] + mtch[0] + regExps[key][1]
+		}else{
+			return lineText
+		}
+	}
+}
+ */
+//获取标注并复制标注到剪切板：OK
 function copyBookMarks(url,isAll){
 	requestImgsArray();
 	console.log("copyBookMarks(url,isAll)：被调用")
@@ -457,6 +470,7 @@ function Setting(){
 	console.log("Setting()：被调用")
 	chrome.storage.sync.get(null, function(setting) {
 		console.log("Setting()：获取到设置")
+		//stroage中无数据时
 		if(setting.s1Pre == undefined){
 			console.log("Setting()：setting.s1Pre == undefined，开始存储初始化设置")
 			chrome.storage.sync.set({
