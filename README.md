@@ -10,7 +10,7 @@
 
 项目地址：[Github](https://github.com/liuhao326/wereader)
 
-**现在已更新至v1.2.1，支持图片、注释一键复制。**
+**现在已更新至v1.2.2，支持图片、注释一键复制。**
 
 欢迎PR或star:star:， 有什么问题也可以提 issue。
 
