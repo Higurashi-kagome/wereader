@@ -1,10 +1,10 @@
 # 📚 wereader
 
-一个Chrome插件，用于微信读书做笔记
+这是一个Chrome扩展，用于微信读书做笔记
 
 <div align=center><img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;" /></div>
 
-图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
+扩展图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
 
 图片无法加载可以到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看。
 
@@ -17,6 +17,8 @@
 你的支持将使我更加专注于开源和完善代码:two_hearts:。
 
 ## 使用
+
+如果可以访问Chrome网上应用店，直接点击[这里]([https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN](https://chrome.google.com/webstore/detail/微信读书笔记助手/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN))或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索结束可能无法找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
 
 - 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
 
@@ -58,7 +60,7 @@
 
 ## 设置
 
-右击插件点击`选项`进入插件设置设置页面：
+右击扩展点击`选项`进入扩展设置设置页面：
 
 ![img](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611111402853-277977098.gif)
 
@@ -89,6 +91,7 @@
 - [ ] 报错：
   - [ ] Unchecked runtime.lastError: The message port closed before a response was received.
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
+  - [ ] Unchecked runtime.lastError: The extensions gallery cannot be scripted.
 - [ ] 支持"关闭复制按钮"（缓）
 - [ ] 匹配功能
 - [ ] 文件名改善，文件组织，函数名改善
@@ -100,7 +103,7 @@
 
 相关仓库：[pythontools](https://github.com/liuhao326/pythontools)
 
-因为没有相关信用卡，所以没有发布到Chrome网上应用商店。
+已发布到Chrome网上应用商店。
 
 v1.0.1：初次发布
 
@@ -109,4 +112,6 @@ v1.1.0：添加同步设置能力
 v1.2.0：添加图片复制功能
 
 v1.2.1：支持大图、左侧小图及注释一键复制
+
+v1.2.2：本章内被标注的图片可随标注直接导出。去除不必要的权限、更改插件名
 
