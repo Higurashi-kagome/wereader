@@ -8,6 +8,11 @@ function injectCopy(){
 	}) 
 }
 
+//通知函数
+function notify(msg){
+	alert(msg)
+}
+
 //popup获取vid：OK
 function getuserVid(){
 	console.log("getuserVid()：被调用")
