@@ -1,4 +1,32 @@
-window.onload=function(){
+//页面加载完毕后开始执行
+window.onload = function(){
+    //获取并设置bid、vid
+    var bg = chrome.extension.getBackgroundPage();
+    var userVid = bg.getuserVid();
+    var bookId = bg.getbookId();
+    document.getElementById("bookId").innerHTML = "bid：" + bookId;
+    document.getElementById("userVid").innerHTML = "vid：" + userVid;
+    //获取bid/vid失败则提醒
+    if(document.getElementById("userVid").innerHTML == "vid：null" && document.getElementById("bookId").innerHTML == "bid：null"){
+        bg.notify("userVid == \"null\"，bookId == \"null\"，请确保正常登陆后刷新重试");
+        window.close();
+    }else{
+        if(document.getElementById("userVid").innerHTML == "vid：null"){
+            bg.notify("userVid == \"null\"，请确保正常登陆");
+            window.close();
+        }
+        if(document.getElementById("bookId").innerHTML == "bid：null"){
+            bg.notify("bookId == \"null\"，请刷新重试");
+            window.close();
+        }
+    }
+    //"获取书评"和"获取标注"元素及其子元素
+    var getText = document.getElementById("getComment_text");
+    var getHtml = document.getElementById("getComment_html");
+    var getThisChapter = document.getElementById("getThisChapter");
+    var getAll = document.getElementById("getAll");
+    var choose = document.getElementById("choose");
+    var chooseMark = document.getElementById("choose_mark");
     /*绑定点击事件*/
     //获取书评
     document.getElementById("getComment").addEventListener('click', function(){
@@ -64,29 +92,4 @@ window.onload=function(){
         bg.injectCopy();
         window.close();
     }, false);
-}
-
-//"获取书评"和"获取标注"元素及其子元素
-var getText = document.getElementById("getComment_text");
-var getHtml = document.getElementById("getComment_html");
-var getThisChapter = document.getElementById("getThisChapter");
-var getAll = document.getElementById("getAll");
-var choose = document.getElementById("choose");
-var chooseMark = document.getElementById("choose_mark");
-//获取并设置bid、vid
-var bg = chrome.extension.getBackgroundPage();
-var userVid = bg.getuserVid();
-var bookId = bg.getbookId();
-document.getElementById("bookId").innerHTML = "bid：" + bookId;
-document.getElementById("userVid").innerHTML = "vid：" + userVid;
-//获取bid、vid失败则提醒
-if(document.getElementById("userVid").innerHTML == "vid：null" && document.getElementById("bookId").innerHTML == "bid：null"){
-    bg.notify("userVid == \"null\"，bookId == \"null\"，请刷新重试");
-}else{
-    if(document.getElementById("userVid").innerHTML == "vid：null"){
-        bg.notify("userVid == \"null\"，请刷新重试");
-    }
-    if(document.getElementById("bookId").innerHTML == "bid：null"){
-        bg.notify("bookId == \"null\"，请刷新重试");
-    }
 }
