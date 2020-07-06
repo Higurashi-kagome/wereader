@@ -15,4 +15,4 @@ function injectCustomJs(jsPath)
 	document.head.appendChild(temp);
 }
 
-injectCustomJs("inject-login.js");
+injectCustomJs("../inject/inject-login.js");
