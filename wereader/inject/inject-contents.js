@@ -19,9 +19,7 @@ try{
     }
     console.log("inject-contents.js获取目录成功")
     //传消息给后台
-    chrome.runtime.sendMessage({getContents: true, contents: texts,currentContent:currentContent}, function(response) {
-        console.log('收到来自后台的回复：' + response);
-});
+    chrome.runtime.sendMessage({getContents: true, contents: texts,currentContent:currentContent});
 }catch{
     console.log("inject-contents.js获取目录失败")
 }

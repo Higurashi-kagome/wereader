@@ -3,9 +3,7 @@
 function setMesToBg(imgsArray){
     console.log("setMesToBg(imgsArray)：被调用，参数imgsArray：\n" + imgsArray)
     console.log("setMesToBg(imgsArray)：开始传递信息给后台")
-    chrome.runtime.sendMessage({RimgsArr: imgsArray}, function(response) {
-        console.log('setMesToBg(imgsArray)：收到来自后台的回复：' + response);
-    });
+    chrome.runtime.sendMessage({RimgsArr: imgsArray});
 }
 
 //遍历HTMLCollection检查图片是否加载完毕

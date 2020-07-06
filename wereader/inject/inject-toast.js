@@ -1,4 +1,6 @@
-function toast(){
+//废弃不用
+
+/* function toast(){
     console.log("toast()函数被调用")
     if(document.getElementById("toast") == null){
         var toast = document.createElement("div")
@@ -22,4 +24,4 @@ function toast(){
     }
 }
 console.log("inject-toast.js被注入")
-toast()
+toast() */

@@ -3,9 +3,7 @@
 function sendMsgToBg(picStr){
     console.log("sendMsgToBg(picStr)：被调用，参数picStr：\n" + picStr)
     console.log("sendMsgToBg(picStr)开始传递信息给后台")
-    chrome.runtime.sendMessage({picText: picStr}, function(response) {
-        console.log('sendMsgToBg(picStr)收到来自后台的回复：' + response);
-    });
+    chrome.runtime.sendMessage({picText: picStr});
 }
 
 //为图片遍历HTMLCollection生成按钮

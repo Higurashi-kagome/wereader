@@ -3,7 +3,7 @@ function injectCopy(){
 	console.log("injectCopy()：被调用")
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 		console.log("injectCopy()：开始注入inject-copy.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject-copy.js'});
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-copy.js'});
 		console.log("injectCopy()：inject-copy.js注入结束")
 	}) 
 }
@@ -85,7 +85,7 @@ function copy(text){
 		/* toast复制成功提示
 		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
-			chrome.tabs.executeScript(tab[0].id, {file: 'inject-toast.js'});
+			chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-toast.js'});
 			console.log("inject-toast.js注入结束")
 		}) */
 	});
@@ -144,7 +144,7 @@ function getBookContents(){
 	console.log("getBookContents()：被调用")
 	chrome.tabs.query({active:true,currentWindow:true}, function(tab){
 		console.log("getBookContents()：chrome.tabs.query()的回调函数被调用，开始注入inject-contents.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject-contents.js'});
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-contents.js'});
 		console.log("getBookContents()：inject-contents.js注入结束")
 	})
 }
@@ -155,7 +155,7 @@ function requestImgsArray(){
 	//注入脚本
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
 		console.log("requestImgsArray()：开始注入inject-imgs.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject-imgs.js'});
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-imgs.js'});
 		console.log("requestImgsArray()：inject-imgs.js注入结束")
 	}) 
 }
@@ -517,7 +517,7 @@ function Setting(){
 }
 Setting();
 
-//监听来自inject.js、option的消息：是不是在BookPage、是的话bid是多少；如何设置变量
+//监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	console.log("chrome.runtime.onMessage.addListener()：监听到消息")
 	console.log("消息:\n" + request)//JSON.stringify(request)
@@ -546,7 +546,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		//设置当前目录
 		document.getElementById("currentContent").innerHTML = request.currentContent
 		sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
-	}else if(request.set == true){//信息为option页面设置改变值
+	}else if(request.set == true){//信息为options页面设置改变值
 		console.log("chrome.runtime.onMessage.addListener()：request.set == true，接收到设置页改变信息");
 		if(request.s1Pre != undefined){
 			document.getElementById("style1Pre").innerHTML = request.s1Pre;
@@ -634,6 +634,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}else if(request.RimgsArr != undefined){//信息为图片的Markdown文本数组
 		console.log("chrome.runtime.onMessage.addListener()：收到图片Markdown文本数组")
 		imgsArr = request.RimgsArr
+	}else if(request.injectCss != undefined){
+		console.log("chrome.runtime.onMessage.addListener()：收到要求注入css的消息")
+		var tabId
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
+		{
+			tabId = tabs[0].id
+		})
+		chrome.tabs.insertCSS(tabId, {file: request.injectCss})
 	}
 });
 
@@ -664,9 +672,8 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 			}
 			//注入脚本获取全部目录数据和当前目录
 			getBookContents();
-			chrome.tabs.executeScript(tab.id, {file: 'inject-bid.js'});
-			//chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
-			chrome.browserAction.setPopup({ popup: 'popup.html' });
+			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'});
+			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 			setuserVid();
 		}
 	});
@@ -694,16 +701,14 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			chrome.browserAction.setPopup({ popup: '' });
 		}else{
 			//获取目录到background-page
-			//
 			if(document.getElementById("Bookcontents").innerHTML != "getBookContents"){
 				document.getElementById("Bookcontents").innerHTML = "getBookContents";
 			}
 			//注入脚本获取全部目录数据和当前目录
 			getBookContents();
-			chrome.tabs.executeScript(tab.id, {file: 'inject-bid.js'});
-			//chrome.tabs.executeScript(tab.id, {file: 'inject-contents.js'});
+			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'});
 			setuserVid();
-			chrome.browserAction.setPopup({ popup: 'popup.html' });
+			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 			}
 	}
 

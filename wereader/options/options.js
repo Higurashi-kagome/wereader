@@ -33,8 +33,7 @@ function initialize(){
 initialize();
 
 function sendMsgToBg(msg){
-    chrome.runtime.sendMessage(msg, function(response) {
-    });
+    chrome.runtime.sendMessage(msg);
 }
 
 //监听设置页，更改设置则发送消息到后台
