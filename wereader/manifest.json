@@ -1,10 +1,10 @@
 {	
    "manifest_version": 2,
    "name": "微信读书笔记助手",
-   "version": "1.2.2",
+   "version": "1.3.0",
    "description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用Markdown做笔记的用户尤其有帮助。",
    "background": {
-	"page": "background.html",
+	"page": "background/background.html",
 	"persisten": false
    },
    "icons":
@@ -21,18 +21,23 @@
 	[
       {
 			"matches": ["*://weread.qq.com/"],
-			"js": ["content-script-login.js"],
+			"js": ["content/content-login.js"],
+			"run_at": "document_idle"
+      },
+      {
+			"matches": ["*://weread.qq.com/web/reader/*"],
+			"js": ["content/content-theme.js"],
 			"run_at": "document_idle"
       }
    ],
-   "options_page": "options.html",
+   "options_page": "options/options.html",
    "options_ui":
 	{
-    	"page": "options.html",
+    	"page": "options/options.html",
     	"chrome_style": true
    },
    "homepage_url": "https://github.com/liuhao326/wereader",
-   "web_accessible_resources": ["inject-login.js","inject-bid.js","inject-contents.js"],
+   "web_accessible_resources": ["inject/inject-login.js"],
 	"permissions":
 	[
       "tabs",
