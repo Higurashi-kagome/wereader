@@ -10,15 +10,13 @@
 
 项目地址：[Github](https://github.com/liuhao326/wereader)
 
-**现在已更新至v1.2.2，支持图片、注释一键复制。**
-
 欢迎PR或star:star:， 有什么问题也可以提 issue。
 
 你的支持将使我更加专注于开源和完善代码:two_hearts:。
 
 ## 使用
 
-如果可以访问Chrome网上应用店，直接点击[这里]([https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN](https://chrome.google.com/webstore/detail/微信读书笔记助手/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN))或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索结束可能无法找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
+如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索结束可能无法找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
 
 - 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
 
@@ -93,6 +91,7 @@
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.
   - [ ] Unchecked runtime.lastError: The extensions gallery cannot be scripted.（观察）
+  - [ ] Uncaught Error: Extension context invalidated.（常常在刚加载的时候出错）
 - [ ] 支持"关闭复制按钮"（停）
 - [ ] 匹配功能（缓）
 - [ ] 函数名改善
@@ -105,6 +104,8 @@
 - [ ] 白色黑色切换时的不流畅感（缓）
 - [ ] 某些时候（频繁使用），获取想法可能会失败（停）
 - [ ] 实现方法总结（开发经验）
+- [ ] 展示热门标注、想法等内容
+- [ ] 注释复制按钮位置及点击
 
 ## 补充
 
