@@ -1,10 +1,20 @@
+//报错捕捉函数
+function catchErr(sender){
+	if(chrome.runtime.lastError != undefined){
+		console.log(sender + " => chrome.runtime.lastError：" + chrome.tabs.executeScript)
+		chrome.tabs.executeScript = undefined
+	}
+}
+
 //注入复制脚本：OK
-function injectCopy(){
-	console.log("injectCopy()：被调用")
+function injectCopyBtn(){
+	console.log("injectCopyBtn()：被调用")
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
-		console.log("injectCopy()：开始注入inject-copy.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-copy.js'});
-		console.log("injectCopy()：inject-copy.js注入结束")
+		console.log("injectCopyBtn()：开始注入inject-copyBtn.js")
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-copyBtn.js'},function(result){
+			catchErr("injectCopyBtn() => chrome.tabs.executeScript")
+		});
+		console.log("injectCopyBtn()：inject-copyBtn.js注入结束")
 	}) 
 }
 
@@ -143,9 +153,11 @@ function getComment(url,bookId,isHtml){
 function getBookContents(){
 	console.log("getBookContents()：被调用")
 	chrome.tabs.query({active:true,currentWindow:true}, function(tab){
-		console.log("getBookContents()：chrome.tabs.query()的回调函数被调用，开始注入inject-contents.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-contents.js'});
-		console.log("getBookContents()：inject-contents.js注入结束")
+		console.log("getBookContents()：chrome.tabs.query()的回调函数被调用，开始注入inject-getContents.js")
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-getContents.js'},function(result){
+			catchErr("getBookContents() => chrome.tabs.executeScript")
+		});
+		console.log("getBookContents()：inject-getContents.js注入结束")
 	})
 }
 
@@ -154,9 +166,11 @@ function requestImgsArray(){
 	console.log("requestImgsArray()：被调用")
 	//注入脚本
 	chrome.tabs.query({active: true,currentWindow: true}, function(tab){
-		console.log("requestImgsArray()：开始注入inject-imgs.js")
-		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-imgs.js'});
-		console.log("requestImgsArray()：inject-imgs.js注入结束")
+		console.log("requestImgsArray()：开始注入inject-copyImgs.js")
+		chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-copyImgs.js'},function(result){
+			catchErr("requestImgsArray() => chrome.tabs.executeScript")
+		});
+		console.log("requestImgsArray()：inject-copyImgs.js注入结束")
 	}) 
 }
 
@@ -672,7 +686,9 @@ chrome.tabs.onActivated.addListener(function(moveInfo){
 			}
 			//注入脚本获取全部目录数据和当前目录
 			getBookContents();
-			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'});
+			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'},function(result){
+				catchErr("chrome.tabs.onActivated.addListener => chrome.tabs.get")
+			});
 			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 			setuserVid();
 		}
@@ -706,7 +722,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 			}
 			//注入脚本获取全部目录数据和当前目录
 			getBookContents();
-			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'});
+			chrome.tabs.executeScript(tab.id, {file: 'inject/inject-bid.js'},function(result){
+				catchErr("chrome.tabs.onUpdated.addListener")
+			});
 			setuserVid();
 			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 			}

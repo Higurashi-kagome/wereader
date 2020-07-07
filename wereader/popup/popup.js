@@ -4,6 +4,8 @@ window.onload = function(){
     var bg = chrome.extension.getBackgroundPage();
     var userVid = bg.getuserVid();
     var bookId = bg.getbookId();
+    /* var version = chrome.runtime.getManifest().version
+    document.getElementById("title").innerHTML = '<strong>wereader</strong> ' + version */
     document.getElementById("bookId").innerHTML = "bid：" + bookId;
     document.getElementById("userVid").innerHTML = "vid：" + userVid;
     //获取bid/vid失败则提醒
@@ -89,7 +91,7 @@ window.onload = function(){
     }, false);
     //开启复制图片
     document.getElementById("inject").addEventListener('click', function(){
-        bg.injectCopy();
+        bg.injectCopyBtn();
         window.close();
     }, false);
 }
