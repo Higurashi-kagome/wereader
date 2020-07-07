@@ -54,6 +54,10 @@
 
    用于一键书中复制图片或注释内容。
 
+7. **护眼色主题**
+
+   在原网页黑白主题的基础上添加了两种护眼色主题。
+
 ## 设置
 
 右击扩展点击`选项`进入扩展设置设置页面：
@@ -85,35 +89,43 @@
 - [ ] 批量导出（缓）
 - [ ] 想法中包含HTML内容的问题
 - [ ] 报错：
-  - [ ] Unchecked runtime.lastError: The message port closed before a response was received.
-  - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
-  - [ ] Unchecked runtime.lastError: The extensions gallery cannot be scripted.
-- [ ] 支持"关闭复制按钮"（缓）
-- [ ] 匹配功能
-- [ ] 文件名改善，文件组织，函数名改善
+  - [ ] Unchecked runtime.lastError: The message port closed before a response was received.（观察）
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.
+  - [ ] Unchecked runtime.lastError: The extensions gallery cannot be scripted.（观察）
+- [ ] 支持"关闭复制按钮"（停）
+- [ ] 匹配功能（缓）
+- [ ] 函数名改善
 - [ ] 变量名改善
 - [ ] 流程图
 - [ ] 偶尔出现的在读书页面无法打开popup页面的情况
-- [ ] 设置页面提供帮助/说明
-- [ ] 主题切换
-- [ ] 注释复制按钮不生效、章内内容未加载完毕开启复制按钮的问题
-- [ ] 自动更新或提示更新
+- [ ] option.html、help.html美化
 - [ ] 国际化？
-- [ ] 图片复制提示（有时候没有标注图片也会提示）
+- [ ] 主题切换按钮加载缓慢（缓）
+- [ ] 白色黑色切换时的不流畅感（缓）
+- [ ] 某些时候（频繁使用），获取想法可能会失败（停）
+- [ ] 实现方法总结（开发经验）
 
 ## 补充
 
 相关仓库：[pythontools](https://github.com/liuhao326/pythontools)
 
-已发布到Chrome网上应用商店。
-
 v1.0.1：初次发布
 
-v1.1.0：添加同步设置能力
+v1.1.0：支持同步设置
 
-v1.2.0：添加图片复制功能
+v1.2.0：支持图片复制
 
 v1.2.1：支持大图、左侧小图及注释一键复制
 
-v1.2.2：本章内被标注的图片可随标注直接导出。去除不必要的权限、更改插件名
+v1.2.2：
 
+- 本章内被标注的图片可随标注直接导出。
+- 去除不必要的权限、更改插件名
+
+v1.3.0：
+
+- 添加两种护眼主题
+- 捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示`“网页需要加载完毕”`的问题
+- 源文件分文件夹存放、重命名部分文件
+- 设置页添加帮助
