@@ -1,5 +1,5 @@
 //用于获取书本目录
-console.log("inject-contents.js被注入，开始获取目录");
+console.log("inject-getContents.js被注入，开始获取目录");
 var contentElement = document.getElementsByClassName("readerCatalog_list")[0];
 try{
     var childs = contentElement.childNodes;
@@ -17,9 +17,9 @@ try{
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].innerHTML
     }
-    console.log("inject-contents.js获取目录成功")
+    console.log("inject-getContents.js获取目录成功")
     //传消息给后台
     chrome.runtime.sendMessage({getContents: true, contents: texts,currentContent:currentContent});
 }catch{
-    console.log("inject-contents.js获取目录失败")
+    console.log("inject-getContents.js获取目录失败")
 }

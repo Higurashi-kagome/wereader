@@ -7,7 +7,8 @@ function setMesToBg(imgsArray){
 }
 
 //遍历HTMLCollection检查图片是否加载完毕
-function isOver(imgs){
+/*因为可以通过img标签的data-src属性获取链接，故不再需要检查图片是否加载完毕，将此函数舍弃*/
+/* function isOver(imgs){
     console.log("isOver(imgs)：被调用")
     for(var i=0,len=imgs.length;i<len;i++){
         if(imgs[i].className.indexOf("wr_pendingLoading") != -1){
@@ -15,7 +16,7 @@ function isOver(imgs){
         }
     }
     return true
-}
+} */
 
 //获取imgs数组
 function requestImgsArray(imgs,s0,s1,s2){
@@ -23,7 +24,12 @@ function requestImgsArray(imgs,s0,s1,s2){
     var imgsArray = []
     //遍历imgs元素
     for(var i=0,len=imgs.length;i<len;i=i+1){
-        var s = imgs[i].src
+        var s = imgs[i].getAttribute("data-src")
+        if(s == null || s == ""){
+            console.log("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败")
+            alert("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader")
+            return
+        }
         var l = imgs[i].style.left
         var t = imgs[i].style.top
         var w = imgs[i].style.width
@@ -66,7 +72,7 @@ function requestImgsArray(imgs,s0,s1,s2){
             }
         }
     }
-    return imgsArray.length==0?["noImg"]:imgsArray//页面中没有图片则返回["noImg"]，否则返回imgsArray
+    return imgsArray.length==0?["noImg"]:imgsArray //页面中没有图片则返回["noImg"]，否则返回imgsArray
 }
 
 //入口
@@ -74,10 +80,10 @@ function main(){
     console.log("main()：被调用");
     //图片是否加载完毕
     var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    if(isOver(imgs) == false){//图片未加载完毕则直接返回，最终imgArray为空
+    /* if(isOver(imgs) == false){//图片未加载完毕则直接返回，最终imgArray为空
         alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
         return
-    }
+    } */
     var s0 = document.getElementsByClassName("wr_underline s0");
     var s1 = document.getElementsByClassName("wr_underline s1");
     var s2 = document.getElementsByClassName("wr_underline s2");
@@ -85,5 +91,5 @@ function main(){
     setMesToBg(imgsArray)
 }
 
-console.log("inject-imgs.js：被注入")
+console.log("inject-copyImgs.js：被注入")
 main()
