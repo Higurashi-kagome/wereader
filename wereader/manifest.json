@@ -27,7 +27,7 @@
       {
 			"matches": ["*://weread.qq.com/web/reader/*"],
 			"js": ["content/content-theme.js"],
-			"run_at": "document_idle"
+			"run_at": "document_start"
       }
    ],
    "options_page": "options/options.html",
