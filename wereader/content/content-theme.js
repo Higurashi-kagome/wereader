@@ -66,10 +66,20 @@ function addThemeBtn(){
         }
     }
 
+    //绑定点击事件
+    theme.addEventListener('click', function(){
+        console.log("inject-theme.js：主题切换按钮被点击")
+        changeTheme()
+        Flag = Flag + 1
+    },false)
+}
 
-    
-    //初始化
-    setTimeout(function(){
+var Flag = 0
+//轮询，主题初始化（实现记住上次设置的背景主题）
+const timeId = setInterval(() => {
+    //如果发现页面显示正在加载
+    if (document.getElementsByClassName("readerChapterContentLoading").length != 0) {
+        //设置背景色
         chrome.storage.sync.get(['flag'], function(result) {
             console.log("addThemeBtn() => window.onload => chrome.storage.sync.get => result.flag：" + result.flag)
             if(result.flag == 0){
@@ -90,27 +100,20 @@ function addThemeBtn(){
                 Flag = 0
             }
         })
-    },1000)
+        //结束定时器
+        clearInterval(this.timeId)
+    }},10)
 
-    //绑定点击事件
-    theme.addEventListener('click', function(){
-        console.log("inject-theme.js：主题切换按钮被点击")
-        changeTheme()
-        Flag = Flag + 1
-    },false)
-}
-
-var Flag = 0
-addThemeBtn()
-//因为某些时候会出现主题切换按钮生成失败的情况，故检查主题切换按钮是否生成成功，生成失败则重新生成
 window.onload = function(){
-    //分别尝试获取夜间模式/日渐模式切换按钮
-    var dark_white = document.getElementsByClassName("readerControls_item white")[0]
-    if(dark_white != undefined && dark_white.style.display != "none"){
+    //分别尝试获取日间模式/夜间模式切换按钮
+    var white = document.getElementsByClassName("readerControls_item white")[0]
+    //如果切换到白色主题按钮存在且显示
+    if(white != undefined && white.style.display != "none"){
         addThemeBtn()
     }
-    dark_white = document.getElementsByClassName("readerControls_item dark")[0]
-    if(dark_white != undefined && dark_white.style.display != "none"){
+    dark = document.getElementsByClassName("readerControls_item dark")[0]
+    //如果切换到黑色主题按钮存在且显示
+    if(dark != undefined && dark.style.display != "none"){
         addThemeBtn()
     }
 }
