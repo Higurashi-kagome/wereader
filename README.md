@@ -10,10 +10,6 @@
 
 项目地址：[Github](https://github.com/liuhao326/wereader)
 
-欢迎PR或star:star:， 有什么问题也可以提 issue。
-
-你的支持将使我更加专注于开源和完善代码:two_hearts:。
-
 ## 使用
 
 如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索结束可能无法找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
@@ -113,6 +109,8 @@
   - [ ] 标注为波浪线之后切换为马克笔会同时显示两种标注（观察）
   - [ ] 马克笔标注颜色变深（观察）
 - [ ] 渐变主题色？
+- [ ] 默认打开注释复制按钮？
+- [ ] 直接复制图片到剪切板或是复制Markdown
 
 ## 补充
 
