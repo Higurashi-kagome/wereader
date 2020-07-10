@@ -78,7 +78,7 @@ function addCopyBtn2(){
         btn.id = "noteCopy" + i
         btn.className = "wr_absolute wr_readerImage_opacity"
         let parent = footerNotes[i].parentNode
-        let inser = parent.insertBefore(btn,footerNotes[i]);
+        let inser = parent.insertBefore(btn,footerNotes[i])
         //给复制按钮注册点击事件
         inser.addEventListener('click', function(){
             this.innerHTML = "✔"
@@ -109,21 +109,25 @@ function addCopyBtn1(){
 }
 
 console.log("inject-copyBtn.js：\ninject-copyBtn.js已注入")
-addCopyBtn1();
-addCopyBtn2()
-//给body注册点击事件，用于定时隐藏注册复制按钮
-document.body.addEventListener('click', function(){
-    console.log("inject-copyBtn.js:\ndocument.body.addEventListener()监听到消息开始计时")
-    setTimeout(function () {
-        if(document.getElementsByClassName("reader_footerNote_mask").length == 0){
-            var nodes = document.getElementsByClassName("wr_absolute wr_readerImage_opacity")
-            for(var i=0,len=nodes.length;i<len;i++){
-                if(nodes[i].id.substr(0,8) == "noteCopy"){
-                    if(nodes[i].innerHTML != "✔"){
-                        nodes[i].style.display = "none"
+if(document.getElementById("linkCopy0") == undefined){
+    addCopyBtn1();
+}
+if(document.getElementById("noteCopy0") == undefined){
+    addCopyBtn2()
+    //给body注册点击事件，用于定时隐藏注释复制按钮
+    document.body.addEventListener('click', function(){
+        console.log("inject-copyBtn.js:\ndocument.body.addEventListener()监听到消息开始计时")
+        setTimeout(function () {
+            if(document.getElementsByClassName("reader_footerNote_mask").length == 0){
+                var nodes = document.getElementsByClassName("wr_absolute wr_readerImage_opacity")
+                for(var i=0,len=nodes.length;i<len;i++){
+                    if(nodes[i].id.substr(0,8) == "noteCopy"){
+                        if(nodes[i].innerHTML != "✔"){
+                            nodes[i].style.display = "none"
+                        }
                     }
                 }
             }
-        }
-    }, 2500);
-},false)
+        }, 2500);
+    },false)
+}
