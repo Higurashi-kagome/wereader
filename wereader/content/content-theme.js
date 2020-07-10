@@ -80,26 +80,30 @@ const timeId = setInterval(() => {
     //如果发现页面显示正在加载
     if (document.getElementsByClassName("readerChapterContentLoading").length != 0) {
         //设置背景色
-        chrome.storage.sync.get(['flag'], function(result) {
-            console.log("addThemeBtn() => window.onload => chrome.storage.sync.get => result.flag：" + result.flag)
-            if(result.flag == 0){
-                //设置绿色主题
-                if(document.getElementsByClassName("readerControls_item white").length != 0){
-                    clickDarkOrWhite("readerControls_item white")
+        try{
+            chrome.storage.sync.get(['flag'], function(result) {
+                console.log("addThemeBtn() => window.onload => chrome.storage.sync.get => result.flag：" + result.flag)
+                if(result.flag == 0){
+                    //设置绿色主题
+                    if(document.getElementsByClassName("readerControls_item white").length != 0){
+                        clickDarkOrWhite("readerControls_item white")
+                    }
+                    chrome.runtime.sendMessage({injectCss: "theme/green.css"})
+                    Flag = 1
+                }else if(result.flag == 1){
+                    //设置橙色主题
+                    if(document.getElementsByClassName("readerControls_item white").length != 0){
+                        clickDarkOrWhite("readerControls_item white")
+                    }
+                    chrome.runtime.sendMessage({injectCss: "theme/orange.css"})
+                    Flag = 2
+                }else{
+                    Flag = 0
                 }
-                chrome.runtime.sendMessage({injectCss: "theme/green.css"})
-                Flag = 1
-            }else if(result.flag == 1){
-                //设置橙色主题
-                if(document.getElementsByClassName("readerControls_item white").length != 0){
-                    clickDarkOrWhite("readerControls_item white")
-                }
-                chrome.runtime.sendMessage({injectCss: "theme/orange.css"})
-                Flag = 2
-            }else{
-                Flag = 0
-            }
-        })
+            })
+        }catch(err){
+            console.log("content-theme.js => setInterval() => err.message：" + err.message)
+        }
         //结束定时器
         clearInterval(this.timeId)
     }},10)
