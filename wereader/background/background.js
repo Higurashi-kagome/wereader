@@ -1,8 +1,8 @@
 //报错捕捉函数
 function catchErr(sender){
 	if(chrome.runtime.lastError != undefined){
-		console.log(sender + " => chrome.runtime.lastError：" + chrome.tabs.executeScript)
-		chrome.tabs.executeScript = undefined
+		console.log(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError)
+		chrome.runtime.lastError = undefined
 	}
 }
 
