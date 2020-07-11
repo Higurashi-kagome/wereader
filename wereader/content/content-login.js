@@ -16,3 +16,4 @@ function injectCustomJs(jsPath)
 }
 
 injectCustomJs("../inject/inject-login.js");
+//injectCustomJs("../inject/inject-shelf.js");
