@@ -45,19 +45,24 @@ function generateBtn(imgs){
     }
 }
 
-//遍历HTMLCollection检查图片是否加载完毕
-/*舍弃*/
-/* function isOver(imgs){
-    console.log("isOver(imgs)：被调用")
-    for(var i=0,len=imgs.length;i<len;i++){
-        if(imgs[i].className.indexOf("wr_pendingLoading") != -1){
-            return false
-        }
-    }
-    return true
-} */
+//给图片添加复制按钮
+function addCopyBtn1(){
+    console.log("addCopyBtn1()：被调用");
+    var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
+    /* if(isOver(imgs) == false){
+        alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
+        return
+    } */
+    generateBtn(imgs);
+}
+
+console.log("inject-copyBtn.js：\ninject-copyBtn.js已注入")
+if(document.getElementById("linkCopy0") == undefined){
+    addCopyBtn1();
+}
 
 //给注释添加复制功能
+/*
 function addCopyBtn2(){
     console.log("addCopyBtn2()：被调用")
     var footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
@@ -96,23 +101,10 @@ function addCopyBtn2(){
         },false)
     }
 }
+*/
 
-//给图片添加复制按钮
-function addCopyBtn1(){
-    console.log("addCopyBtn1()：被调用");
-    var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    /* if(isOver(imgs) == false){
-        alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
-        return
-    } */
-    generateBtn(imgs);
-}
-
-console.log("inject-copyBtn.js：\ninject-copyBtn.js已注入")
-if(document.getElementById("linkCopy0") == undefined){
-    addCopyBtn1();
-}
-if(document.getElementById("noteCopy0") == undefined){
+//注释复制按钮直接content.js生成，故舍弃不用
+/* if(document.getElementById("noteCopy0") == undefined){
     addCopyBtn2()
     //给body注册点击事件，用于定时隐藏注释复制按钮
     document.body.addEventListener('click', function(){
@@ -130,4 +122,16 @@ if(document.getElementById("noteCopy0") == undefined){
             }
         }, 2500);
     },false)
-}
+} */
+
+//遍历HTMLCollection检查图片是否加载完毕
+/*舍弃*/
+/* function isOver(imgs){
+    console.log("isOver(imgs)：被调用")
+    for(var i=0,len=imgs.length;i<len;i++){
+        if(imgs[i].className.indexOf("wr_pendingLoading") != -1){
+            return false
+        }
+    }
+    return true
+} */
