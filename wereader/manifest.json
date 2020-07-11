@@ -28,7 +28,12 @@
 			"matches": ["*://weread.qq.com/web/reader/*"],
 			"js": ["content/content-theme.js"],
 			"run_at": "document_start"
-      }
+      },
+      {
+			"matches": ["*://weread.qq.com/web/reader/*"],
+			"js": ["content/content-annotation.js"],
+			"run_at": "document_end"
+      } 
    ],
    "options_page": "options/options.html",
    "options_ui":
