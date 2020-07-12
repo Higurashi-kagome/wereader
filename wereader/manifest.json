@@ -28,6 +28,11 @@
 			"matches": ["*://weread.qq.com/web/reader/*"],
 			"js": ["content/content-theme.js"],
 			"run_at": "document_start"
+      },
+      {
+			"matches": ["*://weread.qq.com/web/shelf"],
+			"js": ["content/content-shelf.js"],
+			"run_at": "document_idle"
       }
    ],
    "options_page": "options/options.html",
@@ -37,7 +42,7 @@
     	"chrome_style": true
    },
    "homepage_url": "https://github.com/liuhao326/wereader",
-   "web_accessible_resources": ["inject/inject-login.js","inject/inject-shelf.js"],
+   "web_accessible_resources": ["inject/inject-login.js"],
 	"permissions":
 	[
       "tabs",

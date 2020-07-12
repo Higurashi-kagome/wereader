@@ -6,6 +6,14 @@ function catchErr(sender){
 	}
 }
 
+//发送消息到content.js
+function sendMessageToContentScript(message){
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
+	{
+		chrome.tabs.sendMessage(tabs[0].id, message);
+	});
+}
+
 //注入复制脚本：OK
 function injectCopyBtn(){
 	console.log("injectCopyBtn()：被调用")
@@ -656,6 +664,29 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			tabId = tabs[0].id
 		})
 		chrome.tabs.insertCSS(tabId, {file: request.injectCss})
+	}else if(request.getUserVid != undefined){//收到content-shelf.js请求userVid的消息
+		//获取当前页面
+		chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+			var url = tabs[0].url;
+			console.log("chrome.runtime.onMessage.addListener()：chrome.tabs.query()获取到页面：" + url)
+			var list = url.split("/")
+			if(list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "shelf"){
+				//获取当前页面的cookie
+				chrome.cookies.get({
+					url: url,
+					name: 'wr_vid'
+				},function(cookie){
+					if(cookie == null){
+						console.log("chrome.runtime.onMessage.addListener()：获取cookie失败，请检查");
+					}else{
+						console.log("获取cookie成功")
+						var userVid = cookie.value.toString();
+						console.log("userVid为" + userVid);
+						sendMessageToContentScript({userVid:userVid});
+					}
+				});
+			}
+		});
 	}
 });
 
