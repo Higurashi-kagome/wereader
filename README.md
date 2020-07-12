@@ -86,33 +86,25 @@
   - [ ] Unchecked runtime.lastError: The message port closed before a response was received.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.
-  - [ ] Unchecked runtime.lastError: The extensions gallery cannot be scripted.（观察）
-  - [ ] Uncaught Error: Extension context invalidated.（常常在刚加载的时候出错）
 - [ ] 支持"关闭复制按钮"（停）
 - [ ] 匹配功能（缓）
 - [ ] 函数名改善
 - [ ] 变量名改善
 - [ ] 流程图
 - [ ] 偶尔出现的在读书页面无法打开popup页面的情况
-- [ ] option.html、help.html美化
+- [ ] option.html、help.html、书架按钮美化
 - [ ] 国际化？
 - [ ] 主题切换按钮加载缓慢（缓）
 - [ ] 白色黑色切换时的不流畅感（缓）
 - [ ] 某些时候（频繁使用），获取想法可能会失败（停）
 - [ ] 实现方法总结（开发经验）
 - [ ] 展示热门标注、想法等内容
-- [ ] 注释复制按钮位置及点击
-- [ ] 主页书本分类显示
-- [ ] 读书页面似乎加载变慢（尤其是切换到下一章的时候容易发生）
-- [ ] 划线失败的情况（可能在切换到下一章后发生）（观察）
-- [ ] 标注出错
-  - [ ] 标注为波浪线之后切换为马克笔会同时显示两种标注（观察）
-  - [ ] 马克笔标注颜色变深（观察）
 - [ ] 渐变主题色？
 - [ ] 直接复制图片到剪切板或是复制Markdown
 - [ ] 刚打开扩展在某些页面报错无权限获取url
 - [ ] 导出被标注的注释
 - [ ] 对其他浏览器的支持
+- [ ] 完善注释复制按钮innerHTML显示出错的问题
 
 ## 补充
 
@@ -128,12 +120,22 @@ v1.2.1：支持大图、左侧小图及注释一键复制
 
 v1.2.2：
 
-- 本章内被标注的图片可随标注直接导出。
-- 去除不必要的权限、更改插件名
+- 添加：本章内被标注的图片可随标注直接导出。
+- 完善：去除不必要的权限、更改插件名
 
 v1.3.0：
 
-- 添加两种护眼主题
-- 捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示`“网页需要加载完毕”`的问题
-- 源文件分文件夹存放、重命名部分文件
-- 设置页添加帮助
+- 添加：两种护眼主题
+- 完善：捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示`“网页需要加载完毕”`的问题
+- 完善：源文件分文件夹存放、重命名部分文件
+- 添加：设置页帮助
+
+v1.3.2:
+
+- 解决："chrome.tabs.executeScripts = undefind"的严重错误
+- 完善：注释复制按钮
+
+v1.3.3:
+
+- 完善：注释复制按钮
+- 添加：`https://weread.qq.com/web/shelf`显示书架
