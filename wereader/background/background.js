@@ -48,7 +48,13 @@ function setuserVid(){
 	console.log("setuserVid()：被调用")
 	//获取当前页面
 	chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-		var url = tabs[0].url;
+		var url = ""
+		try{
+			url = tabs[0].url;
+		}catch(err){
+			console.log("setuserVid() => err：" + err)
+			return
+		}
 		console.log("setuserVid()：chrome.tabs.query()获取到页面：" + url)
 		var list = url.split("/")
 		if(list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != ""){
@@ -98,14 +104,11 @@ function copy(text){
 	var copyBtn = document.getElementById("btn_copy");
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
-		console.log("copy(text)：复制成功");
-		//alert("复制成功")
-		/* toast复制成功提示
-		chrome.tabs.query({active: true,currentWindow: true}, function(tab){
-			console.log("copy(text)中的chrome.tabs.query()获取到页面，开始注入inject-toast.js")
-			chrome.tabs.executeScript(tab[0].id, {file: 'inject/inject-toast.js'});
-			console.log("inject-toast.js注入结束")
-		}) */
+		if(text.length > 10){
+			console.log("copy(text)：复制成功 =>\n" + text.substring(0,10) + "......");
+		}else{
+			console.log("copy(text)：复制成功 =>\n" + text);
+		}
 	});
 	clipboard.on('error', function (e) {
 		console.error("复制出错:\n" + JSON.stringify(e));
@@ -667,7 +670,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}else if(request.getUserVid != undefined){//收到content-shelf.js请求userVid的消息
 		//获取当前页面
 		chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-			var url = tabs[0].url;
+			var url = ""
+			try{
+				url = tabs[0].url
+			}catch(err){
+				console.log("chrome.runtime.onMessage.addListener()：chrome.tabs.query() => err：" + err)
+			}
 			console.log("chrome.runtime.onMessage.addListener()：chrome.tabs.query()获取到页面：" + url)
 			var list = url.split("/")
 			if(list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "shelf"){
@@ -692,10 +700,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 //页面监测：是否在已打开页面之间切换
 chrome.tabs.onActivated.addListener(function(moveInfo){
-	console.log("chrome.tabs.onActivated.addListener()监听到消息")
+	console.log("chrome.tabs.onActivated.addListener()：监听到消息")
 	chrome.tabs.get(moveInfo.tabId,function(tab){
-		console.log("chrome.tabs.onActivated.addListener()：chrome.tabs.get()获取到页面信息，并进入了它的回调函数")
-		var currentUrl = tab.url;
+		console.log("chrome.tabs.onActivated.addListener()：chrome.tabs.get()：获取到页面信息")
+		var currentUrl = ""
+		try{
+			currentUrl = tab.url;
+		}catch(err){
+			console.log("chrome.tabs.onActivated.addListener() => chrome.tabs.get() => err：" + err)
+		}
 		console.log("chrome.tabs.onActivated.addListener()：当前页面：" + currentUrl)
 		var list = currentUrl.split('/');
 		var isBookPage = false;
@@ -731,7 +744,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	console.log("chrome.tabs.onUpdated.addListener()监听到消息")
 	if(changeInfo.status == "loading"){
 		console.log("chrome.tabs.onUpdated.addListener()：changeInfo.status == \"loading\"")
-		var loadingUrl = tab.url;
+		var loadingUrl = ""
+		try{
+			loadingUrl = tab.url;
+		}catch(err){
+			console.log("chrome.tabs.onUpdated.addListener() => err：" + err)
+		}
 		console.log("chrome.tabs.onUpdated.addListener()：当前页面：" + loadingUrl)
 		var list = loadingUrl.split('/');
 		var isBookPage = false;
