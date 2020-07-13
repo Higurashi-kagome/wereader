@@ -73,11 +73,9 @@ function addCopyBtn2(){
         btn.id = "noteCopy" + i
         btn.addEventListener('click', function(){
             sendMsgToBg(footernote)
-        }, false);
-        btn.onmousedown = function(){
             this.innerHTML = "✔"
-        }
-        btn.onmouseup = function(){
+        }, false);
+        btn.onmouseleave = function(){
             this.innerHTML = "📋"
         }
         //btn.className = "wr_absolute wr_readerImage_opacity"
