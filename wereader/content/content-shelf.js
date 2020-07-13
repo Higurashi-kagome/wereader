@@ -61,6 +61,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			div.style.border = "1.5px solid #e6e6e6"
 			div.style.borderLeft = "none"
 			div.style.borderRadius = "0px 4px 4px 0px"
+			div.style.maxHeight = "600px"
+			div.style.overflowY = "auto"
+			div.style.overflowX = "hidden"
 			//遍历类别
 			for(var key in shelf){
 				let categoryName = key
@@ -71,7 +74,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				categoryElement.style.cursor = "pointer"
 				categoryElement.style.padding = "2px 8px"
 				categoryElement.style.borderRadius = "4px"
-				//categoryElement.style.paddingRight = "10px"
 				categoryElement.style.margin = "2px"
 				//双击不选中文字
 				categoryElement.style.userSelect = "none"
@@ -98,6 +100,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 					bookLink.href = booksDic[coverLink]
 					bookLink.style.width = "100%"
 					bookLink.style.height = "100%"
+					bookLink.style.margin = "2px"
 					bookLink.style.display = "inline-table"
 					if(booksDic[coverLink] != undefined){
 						bookLink.className = "bookLink"
@@ -139,7 +142,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			hoverElement.style.width = "14px"
 			hoverElement.style.padding = "6px"
 			hoverElement.onmouseenter = function(){
-				parentElement.style.overflowY = "auto"	//恢复滚动条
 				div.style.display = "block"
 				hoverElement.style.display = "none"
 			}
@@ -150,7 +152,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			parentElement.style.minHeight = "50px"
 			parentElement.style.maxWidth = "230px"
 			parentElement.style.maxHeight = "600px"
-			parentElement.style.overflowY = "auto"
 			parentElement.style.left = "0px"
 			parentElement.style.top = "100px"
 			parentElement.style.position = "fixed"
@@ -160,7 +161,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			parentElement.appendChild(hoverElement)
 			parentElement.onmouseleave = function(){
 				div.style.display = "none"
-				this.style.overflowY = ""	//这是因为当滚动条展开时直接设置div.style.display为none会出现滚动条不隐藏的现象，所以选择去除滚动条，再必要的时候再恢复
 				hoverElement.style.display = "block"
 			}
 			document.body.appendChild(parentElement)
