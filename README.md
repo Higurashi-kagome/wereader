@@ -1,8 +1,15 @@
-# 📚 wereader
+- [说明](#说明)
+- [使用](#使用)
+- [功能](#功能)
+- [设置](#设置)
+- [TODO](#todo)
+- [补充](#补充)
+
+## 说明
 
 这是一个Chrome扩展，用于微信读书做笔记
 
-<div align=center><img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;" /></div>
+<img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;border: 1.5px solid rgba(230,230,230,1);" />
 
 扩展图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
 
@@ -12,13 +19,13 @@
 
 ## 使用
 
-如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索结束可能无法找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
+如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
 
 - 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
 
 - 接下来，进入Chrome，按下图进入扩展程序页面：
 
-  <img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111930image-20200620191746304.png" alt="img" style="zoom: 80%;" />
+  <img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111930image-20200620191746304.png" alt="img" style="zoom: 70%;border: 1.5px solid rgba(230,230,230,1);" />
 
 - 进入页面后，先打开`开发者模式`开关，再点击`加载已解压的扩展程序`，找到前面解压得到的文件夹`wereader`，双击进入该文件夹，进入后单击里面的（不是双击）`wereader`文件夹，这时候文件夹被选中，点击`选择文件夹`即可。
 
@@ -26,43 +33,39 @@
 
 下面简单介绍，可到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看部分GIF演示。
 
-1. **导出(个人)书评**
+- 导出(个人)书评
+  - 导出为纯文本
 
-   - 导出为纯文本
+  - 导出为HTML
 
-   - 导出为HTML
+- 导出标注
+  - 导出本章标注
 
-2. **导出标注**
+  - 导出全书标注
 
-   - 导出本章标注
+- 导出目录
 
-   - 导出全书标注
+- 导出热门标注
 
-3. **导出目录**
+- 导出个人想法
 
-4. **导出热门标注**
+- 开启图片/注释复制按钮
 
-5. **导出个人想法**
+- 护眼色主题
 
-6. **开启复制按钮**
-
-   用于一键书中复制图片或注释内容。
-
-7. **护眼色主题**
-
-   在原网页黑白主题的基础上添加了两种护眼色主题。
+- 书架分类展示
 
 ## 设置
 
 右击扩展点击`选项`进入扩展设置设置页面：
 
-![img](https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611111402853-277977098.gif)
+<img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;border: 1.5px solid rgba(230,230,230,1);" />
 
 在设置页面，你可以设置导出效果。
 
 在微信读书中，标注分三类，分别是波浪线、马克笔和直线：
 
-<img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620110908QQ%E6%88%AA%E5%9B%BE20200620190842.png" alt="img" style="zoom:80%;" />
+<img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620110908QQ%E6%88%AA%E5%9B%BE20200620190842.png" alt="img" style="zoom:60%;" />
 
 其中直线就是设置页面中所谓`一级标注`，马克笔是`二级标注`，波浪线是`三级标注`，你可以在输入框中设置标注前后缀。
 
@@ -83,11 +86,11 @@
 - [ ] 批量导出（缓）
 - [ ] 想法中包含HTML内容的问题
 - [ ] 报错：
-  - [ ] Unchecked runtime.lastError: The message port closed before a response was received.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
-  - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.
+  - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
 - [ ] 支持"关闭复制按钮"（停）
-- [ ] 匹配功能（缓）
+- [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
 - [ ] 函数名改善
 - [ ] 变量名改善
 - [ ] 流程图
@@ -101,10 +104,13 @@
 - [ ] 展示热门标注、想法等内容
 - [ ] 渐变主题色？
 - [ ] 直接复制图片到剪切板或是复制Markdown
-- [ ] 刚打开扩展在某些页面报错无权限获取url
-- [ ] 导出被标注的注释
+- [ ] 导出被标注的注释（缓）
 - [ ] 对其他浏览器的支持
 - [ ] 完善注释复制按钮innerHTML显示出错的问题
+- [ ] 为PR提供便利
+- [ ] 书架搜索功能
+- [ ] 注释复制按钮显示慢的问题
+- [ ] 复制本章标注失败的问题
 
 ## 补充
 
@@ -126,7 +132,7 @@ v1.2.2：
 v1.3.0：
 
 - 添加：两种护眼主题
-- 完善：捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示`“网页需要加载完毕”`的问题
+- 完善：捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示“`网页需要加载完毕`”的问题
 - 完善：源文件分文件夹存放、重命名部分文件
 - 添加：设置页帮助
 
