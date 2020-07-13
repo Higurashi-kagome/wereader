@@ -34,21 +34,17 @@ window.onload = function(){
     document.getElementById("getComment").addEventListener('click', function(){
         if(choose.style.display != "block"){
             choose.style.display = "block";
-            getText.style.display = "block";
-            getHtml.style.display = "block";
         }else{
             choose.style.display = "none";
-            getText.style.display = "none";
-            getHtml.style.display = "none";
         }
     }, false);
     //纯文本
-    document.getElementById("getComment_text").addEventListener('click', function(){
+    getText.addEventListener('click', function(){
         bg.getComment("https://i.weread.qq.com/review/list?listType=6&userVid=" + userVid + "&rangeType=2&mine=1&listMode=1",bookId,false);
         window.close();
     }, false);
     //HTML
-    document.getElementById("getComment_html").addEventListener('click', function(){
+    getHtml.addEventListener('click', function(){
         bg.getComment("https://i.weread.qq.com/review/list?listType=6&userVid=" + userVid + "&rangeType=2&mine=1&listMode=1",bookId,true);
         window.close();
     }, false);
@@ -56,21 +52,17 @@ window.onload = function(){
     document.getElementById("getBookMarks").addEventListener('click', function(){
         if(chooseMark.style.display != "block"){
             chooseMark.style.display = "block";
-            getThisChapter.style.display = "block";
-            getAll.style.display = "block";
         }else{
             chooseMark.style.display = "none";
-            getThisChapter.style.display = "none";
-            getAll.style.display = "none";
         }
     }, false);
     //本章
-    document.getElementById("getThisChapter").addEventListener('click', function(){
+    getThisChapter.addEventListener('click', function(){
         bg.copyBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,false);
         window.close();
     }, false);
     //全部
-    document.getElementById("getAll").addEventListener('click', function(){
+    getAll.addEventListener('click', function(){
         bg.copyBookMarks("https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId,true);
         window.close();
     }, false);
