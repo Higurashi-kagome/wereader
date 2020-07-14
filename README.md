@@ -19,7 +19,7 @@
 
 ## 使用
 
-如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装：
+如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装（建议在Chrome网上应用店安装，因为扩展手动安装后不能够自动更新）：
 
 - 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
 
@@ -111,6 +111,7 @@
 - [ ] 书架搜索功能
 - [ ] 注释复制按钮显示慢的问题
 - [ ] 复制本章标注失败的问题
+- [ ] 对标注内图片的导出
 
 ## 补充
 
