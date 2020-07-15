@@ -59,7 +59,7 @@
 
 右击扩展点击`选项`进入扩展设置设置页面：
 
-<img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;border: 1.5px solid rgba(230,230,230,1);" />
+<div><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;border: 1.5px solid rgba(230,230,230,1);" /></div>
 
 在设置页面，你可以设置导出效果。
 
@@ -83,35 +83,33 @@
 
 ## TODO
 
-- [ ] 批量导出（缓）
-- [ ] 想法中包含HTML内容的问题
+- [ ] 批量导出（停）
+- [ ] 想法中包含HTML内容的问题（停）
+- [ ] 某些时候（频繁使用），获取想法可能会失败（停）
+- [ ] 完善注释复制按钮innerHTML显示出错的问题（停）
+- [ ] 支持"关闭复制按钮"（停）
 - [ ] 报错：
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
-- [ ] 支持"关闭复制按钮"（停）
+- [ ] 偶尔出现的在读书页面无法打开popup页面的情况（观察）
 - [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
-- [ ] 函数名改善
-- [ ] 变量名改善
-- [ ] 流程图
-- [ ] 偶尔出现的在读书页面无法打开popup页面的情况
-- [ ] option.html、help.html、书架按钮美化
-- [ ] 国际化？
+- [ ] 国际化？（缓）
 - [ ] 主题切换按钮加载缓慢（缓）
 - [ ] 白色黑色切换时的不流畅感（缓）
-- [ ] 某些时候（频繁使用），获取想法可能会失败（停）
-- [ ] 实现方法总结（开发经验）
 - [ ] 展示热门标注、想法等内容
-- [ ] 渐变主题色？
-- [ ] 直接复制图片到剪切板或是复制Markdown
 - [ ] 导出被标注的注释（缓）
-- [ ] 对其他浏览器的支持
-- [ ] 完善注释复制按钮innerHTML显示出错的问题
-- [ ] 为PR提供便利
-- [ ] 书架搜索功能
-- [ ] 注释复制按钮显示慢的问题
-- [ ] 复制本章标注失败的问题
+- [ ] 对其他浏览器的支持（缓）
+- [ ] 为PR提供便利（缓）
+- [ ] 书架搜索功能（缓）
+- [ ] 注释复制按钮显示慢的问题（缓）
+- [ ] 流程图
+- [ ] 函数名、变量名改善
+- [ ] 实现方法总结（开发经验）
 - [ ] 对标注内图片的导出
+- [ ] option.html、help.html、书架按钮美化
+- [ ] 主题色初始化完善
+- [ ] 直接复制图片到剪切板或是复制Markdown
 
 ## 补充
 
