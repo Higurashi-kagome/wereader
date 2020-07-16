@@ -40,7 +40,7 @@ function generateBtn(imgs){
             var id = this.id
             setTimeout(function () {
                 document.getElementById(id).innerHTML = "📋"
-            }, 1000);
+            }, 500);
          }, false);
     }
 }
@@ -56,6 +56,7 @@ function addCopyBtn1(){
     generateBtn(imgs);
 }
 
+//给注释添加复制按钮
 function addCopyBtn2(){
     var footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
     //遍历注释控件
@@ -96,8 +97,39 @@ function addCopyBtn2(){
     }
 }
 
+//给代码块添加复制按钮
+function addCopyBtn3(){
+    console.log("generateBtn(imgs)：被调用")
+    var pre = document.getElementsByTagName("pre")
+    if(pre.length > 0){
+        for(var i=0,len=pre.length;i<len;i++){
+            let code = "```\n" + pre[i].innerHTML + "\n```"
+            let top = pre[i].style.top
+            var btn =  document.createElement("b" + i);
+            btn.innerHTML = "📋";
+            btn.id = "codeCopy" + i
+            btn.className = "wr_absolute"
+            btn.style.right = "0px"
+            btn.style.top = parseInt(top.substr(0, top.length - 2)) - 28 + "px"
+            btn.style.width = "16px"
+            btn.style.cursor = "pointer"
+            let parent = pre[i].parentNode
+            let inser = parent.insertBefore(btn,pre[i]);
+            inser.addEventListener('click', function(){
+                this.innerHTML = "✔"
+                sendMsgToBg(code)
+                var id = this.id
+                setTimeout(function () {
+                    document.getElementById(id).innerHTML = "📋"
+                }, 500);
+            }, false);
+        }
+    }
+}
+
 console.log("inject-copyBtn.js：\ninject-copyBtn.js已注入")
 if(document.getElementById("linkCopy0") == undefined){
     addCopyBtn1()
     addCopyBtn2()
+    addCopyBtn3()
 }
