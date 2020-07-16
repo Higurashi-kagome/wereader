@@ -51,12 +51,13 @@ function setuserVid() {
 		try {
 			url = tabs[0].url;
 		} catch (err) {
-			console.log("setuserVid() => err：" + err)
+			console.log("setuserVid() => err：" + err + "函数结束")
 			return
 		}
 		console.log("setuserVid()：chrome.tabs.query()获取到页面：" + url)
 		var list = url.split("/")
 		if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
+			console.log("setuserVid()：为读书页面")
 			//获取当前页面的cookie然后设置bookId和userVid
 			chrome.cookies.get({
 				url: url,
@@ -72,6 +73,8 @@ function setuserVid() {
 					document.getElementById('userVid').value = userVid;
 				}
 			});
+		}else{
+			console.log("setuserVid()：不为读书页面")
 		}
 	});
 }
@@ -82,7 +85,11 @@ function getData(url, callback) {
 	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
 	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
 	httpRequest.withCredentials = true;
-	httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+	try{
+		httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+	}catch(err){
+		alert("似乎没有联网...")
+	}
 	/**
 	 * 获取数据后的处理程序
 	 */
@@ -91,6 +98,7 @@ function getData(url, callback) {
 		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
 			console.log("getData(url,callback)：httpRequest.onreadystatechange获取数据结束")
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
+			//console.log(JSON.stringify(data))
 			callback(data);
 		}
 	};
@@ -163,7 +171,7 @@ function getComment(url, bookId, isHtml) {
 function getBookContents() {
 	console.log("getBookContents()：被调用")
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-		console.log("getBookContents()：chrome.tabs.query()的回调函数被调用，开始注入inject-getContents.js")
+		console.log("getBookContents()：chrome.tabs.query()的回调函数：开始注入inject-getContents.js")
 		chrome.tabs.executeScript(tab[0].id, { file: 'inject/inject-getContents.js' }, function (result) {
 			catchErr("getBookContents() => chrome.tabs.executeScript")
 		});
@@ -219,6 +227,7 @@ function getBookMarks(url, callback) {
 			marksInAChapter.sort(rank)
 			chapters[i].marks = marksInAChapter
 		}
+		console.log(JSON.stringify(chapters))
 		callback(chapters)
 	});
 }
@@ -543,8 +552,9 @@ Setting();
 
 //监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	console.log("chrome.runtime.onMessage.addListener()：监听到消息")
-	console.log("消息:\n" + request)//JSON.stringify(request)
+	console.log("chrome.runtime.onMessage.addListener()：监听到消息\n消息：\n")
+	var requestText = JSON.stringify(request)
+	console.log(requestText.length>10?requestText.substr(0,10):requestText)//JSON.stringify(request)
 	if (request.getBid == true) {//信息为bid
 		console.log("chrome.runtime.onMessage.addListener()：request.getBid == true，接收到bid信息")
 		document.getElementById('bookId').value = request.bid;
@@ -664,7 +674,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 			tabId = tabs[0].id
 		})
-		chrome.tabs.insertCSS(tabId, { file: request.injectCss })
+		try{
+			chrome.tabs.insertCSS(tabId, { file: request.injectCss })
+		}catch(err){
+			catchErr("chrome.runtime.onMessage.addListener()收到要求注入css的消息后 => chrome.tabs.insertCSS(tabId, { file: request.injectCss })出错")
+		}
 	} else if (request.getUserVid != undefined) {//收到content-shelf.js请求userVid的消息
 		//获取当前页面
 		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -739,7 +753,7 @@ chrome.tabs.onActivated.addListener(function (moveInfo) {
 
 //页面监控：是否发生更新
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	console.log("chrome.tabs.onUpdated.addListener()监听到消息")
+	console.log("chrome.tabs.onUpdated.addListener()：监听到消息")
 	if (changeInfo.status == "loading") {
 		console.log("chrome.tabs.onUpdated.addListener()：changeInfo.status == \"loading\"")
 		var loadingUrl = ""
