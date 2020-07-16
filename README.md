@@ -9,9 +9,9 @@
 
 这是一个Chrome扩展，用于微信读书做笔记。
 
-**注意：最好不要在短时间内重复请求数据。系统检测到请求过于频繁后可能会出现无法登录网页版微信的情况。**
+**注意：最好不要在短时间内频繁请求数据。系统检测到请求过于频繁后可能会出现短时间内无法登录网页版微信读书的情况。**
 
-<img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;border: 1.5px solid rgba(230,230,230,1);" />
+<img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;" />
 
 扩展图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
 
@@ -61,7 +61,7 @@
 
 右击扩展点击`选项`进入扩展设置设置页面：
 
-<div><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;border: 1.5px solid rgba(230,230,230,1);" /></div>
+<div><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;" /></div>
 
 在设置页面，你可以设置导出效果。
 
