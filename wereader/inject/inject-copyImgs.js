@@ -78,7 +78,7 @@ function requestImgsArray(imgs,s0,s1,s2){
 //入口
 function main(){
     console.log("main()：被调用");
-    //图片是否加载完毕
+    //获取正文所有图片
     var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
     /* if(isOver(imgs) == false){//图片未加载完毕则直接返回，最终imgArray为空
         alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
