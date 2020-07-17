@@ -227,7 +227,7 @@ function getBookMarks(url, callback) {
 			marksInAChapter.sort(rank)
 			chapters[i].marks = marksInAChapter
 		}
-		console.log(JSON.stringify(chapters))
+		//console.log(JSON.stringify(chapters))
 		callback(chapters)
 	});
 }
@@ -235,13 +235,23 @@ function getBookMarks(url, callback) {
 //获取添加级别的标题：OK
 function getTitleAddedPre(title, level) {
 	console.log("getTitleAddedPre(title,level)：被调用")
-	if (level == 1) {
-		return document.getElementById("level1").value + title
-	} else if (level == 2) {
-		return document.getElementById("level2").value + title
-	} else if (level == 3) {
-		return document.getElementById("level3").value + title
-	}
+	return (level == 1) ? (document.getElementById("level1").value + title)
+		: (level == 2) ? (document.getElementById("level2").value + title)
+		: (level == 3) ? (document.getElementById("level3").value + title)
+		: ""
+}
+//根据标注类型获取前后缀：OK
+function getMarkPre(style) {
+	return (style == 0) ? document.getElementById("style1Pre").value
+		: (style == 1) ? document.getElementById("style2Pre").value
+		: (style == 2) ? document.getElementById("style3Pre").value
+		: ""
+}
+function getMarkSuf(style) {
+	return (style == 0) ? document.getElementById("style1Suf").value
+		: (style == 1) ? document.getElementById("style2Suf").value
+		: (style == 2) ? document.getElementById("style3Suf").value
+		: ""
 }
 /* 
 function getLineUnderRegExp(lineText){
@@ -274,76 +284,87 @@ function copyBookMarks(url, isAll) {
 				contents.push({ title: contentData[i].title, chapterUid: contentData[i].chapterUid, level: parseInt(contentData[i].level) })
 			}
 			//得到res
-			res = ""
-			var getMarkPre = function (style) {
-				if (style == 0) {
-					return document.getElementById("style1Pre").value;
-				} else if (style == 1) {
-					return document.getElementById("style2Pre").value;
-				} else if (style == 2) {
-					return document.getElementById("style3Pre").value;
+			var res = ""
+			chrome.storage.sync.get(["checkedRe"],function(storageData){
+				var regexpCollection = storageData.checkedRe
+				if(regexpCollection == undefined){
+					regexpCollection = []
 				}
-			};
-			var getMarkSuf = function (style) {
-				if (style == 0) {
-					return document.getElementById("style1Suf").value;
-				} else if (style == 1) {
-					return document.getElementById("style2Suf").value;
-				} else if (style == 2) {
-					return document.getElementById("style3Suf").value;
-				}
-			};
-			if (isAll == true) {
-				console.log("copyBookMarks(url,isAll)：isAll == true")
-				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
-					var chapterUid = chaptersAndMarks[i].chapterUid
-					for (var j = 0, len2 = contents.length; j < len2; j++) {
-						if (chapterUid == contents[j].chapterUid) {
-							res += getTitleAddedPre(contents[j].title, contents[j].level) + "\n\n"
-							//遍历章内标注
-							for (var k = 0, len3 = chaptersAndMarks[i].marks.length; k < len3; k++) {
-								var markText = chaptersAndMarks[i].marks[k].markText
-								var style = chaptersAndMarks[i].marks[k].style
-								res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
-							}
-						}
-					}
-				}
-			} else {
-				//遍历目录
-				console.log("copyBookMarks(url,isAll)：isAll == false")
-				for (var j = 0, len2 = contents.length; j < len2; j++) {
-					if (contents[j].title == document.getElementById("currentContent").value.substring(1)) {
-						console.log("copyBookMarks(url,isAll)：找到目标章节")
-						res += getTitleAddedPre(contents[j].title, contents[j].level) + "\n\n"
-						var chapterUid = contents[j].chapterUid
-						//遍历标注
-						for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
-							if (chaptersAndMarks[i].chapterUid == chapterUid) {
+				if (isAll == true) {
+					console.log("copyBookMarks(url,isAll)：isAll == true")
+					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
+						var chapterUid = chaptersAndMarks[i].chapterUid
+						for (var j = 0, len2 = contents.length; j < len2; j++) {
+							if (chapterUid == contents[j].chapterUid) {
+								res += getTitleAddedPre(contents[j].title, contents[j].level) + "\n\n"
 								//遍历章内标注
-								if (imgsArr.length == 0) {//如果页面中有图片却没有得到图片数据，结束函数
-									return
-								}
 								for (var k = 0, len3 = chaptersAndMarks[i].marks.length; k < len3; k++) {
 									var markText = chaptersAndMarks[i].marks[k].markText
-									//判断是否为对图片的标注
-									if (markText == "[插图]") {
-										markText = imgsArr[imgsArrIndext]
-										imgsArrIndext = imgsArrIndext + 1
+									//正则匹配
+									//console.log("开始正则匹配")
+									//console.log(regexpCollection.length)
+									for(var n=0,len4=regexpCollection.length;n<len4;n++){
+										let pattern = regexpCollection[n][1]
+										//console.log("pattern" + pattern)
+										//let modifiers = regexpCollection[n][1]
+										let re = new RegExp(pattern);
+										if(re.test(markText) == true){
+											markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
+										}
 									}
 									var style = chaptersAndMarks[i].marks[k].style
 									res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
 								}
-								break
 							}
 						}
-						break
+					}
+				} else {
+					//遍历目录
+					console.log("copyBookMarks(url,isAll)：isAll == false")
+					for (var j = 0, len2 = contents.length; j < len2; j++) {
+						if (contents[j].title == document.getElementById("currentContent").value.substring(1)) {
+							console.log("copyBookMarks(url,isAll)：找到目标章节")
+							res += getTitleAddedPre(contents[j].title, contents[j].level) + "\n\n"
+							var chapterUid = contents[j].chapterUid
+							//遍历标注
+							for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
+								if (chaptersAndMarks[i].chapterUid == chapterUid) {
+									//遍历章内标注
+									if (imgsArr.length == 0) {//如果页面中有图片却没有得到图片数据，结束函数
+										return
+									}
+									for (var k = 0, len3 = chaptersAndMarks[i].marks.length; k < len3; k++) {
+										var markText = chaptersAndMarks[i].marks[k].markText
+										//判断是否为对图片的标注
+										if (markText == "[插图]") {
+											markText = imgsArr[imgsArrIndext]
+											imgsArrIndext = imgsArrIndext + 1
+										}
+										//正则匹配
+										//console.log("开始正则匹配")
+										//console.log(regexpCollection)
+										for(var n=0,len4=regexpCollection.length;n<len4;n++){
+											let pattern = regexpCollection[n][1]
+											//let modifiers = regexpCollection[n][1]
+											let re = new RegExp(pattern);
+											if(re.test(markText) == true){
+												markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
+											}
+										}
+										var style = chaptersAndMarks[i].marks[k].style
+										res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
+									}
+									break
+								}
+							}
+							break
+						}
 					}
 				}
-			}
-			imgsArr = []
-			imgsArrIndext = 0
-			copy(res)
+				imgsArr = []
+				imgsArrIndext = 0
+				copy(res)
+			})
 		})
 	})
 }
