@@ -16,21 +16,24 @@
 		margin-block-end: 0em;
 		margin-inline-start: 0px;
 		margin-inline-end: 0px;
-	}
-	textarea {
-		margin: 0px;
-		width: 159px;
-		height: 55px;
-	}
-	select {
-		margin: 0px;
-		width: 159px;
-		height: 22px;
-	}
+		}
+		textarea {
+			margin: 0px;
+			width: 159px;
+			height: 55px;
+		}
+		select {
+			margin: 0px;
+			width: 159px;
+			height: 22px;
+		}
+		input {
+			width: 159px;
+		}
 	</style>
 	</head>
 	<body>
-		<br>
+		<hr>
 		<p>一级标注前缀: </p>
 		<textarea type="text" id="first_level_pre"></textarea>
 		<p>一级标注后缀: </p>
@@ -43,12 +46,14 @@
 		<textarea type="text" id="third_level_pre"></textarea>
 		<p>三级标注后缀: </p>
 		<textarea type="text" id="third_level_suf"></textarea>
+		<hr>
 		<p>一级标题前缀: </p>
 		<textarea type="text" id="first_header"></textarea>
 		<p>二级标题前缀: </p>
 		<textarea type="text" id="second_header"></textarea>
 		<p>三级标题前缀: </p>
 		<textarea type="text" id="third_header"></textarea>
+		<hr>
 		<p>我的想法前缀: </p>
 		<textarea type="text" id="thought_pre"></textarea>
 		<p>我的想法后缀: </p>
@@ -58,17 +63,62 @@
 			<option id="on" onchange="sendMessage()">是</option>
 			<option id="off" onchange="sendMessage()">否</option>
 		</select>
-		<br>
+		<div class="regexp_container">
+			<hr>
+            <p>正则表达式1：</p>
+            <input class="regexp">
+            <p>前缀：</p>
+            <textarea type="text" class="regexp_pre"></textarea>
+            <p>后缀：</p>
+			<textarea type="text" class="regexp_suf"></textarea>
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput1">
+		</div>
+		<div class="regexp_container">
+			<hr>
+            <p>正则表达式2：</p>
+            <input class="regexp">
+            <p>前缀：</p>
+            <textarea type="text" class="regexp_pre"></textarea>
+            <p>后缀：</p>
+			<textarea type="text" class="regexp_suf"></textarea>
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput2">
+		</div>
+		<div class="regexp_container">
+			<hr>
+            <p>正则表达式3：</p>
+            <input class="regexp">
+            <p>前缀：</p>
+            <textarea type="text" class="regexp_pre"></textarea>
+            <p>后缀：</p>
+			<textarea type="text" class="regexp_suf"></textarea>
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput3">
+		</div>
+		<div class="regexp_container">
+			<hr>
+            <p>正则表达式4：</p>
+            <input class="regexp">
+            <p>前缀：</p>
+            <textarea type="text" class="regexp_pre"></textarea>
+            <p>后缀：</p>
+			<textarea type="text" class="regexp_suf"></textarea>
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput4">
+		</div>
+		<div class="regexp_container">
+			<hr>
+            <p>正则表达式5：</p>
+            <input class="regexp">
+            <p>前缀：</p>
+            <textarea type="text" class="regexp_pre"></textarea>
+            <p>后缀：</p>
+			<textarea type="text" class="regexp_suf"></textarea>
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput5">
+		</div>
+		<!-- <div id="add_remove_container">
+			<img id="addRegExp" src="icons/add.gif" style="cursor: pointer;" alt="addRegExp">
+			<img id="removeRegExp" src="icons/remove.gif" style="cursor: pointer;" alt="removeRegExp">
+		</div> -->
 		<br>
 		<a href="help.html">帮助</a>
-		<!--
-		<p>正则匹配(多个匹配用英文分号“;”分隔): </p>
-		<input type="text" id="RegExp"></input>
-		<br>
-		<br>
-		<img id="addRegExp" src="https://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="addRegExp" style="display: none;">
-		<img id="deRegExp" style="display: none;" src="https://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="deRegExp">
-		-->
 	</body>
 	<script type="text/javascript" src="options.js"></script>
 </html>
