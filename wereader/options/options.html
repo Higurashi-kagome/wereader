@@ -27,8 +27,11 @@
 			width: 159px;
 			height: 22px;
 		}
-		input {
+		input[type="text"] {
 			width: 159px;
+		}
+		input[type="checkbox"] {
+			float: right;
 		}
 	</style>
 	</head>
@@ -58,60 +61,60 @@
 		<textarea type="text" id="thought_pre"></textarea>
 		<p>我的想法后缀: </p>
 		<textarea type="text" id="thought_suf"></textarea>
-		<p>是否显示热门标注标注人数：</p>
-		<select id="add_number">
+		<p>是否显示热门标注标注人数：<input type="checkbox" id="add_number"></p>
+		<!-- <select id="add_number">
 			<option id="on" onchange="sendMessage()">是</option>
 			<option id="off" onchange="sendMessage()">否</option>
-		</select>
+		</select> -->
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式1：</p>
-            <input class="regexp">
+			<input type="text" class="regexp">
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput1">
             <p>前缀：</p>
             <textarea type="text" class="regexp_pre"></textarea>
             <p>后缀：</p>
 			<textarea type="text" class="regexp_suf"></textarea>
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput1">
 		</div>
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式2：</p>
-            <input class="regexp">
+			<input type="text" class="regexp">
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput2">
             <p>前缀：</p>
             <textarea type="text" class="regexp_pre"></textarea>
             <p>后缀：</p>
 			<textarea type="text" class="regexp_suf"></textarea>
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput2">
 		</div>
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式3：</p>
-            <input class="regexp">
+			<input type="text" class="regexp">
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput3">
             <p>前缀：</p>
             <textarea type="text" class="regexp_pre"></textarea>
             <p>后缀：</p>
 			<textarea type="text" class="regexp_suf"></textarea>
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput3">
 		</div>
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式4：</p>
-            <input class="regexp">
+			<input type="text" class="regexp">
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput4">
             <p>前缀：</p>
             <textarea type="text" class="regexp_pre"></textarea>
             <p>后缀：</p>
 			<textarea type="text" class="regexp_suf"></textarea>
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput4">
 		</div>
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式5：</p>
-            <input class="regexp">
+			<input type="text" class="regexp">
+			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput5">
             <p>前缀：</p>
             <textarea type="text" class="regexp_pre"></textarea>
             <p>后缀：</p>
 			<textarea type="text" class="regexp_suf"></textarea>
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput5">
 		</div>
 		<!-- <div id="add_remove_container">
 			<img id="addRegExp" src="icons/add.gif" style="cursor: pointer;" alt="addRegExp">
