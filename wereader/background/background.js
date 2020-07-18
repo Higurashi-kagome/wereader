@@ -100,6 +100,8 @@ function getData(url, callback) {
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
 			//console.log(JSON.stringify(data))
 			callback(data);
+		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
+			alert("获取失败：\n" + JSON.stringify(httpRequest.responseText))
 		}
 	};
 }
@@ -571,7 +573,7 @@ function Setting() {
 }
 Setting();
 
-//监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量
+//监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量等
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	console.log("chrome.runtime.onMessage.addListener()：监听到消息\n消息：\n")
 	var requestText = JSON.stringify(request)
