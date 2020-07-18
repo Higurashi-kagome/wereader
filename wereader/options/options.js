@@ -58,20 +58,8 @@ function updateRegexp(){
         document.getElementById("third_header").value = setting.lev3;
         document.getElementById("thought_pre").value = setting.thouPre;
         document.getElementById("thought_suf").value = setting.thouSuf;
-        var allOptions = document.getElementById("add_number").options;
-        if(setting.displayN == "true"){
-            for (i=0; i<allOptions.length; i++){
-                if (allOptions[i].id == "on"){
-					allOptions[i].selected = true;
-                }
-            }
-        }else{
-            for (i=0; i<allOptions.length; i++){
-                if (allOptions[i].id == "off"){
-					allOptions[i].selected = true;
-                }
-            }
-        }
+        (setting.displayN == "true") ? (document.getElementById("add_number").checked = true)
+         : (document.getElementById("add_number").checked = false)
         console.log("基础初始化结束")
         /************************************************************************************/
         console.log("正则匹配初始化开始")
@@ -97,7 +85,9 @@ function updateRegexp(){
         //checkbox点击事件
         for(var i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
-                updateCheckedRegexp()
+                if(checkBoxCollection[i].parentNode.getElementsByClassName("regexp")[0].value != ""){
+                    updateCheckedRegexp()
+                }
             }
         }
         console.log("checkbox初始化结束")
@@ -127,6 +117,7 @@ function updateRegexp(){
             }
         }
         console.log("input、textarea初始化结束")
+        console.log("正则匹配初始化结束")
         console.log("initialize()：chrome.storage.sync.get()：结束")
     });
     console.log("initialize()：结束")
@@ -173,7 +164,7 @@ document.getElementById("thought_pre").onchange = function(){
 document.getElementById("thought_suf").onchange = function(){
     sendMsgToBg({set: true, thouSuf: document.getElementById("thought_suf").value})
 }
-document.getElementById("add_number").onchange = function(){
+document.getElementById("add_number").onclick = function(){
     sendMsgToBg({set: true,displayN: "change"})
 }
 
