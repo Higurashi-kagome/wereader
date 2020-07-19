@@ -291,6 +291,8 @@ function copyBookMarks(url, isAll) {
 				var regexpCollection = storageData.checkedRe
 				if(regexpCollection == undefined){
 					regexpCollection = []
+				}else{
+					console.log("regexpCollection：\n" + JSON.stringify(regexpCollection))
 				}
 				if (isAll == true) {
 					console.log("copyBookMarks(url,isAll)：isAll == true")
@@ -347,9 +349,11 @@ function copyBookMarks(url, isAll) {
 										//console.log(regexpCollection)
 										for(var n=0,len4=regexpCollection.length;n<len4;n++){
 											let pattern = regexpCollection[n][1]
+											//console.log("pattern：" + pattern)
 											//let modifiers = regexpCollection[n][1]
 											let re = new RegExp(pattern);
 											if(re.test(markText) == true){
+												//console.log("获得匹配，MarkText：" + markText)
 												markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
 											}
 										}
