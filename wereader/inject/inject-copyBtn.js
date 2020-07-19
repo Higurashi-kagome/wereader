@@ -103,7 +103,7 @@ function addCopyBtn3(){
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
         for(var i=0,len=pre.length;i<len;i++){
-            let code = "```\n" + pre[i].innerHTML + "\n```"
+            let code = "```\n" + pre[i].innerHTML + "```"
             let top = pre[i].style.top
             var btn =  document.createElement("b" + i);
             btn.innerHTML = "📋";
