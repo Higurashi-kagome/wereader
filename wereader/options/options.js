@@ -65,6 +65,7 @@ function updateRegexp(){
         console.log("正则匹配初始化开始")
         var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
         var checkedRe = setting.checkedRe
+        console.log("已选中正则：\n" + JSON.stringify(checkedRe))
         //checkbox初始化
         console.log("checkbox初始化开始")
         if(checkedRe != undefined && checkedRe.length > 0 && checkedRe.length <= 5){
@@ -85,7 +86,7 @@ function updateRegexp(){
         //checkbox点击事件
         for(var i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
-                if(checkBoxCollection[i].parentNode.getElementsByClassName("regexp")[0].value != ""){
+                if(this.parentNode.getElementsByClassName("regexp")[0].value != ""){
                     updateCheckedRegexp()
                 }
             }
@@ -95,6 +96,7 @@ function updateRegexp(){
         console.log("input、textarea初始化开始")
         var regexpContainer = document.getElementsByClassName("regexp_container")
         var reCollection = setting.re
+        console.log("全部正则：\n" + JSON.stringify(reCollection))
         if(reCollection != undefined && reCollection.length == 5){
             for(var i = 0,len = reCollection.length;i<len;i++){
                 regexpContainer[i].getElementsByClassName("regexp")[0].value = reCollection[i][1]
@@ -108,12 +110,15 @@ function updateRegexp(){
         for(var i = 0,len = regexpContainer.length;i < len;i++){
             regexpContainer[i].getElementsByClassName("regexp")[0].onchange = function(){
                 updateRegexp()
+                updateCheckedRegexp()
             }
             regexpContainer[i].getElementsByClassName("regexp_pre")[0].onchange = function(){
                 updateRegexp()
+                updateCheckedRegexp()
             }
             regexpContainer[i].getElementsByClassName("regexp_suf")[0].onchange = function(){
                 updateRegexp()
+                updateCheckedRegexp()
             }
         }
         console.log("input、textarea初始化结束")
