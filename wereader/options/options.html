@@ -11,21 +11,16 @@
 			font-size: 95%;
 		}
 		p {
-		display: block;
-		margin-block-start: 0em;
-		margin-block-end: 0em;
-		margin-inline-start: 0px;
-		margin-inline-end: 0px;
+			display: block;
+			margin-block-start: 0em;
+			margin-block-end: 0em;
+			margin-inline-start: 0px;
+			margin-inline-end: 0px;
 		}
 		textarea {
 			margin: 0px;
 			width: 159px;
 			height: 55px;
-		}
-		select {
-			margin: 0px;
-			width: 159px;
-			height: 22px;
 		}
 		input[type="text"] {
 			width: 159px;
@@ -61,11 +56,11 @@
 		<textarea type="text" id="thought_pre"></textarea>
 		<p>我的想法后缀: </p>
 		<textarea type="text" id="thought_suf"></textarea>
-		<p>是否显示热门标注标注人数：<input type="checkbox" id="add_number"></p>
-		<!-- <select id="add_number">
-			<option id="on" onchange="sendMessage()">是</option>
-			<option id="off" onchange="sendMessage()">否</option>
-		</select> -->
+		<hr>
+		<div>
+			<label>热门标注显示标注人数：</label>
+			<input type="checkbox" id="add_number">
+		</div>
 		<div class="regexp_container">
 			<hr>
             <p>正则表达式1：</p>
@@ -120,7 +115,7 @@
 			<img id="addRegExp" src="icons/add.gif" style="cursor: pointer;" alt="addRegExp">
 			<img id="removeRegExp" src="icons/remove.gif" style="cursor: pointer;" alt="removeRegExp">
 		</div> -->
-		<br>
+		<hr>
 		<a href="help.html">帮助</a>
 	</body>
 	<script type="text/javascript" src="options.js"></script>
