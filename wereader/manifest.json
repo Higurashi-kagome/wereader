@@ -53,6 +53,7 @@
       "tabs",
       "cookies",
       "storage",
+      "contextMenus",
 	  "*://weread.qq.com/web/reader/*",
       "*://weread.qq.com/*",
       "*://i.weread.qq.com/*"
