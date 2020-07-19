@@ -815,3 +815,13 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	}
 
 });
+
+//右键反馈页
+chrome.contextMenus.create({
+    "type":"normal",
+    "title":"反馈",
+    "contexts":["browser_action"],
+    "onclick":function() {
+        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
+    }
+});
