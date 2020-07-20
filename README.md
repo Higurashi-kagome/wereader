@@ -81,89 +81,41 @@
 
 类似地，你可以设置想法前后缀，当你将前后缀设置为`**`时，导出的想法将会加粗。
 
-最后一个选项是`是否显示热门标注标注人数`正如它所说的，你可以设置导出的热门标注中是否带标注人数。
+更多细节可在插件提供的设置页中查看。
 
 ## TODO
 
-- [ ] 批量导出（停）
 - [ ] 想法中包含HTML内容的问题（停）
 - [ ] 某些时候（频繁使用），获取想法可能会失败（停）
 - [ ] 完善注释复制按钮innerHTML显示出错的问题（停）
-- [ ] 支持"关闭复制按钮"（停）
-- [ ] 报错：
+- [ ] 错误：
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
-- [ ] 偶尔出现的在读书页面无法打开popup页面的情况（观察）
+  - [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme （观察）
+  - [ ] 偶尔出现的在读书页面无法打开popup页面的情况（观察）
 - [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
 - [ ] 国际化？（缓）
 - [ ] 主题切换按钮加载缓慢（缓）
 - [ ] 白色黑色切换时的不流畅感（缓）
-- [ ] 展示热门标注、想法等内容
-- [ ] 导出被标注的注释（缓）
+- [ ] 展示热门标注、想法等内容（缓）
 - [ ] 对其他浏览器的支持（缓）
 - [ ] 为PR提供便利（缓）
-- [ ] 书架搜索功能（缓）
 - [ ] 注释复制按钮显示慢的问题（缓）
 - [ ] 复制成功通知（缓）
 - [ ] 用jQuery简化代码（缓）
-- [ ] CheckBox蓝色样式（缓）
 - [ ] "是否显示热门标注人数"CheckBox位置完善（缓）
 - [ ] 正则表达式文本框（缓）
 - [ ] 流程图
 - [ ] 函数名、变量名改善
 - [ ] 实现方法总结（开发经验）
-- [ ] 对标注内图片的导出
 - [ ] option.html、help.html、书架按钮美化
 - [ ] 主题色初始化完善
 - [ ] 直接复制图片到剪切板或是复制Markdown
 - [ ] 代码简化
 - [ ] 帮助页与设置页合并
+- [ ] 直接关闭设置页面时数据的保存
 
 ## 补充
 
 相关仓库：[pythontools](https://github.com/liuhao326/pythontools)
-
-v1.0.1：初次发布
-
-v1.1.0：支持同步设置
-
-v1.2.0：支持图片复制
-
-v1.2.1：支持大图、左侧小图及注释一键复制
-
-v1.2.2：
-
-- 添加：本章内被标注的图片可随标注直接导出。
-- 完善：去除不必要的权限、更改插件名
-
-v1.3.0：
-
-- 添加：两种护眼主题
-- 完善：捕捉部分bug、解决某些时候注释复制按钮不生效的问题、解决不需要开启复制按钮或复制标注时弹出多余提示“`网页需要加载完毕`”的问题
-- 完善：源文件分文件夹存放、重命名部分文件
-- 添加：设置页帮助
-
-v1.3.2:
-
-- 解决："chrome.tabs.executeScripts = undefind"的严重错误
-- 完善：注释复制按钮
-
-v1.3.3:
-
-- 完善：注释复制按钮
-- 添加：`https://weread.qq.com/web/shelf`显示书架
-
-v1.3.4:
-
-- 完善：书架显示
-
-v1.4.0：
-
-- 完善：标注内存在代码块时图片导出的问题
-- 添加：代码块复制
-
-v1.5.0：
-
-- 添加：正则匹配功能
-- 完善：“是否显示热门标注”设置选项、帮助页面
