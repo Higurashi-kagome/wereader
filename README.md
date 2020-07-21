@@ -7,7 +7,7 @@
 
 ## 说明
 
-这是一个Chrome扩展，用于微信读书做笔记。
+这是一个 Chrome 扩展，用于微信读书做笔记。
 
 **注意：短时间内频繁请求数据可能会出现导出失败并在一段时间内无法登录网页版微信读书的情况。所以请合理操作**
 
@@ -21,11 +21,11 @@
 
 ## 使用
 
-如果可以访问Chrome网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问Chrome网上应用店时按如下操作手动安装（建议在Chrome网上应用店安装，因为扩展手动安装后不能够自动更新）：
+如果可以访问 Chrome 网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问 Chrome 网上应用店时按如下操作手动安装（建议在 Chrome 网上应用店安装，因为扩展手动安装后不能够自动更新）：
 
-- 首先，在上面给出的GitHub地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
+- 首先，在上面给出的 GitHub 地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
 
-- 接下来，进入Chrome，按下图进入扩展程序页面：
+- 接下来，进入 Chrome，按下图进入扩展程序页面：
 
   <img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111930image-20200620191746304.png" alt="img" style="zoom: 70%;border: 1.5px solid rgba(230,230,230,1);" />
 
@@ -33,12 +33,12 @@
 
 ## 功能
 
-下面简单介绍，可到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看部分GIF演示。
+下面简单介绍，可到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看部分 GIF 演示。
 
-- 导出(个人)书评
+- 导出（个人）书评
   - 导出为纯文本
 
-  - 导出为HTML
+  - 导出为 HTML
 
 - 导出标注
   - 导出本章标注
@@ -85,36 +85,38 @@
 
 ## TODO
 
-- [ ] 想法中包含HTML内容的问题（停）
+- [ ] 想法中包含 HTML 内容的问题（停）
 - [ ] 某些时候（频繁使用），获取想法可能会失败（停）
-- [ ] 完善注释复制按钮innerHTML显示出错的问题（停）
+- [ ] 完善注释复制按钮 innerHTML 显示出错的问题（停）
 - [ ] 错误：
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
   - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
   - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
   - [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme （观察）
-  - [ ] 偶尔出现的在读书页面无法打开popup页面的情况（观察）
+  - [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况（观察）
 - [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
 - [ ] 国际化？（缓）
 - [ ] 主题切换按钮加载缓慢（缓）
 - [ ] 白色黑色切换时的不流畅感（缓）
 - [ ] 展示热门标注、想法等内容（缓）
 - [ ] 对其他浏览器的支持（缓）
-- [ ] 为PR提供便利（缓）
+- [ ] 为 PR 提供便利（缓）
 - [ ] 注释复制按钮显示慢的问题（缓）
 - [ ] 复制成功通知（缓）
-- [ ] 用jQuery简化代码（缓）
-- [ ] "是否显示热门标注人数"CheckBox位置完善（缓）
+- [ ] 用 jQuery 简化代码（缓）
+- [ ] "是否显示热门标注人数"CheckBox 位置完善（缓）
 - [ ] 正则表达式文本框（缓）
 - [ ] 流程图
 - [ ] 函数名、变量名改善
 - [ ] 实现方法总结（开发经验）
 - [ ] option.html、help.html、书架按钮美化
 - [ ] 主题色初始化完善
-- [ ] 直接复制图片到剪切板或是复制Markdown
+- [ ] 直接复制图片到剪切板或是复制 Markdown
 - [ ] 代码简化
 - [ ] 帮助页与设置页合并
 - [ ] 直接关闭设置页面时数据的保存
+- [ ] 发送通知
+- [ ] 正则表达式命名
 
 ## 补充
 
