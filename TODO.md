@@ -1,0 +1,34 @@
+## TODO
+
+- [ ] 想法中包含 HTML 内容的问题（停）
+- [ ] 某些时候（频繁使用），获取想法可能会失败（停）
+- [ ] 完善注释复制按钮 innerHTML 显示出错的问题（停）
+- [ ] 错误：
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
+  - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
+  - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
+  - [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme （观察）
+  - [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况（观察）
+- [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
+- [ ] 国际化？（缓）
+- [ ] 主题切换按钮加载缓慢（缓）
+- [ ] 白色黑色切换时的不流畅感（缓）
+- [ ] 展示热门标注、想法等内容（缓）
+- [ ] 对其他浏览器的支持（缓）
+- [ ] 为 PR 提供便利（缓）
+- [ ] 注释复制按钮显示慢的问题（缓）
+- [ ] 复制成功通知（缓）
+- [ ] 用 jQuery 简化代码（缓）
+- [ ] "是否显示热门标注人数"CheckBox 位置完善（缓）
+- [ ] 正则表达式文本框（缓）
+- [ ] 流程图
+- [ ] 函数名、变量名改善
+- [ ] 实现方法总结（开发经验）
+- [ ] option.html、help.html、书架按钮美化
+- [ ] 主题色初始化完善
+- [ ] 直接复制图片到剪切板或是复制 Markdown
+- [ ] 代码简化
+- [ ] 帮助页与设置页合并
+- [ ] 直接关闭设置页面时数据的保存
+- [ ] 发送通知
+- [ ] 正则表达式命名
