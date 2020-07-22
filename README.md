@@ -2,7 +2,6 @@
 - [使用](#使用)
 - [功能](#功能)
 - [设置](#设置)
-- [TODO](#todo)
 - [补充](#补充)
 
 ## 说明
@@ -11,7 +10,7 @@
 
 **注意：短时间内频繁请求数据可能会出现导出失败并在一段时间内无法登录网页版微信读书的情况。所以请合理操作**
 
-<div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202006/1934175-20200611114231692-1796260636.png" alt="wereader" style="zoom: 100%;border: 1.5px solid rgba(230,230,230,1);" /></div>
+<div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722193235742-73832724.png" alt="wereader" style="zoom: 90%;" /></div>
 
 扩展图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
 
@@ -21,15 +20,15 @@
 
 ## 使用
 
-如果可以访问 Chrome 网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索`微信读书笔记助手`安装即可（搜索后可能无法立即找到该扩展，需要点击`更多扩展程序`），不能访问 Chrome 网上应用店时按如下操作手动安装（建议在 Chrome 网上应用店安装，因为扩展手动安装后不能够自动更新）：
+如果可以访问 Chrome 网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索 `微信读书笔记助手` 安装即可（搜索后可能无法立即找到该扩展，需要点击 `更多扩展程序`），不能访问 Chrome 网上应用店时按如下操作手动安装（建议在 Chrome 网上应用店安装，因为扩展手动安装后不能够自动更新）：
 
-- 首先，在上面给出的 GitHub 地址上依次点击`Clone`——`Download ZIP`下载压缩包。下载好后解压。
+- 首先，在上面给出的 GitHub 地址上依次点击 `Clone`——`Download ZIP` 下载压缩包。下载好后解压。
 
 - 接下来，进入 Chrome，按下图进入扩展程序页面：
 
-  <img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620111930image-20200620191746304.png" alt="img" style="zoom: 70%;border: 1.5px solid rgba(230,230,230,1);" />
+  <div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722100925191-979517472.png" style="zoom: 80%;" /></div>
 
-- 进入页面后，先打开`开发者模式`开关，再点击`加载已解压的扩展程序`，找到前面解压得到的文件夹`wereader`，双击进入该文件夹，进入后单击里面的（不是双击）`wereader`文件夹，这时候文件夹被选中，点击`选择文件夹`即可。
+- 进入页面后，先打开 `开发者模式` 开关，再点击 `加载已解压的扩展程序` ，找到前面解压得到的文件夹 `wereader` ，双击进入该文件夹，进入后单击里面的（不是双击）`wereader` 文件夹，这时候文件夹被选中，点击 `选择文件夹` 即可。
 
 ## 功能
 
@@ -59,64 +58,29 @@
 
 ## 设置
 
-右击扩展点击`选项`进入扩展设置设置页面：
+右击扩展点击 `选项` 进入扩展设置设置页面：
 
-<div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200713154305998-1432747617.png" style="zoom: 80%;" /></div>
+<div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722193445592-1098571776.png" style="zoom: 80%;" /></div>
 
 在设置页面，你可以设置导出效果。
 
 在微信读书中，标注分三类，分别是波浪线、马克笔和直线：
 
-<div align = "center"><img src="https://images.cnblogs.com/cnblogs_com/Higurashi-kagome/1783389/o_200620110908QQ%E6%88%AA%E5%9B%BE20200620190842.png" alt="img" style="zoom:50%;border: 1.5px solid rgba(230,230,230,1);" /></div>
+<div align = "center"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722192542713-2099612966.png" alt="img" style="zoom:70%;" /></div>
 
-其中直线就是设置页面中所谓`一级标注`，马克笔是`二级标注`，波浪线是`三级标注`，你可以在输入框中设置标注前后缀。
+其中直线就是设置页面中所谓 `一级标注`，马克笔是 `二级标注`，波浪线是 `三级标注`，你可以在输入框中设置标注前后缀。
 
-比如，如果你希望书本中用马克笔（二级）标注的文字导出来后加粗，你只需要将二级标注前后缀设置为`**`。
+比如，如果你希望书本中用马克笔（二级）标注的文字导出来后加粗，你只需要将二级标注前后缀设置为 `**`。
 
-又比如，如果你希望书本中用直线（一级）标注的文字导出来后加下划线，你只需要将一级标注前后缀分别设置为`<u>`和`</u>`。
+又比如，如果你希望书本中用直线（一级）标注的文字导出来后加下划线，你只需要将一级标注前后缀分别设置为 `<u>` 和 `</u>`。
 
 你也可以在设置页中设置导出标题级别。
 
-默认级别分别是`## `、`### `和`#### `你可以通过自己改变井号数量来改变标题导出效果。
+默认级别分别是 `## `、`### ` 和 `#### ` 你可以通过自己改变井号数量来改变标题导出效果。
 
-类似地，你可以设置想法前后缀，当你将前后缀设置为`**`时，导出的想法将会加粗。
+类似地，你可以设置想法前后缀，当你将前后缀设置为 `**` 时，导出的想法将会加粗。
 
 更多细节可在插件提供的设置页中查看。
-
-## TODO
-
-- [ ] 想法中包含 HTML 内容的问题（停）
-- [ ] 某些时候（频繁使用），获取想法可能会失败（停）
-- [ ] 完善注释复制按钮 innerHTML 显示出错的问题（停）
-- [ ] 错误：
-  - [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.（观察）
-  - [ ] Unchecked runtime.lastError: Cannot access a chrome-extension:// URL of different extension（观察）
-  - [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host.（观察）
-  - [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme （观察）
-  - [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况（观察）
-- [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项（缓）
-- [ ] 国际化？（缓）
-- [ ] 主题切换按钮加载缓慢（缓）
-- [ ] 白色黑色切换时的不流畅感（缓）
-- [ ] 展示热门标注、想法等内容（缓）
-- [ ] 对其他浏览器的支持（缓）
-- [ ] 为 PR 提供便利（缓）
-- [ ] 注释复制按钮显示慢的问题（缓）
-- [ ] 复制成功通知（缓）
-- [ ] 用 jQuery 简化代码（缓）
-- [ ] "是否显示热门标注人数"CheckBox 位置完善（缓）
-- [ ] 正则表达式文本框（缓）
-- [ ] 流程图
-- [ ] 函数名、变量名改善
-- [ ] 实现方法总结（开发经验）
-- [ ] option.html、help.html、书架按钮美化
-- [ ] 主题色初始化完善
-- [ ] 直接复制图片到剪切板或是复制 Markdown
-- [ ] 代码简化
-- [ ] 帮助页与设置页合并
-- [ ] 直接关闭设置页面时数据的保存
-- [ ] 发送通知
-- [ ] 正则表达式命名
 
 ## 补充
 
