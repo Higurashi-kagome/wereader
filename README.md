@@ -2,7 +2,7 @@
 - [使用](#使用)
 - [功能](#功能)
 - [设置](#设置)
-- [补充](#补充)
+- [致谢](#致谢)
 
 ## 说明
 
@@ -82,6 +82,12 @@
 
 更多细节可在插件提供的设置页中查看。
 
-## 补充
+## 致谢
 
-相关仓库：[pythontools](https://github.com/liuhao326/pythontools)
+- [wereader](https://github.com/arry-lee/wereader)
+
+- [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers)
+
+- [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
+
+- [clipboard.js](https://github.com/zenorocha/clipboard.js)
