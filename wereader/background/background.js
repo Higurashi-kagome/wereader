@@ -13,70 +13,15 @@ function sendMessageToContentScript(message) {
 	});
 }
 
-//注入复制脚本：OK
-function injectCopyBtn() {
-	console.log("injectCopyBtn()：被调用")
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-		console.log("injectCopyBtn()：开始注入inject-copyBtn.js")
-		chrome.tabs.executeScript(tab[0].id, { file: 'inject/inject-copyBtn.js' }, function (result) {
-			catchErr("injectCopyBtn() => chrome.tabs.executeScript")
-		});
-		console.log("injectCopyBtn()：inject-copyBtn.js注入结束")
-	})
-}
-
-//通知函数
+//通知函数：popup
 function notify(msg) {
 	alert(msg)
 }
 
-//popup获取vid：OK
-function getuserVid() {
-	console.log("getuserVid()：被调用")
-	return document.getElementById("userVid").value;
-}
-
-//popup获取bid：OK
+//获取bid：popup
 function getbookId() {
 	console.log("getbookId()：被调用")
 	return document.getElementById('bookId').value;
-}
-
-//获取userVid并设置到背景页：OK
-function setuserVid() {
-	console.log("setuserVid()：被调用")
-	//获取当前页面
-	chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-		var url = ""
-		try {
-			url = tabs[0].url;
-		} catch (err) {
-			console.log("setuserVid() => err：" + err + "函数结束")
-			return
-		}
-		console.log("setuserVid()：chrome.tabs.query()获取到页面：" + url)
-		var list = url.split("/")
-		if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
-			console.log("setuserVid()：为读书页面")
-			//获取当前页面的cookie然后设置bookId和userVid
-			chrome.cookies.get({
-				url: url,
-				name: 'wr_vid'
-			}, function (cookie) {
-				if (cookie == null) {
-					console.log("setuserVid()：获取cookie失败，请检查");
-					document.getElementById('userVid').value = "null";
-				} else {
-					console.log("setuserVid()：获取cookie成功")
-					var userVid = cookie.value.toString();
-					console.log("setuserVid()：userVid为" + userVid);
-					document.getElementById('userVid').value = userVid;
-				}
-			});
-		}else{
-			console.log("setuserVid()：不为读书页面")
-		}
-	});
 }
 
 //获取数据：OK
@@ -127,7 +72,7 @@ function copy(text) {
 	copyBtn.click();
 }
 
-//获取书评：OK
+//获取书评：popup
 function getComment(url, bookId, isHtml) {
 	console.log("getComment(url,bookId,isHtml)：被调用")
 	getData(url, function (data) {
@@ -169,7 +114,7 @@ function getComment(url, bookId, isHtml) {
 	});
 }
 
-//获取目录：OK
+//获取目录：popup
 function getBookContents() {
 	console.log("getBookContents()：被调用")
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
@@ -269,7 +214,7 @@ function getLineUnderRegExp(lineText){
 	}
 }
  */
-//获取标注并复制标注到剪切板：OK
+//获取标注并复制标注到剪切板：popup
 function copyBookMarks(url, isAll) {
 	requestImgsArray();
 	console.log("copyBookMarks(url,isAll)：被调用")
@@ -408,7 +353,7 @@ function getBestBookMarks(url, callback) {
 	})
 }
 
-//处理数据，复制热门标注：OK
+//处理数据，复制热门标注：popup
 function copyBestBookMarks(url) {
 	console.log("copyBestBookMarks(url)：被调用")
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=", "")
@@ -530,7 +475,7 @@ function copyThought(url) {
 	})
 }
 
-//存储/初始化设置：OK
+//存储 / 初始化设置：OK
 function Setting() {
 	console.log("Setting()：被调用")
 	chrome.storage.sync.get(null, function (setting) {
@@ -577,6 +522,91 @@ function Setting() {
 }
 Setting();
 
+//更新设置
+function updateOptions(request){
+	if (request.s1Pre != undefined) {
+		document.getElementById("style1Pre").innerHTML = request.s1Pre;
+		chrome.storage.sync.set({ s1Pre: request.s1Pre }, function () {
+			console.log("s1Pre: request.s1Pre设置完毕")
+		});
+	}
+	if (request.s1Suf != undefined) {
+		document.getElementById("style1Suf").innerHTML = request.s1Suf;
+		chrome.storage.sync.set({ s1Suf: request.s1Suf }, function () {
+			console.log("s1Suf: request.s1Suf设置完毕")
+		});
+	}
+	if (request.s2Pre != undefined) {
+		document.getElementById("style2Pre").innerHTML = request.s2Pre;
+		chrome.storage.sync.set({ s2Pre: request.s2Pre }, function () {
+			console.log("s2Pre: request.s2Pre设置完毕")
+		});
+	}
+	if (request.s2Suf != undefined) {
+		document.getElementById("style2Suf").innerHTML = request.s2Suf;
+		chrome.storage.sync.set({ s2Suf: request.s2Suf }, function () {
+			console.log("s2Suf: request.s2Suf设置完毕")
+		});
+	}
+	if (request.s3Pre != undefined) {
+		document.getElementById("style3Pre").innerHTML = request.s3Pre;
+		chrome.storage.sync.set({ s3Pre: request.s3Pre }, function () {
+			console.log("s3Pre: request.s3Pre设置完毕")
+		});
+	}
+	if (request.s3Suf != undefined) {
+		document.getElementById("style3Suf").innerHTML = request.s3Suf;
+		chrome.storage.sync.set({ s3Suf: request.s3Suf }, function () {
+			console.log("s3Suf: request.s3Suf设置完毕")
+		});
+	}
+	if (request.lev1 != undefined) {
+		document.getElementById("level1").innerHTML = request.lev1;
+		chrome.storage.sync.set({ lev1: request.lev1 }, function () {
+			console.log("lev1: request.lev1设置完毕")
+		});
+	}
+	if (request.lev2 != undefined) {
+		document.getElementById("level2").innerHTML = request.lev2;
+		chrome.storage.sync.set({ lev2: request.lev2 }, function () {
+			console.log("lev2: request.lev2设置完毕")
+		});
+	}
+	if (request.lev3 != undefined) {
+		document.getElementById("level3").innerHTML = request.lev3;
+		chrome.storage.sync.set({ lev3: request.lev3 }, function () {
+			console.log("lev3: request.lev3设置完毕")
+		});
+	}
+	if (request.thouPre != undefined) {
+		document.getElementById("thoughtPre").innerHTML = request.thouPre;
+		chrome.storage.sync.set({ thouPre: request.thouPre }, function () {
+			console.log("thouPre: request.thouPre设置完毕")
+		});
+	}
+	if (request.thouSuf != undefined) {
+		document.getElementById("thoughtSuf").innerHTML = request.thouSuf;
+		chrome.storage.sync.set({ thouSuf: request.thouSuf }, function () {
+			console.log("thouSuf: request.thouSuf设置完毕")
+		});
+	}
+	if (request.displayN != undefined) {
+		chrome.storage.sync.get(["displayN"], function (setting) {
+			if (setting.displayN == "true") {
+				document.getElementById("displayNumber").innerHTML = "false";
+				chrome.storage.sync.set({ displayN: "false" }, function () {
+					console.log("displayN: \"false\"设置完毕")
+				});
+			} else {
+				document.getElementById("displayNumber").innerHTML = "true";
+				chrome.storage.sync.set({ displayN: "true" }, function () {
+					console.log("displayN: \"true\"设置完毕")
+				});
+			}
+		});
+	}
+}
+
 //监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量等
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	console.log("chrome.runtime.onMessage.addListener()：监听到消息\n消息：\n")
@@ -585,7 +615,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	if (request.getBid == true) {//信息为bid
 		console.log("chrome.runtime.onMessage.addListener()：request.getBid == true，接收到bid信息")
 		document.getElementById('bookId').value = request.bid;
-		setuserVid();
 		sendResponse('后台：我已收到你返回bid的消息：' + JSON.stringify(request));
 	} else if (request.getContents == true) {//信息为来自inject-content.js的目录信息
 		console.log("chrome.runtime.onMessage.addListener()：request.getContents == true，接收到目录信息")
@@ -609,87 +638,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
 	} else if (request.set == true) {//信息为options页面设置改变值
 		console.log("chrome.runtime.onMessage.addListener()：request.set == true，接收到设置页改变信息");
-		if (request.s1Pre != undefined) {
-			document.getElementById("style1Pre").innerHTML = request.s1Pre;
-			chrome.storage.sync.set({ s1Pre: request.s1Pre }, function () {
-				console.log("s1Pre: request.s1Pre设置完毕")
-			});
-		}
-		if (request.s1Suf != undefined) {
-			document.getElementById("style1Suf").innerHTML = request.s1Suf;
-			chrome.storage.sync.set({ s1Suf: request.s1Suf }, function () {
-				console.log("s1Suf: request.s1Suf设置完毕")
-			});
-		}
-		if (request.s2Pre != undefined) {
-			document.getElementById("style2Pre").innerHTML = request.s2Pre;
-			chrome.storage.sync.set({ s2Pre: request.s2Pre }, function () {
-				console.log("s2Pre: request.s2Pre设置完毕")
-			});
-		}
-		if (request.s2Suf != undefined) {
-			document.getElementById("style2Suf").innerHTML = request.s2Suf;
-			chrome.storage.sync.set({ s2Suf: request.s2Suf }, function () {
-				console.log("s2Suf: request.s2Suf设置完毕")
-			});
-		}
-		if (request.s3Pre != undefined) {
-			document.getElementById("style3Pre").innerHTML = request.s3Pre;
-			chrome.storage.sync.set({ s3Pre: request.s3Pre }, function () {
-				console.log("s3Pre: request.s3Pre设置完毕")
-			});
-		}
-		if (request.s3Suf != undefined) {
-			document.getElementById("style3Suf").innerHTML = request.s3Suf;
-			chrome.storage.sync.set({ s3Suf: request.s3Suf }, function () {
-				console.log("s3Suf: request.s3Suf设置完毕")
-			});
-		}
-		if (request.lev1 != undefined) {
-			document.getElementById("level1").innerHTML = request.lev1;
-			chrome.storage.sync.set({ lev1: request.lev1 }, function () {
-				console.log("lev1: request.lev1设置完毕")
-			});
-		}
-		if (request.lev2 != undefined) {
-			document.getElementById("level2").innerHTML = request.lev2;
-			chrome.storage.sync.set({ lev2: request.lev2 }, function () {
-				console.log("lev2: request.lev2设置完毕")
-			});
-		}
-		if (request.lev3 != undefined) {
-			document.getElementById("level3").innerHTML = request.lev3;
-			chrome.storage.sync.set({ lev3: request.lev3 }, function () {
-				console.log("lev3: request.lev3设置完毕")
-			});
-		}
-		if (request.thouPre != undefined) {
-			document.getElementById("thoughtPre").innerHTML = request.thouPre;
-			chrome.storage.sync.set({ thouPre: request.thouPre }, function () {
-				console.log("thouPre: request.thouPre设置完毕")
-			});
-		}
-		if (request.thouSuf != undefined) {
-			document.getElementById("thoughtSuf").innerHTML = request.thouSuf;
-			chrome.storage.sync.set({ thouSuf: request.thouSuf }, function () {
-				console.log("thouSuf: request.thouSuf设置完毕")
-			});
-		}
-		if (request.displayN != undefined) {
-			chrome.storage.sync.get(["displayN"], function (setting) {
-				if (setting.displayN == "true") {
-					document.getElementById("displayNumber").innerHTML = "false";
-					chrome.storage.sync.set({ displayN: "false" }, function () {
-						console.log("displayN: \"false\"设置完毕")
-					});
-				} else {
-					document.getElementById("displayNumber").innerHTML = "true";
-					chrome.storage.sync.set({ displayN: "true" }, function () {
-						console.log("displayN: \"true\"设置完毕")
-					});
-				}
-			});
-		}
+		updateOptions(request)
 	} else if (request.picText != undefined) {//信息为图片的Markdown文本
 		copy(request.picText)
 	} else if (request.RimgsArr != undefined) {//信息为图片的Markdown文本数组
@@ -742,39 +691,7 @@ chrome.tabs.onActivated.addListener(function (moveInfo) {
 	console.log("chrome.tabs.onActivated.addListener()：监听到消息")
 	chrome.tabs.get(moveInfo.tabId, function (tab) {
 		console.log("chrome.tabs.onActivated.addListener()：chrome.tabs.get()：获取到页面信息")
-		var currentUrl = ""
-		try {
-			currentUrl = tab.url;
-		} catch (err) {
-			console.log("chrome.tabs.onActivated.addListener() => chrome.tabs.get() => err：" + err)
-		}
-		console.log("chrome.tabs.onActivated.addListener()：当前页面：" + currentUrl)
-		var list = currentUrl.split('/');
-		var isBookPage = false;
-		try {
-			if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
-				isBookPage = true;
-			}
-		} catch (err) {
-			isBookPage = false;
-		}
-		if (isBookPage != true) {//如果当前页面为其他页面
-			document.getElementById('bookId').value = "null";
-			document.getElementById('userVid').value = "null";
-			chrome.browserAction.setPopup({ popup: '' });
-		} else {
-			//获取目录到background-page
-			if (document.getElementById("Bookcontents").innerHTML != "getBookContents") {
-				document.getElementById("Bookcontents").innerHTML = "getBookContents";
-			}
-			//注入脚本获取全部目录数据和当前目录
-			getBookContents();
-			chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-				catchErr("chrome.tabs.onActivated.addListener => chrome.tabs.get")
-			});
-			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
-			setuserVid();
-		}
+		setPopupAndBid(tab)
 	});
 });
 
@@ -783,42 +700,47 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	console.log("chrome.tabs.onUpdated.addListener()：监听到消息")
 	if (changeInfo.status == "loading") {
 		console.log("chrome.tabs.onUpdated.addListener()：changeInfo.status == \"loading\"")
-		var loadingUrl = ""
-		try {
-			loadingUrl = tab.url;
-		} catch (err) {
-			console.log("chrome.tabs.onUpdated.addListener() => err：" + err)
-		}
-		console.log("chrome.tabs.onUpdated.addListener()：当前页面：" + loadingUrl)
-		var list = loadingUrl.split('/');
-		var isBookPage = false;
-		try {
-			if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
-				isBookPage = true;
-			}
-		} catch (err) {
-			isBookPage = false;
-		}
-		if (isBookPage != true) {//如果当前页面为其他页面
-			document.getElementById('bookId').value = "null";
-			document.getElementById('userVid').value = "null";
-			chrome.browserAction.setPopup({ popup: '' });
-		} else {
-			//获取目录到background-page
-			if (document.getElementById("Bookcontents").innerHTML != "getBookContents") {
-				document.getElementById("Bookcontents").innerHTML = "getBookContents";
-			}
-			//注入脚本获取全部目录数据和当前目录
-			getBookContents();
-			chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-				catchErr("chrome.tabs.onUpdated.addListener")
-			});
-			setuserVid();
-			chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
-		}
+		setPopupAndBid(tab)
 	}
 
 });
+
+//根据当前tab设置popup并判断是否需要注入inject-bid.js
+function setPopupAndBid(tab){
+	console.log("setPopupAndBid(tab)：被调用")
+	var currentUrl = ""
+	try {
+		currentUrl = tab.url;
+	} catch (err) {
+		console.log("setPopupAndBid(tab) => err：" + err)
+	}
+	console.log("setPopupAndBid(tab)：当前页面：" + currentUrl)
+	var list = currentUrl.split('/');
+	var isBookPage = false;
+	try {
+		if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
+			isBookPage = true;
+		}
+	} catch (err) {
+		isBookPage = false;
+	}
+	if (isBookPage != true) {//如果当前页面为其他页面
+		document.getElementById('bookId').value = "null";
+		chrome.browserAction.setPopup({ popup: '' });
+	} else {
+		//获取目录到background-page
+		if (document.getElementById("Bookcontents").innerHTML != "getBookContents") {
+			document.getElementById("Bookcontents").innerHTML = "getBookContents";
+		}
+		//注入脚本获取全部目录数据和当前目录
+		getBookContents();
+		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
+			catchErr("setPopupAndBid(tab)")
+		});
+		chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
+	}
+	console.log("setPopupAndBid(tab)：结束")
+}
 
 //右键反馈页
 chrome.contextMenus.create({
