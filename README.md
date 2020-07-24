@@ -14,13 +14,13 @@
 
 扩展图标来源：[HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
 
-图片无法加载可以到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看。
+图片无法加载可以到 [这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html) 查看。
 
 项目地址：[Github](https://github.com/liuhao326/wereader)
 
 ## 使用
 
-如果可以访问 Chrome 网上应用店，直接点击[这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN)或进入[应用店主页](https://chrome.google.com/webstore/category/extensions?hl=zh-CN)搜索 `微信读书笔记助手` 安装即可（搜索后可能无法立即找到该扩展，需要点击 `更多扩展程序`），不能访问 Chrome 网上应用店时按如下操作手动安装（建议在 Chrome 网上应用店安装，因为扩展手动安装后不能够自动更新）：
+如果可以访问 Chrome 网上应用店，直接点击 [这里](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) 安装，不能访问 Chrome 网上应用店时按如下操作手动安装（建议在 Chrome 网上应用店安装，因为扩展手动安装后不能够自动更新）：
 
 - 首先，在上面给出的 GitHub 地址上依次点击 `Clone`——`Download ZIP` 下载压缩包。下载好后解压。
 
@@ -32,7 +32,7 @@
 
 ## 功能
 
-下面简单介绍，可到[这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html)查看部分 GIF 演示。
+下面简单介绍，可到 [这里](https://www.cnblogs.com/Higurashi-kagome/p/13092175.html) 查看部分 GIF 演示。
 
 - 导出（个人）书评
   - 导出为纯文本
