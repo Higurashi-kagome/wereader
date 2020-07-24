@@ -110,8 +110,9 @@ function addCopyBtn3(){
             btn.id = "codeCopy" + i
             btn.className = "wr_absolute"
             btn.style.right = "0px"
-            btn.style.top = parseInt(top.substr(0, top.length - 2)) - 28 + "px"
+            btn.style.top = parseInt(top.substr(0, top.length - 2)) - 32 + "px"
             btn.style.width = "16px"
+            btn.style.height = "32px"
             btn.style.cursor = "pointer"
             let parent = pre[i].parentNode
             let inser = parent.insertBefore(btn,pre[i]);
