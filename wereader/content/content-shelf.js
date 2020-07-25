@@ -24,12 +24,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 					let id = bookIdsObj[k]
 					let bookObj = bookDic[id]
 					shelf[archiveName].push(bookObj)
-					delete bookDic.id
+					delete bookDic[id]
 				}
 			}
+			//console.log(bookDic)
 			shelf['未分类书籍'] = []
-			for(var i=0,len=bookDic.length;i<len;i++){
-				shelf['未分类书籍'].push(bookDic[i])
+			for(var key in bookDic){
+				shelf["未分类书籍"].push(bookDic[key])
 			}
 			var colId = ""
 			var rank = function(x,y){
@@ -61,7 +62,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			div.style.border = "1.5px solid #e6e6e6"
 			div.style.borderLeft = "none"
 			div.style.borderRadius = "0px 4px 4px 0px"
-			div.style.maxHeight = "600px"
+			div.style.maxHeight = "595px"
 			div.style.overflowY = "auto"
 			div.style.overflowX = "hidden"
 			//遍历类别
