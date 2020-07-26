@@ -123,7 +123,7 @@ function injectCopyBtn() {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
 		console.log("injectCopyBtn()：开始注入inject-copyBtn.js")
 		chrome.tabs.executeScript(tab[0].id, { file: 'inject/inject-copyBtn.js' }, function (result) {
-			catchErr("injectCopyBtn() => chrome.tabs.executeScript")
+			//catchErr("injectCopyBtn() => chrome.tabs.executeScript")
 		});
 		console.log("injectCopyBtn()：inject-copyBtn.js注入结束")
 	})
