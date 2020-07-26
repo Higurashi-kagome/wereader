@@ -1,0 +1,67 @@
+{	
+   "manifest_version": 2,
+   "name": "微信读书笔记助手",
+   "version": "1.5.2",
+   "description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用Markdown做笔记的用户尤其有帮助。",
+   "background": {
+	"page": "background/background.html",
+	"persisten": false
+   },
+   "browser_specific_settings": {
+        "gecko": {
+        "id": "326047736@qq.com",
+        "strict_min_version": "48.0a1"
+        }
+    },
+   "icons":
+	{
+		"16": "icons/icon16.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
+	},
+   "browser_action": {
+      "default_icon": {
+         "16": "icons/icon16.png",
+         "24": "icons/icon24.png",
+         "32": "icons/icon32.png"
+      },
+      "default_popup": "",
+      "default_title": "wereader"
+   },
+   "content_scripts": 
+	[
+      {
+			"matches": ["*://weread.qq.com/web/shelf"],
+			"js": ["content/content-shelf.js"],
+			"run_at": "document_idle"
+      },
+      {
+			"matches": ["*://weread.qq.com/web/reader/*"],
+			"js": ["content/content-pre.js"],
+			"run_at": "document_end"
+      },
+      {
+			"matches": ["*://weread.qq.com/web/reader/*"],
+         "js": ["content/content-notification.js","content/sweetalert.js","content/content-copy.js","background/clipboard.js"],
+         "css": ["content/sweetalert.css"],
+			"run_at": "document_idle"
+      }
+   ],
+   "options_page": "options/options.html",
+   "options_ui":
+	{
+    	"page": "options/options.html",
+    	"chrome_style": true
+   },
+   "homepage_url": "https://github.com/liuhao326/wereader",
+	"permissions":
+	[
+      "tabs",
+      "cookies",
+      "storage",
+      "contextMenus",
+	  "*://weread.qq.com/web/reader/*",
+      "*://weread.qq.com/*",
+      "*://i.weread.qq.com/*"
+   ]
+}

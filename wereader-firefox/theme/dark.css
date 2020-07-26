@@ -1,0 +1,40 @@
+/*正文外*/
+body{ background: #17181a !important; }
+/*正文*/
+.app_content {
+    background: #1f2022 !important;
+}
+/*顶部*/
+.readerTopBar{
+    background: #1f2022 !important;
+}
+/*下一章*/
+.readerFooter_button{
+    background: #363739 !important;
+}
+/*目录*/
+.readerCatalog{
+    background: #1f2022 !important;
+}
+/*目录、标注等按钮*/
+.readerControls_item{
+    background: #27282a !important;
+}
+/*字体大小按钮*/
+.readerControls_fontSize{
+    background: #27282a !important;
+}
+/*字号选择展开后的背景*/
+.fontSizeButton_bg{
+    background: #323234 !important;
+}
+/*搜索*/
+.readerCatalog_searchBar_left{
+    background: #353638 !important;
+}
+/*标注*/
+.readerNotePanel{
+    background: #1f2022 !important;
+}
+/*下载APP二维码*/
+.download_dialog_content{background: #303030 !important;}
