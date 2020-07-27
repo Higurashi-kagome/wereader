@@ -193,7 +193,7 @@ document.getElementById("addRegExp").onclick = function(){
             updateCheckedRegexp()
         }
     }else if(len > 10){
-        alert("最多添加10个")
+        //alert("最多添加10个")
     }
 }
 
