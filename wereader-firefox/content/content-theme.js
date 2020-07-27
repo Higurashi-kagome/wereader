@@ -24,7 +24,6 @@ function addThemeBtn(){
     
     //改变主题
     function changeTheme(){
-        alert(Flag)
         //如果当前主题为夜色模式
         if(document.getElementsByClassName("readerControls_item white").length != 0){
             //设置白色主题
@@ -50,7 +49,7 @@ function addThemeBtn(){
             try {
                 browser.runtime.sendMessage({injectCss: "/theme/dark.css"})
             } catch (error) {
-                alert("似乎出了点问题，刷新一下试试吧~")
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
             }
             clickDarkOrWhite("readerControls_item dark")
             //更改svg图标颜色

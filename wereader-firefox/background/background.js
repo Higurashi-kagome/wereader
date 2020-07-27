@@ -14,15 +14,16 @@ function sendMessageToContentScript(message) {
 	});
 }
 
-//通知函数：popup
+//通知函数
 function sendAlertMsg(msg) {
 	console.log("sendAlertMsg(msg)：被调用")
-	sendMessageToContentScript(msg)
+	sendMessageToContentScript({isAlertMsg: true,alertMsg: msg})
 }
 
-function sendCopyMsg(msg) {
+//发送复制内容到复制窗口
+function sendCopyMsg(text) {
 	console.log("sendCopyMsg(msg)：被调用")
-	sendMessageToContentScript(msg)
+	sendMessageToContentScript({isCopyMsg: true,text: text})
 }
 
 //获取bid：popup
@@ -40,7 +41,7 @@ function getData(url, callback) {
 	try{
 		httpRequest.send();//第三步：发送请求  将请求参数写在URL中
 	}catch(err){
-		sendAlertMsg({notificationTitle: "Oops...", notificationText: "似乎没有联网", type: "error"})
+		sendAlertMsg({title: "Oops...", text: "似乎没有联网", type: "error"})
 	}
 	/**
 	 * 获取数据后的处理程序
@@ -53,32 +54,9 @@ function getData(url, callback) {
 			//console.log(JSON.stringify(data))
 			callback(data);
 		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
-			sendAlertMsg({notificationTitle: "获取失败:", notificationText: JSON.stringify(httpRequest.responseText), type: "error"})
+			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), type: "error"})
 		}
 	};
-}
-
-//复制内容：OK
-function copy(text) {
-	console.log("copy(text)：被调用")
-	sendCopyMsg({isCopyMsg: true,text: text})
-	//var copyBtn = new ClipboardJS('.btn')
-	/* var inputText = document.getElementById("formatted_text");
-	var copyBtn = document.getElementById("btn_copy");
-	var clipboard = new Clipboard('.btn');
-	clipboard.on('success', function (e) {
-		if (text.length > 10) {
-			console.log("copy(text)：复制成功 =>\n" + text.substring(0, 10) + "......");
-		} else {
-			console.log("copy(text)：复制成功 =>\n" + text);
-		}
-	});
-	clipboard.on('error', function (e) {
-		console.error("复制出错:\n" + JSON.stringify(e));
-		sendAlertMsg({notificationTitle: "复制出错:", notificationText: JSON.stringify(e), type: "error"});
-	});
-	inputText.innerHTML = text;
-	copyBtn.click(); */
 }
 
 //获取书评：popup
@@ -106,19 +84,19 @@ function getComment(url, bookId, isHtml) {
 		if (htmlContent != "" || content != "" || title != "") {
 			if (isHtml == true) {
 				if (title != "") {
-					copy("# " + title + "\n\n" + htmlContent);
+					sendCopyMsg("# " + title + "\n\n" + htmlContent);
 				} else {
-					copy(htmlContent);
+					sendCopyMsg(htmlContent);
 				}
 			} else {
 				if (title != "") {
-					copy("### " + title + "\n\n" + content);
+					sendCopyMsg("### " + title + "\n\n" + content);
 				} else {
-					copy(content);
+					sendCopyMsg(content);
 				}
 			}
 		} else {
-			sendAlertMsg({notificationText: "该书无书评"})
+			sendAlertMsg({title: "该书无书评", button: {text: "确定"}})
 		}
 	});
 }
@@ -335,7 +313,7 @@ function copyBookMarks(url, isAll) {
 				}
 				imgsArr = []
 				imgsArrIndext = 0
-				copy(res)
+				sendCopyMsg(res)
 			})
 		})
 	})
@@ -412,7 +390,7 @@ function copyBestBookMarks(url) {
 					}
 				}
 			}
-			copy(res)
+			sendCopyMsg(res)
 		})
 	})
 }
@@ -491,7 +469,7 @@ function copyThought(url) {
 					}
 				}
 			}
-			copy(res)
+			sendCopyMsg(res)
 		})
 	})
 }
@@ -652,7 +630,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 			document.getElementById("Bookcontents").innerHTML = res;
 		} else {//如果不需要获取目录，直接复制
 			console.log("chrome.runtime.onMessage.addListener()：准备复制目录");
-			copy(res);
+			sendCopyMsg(res);
 		}
 		//设置当前目录
 		document.getElementById("currentContent").innerHTML = request.currentContent
@@ -661,7 +639,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		console.log("chrome.runtime.onMessage.addListener()：request.set == true，接收到设置页改变信息");
 		updateOptions(request)
 	} else if (request.picText != undefined) {//信息为图片的Markdown文本
-		copy(request.picText)
+		sendCopyMsg(request.picText)
 	} else if (request.RimgsArr != undefined) {//信息为图片的Markdown文本数组
 		console.log("chrome.runtime.onMessage.addListener()：收到图片Markdown文本数组")
 		imgsArr = request.RimgsArr
@@ -701,6 +679,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 				});
 			}
 		});
+	} else if (request.alert == true){
+		sendAlertMsg(request)
 	}
 });
 
