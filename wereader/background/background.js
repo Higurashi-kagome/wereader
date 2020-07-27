@@ -13,9 +13,10 @@ function sendMessageToContentScript(message) {
 	});
 }
 
-//通知函数：popup
-function notify(msg) {
-	alert(msg)
+//通知函数
+function sendAlertMsg(msg) {
+	console.log("sendAlertMsg(msg)：被调用")
+	sendMessageToContentScript({isAlertMsg: true, alertMsg: msg})
 }
 
 //获取bid：popup
@@ -33,7 +34,7 @@ function getData(url, callback) {
 	try{
 		httpRequest.send();//第三步：发送请求  将请求参数写在URL中
 	}catch(err){
-		alert("似乎没有联网...")
+		sendAlertMsg({title: "Oops...", text: "似乎没有联网", type: "error"})
 	}
 	/**
 	 * 获取数据后的处理程序
@@ -46,7 +47,7 @@ function getData(url, callback) {
 			//console.log(JSON.stringify(data))
 			callback(data);
 		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
-			alert("获取失败：\n" + JSON.stringify(httpRequest.responseText))
+			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), type: "error"})
 		}
 	};
 }
@@ -66,7 +67,7 @@ function copy(text) {
 	});
 	clipboard.on('error', function (e) {
 		console.error("复制出错:\n" + JSON.stringify(e));
-		alert("复制出错:\n" + JSON.stringify(e));
+		sendAlertMsg({title: "复制出错", text: JSON.stringify(e), button: {text: "确定"},type: "error"});
 	});
 	inputText.innerHTML = text;
 	copyBtn.click();
@@ -109,7 +110,7 @@ function getComment(url, bookId, isHtml) {
 				}
 			}
 		} else {
-			alert("该书无书评")
+			sendAlertMsg({title: "该书无书评", button: {text: "确定"}})
 		}
 	});
 }

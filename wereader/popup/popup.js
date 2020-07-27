@@ -11,15 +11,15 @@ window.onload = function () {
         document.getElementById("userVid").innerHTML = "vid：" + userVid;
         //获取bid / vid失败则提醒
         if (document.getElementById("userVid").innerHTML == "vid：null" && document.getElementById("bookId").innerHTML == "bid：null") {
-            bg.notify("userVid == \"null\"，bookId == \"null\"，请确保正常登陆后刷新重试");
+            bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，bookId == \"null\"，请确保正常登陆后刷新重试", button: {text: "确定"},type: "error"});
             window.close();
         } else {
             if (document.getElementById("userVid").innerHTML == "vid：null") {
-                bg.notify("userVid == \"null\"，请确保正常登陆");
+                bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，请确保正常登陆", button: {text: "确定"},type: "error"});
                 window.close();
             }
             if (document.getElementById("bookId").innerHTML == "bid：null") {
-                bg.notify("bookId == \"null\"，请刷新重试");
+                bg.sendAlertMsg({title:"Oops...", text:"bookId == \"null\"，请刷新重试", button: {text: "确定"},type: "error"});
                 window.close();
             }
         }
@@ -87,6 +87,10 @@ window.onload = function () {
             injectCopyBtn();
             window.close();
         }, false);
+        /* document.getElementById("bookId").addEventListener('click', function () {
+            bg.sendAlertMsg({title:"Oops...", text:"放心，这是测试...", button: {text: "确定"}})
+            window.close();
+        }, false); */
     })
     
 }

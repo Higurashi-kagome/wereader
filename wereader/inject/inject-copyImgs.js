@@ -27,7 +27,7 @@ function requestImgsArray(imgs,s0,s1,s2){
         var s = imgs[i].getAttribute("data-src")
         if(s == null || s == ""){
             console.log("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败")
-            alert("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader")
+            swal({title: "Oops...",text: "inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",type: "error"})
             return
         }
         var l = imgs[i].style.left
@@ -80,10 +80,6 @@ function main(){
     console.log("main()：被调用");
     //获取正文所有图片
     var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    /* if(isOver(imgs) == false){//图片未加载完毕则直接返回，最终imgArray为空
-        alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
-        return
-    } */
     var s0 = document.getElementsByClassName("wr_underline s0");
     var s1 = document.getElementsByClassName("wr_underline s1");
     var s2 = document.getElementsByClassName("wr_underline s2");

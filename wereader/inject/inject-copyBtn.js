@@ -13,7 +13,7 @@ function generateBtn(imgs){
         var src = imgs[i].getAttribute("data-src")
         if(src == null || src == ""){
             console.log("inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败")
-            alert("inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader")
+            swal({title: "Oops...",text: "inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",type: "error"})
             return
         }
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"
@@ -49,10 +49,6 @@ function generateBtn(imgs){
 function addCopyBtn1(){
     console.log("addCopyBtn1()：被调用");
     var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    /* if(isOver(imgs) == false){
-        alert("为了得到准确的图片，请滚动页面确保所有图片都已加载完毕~");
-        return
-    } */
     generateBtn(imgs);
 }
 
