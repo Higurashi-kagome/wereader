@@ -91,3 +91,5 @@
 - [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
 
 - [clipboard.js](https://github.com/zenorocha/clipboard.js)
+
+- [sweetalert](https://github.com/t4t5/sweetalert)
