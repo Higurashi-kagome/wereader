@@ -1,5 +1,5 @@
-console.log("inject-theme.js：被注入")
-
+//console.log("inject-theme.js：被注入")
+/* 
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
     console.log("inject-theme.js => addThemeBtn()：被调用")
@@ -49,7 +49,7 @@ function addThemeBtn(){
             try {
                 browser.runtime.sendMessage({injectCss: "/theme/dark.css"})
             } catch (error) {
-                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
             clickDarkOrWhite("readerControls_item dark")
             //更改svg图标颜色
@@ -124,4 +124,4 @@ window.onload = function(){
     if(dark != undefined && dark.style.display != "none"){
         addThemeBtn()
     }
-}
+} */

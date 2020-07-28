@@ -1,8 +1,8 @@
 //页面加载完毕后开始执行
 window.onload = function () {
+    var bg = chrome.extension.getBackgroundPage();
     //获取并设置bid、vid
-    getuserVid(function(userVid){
-        var bg = chrome.extension.getBackgroundPage();
+    bg.getuserVid(function(userVid){
         //var userVid = bg.getuserVid();
         var bookId = bg.getbookId();
         /* var version = chrome.runtime.getManifest().version
@@ -11,15 +11,15 @@ window.onload = function () {
         document.getElementById("userVid").innerHTML = "vid：" + userVid;
         //获取bid / vid失败则提醒
         if (document.getElementById("userVid").innerHTML == "vid：null" && document.getElementById("bookId").innerHTML == "bid：null") {
-            bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，bookId == \"null\"，请确保正常登陆后刷新重试", button: {text: "确定"},type: "error"});
+            bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，bookId == \"null\"，请确保正常登陆后刷新重试", button: {text: "确定"},icon: "error"});
             window.close();
         } else {
             if (document.getElementById("userVid").innerHTML == "vid：null") {
-                bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，请确保正常登陆", button: {text: "确定"},type: "error"});
+                bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，请确保正常登陆", button: {text: "确定"},icon: "error"});
                 window.close();
             }
             if (document.getElementById("bookId").innerHTML == "bid：null") {
-                bg.sendAlertMsg({title:"Oops...", text:"bookId == \"null\"，请刷新重试", button: {text: "确定"},type: "error"});
+                bg.sendAlertMsg({title:"Oops...", text:"bookId == \"null\"，请刷新重试", button: {text: "确定"},icon: "error"});
                 window.close();
             }
         }
@@ -33,11 +33,7 @@ window.onload = function () {
         /*绑定点击事件*/
         //获取书评
         document.getElementById("getComment").addEventListener('click', function () {
-            if (choose.style.display != "block") {
-                choose.style.display = "block";
-            } else {
-                choose.style.display = "none";
-            }
+            (choose.style.display != "block") ? (choose.style.display = "block") : (choose.style.display = "none")
         }, false);
         //纯文本
         getText.addEventListener('click', function () {
@@ -51,11 +47,7 @@ window.onload = function () {
         }, false);
         //获取标注
         document.getElementById("getBookMarks").addEventListener('click', function () {
-            if (chooseMark.style.display != "block") {
-                chooseMark.style.display = "block";
-            } else {
-                chooseMark.style.display = "none";
-            }
+            (chooseMark.style.display != "block") ? (chooseMark.style.display = "block") : (chooseMark.style.display = "none")
         }, false);
         //本章
         getThisChapter.addEventListener('click', function () {
@@ -84,7 +76,7 @@ window.onload = function () {
         }, false);
         //开启复制图片
         document.getElementById("inject").addEventListener('click', function () {
-            injectCopyBtn();
+            bg.injectScript({ file: 'inject/inject-copyBtn.js' })
             window.close();
         }, false);
         /* document.getElementById("bookId").addEventListener('click', function () {
@@ -93,42 +85,4 @@ window.onload = function () {
         }, false); */
     })
     
-}
-
-//获取userVid
-function getuserVid(callback) {
-	//获取当前页面
-	chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-		var url = ""
-        url = tabs[0].url;
-        var list = url.split("/")
-        //检查是否为读书页，是则获取userVid
-		if (list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
-			//获取当前页面的cookie然后设置bookId和userVid
-			chrome.cookies.get({
-				url: url,
-				name: 'wr_vid'
-			}, function (cookie) {
-				if (cookie == null) {
-					callback("null")
-				} else {
-					callback(cookie.value.toString())
-				}
-			});
-		}else{
-			console.log("getuserVid()：不为读书页面")
-		}
-	});
-}
-
-//注入复制脚本
-function injectCopyBtn() {
-	console.log("injectCopyBtn()：被调用")
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tab) {
-		console.log("injectCopyBtn()：开始注入inject-copyBtn.js")
-		chrome.tabs.executeScript(tab[0].id, { file: 'inject/inject-copyBtn.js' }, function (result) {
-			//catchErr("injectCopyBtn() => chrome.tabs.executeScript")
-		});
-		console.log("injectCopyBtn()：inject-copyBtn.js注入结束")
-	})
 }

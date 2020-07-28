@@ -13,13 +13,13 @@ function generateBtn(imgs){
         var src = imgs[i].getAttribute("data-src")
         if(src == null || src == ""){
             console.log("inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败")
-            swal({title: "Oops...",text: "inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",type: "error"})
+            swal({title: "Oops...",text: "inject-copyBtn.js => addCopyBtn1() => generateBtn(imgs)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
             return
         }
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"
         var top = imgs[i].style.top
         var btn =  document.createElement("a" + i);
-        btn.innerHTML = "📋";
+        btn.textContent = "📋";
         btn.id = "linkCopy" + i
         btn.className = "wr_absolute wr_readerImage_opacity"
         //判断是否为style.left == "0px"的小图
@@ -35,11 +35,11 @@ function generateBtn(imgs){
         var parent = imgs[i].parentNode
         var inser = parent.insertBefore(btn,imgs[i]);
         inser.addEventListener('click', function(){
-            this.innerHTML = "👈"
+            this.textContent = "👈"
             sendMsgToBg(picStr)
             var id = this.id
             setTimeout(function () {
-                document.getElementById(id).innerHTML = "📋"
+                document.getElementById(id).textContent = "📋"
             }, 500);
          }, false);
     }
@@ -61,19 +61,15 @@ function addCopyBtn2(){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
-        btn.style.width = "19px"
-        btn.style.height = "19px"
-        btn.style.cursor = "pointer"
-        btn.style.display = "block"
-        btn.style.fontSize = "19px"
-        btn.innerHTML = "📋"
+        btn.style.cssText = "width:19px;height:19px;cursor:pointer;display:block;font-size:19px"
+        btn.textContent = "📋"
         btn.id = "noteCopy" + i
         btn.addEventListener('click', function(){
             sendMsgToBg(footernote)
-            this.innerHTML = "👈"
+            this.textContent = "👈"
         }, false);
         btn.onmouseleave = function(){
-            this.innerHTML = "📋"
+            this.textContent = "📋"
         }
         //btn.className = "wr_absolute wr_readerImage_opacity"
         //给注释按钮注册点击事件
@@ -99,25 +95,22 @@ function addCopyBtn3(){
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
         for(var i=0,len=pre.length;i<len;i++){
-            let code = "```\n" + pre[i].innerHTML + "```"
+            let code = "```\n" + pre[i].textContent + "```"
             let top = pre[i].style.top
             var btn =  document.createElement("b" + i);
-            btn.innerHTML = "📋";
+            btn.textContent = "📋";
             btn.id = "codeCopy" + i
             btn.className = "wr_absolute"
-            btn.style.right = "0px"
+            btn.style.cssText = "right:0px;width:16px;height:32px;cursor:pointer"
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 32 + "px"
-            btn.style.width = "16px"
-            btn.style.height = "32px"
-            btn.style.cursor = "pointer"
             let parent = pre[i].parentNode
             let inser = parent.insertBefore(btn,pre[i]);
             inser.addEventListener('click', function(){
-                this.innerHTML = "👈"
+                this.textContent = "👈"
                 sendMsgToBg(code)
                 var id = this.id
                 setTimeout(function () {
-                    document.getElementById(id).innerHTML = "📋"
+                    document.getElementById(id).textContent = "📋"
                 }, 500);
             }, false);
         }

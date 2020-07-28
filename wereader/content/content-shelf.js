@@ -57,27 +57,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			/*创建目录*/
 			//目录部分
 			var div = document.createElement("div")
-			div.id = "addedShelf"
-			div.style.display = "none"
-			div.style.border = "1.5px solid #e6e6e6"
-			div.style.borderLeft = "none"
-			div.style.borderRadius = "0px 4px 4px 0px"
-			div.style.maxHeight = "595px"
-			div.style.overflowY = "auto"
-			div.style.overflowX = "hidden"
+			div.style.cssText = "display: none;border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;border-style: solid solid solid none;border-width: 1.5px 1.5px 1.5px medium;border-image: none 100% / 1 / 0 stretch;border-radius: 0px 4px 4px 0px;max-height: 595px;overflow: hidden auto;"
 			//遍历类别
 			for(var key in shelf){
 				let categoryName = key
 				let categoryElement = document.createElement('div')
 				categoryElement.innerHTML = categoryName
 				categoryElement.className = "category"
-				categoryElement.style.color = "black"
-				categoryElement.style.cursor = "pointer"
-				categoryElement.style.padding = "2px 8px"
-				categoryElement.style.borderRadius = "4px"
-				categoryElement.style.margin = "2px"
-				//双击不选中文字
-				categoryElement.style.userSelect = "none"
+				categoryElement.style.cssText = "color: black;cursor: pointer;padding: 2px 8px;border-radius: 4px;margin: 2px;user-select: none;"
 				categoryElement.onmouseenter = function () {
 					//设置其背景颜色
 					this.style.backgroundColor = "rgb(227,227,227)"
@@ -99,14 +86,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 					bookLink.innerHTML = "○ " + categoryObjList[i].title
 					let coverLink = categoryObjList[i].cover.split("/")[5]
 					bookLink.href = booksDic[coverLink]
-					bookLink.style.width = "100%"
-					bookLink.style.height = "100%"
-					bookLink.style.margin = "2px"
-					bookLink.style.display = "inline-table"
 					if(booksDic[coverLink] != undefined){
 						bookLink.className = "bookLink"
-						bookLink.style.margin = "2px"
-						bookLink.style.borderRadius = "4px"
+						bookLink.style.cssText = "width: 100%;height: 100%;margin: 2px;display: inline-table;border-radius: 4px;"
 						bookLink.onmouseenter = function () {
 							//设置其背景颜色
 							this.style.backgroundColor = "rgb(227,227,227)"
@@ -135,28 +117,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			var hoverElement = document.createElement("div")
 			hoverElement.id = "hoverElement"
 			hoverElement.innerHTML = "书架"
-			hoverElement.style.color = "black"
-			hoverElement.style.backgroundColor = "#f1f5f8"
-			hoverElement.style.borderRadius = "0px 4px 4px 0px"
-			hoverElement.style.border = "1px solid #e6e6e6"
-			hoverElement.style.borderLeft = "none"
-			hoverElement.style.width = "14px"
-			hoverElement.style.padding = "6px"
+			hoverElement.style.cssText = "color: black;background-color: rgb(241, 245, 248);border-radius: 0px 4px 4px 0px;border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;border-style: solid solid solid none;border-width: 1px 1px 1px medium;border-image: none 100% / 1 / 0 stretch;width: 14px;padding: 6px;display: block;"
 			hoverElement.onmouseenter = function(){
 				div.style.display = "block"
 				hoverElement.style.display = "none"
 			}
-			parentElement.style.backgroundColor = "#f1f8ff"
-			parentElement.style.fontSize = "14px"
-			parentElement.style.lineHeight = "1.5"
-			parentElement.style.width = "auto"
-			parentElement.style.minHeight = "50px"
-			parentElement.style.maxWidth = "230px"
-			parentElement.style.maxHeight = "600px"
-			parentElement.style.left = "0px"
-			parentElement.style.top = "100px"
-			parentElement.style.position = "fixed"
-			parentElement.style.borderRadius = "0px 4px 4px 0px"
+			parentElement.style.cssText = "background-color: rgb(241, 248, 255);font-size: 14px;line-height: 1.5;width: auto;min-height: 50px;max-width: 230px;max-height: 600px;left: 0px;top: 100px;position: fixed;border-radius: 0px 4px 4px 0px;"
 			//目录部分和侧边部分嵌入到父容器中
 			parentElement.appendChild(div)
 			parentElement.appendChild(hoverElement)

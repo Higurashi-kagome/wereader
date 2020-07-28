@@ -6,18 +6,6 @@ function setMesToBg(imgsArray){
     chrome.runtime.sendMessage({RimgsArr: imgsArray});
 }
 
-//遍历HTMLCollection检查图片是否加载完毕
-/*因为可以通过img标签的data-src属性获取链接，故不再需要检查图片是否加载完毕，将此函数舍弃*/
-/* function isOver(imgs){
-    console.log("isOver(imgs)：被调用")
-    for(var i=0,len=imgs.length;i<len;i++){
-        if(imgs[i].className.indexOf("wr_pendingLoading") != -1){
-            return false
-        }
-    }
-    return true
-} */
-
 //获取imgs数组
 function requestImgsArray(imgs,s0,s1,s2){
     console.log("requestImgsArray(imgs,s0,s1,s2)：被调用")
@@ -27,7 +15,7 @@ function requestImgsArray(imgs,s0,s1,s2){
         var s = imgs[i].getAttribute("data-src")
         if(s == null || s == ""){
             console.log("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败")
-            swal({title: "Oops...",text: "inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",type: "error"})
+            swal({title: "Oops...",text: "inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
             return
         }
         var l = imgs[i].style.left
