@@ -152,7 +152,7 @@ document.getElementById("third_level_pre").onchange = function(){
     sendMsgToBg({set: true, s3Pre: document.getElementById("third_level_pre").value})
 }
 document.getElementById("third_level_suf").onchange = function(){
-    sendMsgToBg({set: true, s3Pre: document.getElementById("first_level_suf").value})
+    sendMsgToBg({set: true, s3Suf: document.getElementById("third_level_suf").value})
 }
 document.getElementById("first_header").onchange = function(){
     sendMsgToBg({set: true, lev1: document.getElementById("first_header").value})
@@ -193,7 +193,7 @@ document.getElementById("addRegExp").onclick = function(){
             updateCheckedRegexp()
         }
     }else if(len > 10){
-        alert("最多添加10个")
+        //alert("最多添加10个")
     }
 }
 

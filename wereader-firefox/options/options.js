@@ -46,6 +46,8 @@ function updateRegexp(){
     console.log("initialize()：被调用")
     chrome.storage.sync.get(null, function(setting) {
         console.log("initialize()：chrome.storage.sync.get()：获取到数据")
+        console.log("全部数据：")
+        console.log(setting)
         console.log("基础初始化开始")
         document.getElementById("first_level_pre").value = setting.s1Pre;
         document.getElementById("first_level_suf").value = setting.s1Suf;
@@ -152,7 +154,7 @@ document.getElementById("third_level_pre").onchange = function(){
     sendMsgToBg({set: true, s3Pre: document.getElementById("third_level_pre").value})
 }
 document.getElementById("third_level_suf").onchange = function(){
-    sendMsgToBg({set: true, s3Pre: document.getElementById("first_level_suf").value})
+    sendMsgToBg({set: true, s3Suf: document.getElementById("third_level_suf").value})
 }
 document.getElementById("first_header").onchange = function(){
     sendMsgToBg({set: true, lev1: document.getElementById("first_header").value})
