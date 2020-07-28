@@ -6,14 +6,11 @@ strict.dtd">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <style type="text/css">
             #bookId,#userVid {
-                display: block;
+                display: none;
             }
             #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts,#getBookContents,#getComment_text,#getComment_html,#getThisChapter,#getAll,#inject {
                 cursor: pointer;
                 color: black;
-            }
-            #choose,#choose_mark {
-                display: none;
             }
             p {
                 padding: 2px 8px;
@@ -22,6 +19,7 @@ strict.dtd">
                 font-size: small;
                 white-space: nowrap;
                 border-radius: 4px;
+                user-select:none;
             }
             div {
                 padding: 2px 8px;
@@ -30,6 +28,7 @@ strict.dtd">
                 font-size: small;
                 white-space: nowrap;
                 border-radius: 4px;
+                user-select:none;
             }
             #getComment:hover {
                 background-color: rgb(227,227,227);
@@ -62,6 +61,8 @@ strict.dtd">
                 background-color: rgb(227,227,227);
             }
             #choose,#choose_mark {
+                display: none;
+                user-select:none;
                 padding: 0px 0px;
                 margin: 2px;
                 white-space: nowrap;
