@@ -4,8 +4,7 @@
    "version": "1.6.0",
    "description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用Markdown做笔记的用户尤其有帮助。",
    "background": {
-	"page": "background/background.html",
-	"persisten": false
+	"page": "background/background.html"
    },
    "browser_specific_settings": {
         "gecko": {

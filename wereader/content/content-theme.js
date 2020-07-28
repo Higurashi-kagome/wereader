@@ -31,7 +31,7 @@ function addThemeBtn(){
             try{
                 chrome.runtime.sendMessage({injectCss: "theme/white.css"})
             }catch(error){
-                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
             clickDarkOrWhite("readerControls_item white")
             //从黑色主题到白色主题恢复svg颜色
@@ -44,7 +44,7 @@ function addThemeBtn(){
             try {
                 chrome.runtime.sendMessage({injectCss: "theme/green.css"})
             } catch (error) {
-                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
         }else if(Flag == 1){
             //设置橙色主题
@@ -54,14 +54,14 @@ function addThemeBtn(){
             try {
                 chrome.runtime.sendMessage({injectCss: "theme/orange.css"})
             } catch (error) {
-                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
         }else if(Flag == 2){
             //设置黑色主题
             try {
                 chrome.runtime.sendMessage({injectCss: "theme/dark.css"})
             } catch (error) {
-                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",type: "error"})
+                swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
             clickDarkOrWhite("readerControls_item dark")
             //更改svg图标颜色
