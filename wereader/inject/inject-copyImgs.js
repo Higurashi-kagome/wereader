@@ -3,7 +3,7 @@
 function setMesToBg(imgsArray){
     console.log("setMesToBg(imgsArray)：被调用，参数imgsArray：\n" + imgsArray)
     console.log("setMesToBg(imgsArray)：开始传递信息给后台")
-    chrome.runtime.sendMessage({RimgsArr: imgsArray});
+    chrome.runtime.sendMessage({type: "imgsArr", RimgsArr: imgsArray});
 }
 
 //获取imgs数组
@@ -15,7 +15,7 @@ function requestImgsArray(imgs,s0,s1,s2){
         var s = imgs[i].getAttribute("data-src")
         if(s == null || s == ""){
             console.log("inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败")
-            swal({title: "Oops...",text: "inject-copyImgs.js => main() => requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
+            swal({title: "Oops...",text: "图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
             return
         }
         var l = imgs[i].style.left

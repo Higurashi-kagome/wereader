@@ -3,7 +3,6 @@ window.onload = function () {
     var bg = chrome.extension.getBackgroundPage();
     //获取并设置bid、vid
     bg.getuserVid(function(userVid){
-        //var userVid = bg.getuserVid();
         var bookId = bg.getbookId();
         /* var version = chrome.runtime.getManifest().version
         document.getElementById("title").innerHTML = '<strong>wereader</strong> ' + version */
@@ -61,7 +60,7 @@ window.onload = function () {
         }, false);
         //获取目录
         document.getElementById("getBookContents").addEventListener('click', function () {
-            bg.getBookContents();
+            bg.injectScript({ file: 'inject/inject-getContents.js' });
             window.close();
         }, false);
         //获取热门标注

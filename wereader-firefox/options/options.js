@@ -139,40 +139,40 @@ function sendMsgToBg(msg){
 
 //监听设置页，更改设置则发送消息到后台
 document.getElementById("first_level_pre").onchange = function(){
-    sendMsgToBg({set: true, s1Pre: document.getElementById("first_level_pre").value})
+    sendMsgToBg({set: true, type: "s1Pre", text: document.getElementById("first_level_pre").value})
 }
 document.getElementById("first_level_suf").onchange = function(){
-    sendMsgToBg({set: true, s1Suf: document.getElementById("first_level_suf").value})
+    sendMsgToBg({set: true, type: "s1Suf", text: document.getElementById("first_level_suf").value})
 }
 document.getElementById("second_level_pre").onchange = function(){
-    sendMsgToBg({set: true, s2Pre: document.getElementById("second_level_pre").value})
+    sendMsgToBg({set: true, type: "s2Pre", text: document.getElementById("second_level_pre").value})
 }
 document.getElementById("second_level_suf").onchange = function(){
-    sendMsgToBg({set: true, s2Suf: document.getElementById("second_level_suf").value})
+    sendMsgToBg({set: true, type: "s2Suf", text: document.getElementById("second_level_suf").value})
 }
 document.getElementById("third_level_pre").onchange = function(){
-    sendMsgToBg({set: true, s3Pre: document.getElementById("third_level_pre").value})
+    sendMsgToBg({set: true, type: "s3Pre", text: document.getElementById("third_level_pre").value})
 }
 document.getElementById("third_level_suf").onchange = function(){
-    sendMsgToBg({set: true, s3Suf: document.getElementById("third_level_suf").value})
+    sendMsgToBg({set: true, type: "s3Suf", text: document.getElementById("third_level_suf").value})
 }
 document.getElementById("first_header").onchange = function(){
-    sendMsgToBg({set: true, lev1: document.getElementById("first_header").value})
+    sendMsgToBg({set: true, type: "lev1", text: document.getElementById("first_header").value})
 }
 document.getElementById("second_header").onchange = function(){
-    sendMsgToBg({set: true, lev2: document.getElementById("second_header").value})
+    sendMsgToBg({set: true, type: "lev2", text: document.getElementById("second_header").value})
 }
 document.getElementById("third_header").onchange = function(){
-    sendMsgToBg({set: true, lev3: document.getElementById("third_header").value})
+    sendMsgToBg({set: true, type: "lev3", text: document.getElementById("third_header").value})
 }
 document.getElementById("thought_pre").onchange = function(){
-    sendMsgToBg({set: true, thouPre: document.getElementById("thought_pre").value})
+    sendMsgToBg({set: true, type: "thouPre", text: document.getElementById("thought_pre").value})
 }
 document.getElementById("thought_suf").onchange = function(){
-    sendMsgToBg({set: true, thouSuf: document.getElementById("thought_suf").value})
+    sendMsgToBg({set: true, type: "thouSuf", text: document.getElementById("thought_suf").value})
 }
 document.getElementById("add_number").onclick = function(){
-    sendMsgToBg({set: true,displayN: "change"})
+    sendMsgToBg({set: true, type: "switchAddNumber"})
 }
 
 /* 

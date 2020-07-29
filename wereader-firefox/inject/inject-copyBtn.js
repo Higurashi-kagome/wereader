@@ -3,7 +3,7 @@
 function sendMsgToBg(picStr){
     console.log("sendMsgToBg(picStr)：被调用，参数picStr：\n" + picStr)
     console.log("sendMsgToBg(picStr)开始传递信息给后台")
-    chrome.runtime.sendMessage({picText: picStr});
+    chrome.runtime.sendMessage({type:"copyImg",picText: picStr});
 }
 
 //为图片遍历HTMLCollection生成按钮

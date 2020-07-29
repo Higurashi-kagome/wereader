@@ -29,7 +29,7 @@ function addThemeBtn(){
             //设置白色主题
             Flag=-1
             try{
-                chrome.runtime.sendMessage({injectCss: "theme/white.css"})
+                chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
             }catch(error){
                 swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
@@ -42,7 +42,7 @@ function addThemeBtn(){
                 clickDarkOrWhite("readerControls_item white")
             }
             try {
-                chrome.runtime.sendMessage({injectCss: "theme/green.css"})
+                chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
             } catch (error) {
                 swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
@@ -52,14 +52,14 @@ function addThemeBtn(){
                 clickDarkOrWhite("readerControls_item white")
             }
             try {
-                chrome.runtime.sendMessage({injectCss: "theme/orange.css"})
+                chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
             } catch (error) {
                 swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
         }else if(Flag == 2){
             //设置黑色主题
             try {
-                chrome.runtime.sendMessage({injectCss: "theme/dark.css"})
+                chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"})
             } catch (error) {
                 swal({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error"})
             }
@@ -104,14 +104,14 @@ const timeId = setInterval(() => {
                     if(document.getElementsByClassName("readerControls_item white").length != 0){
                         clickDarkOrWhite("readerControls_item white")
                     }
-                    chrome.runtime.sendMessage({injectCss: "theme/green.css"})
+                    chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
                     Flag = 1
                 }else if(result.flag == 1){
                     //设置橙色主题
                     if(document.getElementsByClassName("readerControls_item white").length != 0){
                         clickDarkOrWhite("readerControls_item white")
                     }
-                    chrome.runtime.sendMessage({injectCss: "theme/orange.css"})
+                    chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
                     Flag = 2
                 }else{
                     Flag = 0

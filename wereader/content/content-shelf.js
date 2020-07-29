@@ -1,5 +1,5 @@
 console.log("content-shelf.js：被注入")
-chrome.runtime.sendMessage({getUserVid: true})
+chrome.runtime.sendMessage({type: "getUserVid"})
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if(request.userVid != undefined && request.userVid != "null"){
 		getData("https://i.weread.qq.com/shelf/sync?userVid=" + request.userVid + "&synckey=0&lectureSynckey=0",function(data){
