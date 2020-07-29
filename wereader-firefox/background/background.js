@@ -478,16 +478,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 					if(userVid != undefined && userVid != "null")sendMessageToContentScript({ userVid: userVid })
 				})
 				break
-			/* case "injectCss":
-				chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-					var tabId = tabs[0].id
-					try{
-						chrome.tabs.insertCSS(tabId, { file: message.css })
-					}catch(err){
-						
-					}
-				})
-				break */
 			case "getContents":
 				var texts = message.contents;
 				var res = '';
