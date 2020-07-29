@@ -1,5 +1,5 @@
 //用于获取bid
-console.log("inject-bid.js被注入了");
+console.log("inject-bid.js：被注入");
 function getClass(classname){
 	if (document.getElementsByClassName) {
         //使用现有方法

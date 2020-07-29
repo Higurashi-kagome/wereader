@@ -235,6 +235,8 @@ function copyBookMarks(url, isAll) {
 										if (markText == "[插图]") {
 											markText = imgsArr[imgsArrIndext]
 											imgsArrIndext = imgsArrIndext + 1
+											res += markText + "\n\n"
+											continue
 										}
 										//正则匹配
 										markText = getRegExpMarkText(markText,regexpCollection)
@@ -409,7 +411,7 @@ function Setting() {
 				var key = keys[i]
 				items[key] = document.getElementById(key).value
 			}
-			//console.log("Setting()：setting.s1Pre == undefined，开始存储初始化设置")
+			//存储初始化设置
 			chrome.storage.sync.set(items, function () {
 				//console.log("Setting()：设置存储完毕")
 			});

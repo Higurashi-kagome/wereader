@@ -60,7 +60,7 @@ window.onload = function () {
         }, false);
         //获取目录
         document.getElementById("getBookContents").addEventListener('click', function () {
-            bg.injectScript({ file: 'inject/inject-getContents.js' });
+            bg.injectScript({ file: '/inject/inject-getContents.js' });
             window.close();
         }, false);
         //获取热门标注

@@ -1,6 +1,5 @@
 //更新已启用正则匹配
 function updateCheckedRegexp(){
-    console.log("updateCheckedRegexp()：被调用")
     var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
     var checkedRegexp = {checkedRe:[]}
     for(var i = 0,len = checkBoxCollection.length;i < len;i++){
@@ -15,16 +14,13 @@ function updateCheckedRegexp(){
             }
         }
     }
-    console.log("updateCheckedRegexp()：checkedRegexp：\n" + JSON.stringify(checkedRegexp))
     chrome.storage.sync.set(checkedRegexp,function(){
-        console.log("updateCheckedRegexp()：\"已启用\"正则匹配更新结束")
+
     })
-    console.log("updateCheckedRegexp()：结束")
 }
 
 //更新所有正则
 function updateRegexp(){
-    console.log("updateRegexp()：被调用")
     var regexpContainer = document.getElementsByClassName("regexp_container")
     var Regexp = {re:[]}
     for(var i = 0,len = regexpContainer.length;i < len;i++){
@@ -34,41 +30,40 @@ function updateRegexp(){
         let suf = regexpContainer[i].getElementsByClassName("regexp_suf")[0].value
         Regexp.re.push([id,re,pre,suf])
     }
-    console.log("updateRegexp()：Regexp：\n" + JSON.stringify(Regexp))
     chrome.storage.sync.set(Regexp,function(){
-        console.log("updateRegexp()：\"所有\"正则匹配更新结束")
+        
     })
-    console.log("updateRegexp()：结束")
+}
+
+//发消息通知后台
+function sendMsgToBg(msg){
+    chrome.runtime.sendMessage(msg);
 }
 
 //初始化
- function initialize(){
-    console.log("initialize()：被调用")
+function initialize(){
     chrome.storage.sync.get(null, function(setting) {
-        console.log("initialize()：chrome.storage.sync.get()：获取到数据")
-        console.log("基础初始化开始")
-        document.getElementById("first_level_pre").value = setting.s1Pre;
-        document.getElementById("first_level_suf").value = setting.s1Suf;
-        document.getElementById("second_level_pre").value = setting.s2Pre;
-        document.getElementById("second_level_suf").value = setting.s2Suf;
-        document.getElementById("third_level_pre").value = setting.s3Pre;
-        document.getElementById("third_level_suf").value = setting.s3Suf;
-        document.getElementById("first_header").value = setting.lev1;
-        document.getElementById("second_header").value = setting.lev2;
-        document.getElementById("third_header").value = setting.lev3;
-        document.getElementById("thought_pre").value = setting.thouPre;
-        document.getElementById("thought_suf").value = setting.thouSuf;
+        //"标注、标题、想法" 初始化
+        var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
+        for(var i=0,len=keys.length;i<len;i++){
+            var key = keys[i]
+            document.getElementById(key).value = setting[key]
+            document.getElementById(key).onchange = function(){
+                sendMsgToBg({set: true, type: this.id, text: this.value})
+            }
+        }
+        //"是否显示热门标注人数" 初始化
         (setting.displayN == "true") ? (document.getElementById("add_number").checked = true)
          : (document.getElementById("add_number").checked = false)
-        console.log("基础初始化结束")
+        document.getElementById("add_number").onclick = function(){
+            sendMsgToBg({set: true, type: "switchAddNumber"})
+        }
         /************************************************************************************/
-        console.log("正则匹配初始化开始")
+        //正则匹配初始化
         var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
         var checkedRe = setting.checkedRe
-        console.log("已选中正则：\n" + JSON.stringify(checkedRe))
-        //checkbox初始化
-        console.log("checkbox初始化开始")
-        if(checkedRe != undefined && checkedRe.length > 0 && checkedRe.length <= 5){
+        //checkbox 初始化
+        if(checkedRe != undefined && checkedRe.length >= 0 && checkedRe.length <= 5){
             for(var i = 0,len1 = checkBoxCollection.length;i < len1;i++){
                 for(var j = 0,len2 = checkedRe.length;j < len2;j++){
                     if(checkedRe[j][0] == checkBoxCollection[i].id){
@@ -81,9 +76,9 @@ function updateRegexp(){
                 }
             }
         }else if(checkedRe != undefined){
-            console.log("ERROR：initialize()：setting.checkedRe：" + JSON.stringify(checkedRe))
+            console.log("ERROR：checkedRe：" + JSON.stringify(checkedRe))
         }
-        //checkbox点击事件
+        //checkbox 点击事件
         for(var i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
                 if(this.parentNode.getElementsByClassName("regexp")[0].value != ""){
@@ -91,12 +86,9 @@ function updateRegexp(){
                 }
             }
         }
-        console.log("checkbox初始化结束")
-        //input、textarea初始化
-        console.log("input、textarea初始化开始")
+        //input、textarea 初始化
         var regexpContainer = document.getElementsByClassName("regexp_container")
         var reCollection = setting.re
-        console.log("全部正则：\n" + JSON.stringify(reCollection))
         if(reCollection != undefined && reCollection.length == 5){
             for(var i = 0,len = reCollection.length;i<len;i++){
                 regexpContainer[i].getElementsByClassName("regexp")[0].value = reCollection[i][1]
@@ -106,73 +98,23 @@ function updateRegexp(){
         }else{
             updateRegexp()
         }
-        //input、textarea改变
-        for(var i = 0,len = regexpContainer.length;i < len;i++){
-            regexpContainer[i].getElementsByClassName("regexp")[0].onchange = function(){
-                updateRegexp()
-                updateCheckedRegexp()
-            }
-            regexpContainer[i].getElementsByClassName("regexp_pre")[0].onchange = function(){
-                updateRegexp()
-                updateCheckedRegexp()
-            }
-            regexpContainer[i].getElementsByClassName("regexp_suf")[0].onchange = function(){
-                updateRegexp()
-                updateCheckedRegexp()
+        //input、textarea 改变
+        for(var i = 0,len1 = regexpContainer.length;i < len1;i++){
+            var classNameArr = ["regexp","regexp_pre","regexp_suf"]
+            for(var j=0,len2=classNameArr.length;j<len2;j++){
+                regexpContainer[i].getElementsByClassName(classNameArr[j])[0].onchange = function(){
+                    updateRegexp()
+                    updateCheckedRegexp()
+                }
             }
         }
-        console.log("input、textarea初始化结束")
-        console.log("正则匹配初始化结束")
-        console.log("initialize()：chrome.storage.sync.get()：结束")
     });
-    console.log("initialize()：结束")
 }
 
 //初始化设置页
 initialize();
 
-function sendMsgToBg(msg){
-    chrome.runtime.sendMessage(msg);
-}
-
-//监听设置页，更改设置则发送消息到后台
-document.getElementById("first_level_pre").onchange = function(){
-    sendMsgToBg({set: true, type: "s1Pre", text: document.getElementById("first_level_pre").value})
-}
-document.getElementById("first_level_suf").onchange = function(){
-    sendMsgToBg({set: true, type: "s1Suf", text: document.getElementById("first_level_suf").value})
-}
-document.getElementById("second_level_pre").onchange = function(){
-    sendMsgToBg({set: true, type: "s2Pre", text: document.getElementById("second_level_pre").value})
-}
-document.getElementById("second_level_suf").onchange = function(){
-    sendMsgToBg({set: true, type: "s2Suf", text: document.getElementById("second_level_suf").value})
-}
-document.getElementById("third_level_pre").onchange = function(){
-    sendMsgToBg({set: true, type: "s3Pre", text: document.getElementById("third_level_pre").value})
-}
-document.getElementById("third_level_suf").onchange = function(){
-    sendMsgToBg({set: true, type: "s3Suf", text: document.getElementById("third_level_suf").value})
-}
-document.getElementById("first_header").onchange = function(){
-    sendMsgToBg({set: true, type: "lev1", text: document.getElementById("first_header").value})
-}
-document.getElementById("second_header").onchange = function(){
-    sendMsgToBg({set: true, type: "lev2", text: document.getElementById("second_header").value})
-}
-document.getElementById("third_header").onchange = function(){
-    sendMsgToBg({set: true, type: "lev3", text: document.getElementById("third_header").value})
-}
-document.getElementById("thought_pre").onchange = function(){
-    sendMsgToBg({set: true, type: "thouPre", text: document.getElementById("thought_pre").value})
-}
-document.getElementById("thought_suf").onchange = function(){
-    sendMsgToBg({set: true, type: "thouSuf", text: document.getElementById("thought_suf").value})
-}
-document.getElementById("add_number").onclick = function(){
-    sendMsgToBg({set: true, type: "switchAddNumber", displayN: "change"})
-}
-
+//设置更多的正则表达式（暂时不添加此功能）
 /* 
 //加号点击事件
 document.getElementById("addRegExp").onclick = function(){

@@ -27,22 +27,21 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 					delete bookDic[id]
 				}
 			}
-			//console.log(bookDic)
+			//将书架中未分类的书籍归为 "未分类书籍"
 			shelf['未分类书籍'] = []
 			for(var key in bookDic){
 				shelf["未分类书籍"].push(bookDic[key])
 			}
+			//遍历分类给书本排序
 			var colId = ""
 			var rank = function(x,y){
 				return (x[colId] > y[colId]) ? 1 : -1
 			}
 			colId = "readUpdateTime"
-			//遍历分类给书本排序
 			for(var key in shelf){
 				shelf[key].sort(rank)
 				shelf[key].reverse()
 			}
-			//console.log(JSON.stringify(shelf))
 			//获取创建目录所需书本url
 			var booksDic = {}
 			var books = document.getElementsByClassName("shelf_list")[0].childNodes
@@ -62,7 +61,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			for(var key in shelf){
 				let categoryName = key
 				let categoryElement = document.createElement('div')
-				categoryElement.innerHTML = categoryName
+				categoryElement.textContent = categoryName
 				categoryElement.className = "category"
 				categoryElement.style.cssText = "color: black;cursor: pointer;padding: 2px 8px;border-radius: 4px;margin: 2px;user-select: none;"
 				categoryElement.onmouseenter = function () {
@@ -83,7 +82,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				booksContainer.style.marginLeft = "15px"
 				for(var i=0,len=categoryObjList.length;i<len;i++){
 					let bookLink = document.createElement('a')
-					bookLink.innerHTML = "○ " + categoryObjList[i].title
+					bookLink.textContent = "○ " + categoryObjList[i].title
 					let coverLink = categoryObjList[i].cover.split("/")[5]
 					bookLink.href = booksDic[coverLink]
 					if(booksDic[coverLink] != undefined){
@@ -116,7 +115,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			//侧边部分
 			var hoverElement = document.createElement("div")
 			hoverElement.id = "hoverElement"
-			hoverElement.innerHTML = "书架"
+			hoverElement.textContent = "书架"
 			hoverElement.style.cssText = "color: black;background-color: rgb(241, 245, 248);border-radius: 0px 4px 4px 0px;border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;border-style: solid solid solid none;border-width: 1px 1px 1px medium;border-image: none 100% / 1 / 0 stretch;width: 14px;padding: 6px;display: block;"
 			hoverElement.onmouseenter = function(){
 				div.style.display = "block"
@@ -140,17 +139,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 //请求数据
 function getData(url,callback){
 	console.log("getData(url,callback)：被调用")
-	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.open('GET', url, true);
 	httpRequest.withCredentials = true;
-	httpRequest.send();//第三步：发送请求  将请求参数写在URL中
-	/**
-	 * 获取数据后的处理程序
-	 */
+	httpRequest.send();
 	httpRequest.onreadystatechange = function () {
-		console.log("getData(url,callback)：httpRequest.onreadystatechange触发")
 		if (httpRequest.readyState==4 && httpRequest.status==200){
-			console.log("getData(url,callback)：httpRequest.onreadystatechange获取数据结束")
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
 			callback(data);
 		}

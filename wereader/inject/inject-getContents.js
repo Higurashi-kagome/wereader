@@ -17,7 +17,6 @@ try{
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].innerHTML
     }
-    console.log("inject-getContents.js：获取目录成功")
     //传消息给后台
     chrome.runtime.sendMessage({type: "getContents", contents: texts,currentContent:currentContent});
 }catch{

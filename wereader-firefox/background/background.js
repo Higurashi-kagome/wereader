@@ -1,14 +1,12 @@
 //报错捕捉函数
 /* function catchErr(sender) {
 	if (chrome.runtime.lastError != undefined) {
-		//console.log(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError)
 		chrome.runtime.lastError = undefined
 	}
 } */
 
 //发送消息到content.js
 function sendMessageToContentScript(message) {
-	//console.log("sendMessageToContentScript(message)：被调用")
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, message);
 	});
@@ -21,7 +19,6 @@ function sendAlertMsg(msg) {
 
 //发送复制内容到复制窗口
 function sendCopyMsg(text) {
-	//console.log("sendCopyMsg(msg)：被调用")
 	sendMessageToContentScript({isCopyMsg: true,text: text})
 }
 
@@ -94,7 +91,8 @@ function getComment(url, bookId, isHtml) {
 
 function injectScript(details){
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.executeScript(tabs[0].id, details, function (result) {
+		browser.tabs.executeScript(tabs[0].id, details, function (result) {
+
 		});
 	})
 }
@@ -135,7 +133,6 @@ function getBookMarks(url, callback) {
 
 //获取添加级别的标题：OK
 function getTitleAddedPre(title, level) {
-	//console.log("getTitleAddedPre(title,level)：被调用")
 	return (level == 1) ? (document.getElementById("lev1").value + title)
 		: (level == 2) ? (document.getElementById("lev2").value + title)
 		: (level == 3) ? (document.getElementById("lev3").value + title)
@@ -190,7 +187,6 @@ function copyBookMarks(url, isAll) {
 					regexpCollection = []
 				}
 				if (isAll == true) {
-					//console.log("copyBookMarks(url,isAll)：isAll == true")
 					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
 						var chapterUid = chaptersAndMarks[i].chapterUid
 						for (var j = 0, len2 = contents.length; j < len2; j++) {
@@ -227,6 +223,8 @@ function copyBookMarks(url, isAll) {
 										if (markText == "[插图]") {
 											markText = imgsArr[imgsArrIndext]
 											imgsArrIndext = imgsArrIndext + 1
+											res += markText + "\n\n"
+											continue
 										}
 										//正则匹配
 										markText = getRegExpMarkText(markText,regexpCollection)
@@ -401,9 +399,9 @@ function Setting() {
 				var key = keys[i]
 				items[key] = document.getElementById(key).value
 			}
-			//console.log("Setting()：setting.s1Pre == undefined，开始存储初始化设置")
+			//开始存储初始化设置
 			chrome.storage.sync.set(items, function () {
-				//console.log("Setting()：设置存储完毕")
+				//console.log("设置存储完毕")
 			});
 		} else {
 			//同步设置到背景页
@@ -466,7 +464,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	}else{
 		switch(message.type){
 			case "copyImg":
-				copy(message.picText)
+				sendCopyMsg(message.picText)
 				break
 			case "imgsArr":
 				imgsArr = message.RimgsArr
@@ -486,7 +484,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 					try{
 						chrome.tabs.insertCSS(tabId, { file: message.css })
 					}catch(err){
-						catchErr("chrome.tabs.insertCSS()：出错")
+						
 					}
 				})
 				break */
@@ -501,7 +499,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				}
 				//如果需要获取目录，则设置，如果不需要获取目录，直接复制
 				(document.getElementById("Bookcontents").innerHTML == "getBookContents") ? 
-				(document.getElementById("Bookcontents").textContent = res) : copy(res)
+				(document.getElementById("Bookcontents").textContent = res) : sendCopyMsg(res)
 				//设置当前所在目录
 				document.getElementById("currentContent").textContent = message.currentContent
 				sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');

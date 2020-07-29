@@ -4,8 +4,6 @@ window.onload = function () {
     //获取并设置bid、vid
     bg.getuserVid(function(userVid){
         var bookId = bg.getbookId();
-        /* var version = chrome.runtime.getManifest().version
-        document.getElementById("title").innerHTML = '<strong>wereader</strong> ' + version */
         document.getElementById("bookId").innerHTML = "bid：" + bookId;
         document.getElementById("userVid").innerHTML = "vid：" + userVid;
         //获取bid / vid失败则提醒
