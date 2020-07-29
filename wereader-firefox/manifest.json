@@ -47,7 +47,7 @@
    ],
    "options_ui":
 	{
-    	"page": "options/options.html"
+       "page": "options/options.html"
    },
    "homepage_url": "https://github.com/liuhao326/wereader",
 	"permissions":
