@@ -75,8 +75,6 @@ function initialize(){
                     }
                 }
             }
-        }else if(checkedRe != undefined){
-            console.log("ERROR：checkedRe：" + JSON.stringify(checkedRe))
         }
         //checkbox 点击事件
         for(var i = 0,len = checkBoxCollection.length;i < len;i++){

@@ -6,7 +6,6 @@ function sendMsgToBg(picStr){
 
 //为图片遍历HTMLCollection生成按钮
 function generateBtn(imgs){
-    console.log("generateBtn(imgs)：被调用")
     for(var i=0,len=imgs.length;i<len;i++){
         var src = imgs[i].getAttribute("data-src")
         if(src == null || src == ""){
@@ -37,14 +36,13 @@ function generateBtn(imgs){
             var id = this.id
             setTimeout(function () {
                 document.getElementById(id).innerHTML = "📋"
-            }, 1000);
+            }, 1500);
          }, false);
     }
 }
 
 //给图片添加复制按钮
 function addCopyBtn1(){
-    console.log("addCopyBtn1()：被调用");
     var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
     generateBtn(imgs);
 }
@@ -77,8 +75,6 @@ function addCopyBtn2(){
                     parent.appendChild(btn)
                     //结束定时器
                     clearInterval(interval)
-                }else{
-                    console.log("setInterval() => p == undefined，重新获取")
                 }
             },10)
         },false)
@@ -87,7 +83,6 @@ function addCopyBtn2(){
 
 //给代码块添加复制按钮
 function addCopyBtn3(){
-    console.log("generateBtn(imgs)：被调用")
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
         for(var i=0,len=pre.length;i<len;i++){
@@ -107,13 +102,13 @@ function addCopyBtn3(){
                 var id = this.id
                 setTimeout(function () {
                     document.getElementById(id).innerHTML = "📋"
-                }, 1000);
+                }, 1500);
             }, false);
         }
     }
 }
 
-console.log("inject-copyBtn.js：已注入")
+//console.log("inject-copyBtn.js：已注入")
 if(document.getElementById("linkCopy0") == undefined){
     addCopyBtn1()
     addCopyBtn2()

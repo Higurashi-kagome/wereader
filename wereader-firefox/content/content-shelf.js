@@ -1,9 +1,8 @@
-console.log("content-shelf.js：被注入")
+//console.log("content-shelf.js：被注入")
 chrome.runtime.sendMessage({type:"getUserVid"})
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if(request.userVid != undefined && request.userVid != "null"){
 		getData("https://i.weread.qq.com/shelf/sync?userVid=" + request.userVid + "&synckey=0&lectureSynckey=0",function(data){
-			//console.log(data)
 			var json = JSON.parse(data)
 			var books = json.books
 			var archive = json.archive
@@ -27,7 +26,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 					delete bookDic[id]
 				}
 			}
-			//console.log(bookDic)
 			shelf['未分类书籍'] = []
 			for(var key in bookDic){
 				shelf["未分类书籍"].push(bookDic[key])
@@ -42,7 +40,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 				shelf[key].sort(rank)
 				shelf[key].reverse()
 			}
-			//console.log(JSON.stringify(shelf))
 			//获取创建目录所需书本url
 			var booksDic = {}
 			var books = document.getElementsByClassName("shelf_list")[0].childNodes
@@ -139,18 +136,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 //请求数据
 function getData(url,callback){
-	console.log("getData(url,callback)：被调用")
-	var httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-	httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.open('GET', url, true);
 	httpRequest.withCredentials = true;
-	httpRequest.send();//第三步：发送请求  将请求参数写在URL中
-	/**
-	 * 获取数据后的处理程序
-	 */
+	httpRequest.send();
 	httpRequest.onreadystatechange = function () {
-		console.log("getData(url,callback)：httpRequest.onreadystatechange触发")
 		if (httpRequest.readyState==4 && httpRequest.status==200){
-			console.log("getData(url,callback)：httpRequest.onreadystatechange获取数据结束")
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
 			callback(data);
 		}

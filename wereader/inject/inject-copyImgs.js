@@ -11,7 +11,6 @@ function requestImgsArray(imgs,s0,s1,s2){
     for(var i=0,len=imgs.length;i<len;i=i+1){
         var s = imgs[i].getAttribute("data-src")
         if(s == null || s == ""){
-            console.log("requestImgsArray(imgs,s0,s1,s2)：图片链接获取失败")
             swal({title: "Oops...",text: "图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
             return
         }
@@ -59,5 +58,5 @@ function main(){
     setMesToBg(imgsArray)
 }
 
-console.log("inject-copyImgs.js：被注入")
+//console.log("inject-copyImgs.js：被注入")
 main()

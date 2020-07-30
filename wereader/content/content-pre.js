@@ -1,5 +1,5 @@
 /*当检测到读书页中存在代码块时，提示不要在网页中对代码块进行标注*/
-console.log("content-pre.js：被注入")
+//console.log("content-pre.js：被注入")
 var pre = document.getElementsByTagName("pre")
 setTimeout(function(){
     if(pre.length > 0){

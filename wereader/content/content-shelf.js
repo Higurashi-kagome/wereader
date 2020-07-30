@@ -1,9 +1,8 @@
-console.log("content-shelf.js：被注入")
+//console.log("content-shelf.js：被注入")
 chrome.runtime.sendMessage({type: "getUserVid"})
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	if(request.userVid != undefined && request.userVid != "null"){
 		getData("https://i.weread.qq.com/shelf/sync?userVid=" + request.userVid + "&synckey=0&lectureSynckey=0",function(data){
-			//console.log(data)
 			var json = JSON.parse(data)
 			var books = json.books
 			var archive = json.archive
@@ -138,7 +137,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 //请求数据
 function getData(url,callback){
-	console.log("getData(url,callback)：被调用")
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open('GET', url, true);
 	httpRequest.withCredentials = true;

@@ -1,4 +1,4 @@
-console.log("content-copy.js：被注入")
+//console.log("content-copy.js：被注入")
 //生成复制窗口
 if(document.getElementById("copyTextBtn") == undefined){
     //创建父元素
@@ -39,15 +39,16 @@ if(document.getElementById("copyTextBtn") == undefined){
 
 //监听信息，收到信息后设置内容并显示复制窗口
 chrome.runtime.onMessage.addListener(function(msg){
-    console.log("content-copy.js：收到消息：" + JSON.stringify(msg))
     if(msg.isCopyMsg == true){
         var textArea = document.getElementById("area_text")
         textArea.textContent = msg.text;
         var clipboard = new Clipboard('.btn')
         clipboard.on('success', function (e) {
-            swal({title:"复制成功！",icon: "success",button: {text: "确定"}})
+            textArea.blur()
+            swal({text:"复制成功！",icon: "success",buttons: false,timer: 1500})
         });
         clipboard.on('error', function (e) {
+            textArea.blur()
             swal({title:"复制出错:",icon: "error",text: JSON.stringify(e),button: {text: "确定"}})
         });
         textArea.parentNode.style.display = "inline-block"

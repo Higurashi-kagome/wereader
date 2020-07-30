@@ -1,8 +1,7 @@
-console.log("inject-theme.js：被注入")
+//console.log("inject-theme.js：被注入")
 
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
-    console.log("inject-theme.js => addThemeBtn()：被调用")
     var theme = document.createElement("button")
     var btnDiv = document.getElementsByClassName("readerControls readerControls")[0]
     var dark_white = btnDiv.children[3]
@@ -71,12 +70,11 @@ function addThemeBtn(){
         }
         //保存当前主题对应编号
         chrome.storage.sync.set({flag: Flag}, function() {
-            console.log("addThemeBtn()：设置存储完毕，flag = " + Flag)
+            //设置存储完毕
         })
     }
     //点击原网页的白色/黑色主题切换按钮
     function clickDarkOrWhite(classN){
-        console.log("inject-theme.js => clickDarkOrWhite(classN)：被调用")
         try{
             document.getElementsByClassName(classN)[0].click();
         }catch(err){
@@ -86,7 +84,6 @@ function addThemeBtn(){
 
     //绑定点击事件
     theme.addEventListener('click', function(){
-        console.log("inject-theme.js：主题切换按钮被点击")
         changeTheme()
         Flag = Flag + 1
     },false)
@@ -100,7 +97,6 @@ const timeId = setInterval(() => {
         //设置背景色
         try{
             chrome.storage.sync.get(['flag'], function(result) {
-                console.log("addThemeBtn() => window.onload => chrome.storage.sync.get => result.flag：" + result.flag)
                 if(result.flag == 0){
                     //设置绿色主题
                     if(document.getElementsByClassName("readerControls_item white").length != 0){
