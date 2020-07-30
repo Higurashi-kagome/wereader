@@ -13,10 +13,8 @@ function sendMessageToContentScript(message) {
 }
 
 function injectScript(detail){
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.executeScript(tabs[0].id, detail, function (result) {
-			catchErr("")
-		});
+	chrome.tabs.executeScript(detail, function (result) {
+		catchErr("")
 	})
 }
 
@@ -40,9 +38,6 @@ function getData(url, callback) {
 	}catch(err){
 		sendAlertMsg({title: "Oops...", text: "似乎没有联网", icon: "warning",button: {text: "确定"}})
 	}
-	/**
-	 * 获取数据后的处理程序
-	 */
 	httpRequest.onreadystatechange = function () {
 		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
@@ -59,7 +54,7 @@ function copy(text) {
 	var copyBtn = document.getElementById("btn_copy");
 	var clipboard = new Clipboard('.btn');
 	clipboard.on('success', function (e) {
-		sendAlertMsg({title:"复制成功！",icon: "success",button: {text: "确定"}})
+		sendAlertMsg({text:"复制成功！",icon: "success",buttons: false,timer: 1500})
 	});
 	clipboard.on('error', function (e) {
 		console.error("复制出错:\n" + JSON.stringify(e));
@@ -144,7 +139,6 @@ function getBookMarks(url, callback) {
 
 //获取添加级别的标题：OK
 function getTitleAddedPre(title, level) {
-	//console.log("getTitleAddedPre(title,level)：被调用")
 	return (level == 1) ? (document.getElementById("lev1").value + title)
 		: (level == 2) ? (document.getElementById("lev2").value + title)
 		: (level == 3) ? (document.getElementById("lev3").value + title)
@@ -413,7 +407,7 @@ function Setting() {
 			}
 			//存储初始化设置
 			chrome.storage.sync.set(items, function () {
-				//console.log("Setting()：设置存储完毕")
+				//设置存储完毕
 			});
 		} else {
 			//同步设置到背景页
@@ -439,7 +433,7 @@ function updateOptions(message){
 			var items = {}
 			items[key] = value
 			chrome.storage.sync.set(items, function () {
-				//console.log("热门标注人数选项设置完毕")
+				//热门标注人数选项设置完毕
 			})
 		});
 	} else {
@@ -448,25 +442,9 @@ function updateOptions(message){
 		items[type] = message.text
 		document.getElementById(type).innerHTML = message.text;
 		chrome.storage.sync.set(items, function () {
-			//console.log("前后缀设置完毕")
+			//前后缀设置完毕
 		})
 	}
-}
-
-//获取userVid
-function getuserVid(callback) {
-	//获取当前页面
-	chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-		var url = ""
-		try{
-			url = tabs[0].url
-		}catch(err){
-			//console.log(err)
-		}
-		chrome.cookies.get({url: url,name: 'wr_vid'}, function (cookie) {
-			cookie == null ? callback("null") : callback(cookie.value.toString())
-		})
-	})
 }
 
 //监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量等
@@ -483,22 +461,20 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				break
 			case "getBid":
 				document.getElementById('bookId').value = message.bid;
-				sendResponse('后台：我已收到你返回bid的消息：' + JSON.stringify(message));
 				break
-			case "getUserVid":
-				getuserVid(function(userVid){
-					if(userVid != undefined && userVid != "null")sendMessageToContentScript({ userVid: userVid })
+			case "getUserVid":	//content-shelf.js 请求获取 userVid
+				chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
+					if(cookie != undefined && cookie != null){
+						sendMessageToContentScript({ userVid: cookie.value.toString() })
+					}
 				})
 				break
 			case "injectCss":
-				chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-					var tabId = tabs[0].id
-					try{
-						chrome.tabs.insertCSS(tabId, { file: message.css })
-					}catch(err){
-						catchErr("chrome.tabs.insertCSS()：出错")
-					}
-				})
+				try{
+					chrome.tabs.insertCSS({ file: message.css })
+				}catch(err){
+					catchErr("chrome.tabs.insertCSS()：出错")
+				}
 				break
 			case "getContents":
 				var texts = message.contents;
@@ -514,7 +490,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				(document.getElementById("Bookcontents").innerHTML = res) : copy(res)
 				//设置当前所在目录
 				document.getElementById("currentContent").innerHTML = message.currentContent
-				sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
 				break
 		}
 	}
@@ -540,7 +515,7 @@ function setPopupAndBid(tab){
 	try {
 		currentUrl = tab.url;
 	} catch (err) {
-		//console.log("setPopupAndBid(tab) => err：" + err)
+		console.log(err)
 	}
 	var list = currentUrl.split('/');
 	var isBookPage = false;

@@ -1,26 +1,17 @@
 //页面加载完毕后开始执行
 window.onload = function () {
-    var bg = chrome.extension.getBackgroundPage();
     //获取并设置bid、vid
-    bg.getuserVid(function(userVid){
+    getuserVid(function(userVid){
+        var bg = chrome.extension.getBackgroundPage();
         var bookId = bg.getbookId();
         /* var version = chrome.runtime.getManifest().version
         document.getElementById("title").innerHTML = '<strong>wereader</strong> ' + version */
         document.getElementById("bookId").textContent = "bid：" + bookId;
         document.getElementById("userVid").textContent = "vid：" + userVid;
         //获取bid / vid失败则提醒
-        if (document.getElementById("userVid").innerHTML == "vid：null" && document.getElementById("bookId").innerHTML == "bid：null") {
-            bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"，bookId == \"null\"。\n请确保正常登陆后刷新重试", button: {text: "确定"}});
+        if (document.getElementById("userVid").innerHTML == "vid：null" || document.getElementById("bookId").innerHTML == "bid：null") {
+            bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", button: {text: "确定"}});
             window.close();
-        } else {
-            if (document.getElementById("userVid").innerHTML == "vid：null") {
-                bg.sendAlertMsg({title:"Oops...", text:"userVid == \"null\"。\n请确保正常登陆", button: {text: "确定"}});
-                window.close();
-            }
-            if (document.getElementById("bookId").innerHTML == "bid：null") {
-                bg.sendAlertMsg({title:"Oops...", text:"bookId == \"null\"。\n请刷新重试", button: {text: "确定"}});
-                window.close();
-            }
         }
         //"获取书评"和"获取标注"元素及其子元素
         var getText = document.getElementById("getComment_text");
@@ -86,4 +77,19 @@ window.onload = function () {
         }, false);*/
     })
     
+}
+
+//从当前页面获取 userVid
+function getuserVid(callback){
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+		var url = ""
+		try{
+			url = tabs[0].url
+		}catch(err){
+			console.log(err)
+		}
+		chrome.cookies.get({url: url,name: 'wr_vid'}, function (cookie) {
+			cookie == null ? callback("null") : callback(cookie.value.toString())
+		})
+	})
 }

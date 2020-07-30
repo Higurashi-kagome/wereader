@@ -1,10 +1,3 @@
-//报错捕捉函数
-/* function catchErr(sender) {
-	if (chrome.runtime.lastError != undefined) {
-		chrome.runtime.lastError = undefined
-	}
-} */
-
 //发送消息到content.js
 function sendMessageToContentScript(message) {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -90,10 +83,8 @@ function getComment(url, bookId, isHtml) {
 }
 
 function injectScript(details){
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		browser.tabs.executeScript(tabs[0].id, details, function (result) {
+	browser.tabs.executeScript(details, function (result) {
 
-		});
 	})
 }
 
@@ -401,7 +392,7 @@ function Setting() {
 			}
 			//开始存储初始化设置
 			chrome.storage.sync.set(items, function () {
-				//console.log("设置存储完毕")
+				//设置存储完毕
 			});
 		} else {
 			//同步设置到背景页
@@ -427,7 +418,7 @@ function updateOptions(message){
 			var items = {}
 			items[key] = value
 			chrome.storage.sync.set(items, function () {
-				//console.log("热门标注人数选项设置完毕")
+				//热门标注人数选项设置完毕
 			})
 		});
 	} else {
@@ -436,25 +427,9 @@ function updateOptions(message){
 		items[type] = message.text
 		document.getElementById(type).textContent = message.text;
 		chrome.storage.sync.set(items, function () {
-			//console.log("前后缀设置完毕")
+			//前后缀设置完毕
 		})
 	}
-}
-
-//获取userVid
-function getuserVid(callback) {
-	//获取当前页面
-	chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-		var url = ""
-		try{
-			url = tabs[0].url;
-		}catch(err){
-			//console.log(err)
-		}
-		chrome.cookies.get({url: url,name: 'wr_vid'}, function (cookie) {
-			cookie == null ? callback("null") : callback(cookie.value.toString())
-		});
-	});
 }
 
 //监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量等
@@ -471,11 +446,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				break
 			case "getBid":
 				document.getElementById('bookId').value = message.bid;
-				sendResponse('后台：我已收到你返回bid的消息：' + JSON.stringify(message));
 				break
 			case "getUserVid":
-				getuserVid(function(userVid){
-					if(userVid != undefined && userVid != "null")sendMessageToContentScript({ userVid: userVid })
+				chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
+					if(cookie != undefined && cookie != null){
+						sendMessageToContentScript({ userVid: cookie.value.toString() })
+					}
 				})
 				break
 			case "getContents":
@@ -492,7 +468,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				(document.getElementById("Bookcontents").textContent = res) : sendCopyMsg(res)
 				//设置当前所在目录
 				document.getElementById("currentContent").textContent = message.currentContent
-				sendResponse('我是后台，我已收到你返回contents的消息，消息有点长，就不详细回复了！');
 				break
 		}
 	}
@@ -519,7 +494,7 @@ function setPopupAndBid(tab){
 	try {
 		currentUrl = tab.url;
 	} catch (err) {
-		//console.log("setPopupAndBid(tab) => err：" + err)
+		console.log(err)
 	}
 	var list = currentUrl.split('/');
 	var isBookPage = false;
