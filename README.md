@@ -78,5 +78,5 @@
 - [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers)
 - [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)
 - [clipboard.js](https://github.com/zenorocha/clipboard.js)
-- [sweetalert](https://github.com/t4t5/sweetalert)
+- [sweetalert2](https://github.com/sweetalert2/sweetalert2)
 - [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423)
