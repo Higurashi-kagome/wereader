@@ -10,7 +10,7 @@ window.onload = function () {
         document.getElementById("userVid").textContent = "vid：" + userVid;
         //获取bid / vid失败则提醒
         if (document.getElementById("userVid").innerHTML == "vid：null" || document.getElementById("bookId").innerHTML == "bid：null") {
-            bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", button: {text: "确定"}});
+            bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", confirmButtonText: '确定'});
             window.close();
         }
         //"获取书评"和"获取标注"元素及其子元素
@@ -71,7 +71,7 @@ window.onload = function () {
         }, false);
         /*document.getElementById("bookId").addEventListener('click', function () {
             bg.sendAlertMsg({
-                title:"Oops...",text:"放心，这是测试...",button:{text:"确定"}
+                title:"Oops...",text:"放心，这是测试...",confirmButtonText: '确定'
             });
             window.close();
         }, false);*/

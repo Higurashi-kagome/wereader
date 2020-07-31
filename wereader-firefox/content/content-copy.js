@@ -4,11 +4,11 @@ if(document.getElementById("copyTextBtn") == undefined){
     //创建父元素
     var parentElement = document.createElement("div")
     parentElement.id = "copy_window"
-    parentElement.style.cssText = "top: 72.8px;left: 0px;position: fixed;background-color:rgb(255, 255, 255);border-bottom-color:rgb(221, 221, 221);border-bottom-left-radius:0px;border-bottom-right-radius:0px;border-bottom-style:solid;border-bottom-width:1px;border-image-outset:0;border-image-repeat:stretch;border-image-slice:100%;border-image-source:none;border-image-width:1;border-left-color:rgb(221, 221, 221);border-left-style:solid;border-left-width:1px;border-right-color:rgb(221, 221, 221);border-right-style:solid;border-right-width:1px;border-top-color:rgb(221, 221, 221);border-top-left-radius:4px;border-top-right-radius:4px;border-top-style:solid;border-top-width:1px;box-sizing:border-box;color:rgb(51, 51, 51);display:inline-block;font-family:lato, sans-serif;font-size:13px;font-stretch:100%;font-style:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-weight:400;height:auto;line-height:18.2px;margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:15px;max-height: 600px;padding-bottom:39px;padding-left:19px;padding-right:19px;padding-top:39px;text-size-adjust:100%;width:auto;z-index:100;"
-    //创建子元素1：textarea元素
+    parentElement.style.cssText = "top: 0px;left: 0px;position: fixed;background-color:rgb(255, 255, 255);border-bottom-color:rgb(221, 221, 221);border-bottom-left-radius:4px;border-bottom-right-radius:4px;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-style:solid;border-bottom-width:1px;border-image-outset:0;border-image-repeat:stretch;border-image-slice:100%;border-image-source:none;border-image-width:1;border-left-color:rgb(221, 221, 221);border-left-style:solid;border-left-width:1px;border-right-color:rgb(221, 221, 221);border-right-style:solid;border-right-width:1px;border-top-color:rgb(221, 221, 221);border-top-style:solid;border-top-width:1px;box-sizing:border-box;color:rgb(51, 51, 51);display:inline-block;font-family:lato, sans-serif;font-size:13px;font-stretch:100%;font-style:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-weight:400;height:auto;line-height:18.2px;margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:0px;padding-bottom:35px;padding-left:19px;padding-right:19px;padding-top:39px;text-size-adjust:100%;width:auto;z-index:100;"
+    //创建子元素1：textarea
     var textArea = document.createElement("textarea")
     textArea.id = "area_text"
-    textArea.style.cssText = 'appearance:none;background-color:rgb(255, 255, 255);background-position-x:calc(100% - 8px);background-position-y:50%;background-repeat-x:;background-repeat-y:;border-bottom-color:rgb(204, 204, 204);border-bottom-left-radius:3px;border-bottom-right-radius:3px;border-bottom-style:solid;border-bottom-width:1px;border-image-outset:0;border-image-repeat:stretch;border-image-slice:100%;border-image-source:none;border-image-width:1;border-left-color:rgb(204, 204, 204);border-left-style:solid;border-left-width:1px;border-right-color:rgb(204, 204, 204);border-right-style:solid;border-right-width:1px;border-top-color:rgb(204, 204, 204);border-top-left-radius:3px;border-top-right-radius:3px;border-top-style:solid;border-top-width:1px;box-shadow:rgba(0, 0, 0, 0.075) 0px 1px 2px 0px inset;box-sizing:border-box;color:rgb(51, 51, 51);cursor:text;display:inline-block;flex-direction:column;font-family:Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";font-size:13px;font-stretch:100%;font-style:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-weight:400;height:400px;letter-spacing:normal;line-height:18.2px;margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:0px;min-height:34px;outline-color:rgb(51, 51, 51);outline-style:none;outline-width:0px;overflow-wrap:break-word;overflow-x:auto;overflow-y:auto;padding-bottom:7px;padding-left:8px;padding-right:8px;padding-top:7px;resize:both;text-align:start;text-indent:0px;text-rendering:auto;text-shadow:none;text-size-adjust:100%;text-transform:none;vertical-align:middle;white-space:pre-wrap;width:180px;word-spacing:0px;writing-mode:horizontal-tb;-webkit-rtl-ordering:logical;-webkit-border-image:none;z-index:101;position: relative'
+    textArea.style.cssText = 'appearance:none;background-color:rgb(255, 255, 255);background-position-x:calc(100% - 8px);background-position-y:50%;background-repeat-x:;background-repeat-y:;border-bottom-color:rgb(204, 204, 204);border-bottom-left-radius:3px;border-bottom-right-radius:3px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-style:solid;border-bottom-width:1px;border-image-outset:0;border-image-repeat:stretch;border-image-slice:100%;border-image-source:none;border-image-width:1;border-left-color:rgb(204, 204, 204);border-left-style:solid;border-left-width:1px;border-right-color:rgb(204, 204, 204);border-right-style:solid;border-right-width:1px;border-top-color:rgb(204, 204, 204);border-top-style:solid;border-top-width:1px;box-shadow:rgba(0, 0, 0, 0.075) 0px 1px 2px 0px inset;box-sizing:border-box;color:rgb(51, 51, 51);cursor:text;display:inline-block;flex-direction:column;font-family:Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";font-size:13px;font-stretch:100%;font-style:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-weight:400;height:400px;letter-spacing:normal;line-height:18.2px;margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:0px;min-height:34px;outline-color:rgb(51, 51, 51);outline-style:none;outline-width:0px;overflow-wrap:break-word;overflow-x:auto;overflow-y:auto;padding-bottom:7px;padding-left:8px;padding-right:8px;padding-top:7px;resize:both;text-align:start;text-indent:0px;text-rendering:auto;text-shadow:none;text-size-adjust:100%;text-transform:none;vertical-align:middle;white-space:pre-wrap;width:180px;word-spacing:0px;writing-mode:horizontal-tb;-webkit-rtl-ordering:logical;-webkit-border-image:none;z-index:101;position: relative'
     //创建子元素2：div元素 btnContainer————按钮的容器
     var btnContainer = document.createElement("div")
     //创建按钮1：copy
@@ -45,11 +45,21 @@ chrome.runtime.onMessage.addListener(function(msg){
         var clipboard = new Clipboard('.btn')
         clipboard.on('success', function (e) {
             textArea.blur()
-            swal({text:"复制成功！",icon: "success",buttons: false,timer: 1500})
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-start',
+                showConfirmButton: false,
+                timer: 1500,
+                onOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({icon: 'success',title: 'copied successfully'})
         });
         clipboard.on('error', function (e) {
             textArea.blur()
-            swal({title:"复制出错:",icon: "error",text: JSON.stringify(e),button: {text: "确定"}})
+            Swal.fire({title:"复制出错:",icon: "error",text: JSON.stringify(e),confirmButtonText: '确定'})
         });
         textArea.parentNode.style.display = "inline-block"
     }

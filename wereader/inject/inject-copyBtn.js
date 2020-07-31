@@ -9,7 +9,7 @@ function generateBtn(imgs){
     for(var i=0,len=imgs.length;i<len;i++){
         var src = imgs[i].getAttribute("data-src")
         if(src == null || src == ""){
-            swal({title: "Oops...",text: "generateBtn(imgs)：图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
+            Swal.fire({title: "Oops...",html: "generateBtn(imgs)：<br>图片链接获取失败。",icon: "error",confirmButtonText: '确定'})
             return
         }
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"

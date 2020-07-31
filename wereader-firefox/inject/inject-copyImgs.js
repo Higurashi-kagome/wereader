@@ -11,7 +11,7 @@ function requestImgsArray(imgs,s0,s1,s2){
     for(var i=0,len=imgs.length;i<len;i=i+1){
         var s = imgs[i].getAttribute("data-src")
         if(s == null || s == ""){
-            swal({title: "Oops...",text: "图片链接获取失败。\n建议提交反馈到：https://github.com/liuhao326/wereader",icon: "error"})
+            Swal.fire({title: "Oops...",html: "requestImgsArray()：<br>图片链接获取失败。",icon: "error"})
             return
         }
         var l = imgs[i].style.left

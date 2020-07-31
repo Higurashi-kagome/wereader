@@ -28,7 +28,7 @@ function getData(url, callback) {
 	try{
 		httpRequest.send();
 	}catch(err){
-		sendAlertMsg({title: "Oops...", text: "似乎没有联网", icon: "warning",button: {text: "确定"}})
+		sendAlertMsg({text: "似乎没有联网", icon: "warning"})
 	}
 	/**
 	 * 获取数据后的处理程序
@@ -38,7 +38,7 @@ function getData(url, callback) {
 			var data = httpRequest.responseText;//获取到json字符串，还需解析
 			callback(data);
 		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
-			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), icon: "error",button: {text: "确定"}})
+			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), icon: "error",confirmButtonText: '确定'})
 		}
 	};
 }
@@ -77,7 +77,7 @@ function getComment(url, bookId, isHtml) {
 				}
 			}
 		} else {
-			sendAlertMsg({title: "该书无书评", button: {text: "确定"}})
+			sendAlertMsg({text: "no book review",icon:'warning'})
 		}
 	});
 }

@@ -2,6 +2,20 @@
 //生成通知
 chrome.runtime.onMessage.addListener(function(msg){
     if(msg.isAlertMsg == true){
-        swal(msg.alertMsg)
+        if(msg.alertMsg.icon == 'success' || msg.alertMsg.icon == 'warning'){
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                onOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire(msg.alertMsg)
+        }else{
+            Swal.fire(msg.alertMsg)
+        }
     }
 })
