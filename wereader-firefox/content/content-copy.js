@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener(function(msg){
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             })
-            Toast.fire({icon: 'success',title: 'copied successfully'})
+            Toast.fire({icon: 'success',title: 'Copied successfully'})
         });
         clipboard.on('error', function (e) {
             textArea.blur()

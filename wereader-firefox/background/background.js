@@ -77,7 +77,7 @@ function getComment(url, bookId, isHtml) {
 				}
 			}
 		} else {
-			sendAlertMsg({text: "no book review",icon:'warning'})
+			sendAlertMsg({text: "该书无书评",icon:'warning'})
 		}
 	});
 }
@@ -94,6 +94,11 @@ function getBookMarks(url, callback) {
 		var json = JSON.parse(data)
 		//获取章节并排序
 		var chapters = json.chapters
+		//处理书本无标注的情况
+		if(chapters.length == 0){
+			sendAlertMsg({text: "该书无标注",icon:'warning'})
+			return
+		}
 		var colId = "chapterUid";
 		//排序函数
 		var rank = function (x, y) {
@@ -222,15 +227,21 @@ function copyBookMarks(url, isAll) {
 										var style = chaptersAndMarks[i].marks[k].style
 										res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
 									}
+									//sendCopyMsg(res) 函数在此处调用可避免本章无标注的时候也进行复制（只复制到标题）
+									sendCopyMsg(res)
 									break
+								}
+								//处理该章节无标注的情况
+								if(i == len1 - 1){
+									sendAlertMsg({text: "该章节无标注",icon:'warning'})
 								}
 							}
 							break
 						}
 					}
 				}
+				//不排除 imgArr 总能获取成功，故保险起见将其设置为 []
 				imgsArr = []
-				sendCopyMsg(res)
 			})
 		})
 	})
@@ -241,6 +252,11 @@ function getBestBookMarks(url, callback) {
 	getData(url, function (data) {
 		var json = JSON.parse(data)
 		var chapters = json.chapters
+		//处理书本无热门标注的情况
+		if(chapters == undefined){
+			sendAlertMsg({text: "该书无热门标注",icon:'warning'})
+			return
+		}
 		//查找每章节热门标注
 		var bestMarks = {}
 		//遍历章节
@@ -310,6 +326,11 @@ function copyBestBookMarks(url) {
 function getMyThought(url, callback) {
 	getData(url, function (data) {
 		var json = JSON.parse(data)
+		//处理书本无想法的请况
+		if(json.reviews.length == 0){
+			sendAlertMsg({text: "该书无想法",icon:'warning'})
+			return
+		}
 		//获取章节并排序
 		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
 		var colId = "chapterUid";
