@@ -24,7 +24,7 @@
 
 - 接下来，进入 Chrome，按下图进入扩展程序页面：
 
-  <div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722100925191-979517472.png" style="zoom: 60%;" /></div>
+  <div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722100925191-979517472.png" width='50%' /></div>
 
 - 进入页面后，先打开 `开发者模式` 开关，再点击 `加载已解压的扩展程序` ，找到前面解压得到的文件夹 `wereader` ，双击进入该文件夹，进入后单击里面的（不是双击）`wereader` 文件夹，这时候文件夹被选中，点击 `选择文件夹` 即可。
 
@@ -52,11 +52,11 @@
 
 右击扩展点击 `选项` 进入扩展设置设置页面：
 
-<div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722193445592-1098571776.png" style="zoom: 60%;" /></div>
+<div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722193445592-1098571776.png" width='40%' /></div>
 
 在微信读书中，标注分三类，分别是波浪线、马克笔和直线：
 
-<div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722192542713-2099612966.png" alt="img" style="zoom:50%;" /></div>
+<div align = "left"><img src="https://img2020.cnblogs.com/blog/1934175/202007/1934175-20200722192542713-2099612966.png" alt="img" width='40%' /></div>
 
 其中直线就是设置页面中所谓 `一级标注`，马克笔是 `二级标注`，波浪线是 `三级标注`，你可以在输入框中设置标注前后缀。
 
