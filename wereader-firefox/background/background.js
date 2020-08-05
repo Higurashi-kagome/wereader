@@ -506,7 +506,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	if (changeInfo.status == "loading") {
 		setPopupAndBid(tab)
 	}
-
 });
 
 //根据当前tab设置popup并判断是否需要注入inject-bid.js

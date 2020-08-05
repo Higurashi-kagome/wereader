@@ -4,8 +4,6 @@ window.onload = function () {
     getuserVid(function(userVid){
         var bg = chrome.extension.getBackgroundPage();
         var bookId = bg.getbookId();
-        /* var version = chrome.runtime.getManifest().version
-        document.getElementById("title").innerHTML = '<strong>wereader</strong> ' + version */
         document.getElementById("bookId").textContent = "bid：" + bookId;
         document.getElementById("userVid").textContent = "vid：" + userVid;
         //获取bid / vid失败则提醒
