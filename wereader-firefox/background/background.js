@@ -183,8 +183,10 @@ function copyBookMarks(url, isAll) {
 					regexpCollection = []
 				}
 				if (isAll == true) {
+					//遍历标注
 					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
 						var chapterUid = chaptersAndMarks[i].chapterUid
+						//遍历目录
 						for (var j = 0, len2 = contents.length; j < len2; j++) {
 							if (chapterUid == contents[j].chapterUid) {
 								res += getTitleAddedPre(contents[j].title, contents[j].level) + "\n\n"
@@ -199,6 +201,7 @@ function copyBookMarks(url, isAll) {
 							}
 						}
 					}
+					sendCopyMsg(res)
 				} else {
 					//遍历目录
 					for (var j = 0, len2 = contents.length; j < len2; j++) {
