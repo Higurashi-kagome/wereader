@@ -89,3 +89,15 @@ function getuserVid(callback){
 		})
 	})
 }
+
+/*流程*/
+/*
+//页面加载完毕
+window.onload = function () {
+    //获取 userVid
+    getuserVid(callback){
+        //获取背景页
+        //给 popup 页面绑定点击事件（点击后调用背景页中相应的函数）
+    })
+}
+*/

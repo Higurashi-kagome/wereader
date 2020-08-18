@@ -467,7 +467,7 @@ function updateOptions(message){
 	}
 }
 
-//监听来自inject.js、options的消息：是不是在BookPage、是的话bid是多少；如何设置变量等
+//监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	if (message.set == true) {//信息为options页面设置改变值
 		updateOptions(message)
@@ -572,3 +572,57 @@ chrome.contextMenus.create({
         chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
     }
 });
+
+/**********流程**********/
+
+/*
+@监听器：
+
+//页面是否发生更新
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+	...
+	setPopupAndBid(Tab)
+	...
+});
+
+//是否在已打开页面之间切换
+chrome.tabs.onActivated.addListener(function (moveInfo) {
+	...
+	setPopupAndBid(Tab)
+	...
+});
+
+//监听消息
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+	//根据收到的不同消息调用不同的函数或是处理数据
+});
+*/
+
+/*
+@直接被popup调用的函数（被绑定为点击事件的函数）
+//获取书评
+getComment()
+//获取标注
+copyBookMarks()
+//获取目录和开启复制按钮
+injectScript()
+//获取热门标注
+copyBestBookMarks()
+*/
+
+/*
+@其他
+
+//在右键菜单中添加反馈选项
+chrome.contextMenus.create({
+	...
+})
+
+//初始化设置
+Setting()
+*/
+
+/*
+@剩余函数
+//剩余函数都用于被调用
+*/
