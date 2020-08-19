@@ -1,3 +1,5 @@
+/* 设置页 */
+
 //更新已启用正则匹配
 function updateCheckedRegexp(){
     var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")

@@ -1,4 +1,5 @@
-//用于获取书本目录
+/* 用于获取书本目录 */
+
 //console.log("inject-getContents.js：被注入，开始获取目录");
 var contentElement = document.getElementsByClassName("readerCatalog_list")[0];
 try{

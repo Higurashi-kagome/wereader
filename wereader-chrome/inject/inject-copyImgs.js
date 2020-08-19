@@ -1,4 +1,5 @@
-/*获取被标注的图片的Markdown文本数组，用于支持导出被标注的图片*/
+/*用于获取被标注的图片的Markdown文本数组，用于支持导出被标注的图片*/
+
 //发送消息给后台
 function setMesToBg(imgsArray){
     chrome.runtime.sendMessage({type: "imgsArr", RimgsArr: imgsArray});

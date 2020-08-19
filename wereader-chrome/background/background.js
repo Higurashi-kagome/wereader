@@ -573,7 +573,16 @@ chrome.contextMenus.create({
     }
 });
 
-/**********流程**********/
+/*
+
+background.js 相当于一个函数库。函数被调用的入口则是 popup.js。
+
+其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
+
+*/
+
+
+/**********background.js 流程**********/
 
 /*
 @监听器：
@@ -599,7 +608,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 */
 
 /*
-@直接被popup调用的函数（被绑定为点击事件的函数）
+@直接被 popup.js 调用的函数（被绑定为点击事件的函数）
 //获取书评
 getComment()
 //获取标注
@@ -624,5 +633,5 @@ Setting()
 
 /*
 @剩余函数
-//剩余函数都用于被调用
+//剩余函数都用于被调用而实现某一功能
 */

@@ -1,3 +1,5 @@
+/* 用于生成书架目录 */
+
 //console.log("content-shelf.js：被注入")
 chrome.runtime.sendMessage({type: "getUserVid"})
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){

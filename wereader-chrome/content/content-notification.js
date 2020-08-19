@@ -1,5 +1,6 @@
+/*用于借助于 sweetalert2 来生成通知*/
+
 //console.log("content-notification.js：被注入")
-//生成通知
 chrome.runtime.onMessage.addListener(function(msg){
     if(msg.isAlertMsg == true){
         if(msg.alertMsg.icon == 'success' || msg.alertMsg.icon == 'warning'){

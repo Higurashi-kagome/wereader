@@ -1,4 +1,5 @@
-/*给页面中的图片和注释添加复制按钮，并为复制按钮绑定点击事件，与background.js配合实现点击后复制图片Markdown*/
+/*用于给页面中的图片和注释添加复制按钮，并为复制按钮绑定点击事件，与background.js配合实现点击后复制图片Markdown*/
+
 //发送消息给后台复制内容
 function sendMsgToBg(picStr){
     chrome.runtime.sendMessage({type: "copyImg", picText: picStr});

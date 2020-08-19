@@ -1,5 +1,6 @@
-//console.log("inject-theme.js：被注入")
+/* 用于实现阅读页主题色切换 */
 
+//console.log("inject-theme.js：被注入")
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
     var theme = document.createElement("button")
