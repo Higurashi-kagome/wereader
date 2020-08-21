@@ -212,6 +212,7 @@ function copyBookMarks(url, isAll) {
 							}
 						}
 					}
+					copy(res)
 				} else {
 					//遍历目录
 					for (var j = 0, len2 = contents.length; j < len2; j++) {
