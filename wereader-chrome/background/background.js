@@ -1,67 +1,57 @@
-//报错捕捉函数
-function catchErr(sender) {
-	if (chrome.runtime.lastError != undefined && chrome.runtime.lastError != null) {
-		console.warn(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError)
-	}
-}
+/* 说明：
+background.js 相当于一个函数库。函数被调用的入口则是 popup.js。
+其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
+*/
 
-//发送消息到content.js
-function sendMessageToContentScript(message) {
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, message);
-	});
-}
+/*************流程*************/
 
-function injectScript(detail){
-	chrome.tabs.executeScript(detail, function (result) {
-		catchErr("")
-	})
-}
+/* @监听器：
 
-//通知函数
-function sendAlertMsg(msg) {
-	sendMessageToContentScript({isAlertMsg: true, alertMsg: msg})
-}
+//页面是否发生更新
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+	...
+	setPopupAndBid(Tab)
+	...
+});
 
-//获取bid：popup
-function getbookId() {
-	return document.getElementById('bookId').value;
-}
+//是否在已打开页面之间切换
+chrome.tabs.onActivated.addListener(function (moveInfo) {
+	...
+	setPopupAndBid(Tab)
+	...
+});
 
-//获取数据：OK
-function getData(url, callback) {
-	var httpRequest = new XMLHttpRequest();
-	httpRequest.open('GET', url, true);
-	httpRequest.withCredentials = true;
-	try{
-		httpRequest.send();
-	}catch(err){
-		sendAlertMsg({text: "似乎没有联网", icon: "warning"})
-	}
-	httpRequest.onreadystatechange = function () {
-		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-			var data = httpRequest.responseText;//获取到json字符串，还需解析
-			callback(data);
-		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
-			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), icon: "error",confirmButtonText: '确定'})
-		}
-	};
-}
+//监听消息
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+	//根据收到的不同消息调用不同的函数或是处理数据
+});
+*/
 
-//复制内容：OK
-function copy(text) {
-	var inputText = document.getElementById("formatted_text");
-	var copyBtn = document.getElementById("btn_copy");
-	var clipboard = new Clipboard('.btn');
-	clipboard.on('success', function (e) {
-		sendAlertMsg({icon: 'success',title: 'Copied successfully'})
-	});
-	clipboard.on('error', function (e) {
-		sendAlertMsg({title: "复制出错", text: JSON.stringify(e), confirmButtonText: '确定',icon: "error"});
-	});
-	inputText.innerHTML = text;
-	copyBtn.click();
-}
+/* @直接被 popup.js 调用的函数（被绑定为点击事件的函数）
+//获取书评
+getComment()
+//获取标注
+copyBookMarks()
+//获取目录和开启复制按钮
+injectScript()	// 该函数在 util.js 中
+//获取热门标注
+copyBestBookMarks()
+*/
+
+/* @其他
+
+//在右键菜单中添加反馈选项（包含在 util.js 中）
+chrome.contextMenus.create({
+	...
+})
+
+//初始化设置
+Setting()	// 该函数在 util.js 中
+*/
+
+/* @剩余函数
+//剩余函数都用于被调用而实现某一功能
+*/
 
 //获取书评：popup
 function getComment(url, bookId, isHtml) {
@@ -102,7 +92,7 @@ function getComment(url, bookId, isHtml) {
 	});
 }
 
-//获取标注数据：OK
+//获取标注数据
 function getBookMarks(url, callback) {
 	getData(url, function (data) {
 		var json = JSON.parse(data)
@@ -139,38 +129,6 @@ function getBookMarks(url, callback) {
 		}
 		callback(chapters)
 	});
-}
-
-//获取添加级别的标题：OK
-function getTitleAddedPre(title, level) {
-	return (level == 1) ? (document.getElementById("lev1").value + title)
-		: (level == 2) ? (document.getElementById("lev2").value + title)
-		: (level == 3) ? (document.getElementById("lev3").value + title)
-		: ""
-}
-//根据标注类型获取前后缀：OK
-function getMarkPre(style) {
-	return (style == 0) ? document.getElementById("s1Pre").value
-		: (style == 1) ? document.getElementById("s2Pre").value
-		: (style == 2) ? document.getElementById("s3Pre").value
-		: ""
-}
-function getMarkSuf(style) {
-	return (style == 0) ? document.getElementById("s1Suf").value
-		: (style == 1) ? document.getElementById("s2Suf").value
-		: (style == 2) ? document.getElementById("s3Suf").value
-		: ""
-}
-//给 markText 进行正则匹配
-function getRegExpMarkText(markText,regexpCollection){
-	for(var n=0,len=regexpCollection.length;n<len;n++){
-		let pattern = regexpCollection[n][1]
-		let re = new RegExp(pattern)
-		if(re.test(markText) == true){
-			markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
-		}
-	}
-	return markText
 }
 
 //保存图片Markdown文本数组
@@ -262,7 +220,7 @@ function copyBookMarks(url, isAll) {
 	})
 }
 
-//获取热门标注：OK
+//获取热门标注
 function getBestBookMarks(url, callback) {
 	getData(url, function (data) {
 		var json = JSON.parse(data)
@@ -337,7 +295,7 @@ function copyBestBookMarks(url) {
 	})
 }
 
-//获取想法：OK
+//获取想法
 function getMyThought(url, callback) {
 	getData(url, function (data) {
 		var json = JSON.parse(data)
@@ -381,7 +339,7 @@ function getMyThought(url, callback) {
 	});
 }
 
-//处理数据，复制想法：OK
+//处理数据，复制想法
 function copyThought(url) {
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=", "")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0", function (data) {
@@ -415,58 +373,7 @@ function copyThought(url) {
 	})
 }
 
-//存储 / 初始化设置
-function Setting() {
-	chrome.storage.sync.get(null, function (setting) {
-		//stroage中无数据时
-		if (setting.s1Pre == undefined) {
-			var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"]
-			var items = {}
-			for(var i=0,len=keys.length;i<len;i++){
-				var key = keys[i]
-				items[key] = document.getElementById(key).value
-			}
-			//存储初始化设置
-			chrome.storage.sync.set(items, function () {
-				//设置存储完毕
-			});
-		} else {
-			//同步设置到背景页
-			chrome.storage.sync.get(["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"], function (setting) {
-				for(var key in setting){
-					document.getElementById(key).innerHTML = setting[key]
-				}
-			});
-		}
-	});
-}
-
 Setting();
-
-//更新设置
-function updateOptions(message){
-	//“添加热门标注人数” 还是 前后缀
-	if (message.type == "switchAddNumber") {
-		chrome.storage.sync.get(["displayN"], function (setting) {
-			var value = (setting.displayN == "true") ? "false" : "true"
-			var key = "displayN"
-			document.getElementById(key).innerHTML = value
-			var items = {}
-			items[key] = value
-			chrome.storage.sync.set(items, function () {
-				//热门标注人数选项设置完毕
-			})
-		});
-	} else {
-		var type = message.type
-		var items = {}
-		items[type] = message.text
-		document.getElementById(type).innerHTML = message.text;
-		chrome.storage.sync.set(items, function () {
-			//前后缀设置完毕
-		})
-	}
-}
 
 //监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
@@ -494,7 +401,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				try{
 					chrome.tabs.insertCSS({ file: message.css })
 				}catch(err){
-					catchErr("chrome.tabs.insertCSS()：出错")
+					
 				}
 				break
 			case "getContents":
@@ -558,81 +465,8 @@ function setPopupAndBid(tab){
 		//注入脚本获取全部目录数据和当前目录
 		injectScript({ file: 'inject/inject-getContents.js' })
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("setPopupAndBid(tab)")
+			
 		});
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 	}
 }
-
-//右键反馈
-chrome.contextMenus.create({
-    "type":"normal",
-    "title":"反馈",
-    "contexts":["browser_action"],
-    "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
-    }
-});
-
-/*
-
-background.js 相当于一个函数库。函数被调用的入口则是 popup.js。
-
-其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
-
-*/
-
-
-/**********background.js 流程**********/
-
-/*
-@监听器：
-
-//页面是否发生更新
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	...
-	setPopupAndBid(Tab)
-	...
-});
-
-//是否在已打开页面之间切换
-chrome.tabs.onActivated.addListener(function (moveInfo) {
-	...
-	setPopupAndBid(Tab)
-	...
-});
-
-//监听消息
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-	//根据收到的不同消息调用不同的函数或是处理数据
-});
-*/
-
-/*
-@直接被 popup.js 调用的函数（被绑定为点击事件的函数）
-//获取书评
-getComment()
-//获取标注
-copyBookMarks()
-//获取目录和开启复制按钮
-injectScript()
-//获取热门标注
-copyBestBookMarks()
-*/
-
-/*
-@其他
-
-//在右键菜单中添加反馈选项
-chrome.contextMenus.create({
-	...
-})
-
-//初始化设置
-Setting()
-*/
-
-/*
-@剩余函数
-//剩余函数都用于被调用而实现某一功能
-*/
