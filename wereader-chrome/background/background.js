@@ -195,7 +195,7 @@ function copyBookMarks(url, isAll) {
 											res += markText + "\n\n"
 											continue
 										}
-										//正则匹配
+										//正则匹配（先正则匹配再添加三级标注前后缀）
 										markText = getRegExpMarkText(markText,regexpCollection)
 										var style = chaptersAndMarks[i].marks[k].style
 										res += getMarkPre(style) + markText + getMarkSuf(style) + "\n\n"
