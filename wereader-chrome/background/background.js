@@ -401,7 +401,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				try{
 					chrome.tabs.insertCSS({ file: message.css })
 				}catch(err){
-					
+					catchErr("chrome.tabs.insertCSS()：出错")
 				}
 				break
 			case "getContents":
@@ -465,7 +465,7 @@ function setPopupAndBid(tab){
 		//注入脚本获取全部目录数据和当前目录
 		injectScript({ file: 'inject/inject-getContents.js' })
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			
+			catchErr("setPopupAndBid(tab)")
 		});
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
 	}

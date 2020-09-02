@@ -3,6 +3,13 @@ util.js 是从 background.js 分离出来的，这里的所有函数最初都放
 现在之所以单独放在这个文件中纯粹是为了缩减 background.js 的代码量，从而使结构清晰
 */
 
+//报错捕捉函数
+function catchErr(sender) {
+	if (chrome.runtime.lastError != undefined && chrome.runtime.lastError != null) {
+		console.warn(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError)
+	}
+}
+
 //存储 / 初始化设置
 function Setting() {
 	chrome.storage.sync.get(null, function (setting) {
@@ -37,7 +44,7 @@ function getbookId() {
 //动态注入
 function injectScript(detail){
 	chrome.tabs.executeScript(detail, function (result) {
-
+		catchErr("injectScript()")
 	})
 }
 
