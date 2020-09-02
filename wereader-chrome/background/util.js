@@ -55,11 +55,16 @@ function sendAlertMsg(msg) {
 
 //复制内容
 function copy(text) {
+	//添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
+	var count = 0;
 	var inputText = document.getElementById("formatted_text");
 	var copyBtn = document.getElementById("btn_copy");
-	var clipboard = new Clipboard('.btn');
+	var clipboard = new ClipboardJS('.btn');
 	clipboard.on('success', function (e) {
-		sendAlertMsg({icon: 'success',title: 'Copied successfully'})
+		if(count == 0){//进行检查而确保一次复制成功只调用一次sendAlertMsg()
+			sendAlertMsg({icon: 'success',title: 'Copied successfully'})
+			count = count + 1
+		}
 	});
 	clipboard.on('error', function (e) {
 		sendAlertMsg({title: "复制出错", text: JSON.stringify(e), confirmButtonText: '确定',icon: "error"});
