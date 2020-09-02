@@ -60,6 +60,20 @@ function initialize(){
         document.getElementById("add_number").onclick = function(){
             sendMsgToBg({set: true, type: "switchAddNumber"})
         }
+        //"代码块语言"初始化
+        var langId = "preLang"
+        if(setting.preLang == undefined){
+            chrome.storage.sync.set({preLang: ""},function(){
+                document.getElementById(langId).value = ""
+            })
+        }else{
+            document.getElementById(langId).value = setting.preLang
+        }
+        document.getElementById(langId).onchange = function(){
+            chrome.storage.sync.set({preLang: this.value},function(){
+                
+            })
+        }
         /************************************************************************************/
         //正则匹配初始化
         var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
