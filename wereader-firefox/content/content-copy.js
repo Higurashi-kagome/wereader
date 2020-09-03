@@ -40,22 +40,27 @@ if(document.getElementById("copyTextBtn") == undefined){
 //监听信息，收到信息后设置内容并显示复制窗口
 chrome.runtime.onMessage.addListener(function(msg){
     if(msg.isCopyMsg == true){
+        //添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
+        var count = 0
         var textArea = document.getElementById("area_text")
         textArea.textContent = msg.text;
         var clipboard = new Clipboard('.btn')
         clipboard.on('success', function (e) {
-            textArea.blur()
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-start',
-                showConfirmButton: false,
-                timer: 1500,
-                onOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-            Toast.fire({icon: 'success',title: 'Copied successfully'})
+            if(count == 0){//进行检查而确保一次复制成功只通知一次
+                textArea.blur()
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-start',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    onOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({icon: 'success',title: 'Copied successfully'})
+                count = count + 1
+            }
         });
         clipboard.on('error', function (e) {
             textArea.blur()
