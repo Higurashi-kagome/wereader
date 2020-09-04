@@ -82,11 +82,11 @@ function addCopyBtn2(){
 }
 
 //给代码块添加复制按钮
-function addCopyBtn3(setting){
+function addCopyBtn3(){
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
         for(var i=0,len=pre.length;i<len;i++){
-            let code = "```" + setting.preLang + "\n" + pre[i].textContent + "```"
+            let _code = pre[i].textContent
             let top = pre[i].style.top
             var btn =  document.createElement("b" + i);
             btn.textContent = "📋";
@@ -98,8 +98,15 @@ function addCopyBtn3(setting){
             let inser = parent.insertBefore(btn,pre[i]);
             inser.addEventListener('click', function(){
                 this.textContent = "👈"
-                sendMsgToBg(code)
                 var id = this.id
+                //每次点击复制按钮都获取一次"代码块语言 "
+                chrome.storage.sync.get(["preLang"], function(setting) {
+                    if(setting.preLang == undefined){
+                        setting = {preLang: ""}
+                    }
+                    code =  "```" + setting.preLang + "\n" + _code + "```"
+                    sendMsgToBg(code)
+                })
                 setTimeout(function () {
                     document.getElementById(id).textContent = "📋"
                 }, 1500);
@@ -110,12 +117,7 @@ function addCopyBtn3(setting){
 
 //console.log("inject-copyBtn.js：已注入")
 if(document.getElementById("linkCopy0") == undefined){
-    chrome.storage.sync.get(["preLang"], function(setting) {
-        if(setting.preLang == undefined){
-            setting = {preLang: ""}
-        }
-        addCopyBtn1()
-        addCopyBtn2()
-        addCopyBtn3(setting)
-    })
+    addCopyBtn1()
+    addCopyBtn2()
+    addCopyBtn3()
 }
