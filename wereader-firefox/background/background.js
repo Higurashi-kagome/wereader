@@ -220,7 +220,7 @@ function copyBookMarks(url, isAll) {
 										var markText = chaptersAndMarks[i].marks[k].markText
 										//判断是否为对图片的标注
 										if (markText == "[插图]") {
-											markText = imgsArr[imgsArrIndext]
+											markText = "![" + imgsArr[imgsArrIndext][0] + "](" + imgsArr[imgsArrIndext][1] + ")"
 											imgsArrIndext = imgsArrIndext + 1
 											res += markText + "\n\n"
 											continue

@@ -153,7 +153,7 @@ function copyBookMarks(url, isAll) {
 				if(regexpCollection == undefined){
 					regexpCollection = []
 				}
-				if (isAll == true) {
+				if (isAll == true) {	//获取全书标注
 					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
 						var chapterUid = chaptersAndMarks[i].chapterUid
 						for (var j = 0, len2 = contents.length; j < len2; j++) {
@@ -171,7 +171,7 @@ function copyBookMarks(url, isAll) {
 						}
 					}
 					copy(res)
-				} else {
+				} else {	//获取本章标注
 					//遍历目录
 					for (var j = 0, len2 = contents.length; j < len2; j++) {
 						//寻找目标章节
@@ -190,7 +190,7 @@ function copyBookMarks(url, isAll) {
 										var markText = chaptersAndMarks[i].marks[k].markText
 										//判断是否为对图片的标注
 										if (markText == "[插图]") {
-											markText = imgsArr[imgsArrIndext]
+											markText = "![" + imgsArr[imgsArrIndext][0] + "](" + imgsArr[imgsArrIndext][1] + ")"
 											imgsArrIndext = imgsArrIndext + 1
 											res += markText + "\n\n"
 											continue

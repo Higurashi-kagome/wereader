@@ -30,7 +30,7 @@ function requestImgsArray(imgs,s0,s1,s2){
                 var widthDiv = parseFloat(markElements[j].style.width.substr(0, markElements[j].style.width.length - 2))
                 var heightDiv = parseFloat(markElements[j].style.height.substr(0, markElements[j].style.height.length - 2))
                 if(Math.abs(leftImg - leftDiv)<=0.1 && Math.abs(topImg - topDiv)<=0.1 && Math.abs(widthImg - widthDiv)<=0.1 && Math.abs(heightImg - heightDiv)<=0.1){
-                    imgsArray.push("![" + s.split("/").pop() + "](" + s + ")")
+                    imgsArray.push([s.split("/").pop(),s])
                     return 1
                 }
             }
