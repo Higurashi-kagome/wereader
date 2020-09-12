@@ -6,7 +6,7 @@ util.js 是从 background.js 分离出来的，这里的所有函数最初都放
 //报错捕捉函数
 function catchErr(sender) {
 	if (chrome.runtime.lastError != undefined && chrome.runtime.lastError != null) {
-		console.warn(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError)
+		console.log(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError.message)
 	}
 }
 
