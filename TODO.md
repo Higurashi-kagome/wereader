@@ -7,6 +7,8 @@
   -   [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host. ( 观察 )
   -   [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme ( 观察 )
   -   [ ] Unchecked runtime.lastError: Invalid url: "" ( 观察 )
+  -   [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
+  -   [ ] 页面加载缓慢时出现的报错
   -   [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况 ( 观察 )
 -   [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项 ( 缓 )
 -   [ ] 展示热门标注、想法等内容 ( 缓 )
@@ -33,3 +35,11 @@
 -   [ ] 书架置于 popup 页面
 -   [ ] 背景色完善 ( 类似于「微信读书助手-开源版」 )
 -   [ ] 阅读页颜色设置改为 js 动态更改（Firefox）
+-   [ ] 经验总结：
+  -   [ ] 如何动态设置 popup 页面（消失或是设置为不用 HTML）
+  -   [ ] 如何使用 clipboard.js
+  -   [ ] 如何使用 sweetalert2.js
+- 对传书中的笔记进行支持
+  - 下载最新版微信读书并对书架、标注等内容进行抓包
+  - 支持设置图片格式比如调整大小（暂缓）
+  - 不能跳转到最新进度的问题（观察）
