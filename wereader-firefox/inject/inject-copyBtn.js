@@ -100,11 +100,15 @@ function addCopyBtn3(){
                 this.textContent = "👈"
                 var id = this.id
                 //每次点击复制按钮都获取一次"代码块语言 "
-                chrome.storage.sync.get(["preLang"], function(setting) {
-                    if(setting.preLang == undefined){
-                        setting = {preLang: ""}
+                keys = ["preLang","codePre","codeSuf"]
+                chrome.storage.sync.get(keys, function(setting) {
+                    for(var i=0,len=keys.length;i<len;i++){
+                        key = keys[i]
+                        if(setting[key] == undefined){
+                            setting[key] = (key == "preLang") ? "" : "```"
+                        }
                     }
-                    code =  "```" + setting.preLang + "\n" + _code + "```"
+                    code =  setting.codePre + setting.preLang + "\n" + _code + setting.codeSuf
                     sendMsgToBg(code)
                 })
                 setTimeout(function () {

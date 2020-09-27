@@ -60,19 +60,25 @@ function initialize(){
         document.getElementById("add_number").onclick = function(){
             sendMsgToBg({set: true, type: "switchAddNumber"})
         }
-        //"代码块语言"初始化
-        var langId = "preLang"
-        if(setting.preLang == undefined){
-            chrome.storage.sync.set({preLang: ""},function(){
-                document.getElementById(langId).value = ""
-            })
-        }else{
-            document.getElementById(langId).value = setting.preLang
-        }
-        document.getElementById(langId).onchange = function(){
-            chrome.storage.sync.set({preLang: this.value},function(){
-                
-            })
+        //"代码块"初始化
+        var keys = ["codePre","codeSuf","preLang"]
+        for(var i=0,len=keys.length;i<len;i++){
+            key = keys[i]
+            config = {}
+            if(setting[key] == undefined){
+                config[key] =  (key == "preLang") ? "" : "```"
+                chrome.storage.sync.set(config,function(){
+                    document.getElementById(key).value = config[key]
+                })
+            }else{
+                document.getElementById(key).value = setting[key]
+            }
+            document.getElementById(key).onchange = function(){
+                config[this.id] = this.value
+                chrome.storage.sync.set(config,function(){
+                    
+                })
+            }
         }
         /************************************************************************************/
         //正则匹配初始化
