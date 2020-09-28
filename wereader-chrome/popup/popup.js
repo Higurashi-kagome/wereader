@@ -67,10 +67,13 @@ window.onload = function () {
             bg.injectScript({ file: 'inject/inject-copyBtn.js' })
             window.close();
         }, false);
-        /* document.getElementById("bookId").addEventListener('click', function () {
-            bg.sendAlertMsg({title:"Oops...", text:"放心，这是测试...", confirmButtonText: '确定'})
-            window.close();
-        }, false); */
+        //测试
+        document.getElementById("testBtn").addEventListener('click', function () {
+            config = bg.getConfig()
+            bg.aler(JSON.stringify(config))
+            //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
+            window.close()
+        }, false);
     })
     
 }

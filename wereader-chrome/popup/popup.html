@@ -6,7 +6,11 @@
             #bookId,#userVid {
                 display: none;
             }
-            #getComment,#getBookMarks,#getBestBookMarks,#getMyThoughts,#getBookContents,#getComment_text,#getComment_html,#getThisChapter,#getAll,#inject {
+            .provided {
+                cursor: pointer;
+                color: black;
+            }
+            #testBtn {
                 cursor: pointer;
                 color: black;
             }
@@ -31,35 +35,11 @@
                 border-radius: 4px;
                 user-select:none;
             }
-            #getComment:hover {
+            .provided:hover {
                 background-color: rgb(227,227,227);
             }
-            #getBookMarks:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getBestBookMarks:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getMyThoughts:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getBookContents:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getComment_text:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getComment_html:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getThisChapter:hover {
-                background-color: rgb(227,227,227);
-            }
-            #getAll:hover {
-                background-color: rgb(227,227,227);
-            }
-            #inject:hover {
-                background-color: rgb(227,227,227);
+            #testBtn:hover {
+                background-color: rgb(139, 181, 245);
             }
             #choose,#choose_mark {
                 padding: 0px 0px;
@@ -79,22 +59,23 @@
         <p id = "title"><strong>wereader</strong></p>
     </head>
     <body>
-        <p id='bookId'>bid：null</div>
-        <p id='userVid'>vid：null</div>
-        <div id='getComment'>获取书评</div>
+        <p id='bookId'>bid：null</p>
+        <p id='userVid'>vid：null</p>
+        <div id='getComment' class="provided">获取书评</div>
         <div id='choose'>
-            <div id='getComment_text'>纯文本</div>
-            <div id='getComment_html'>HTML</div>
+            <div id='getComment_text' class="provided">纯文本</div>
+            <div id='getComment_html' class="provided">HTML</div>
         </div>
-        <div id='getBookMarks'>获取标注</div>
+        <div id='getBookMarks' class="provided">获取标注</div>
         <div id='choose_mark'>
-            <div id='getThisChapter'>本章</div>
-            <div id='getAll'>全部</div>
+            <div id='getThisChapter' class="provided">本章</div>
+            <div id='getAll' class="provided">全部</div>
         </div>
-        <div id='getBookContents'>获取目录</div>
-        <div id='getBestBookMarks'>获取热门标注</div>
-        <div id='getMyThoughts'>获取我的想法</div>
-        <div id="inject">开启复制按钮</div>
+        <div id='getBookContents' class="provided">获取目录</div>
+        <div id='getBestBookMarks' class="provided">获取热门标注</div>
+        <div id='getMyThoughts' class="provided">获取我的想法</div>
+        <div id="inject" class="provided">开启复制按钮</div>
+        <div id="testBtn" style="display: block;">点击测试</div>
     </body>
     <script type="text/javascript" src="popup.js"></script>
 </html>

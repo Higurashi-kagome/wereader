@@ -10,6 +10,22 @@ function catchErr(sender) {
 	}
 }
 
+//获取当前背景页配置——用于测试
+function getConfig(){
+	var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"]
+	var items = {}
+	for(var i=0,len=keys.length;i<len;i++){
+		var key = keys[i]
+		items[key] = document.getElementById(key).value
+	}
+	return items
+}
+
+//alert()——用于测试
+function aler(text){
+	alert(text)
+}
+
 //存储 / 初始化设置
 function Setting() {
 	chrome.storage.sync.get(null, function (setting) {
@@ -138,31 +154,6 @@ function getData(url, callback) {
 	};
 }
 
-//更新设置
-function updateOptions(message){
-	//“添加热门标注人数” 还是 前后缀
-	if (message.type == "switchAddNumber") {
-		chrome.storage.sync.get(["displayN"], function (setting) {
-			var value = (setting.displayN == "true") ? "false" : "true"
-			var key = "displayN"
-			document.getElementById(key).innerHTML = value
-			var items = {}
-			items[key] = value
-			chrome.storage.sync.set(items, function () {
-				//热门标注人数选项设置完毕
-			})
-		});
-	} else {
-		var type = message.type
-		var items = {}
-		items[type] = message.text
-		document.getElementById(type).innerHTML = message.text;
-		chrome.storage.sync.set(items, function () {
-			//前后缀设置完毕
-		})
-	}
-}
-
 //获取添加级别的标题
 function getTitleAddedPre(title, level) {
 	return (level == 1) ? (document.getElementById("lev1").value + title)
@@ -204,3 +195,18 @@ chrome.contextMenus.create({
         chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
     }
 });
+
+//监听背景页所需storage键值是否有改变
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+	if(namespace == "sync"){
+		var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"]
+		chrome.storage.sync.get(keys,function(setting){
+			for(var key in setting){
+				if(keys.indexOf(key) > -1){
+					value = setting[key]
+					document.getElementById(key).innerHTML = (typeof value == "boolean") ? String(value) : value
+				}
+			}
+		})
+	}
+  });

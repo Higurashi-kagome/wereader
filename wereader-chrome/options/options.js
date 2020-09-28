@@ -87,11 +87,6 @@ function updateRegexp(){
     })
 }
 
-//发消息通知后台
-function sendMsgToBg(msg){
-    chrome.runtime.sendMessage(msg);
-}
-
 //初始化
 function initialize(){
     document.getElementById("backup").onclick = backup
@@ -99,7 +94,8 @@ function initialize(){
         console.log("chrome.storage.sync.get(null,function(setting){\nconsole.log(setting)\n})")
         console.log(setting)
         var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
-        //处理未定义的情况
+
+        //确保设置页所有键值都已被初始化
         var all = keys.concat(["displayN","checkedRe","codePre","codeSuf","preLang","re"])
         var config = {}
         for(var i=0,len=all.length;i<len;i++){
@@ -111,19 +107,33 @@ function initialize(){
         chrome.storage.sync.set(config,function(){
 
         })
+
         //"标注、标题、想法" 初始化
         for(var i=0,len=keys.length;i<len;i++){
             var key = keys[i]
-            document.getElementById(key).value = setting[key]
-            document.getElementById(key).onchange = function(){
-                sendMsgToBg({set: true, type: this.id, text: this.value})
+            var elem = document.getElementById(key)
+            elem.value = setting[key]
+            elem.onchange = function(){
+                config = {}
+                config[this.id] = this.value
+                chrome.storage.sync.set(config,function(){
+                    //前后缀更新完毕
+                })
             }
         }
         //"是否显示热门标注人数" 初始化
-        (setting.displayN == "true") ? (document.getElementById("add_number").checked = true)
-         : (document.getElementById("add_number").checked = false)
-        document.getElementById("add_number").onclick = function(){
-            sendMsgToBg({set: true, type: "switchAddNumber"})
+        var CheckBoxId = "displayN"
+        if(setting[CheckBoxId] == true){
+            document.getElementById(CheckBoxId).checked = true
+        }else{
+            document.getElementById(CheckBoxId).checked = false
+        }
+        document.getElementById(CheckBoxId).onclick = function(){
+            config = {}
+            config[CheckBoxId] = this.checked
+            chrome.storage.sync.set(config,function(){
+                //前后缀更新完毕
+            })
         }
         //"代码块"初始化
         var keys = ["codePre","codeSuf","preLang"]
@@ -199,7 +209,7 @@ function initialize(){
 //初始化设置页
 initialize();
 
-//设置更多的正则表达式（暂时不添加此功能）
+//设置更多的正则表达式（暂不添加此功能）
 /* 
 //加号点击事件
 document.getElementById("addRegExp").onclick = function(){

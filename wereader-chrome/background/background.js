@@ -256,7 +256,7 @@ function getBestBookMarks(url, callback) {
 	})
 }
 
-//处理数据，复制热门标注：popup
+//处理数据，复制热门标注
 function copyBestBookMarks(url) {
 	var bookId = url.match(/bookId=[0-9]*/)[0].replace("bookId=", "")
 	getData("https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0", function (data) {
@@ -377,49 +377,45 @@ Setting();
 
 //监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-	if (message.set == true) {//信息为options页面设置改变值
-		updateOptions(message)
-	}else{
-		switch(message.type){
-			case "copyImg":
-				copy(message.picText)
-				break
-			case "imgsArr":
-				imgsArr = message.RimgsArr
-				break
-			case "getBid":
-				document.getElementById('bookId').value = message.bid;
-				break
-			case "getUserVid":	//content-shelf.js 请求获取 userVid
-				chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
-					if(cookie != undefined && cookie != null){
-						sendMessageToContentScript({ userVid: cookie.value.toString() })
-					}
-				})
-				break
-			case "injectCss":
-				try{
-					chrome.tabs.insertCSS({ file: message.css })
-				}catch(err){
-					catchErr("chrome.tabs.insertCSS()：出错")
+	switch(message.type){
+		case "copyImg":
+			copy(message.picText)
+			break
+		case "imgsArr":
+			imgsArr = message.RimgsArr
+			break
+		case "getBid":
+			document.getElementById('bookId').value = message.bid;
+			break
+		case "getUserVid":	//content-shelf.js 请求获取 userVid
+			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
+				if(cookie != undefined && cookie != null){
+					sendMessageToContentScript({ userVid: cookie.value.toString() })
 				}
-				break
-			case "getContents":
-				var texts = message.contents;
-				var res = '';
-				//生成目录res
-				for (var i = 0, len = texts.length; i < len; i++) {
-					var level = texts[i].charAt(0);
-					var chapterInfo = texts[i].substr(1);
-					res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n";
-				}
-				//如果需要获取目录，则设置，如果不需要获取目录，直接复制
-				(document.getElementById("Bookcontents").innerHTML == "getBookContents") ? 
-				(document.getElementById("Bookcontents").innerHTML = res) : copy(res)
-				//设置当前所在目录
-				document.getElementById("currentContent").innerHTML = message.currentContent
-				break
-		}
+			})
+			break
+		case "injectCss":
+			try{
+				chrome.tabs.insertCSS({ file: message.css })
+			}catch(err){
+				catchErr("chrome.tabs.insertCSS()：出错")
+			}
+			break
+		case "getContents":
+			var texts = message.contents;
+			var res = '';
+			//生成目录res
+			for (var i = 0, len = texts.length; i < len; i++) {
+				var level = texts[i].charAt(0);
+				var chapterInfo = texts[i].substr(1);
+				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n";
+			}
+			//如果需要获取目录，则设置，如果不需要获取目录，直接复制
+			(document.getElementById("Bookcontents").innerHTML == "getBookContents") ? 
+			(document.getElementById("Bookcontents").innerHTML = res) : copy(res)
+			//设置当前所在目录
+			document.getElementById("currentContent").innerHTML = message.currentContent
+			break
 	}
 });
 
