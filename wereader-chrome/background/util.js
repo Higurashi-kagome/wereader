@@ -13,21 +13,59 @@ function catchErr(sender) {
 //存储 / 初始化设置
 function Setting() {
 	chrome.storage.sync.get(null, function (setting) {
+		var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"]
 		//stroage中无数据时
 		if (setting.s1Pre == undefined) {
-			var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"]
+			//从背景页获取初始化数据
 			var items = {}
 			for(var i=0,len=keys.length;i<len;i++){
 				var key = keys[i]
 				items[key] = document.getElementById(key).value
 			}
+			//默认初始化数据
+			items["checkedRe"] = []
+			items["codePre"] = "```"
+			items["codeSuf"] = "```"
+			items["preLang"] = ""
+			items["re"] = [
+				[
+					"contextMenuEnabledInput1",
+					"",
+					"",
+					""
+				],
+				[
+					"contextMenuEnabledInput2",
+					"",
+					"",
+					""
+				],
+				[
+					"contextMenuEnabledInput3",
+					"",
+					"",
+					""
+				],
+				[
+					"contextMenuEnabledInput4",
+					"",
+					"",
+					""
+				],
+				[
+					"contextMenuEnabledInput5",
+					"",
+					"",
+					""
+				]
+			]
 			//存储初始化设置
 			chrome.storage.sync.set(items, function () {
 				//设置存储完毕
 			});
 		} else {
 			//同步设置到背景页
-			chrome.storage.sync.get(["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN"], function (setting) {
+			chrome.storage.sync.get(keys, function (setting) {
 				for(var key in setting){
 					document.getElementById(key).innerHTML = setting[key]
 				}

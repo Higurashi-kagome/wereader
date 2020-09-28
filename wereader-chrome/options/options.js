@@ -1,4 +1,54 @@
 /* 设置页 */
+/* chrome.storage.local.clear(function(){
+
+}) */
+/* chrome.storage.local.get(["backup"],function(settings){
+    console.log(settings)
+}) */
+//备份
+function backup(){
+    //初始化备份命名提示
+    function ini(settings){
+        var container = document.getElementById("inputName")
+        var aInput = document.getElementById("name")
+        var submit = document.getElementById("submit")
+        var cancle = document.getElementById("cancel")
+        //"确定"
+        submit.onclick = function(){
+            if(aInput.value == ""){
+                aInput.placeholder = "请输入备份名..."
+            }else if(settings[key][aInput.value] != undefined){
+                aInput.value = ""
+                aInput.placeholder = "重名，请重新输入..."
+            }else{
+                chrome.storage.sync.get(null, function(setting) {
+                    settings[key][aInput.value] = setting
+                    chrome.storage.local.set(settings,function(){
+                        aInput.value = ""
+                        container.style.display = "none"
+                    })
+                })
+            }
+        }
+        //"取消"
+        cancle.onclick = function(){
+            container.style.display = "none"
+        }
+        container.style.display = "block"
+    }
+    var key = "backup"
+    chrome.storage.local.get([key], function(settings) {
+        //检查是否有备份
+        if(settings[key] == undefined){
+            settings[key] = {}
+            chrome.storage.local.set(settings,function(){
+                ini(settings)
+            })
+        }else{
+            ini(settings)
+        }
+    })
+}
 
 //更新已启用正则匹配
 function updateCheckedRegexp(){
@@ -44,9 +94,24 @@ function sendMsgToBg(msg){
 
 //初始化
 function initialize(){
+    document.getElementById("backup").onclick = backup
     chrome.storage.sync.get(null, function(setting) {
-        //"标注、标题、想法" 初始化
+        console.log("chrome.storage.sync.get(null,function(setting){\nconsole.log(setting)\n})")
+        console.log(setting)
         var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
+        //处理未定义的情况
+        var all = keys.concat(["displayN","checkedRe","codePre","codeSuf","preLang","re"])
+        var config = {}
+        for(var i=0,len=all.length;i<len;i++){
+            key = all[i]
+            if(setting[key] == undefined){
+                config[key] = ""
+            }           
+        }
+        chrome.storage.sync.set(config,function(){
+
+        })
+        //"标注、标题、想法" 初始化
         for(var i=0,len=keys.length;i<len;i++){
             var key = keys[i]
             document.getElementById(key).value = setting[key]
@@ -98,7 +163,7 @@ function initialize(){
                 }
             }
         }
-        //checkbox 点击事件
+        //正则表达式 checkbox 点击事件
         for(var i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
                 if(this.parentNode.getElementsByClassName("regexp")[0].value != ""){
@@ -106,7 +171,7 @@ function initialize(){
                 }
             }
         }
-        //input、textarea 初始化
+        //正则表达式 input、textarea 初始化
         var regexpContainer = document.getElementsByClassName("regexp_container")
         var reCollection = setting.re
         if(reCollection != undefined && reCollection.length == 5){
@@ -118,7 +183,7 @@ function initialize(){
         }else{
             updateRegexp()
         }
-        //input、textarea 改变
+        //正则表达式 input、textarea 改变
         for(var i = 0,len1 = regexpContainer.length;i < len1;i++){
             var classNameArr = ["regexp","regexp_pre","regexp_suf"]
             for(var j=0,len2=classNameArr.length;j<len2;j++){
