@@ -74,17 +74,9 @@ function getComment(url, bookId, isHtml) {
 		}
 		if (htmlContent != "" || content != "" || title != "") {
 			if (isHtml == true) {
-				if (title != "") {
-					copy("# " + title + "\n\n" + htmlContent);
-				} else {
-					copy(htmlContent);
-				}
+				(title != "") ? copy("# " + title + "\n\n" + htmlContent) : copy(htmlContent)
 			} else {
-				if (title != "") {
-					copy("### " + title + "\n\n" + content);
-				} else {
-					copy(content);
-				}
+				(title != "") ? copy("### " + title + "\n\n" + content) : copy(content)
 			}
 		} else {
 			sendAlertMsg({text: "该书无书评",icon:'warning'})

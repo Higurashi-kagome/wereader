@@ -8,6 +8,7 @@
   -   [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme ( 观察 )
   -   [ ] Unchecked runtime.lastError: Invalid url: "" ( 观察 )
   -   [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
+  -   [ ] 直接从QQ打开QQ邮箱时报错：Unchecked runtime.lastError: Cannot access contents of url "https://mail.qq.com/cgi-bin/frame_html?sid=5h69ZXKVawRraXol&r=d0d4742ddae71acb0670e45c1f0e35a5". Extension manifest must request permission to access this host.
   -   [ ] 页面加载缓慢时出现的报错
   -   [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况 ( 观察 )
 -   [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项 ( 缓 )
@@ -42,4 +43,15 @@
 - 对传书中的笔记进行支持
   - 下载最新版微信读书并对书架、标注等内容进行抓包
   - 支持设置图片格式比如调整大小（暂缓）
-  - 不能跳转到最新进度的问题（观察）
+- 复制按钮在标注下而导致无法点击的问题
+- Markdown转义字符问题
+- 《认知天性》第一章导出问题
+- 多本书设置数据的保存问题
+- 图片直接复制而不是复制链接
+- 优化结构
+- 备份删除确定
+- 备份成功提示
+- 获取设置的json文本、从文本导入？
+- 备份中包含backup键的问题
+- 备份重命名？
+- 当前设置名称显示
