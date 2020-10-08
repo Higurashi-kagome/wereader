@@ -1,8 +1,9 @@
-/* 用于实现阅读页主题色切换 */
+/* 主要用于实现阅读页主题色切换，另外还负责从 content-scroll.js 中调用函数帮助实现进度*/
 
 //console.log("inject-theme.js：被注入")
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
+    //设置按钮
     var theme = document.createElement("button")
     var btnDiv = document.getElementsByClassName("readerControls readerControls")[0]
     var dark_white = btnDiv.children[3]
@@ -10,15 +11,16 @@ function addThemeBtn(){
     dark_white.style.display = "none"
     theme.setAttribute("title", "主题")
     theme.setAttribute("class","readerControls_item theme")
-    var span=document.createElement("span")
-    span.textContent = "主题"
+    //设置按钮文字
+    var span1=document.createElement("span")
+    span1.textContent = "主题"
     //如果网页一开始为夜色模式，则需要将span文字颜色设置为灰色，否则保持默认
     if(document.getElementsByClassName("readerControls_item white").length != 0){
-        span.style.color = "rgb(190,190,190)"
+        span1.style.color = "rgb(190,190,190)"
     }else{
-        span.style.color = "rgb(0,0,0)"
+        span1.style.color = "rgb(0,0,0)"
     }
-    theme.appendChild(span)
+    theme.appendChild(span1)
     
     //改变主题
     function changeTheme(){
@@ -26,44 +28,36 @@ function addThemeBtn(){
         if(document.getElementsByClassName("readerControls_item white").length != 0){
             //设置白色主题
             Flag=-1
-            try{
-                chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
-            }catch(error){
-                Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
-            }
+            chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
             clickDarkOrWhite("readerControls_item white")
             //从黑色主题到白色主题恢复span文字颜色
-            span.style.color = "rgb(0,0,0)"
+            span1.style.color = "rgb(0,0,0)"
+            span2 = document.getElementById("progressText")
+            if(span2){
+                span2.style.color = "rgb(0,0,0)"
+            }
         }else if(Flag == 0){
             //设置绿色主题
             if(document.getElementsByClassName("readerControls_item white").length != 0){
                 clickDarkOrWhite("readerControls_item white")
             }
-            try {
-                chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
-            } catch (error) {
-                Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
-            }
+            chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
         }else if(Flag == 1){
             //设置橙色主题
             if(document.getElementsByClassName("readerControls_item white").length != 0){
                 clickDarkOrWhite("readerControls_item white")
             }
-            try {
-                chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
-            } catch (error) {
-                Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
-            }
+            chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
         }else if(Flag == 2){
             //设置黑色主题
-            try {
-                chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"})
-            } catch (error) {
-                Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
-            }
+            chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"})
             clickDarkOrWhite("readerControls_item dark")
             //更改span文字图标颜色
-            span.style.color = "rgb(190,190,190)"
+            span1.style.color = "rgb(190,190,190)"
+            span2 = document.getElementById("progressText")
+            if(span2){
+                span2.style.color = "rgb(190,190,190)"
+            }
         }
         //保存当前主题对应编号
         chrome.storage.sync.set({flag: Flag}, function() {
@@ -81,7 +75,11 @@ function addThemeBtn(){
 
     //绑定点击事件
     theme.addEventListener('click', function(){
-        changeTheme()
+        try{
+            changeTheme()
+        }catch (error) {
+            Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
+        }
         Flag = Flag + 1
     },false)
 }
@@ -130,5 +128,12 @@ window.onload = function(){
     //如果切换到黑色主题按钮存在且显示
     if(dark != undefined && dark.style.display != "none"){
         addThemeBtn()
+    }
+    /* 从一同被注入的 content-scroll.js 脚本中调用函数实现进度切换按钮 */
+    //尝试获取app下载按钮
+    var appDownload = document.getElementsByClassName("readerControls_item download")[0]
+    //如果按钮存在且显示
+    if(appDownload != undefined && appDownload.style.display != "none"){
+        addProgressBtn()
     }
 }
