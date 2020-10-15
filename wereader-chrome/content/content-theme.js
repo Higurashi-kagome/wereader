@@ -69,7 +69,7 @@ function addThemeBtn(){
         try{
             document.getElementsByClassName(classN)[0].click();
         }catch(err){
-            console.log("inject-theme.js => clickDarkOrWhite(classN) => err：\n" + err);
+            console.log("clickDarkOrWhite(classN) => " + err.message);
         }
     }
 
@@ -111,11 +111,12 @@ const timeId = setInterval(() => {
                 }
             })
         }catch(err){
-            console.log("content-theme.js => setInterval() => err.message：" + err.message)
+            console.log("content-theme.js => setInterval() => " + err.message)
         }
         //结束定时器
         clearInterval(this.timeId)
-    }},10)
+    }
+},10)
 
 window.onload = function(){
     //分别尝试获取日间模式/夜间模式切换按钮

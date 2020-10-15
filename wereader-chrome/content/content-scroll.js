@@ -1,6 +1,5 @@
 /* 用于实现进度查看（并不是直接实现而是由 content-theme.js 调用） */
 
-var count = -1
 //添加进度查看按钮并绑定点击事件
 function addProgressBtn(){
     //设置按钮
@@ -27,6 +26,7 @@ function addProgressBtn(){
     progressBtn.appendChild(span2)
     
     //绑定点击事件
+    var count = -1
     progressBtn.addEventListener('click', function(){
         //切换滚筒条显隐
         if(count == -1){
