@@ -128,51 +128,47 @@ function getBookMarks(bookId, add, contents, callback) {
 //保存图片Markdown文本数组
 var imgsArr = []
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(bookId, all, add) {
+function copyBookMarks(bookId, all, add, regexpCollection) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	injectScript({ file: 'inject/inject-copyImgs.js' })
 	getContents(bookId,function(contents){
 		getBookMarks(bookId, add,contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
-			chrome.storage.sync.get(["checkedRe"],function(storageData){
-				var regexpCollection = storageData.checkedRe
-				if(regexpCollection == undefined) regexpCollection = [];
-				if (all) {	//获取全书标注
-					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {//遍历章节
-						var chapterUid = chaptersAndMarks[i].chapterUid
-						var title = contents[chapterUid].title
-						var level = contents[chapterUid].level
-						res += getTitleAddedPre(title, level) + "\n\n"
-						res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
-					}
-					copy(res)
-				} else {	//获取本章标注
-					//遍历目录
-					for (var key in contents) {
-						//寻找目标章节
-						if (contents[key].title == document.getElementById("currentContent").value.substring(1)) {
-							res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
-							var chapterUid = key
-							break
-						}
-					}
-					//遍历标注
-					for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
-						//寻找目标章节
-						if (chaptersAndMarks[i].chapterUid == chapterUid) {
-							res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
-							//copy() 函数在此处调用可避免本章无标注的时候也进行复制（只复制到标题）
-							copy(res)
-							break
-						}
-						//处理该章节无标注的情况
-						if(i == len1 - 1) sendAlertMsg({text: "该章节无标注",icon:'warning'});
+			if (all) {	//获取全书标注
+				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {//遍历章节
+					var chapterUid = chaptersAndMarks[i].chapterUid
+					var title = contents[chapterUid].title
+					var level = contents[chapterUid].level
+					res += getTitleAddedPre(title, level) + "\n\n"
+					res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
+				}
+				copy(res)
+			} else {	//获取本章标注
+				//遍历目录
+				for (var key in contents) {
+					//寻找目标章节
+					if (contents[key].title == document.getElementById("currentContent").value.substring(1)) {
+						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
+						var chapterUid = key
+						break
 					}
 				}
-				//不排除 imgArr 获取失败，故保险起见将其设置为 []
-				imgsArr = []
-			})
+				//遍历标注
+				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
+					//寻找目标章节
+					if (chaptersAndMarks[i].chapterUid == chapterUid) {
+						res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
+						//copy() 函数在此处调用可避免本章无标注的时候也进行复制（只复制到标题）
+						copy(res)
+						break
+					}
+					//处理该章节无标注的情况
+					if(i == len1 - 1) sendAlertMsg({text: "该章节无标注",icon:'warning'});
+				}
+			}
+			//不排除 imgArr 获取失败，故保险起见将其设置为 []
+			imgsArr = []
 		})
 	})
 }
@@ -222,18 +218,11 @@ function copyBestBookMarks(bookId,add) {
 				var title = getTitleAddedPre(contents[key].title, contents[key].level)
 				res += title + "\n\n"
 				//遍历章内标注
-				if (add) {
-					for (var j = 0, len2 = bestMarks[key].length; j < len2; j++) {
-						markText = bestMarks[key][j].markText
-						//markText = escape(markText)
-						res += markText + "  <u>" + bestMarks[key][j].totalCount + "</u>" + "\n\n"
-					}
-				} else {
-					for (var j = 0, len2 = bestMarks[key].length; j < len2; j++) {
-						markText = bestMarks[key][j].markText
-						//markText = escape(markText)
-						res += markText + "\n\n"
-					}
+				for (var j = 0, len = bestMarks[key].length; j < len; j++) {
+					markText = bestMarks[key][j].markText
+					markText = escape(markText)
+					totalCount = bestMarks[key][j].totalCount
+					res += markText + (add ? ("  <u>" + totalCount + "</u>") : "") + "\n\n"
 				}
 			}
 			copy(res)
@@ -306,7 +295,7 @@ function copyThought(bookId) {
 	})
 }
 
-Setting();
+Setting()
 
 //监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {

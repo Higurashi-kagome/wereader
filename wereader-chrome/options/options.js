@@ -198,38 +198,3 @@ function initialize(){
 
 //初始化设置页
 initialize();
-
-//设置更多的正则表达式（暂不添加此功能）
-/* 
-//加号点击事件
-document.getElementById("addRegExp").onclick = function(){
-    var regexpContainer = document.getElementsByClassName("regexp_container")
-    var len = regexpContainer.length
-    if(len > 0 && len <= 10){
-        var parent = regexpContainer[0].parentNode
-        var newRegexpContainer = regexpContainer[len - 1].cloneNode(true)
-        //更新id
-        var checkBox = newRegexpContainer.getElementsByClassName("contextMenuEnabledInput")[0]
-        var id = checkBox.id
-        checkBox.id = id.substr(0,id.length - 1) + (parseInt(id.substr(id.length - 1)) + 1)
-        var inser = parent.insertBefore(newRegexpContainer,this.parentNode)
-        inser.getElementsByClassName("regexp")[0].value = ""
-        inser.getElementsByClassName("regexp_pre")[0].value = ""
-        inser.getElementsByClassName("regexp_suf")[0].value = ""
-        checkBox.onclick = function(){
-            updateCheckedRegexp()
-        }
-    }else if(len > 10){
-        //alert("最多添加10个")
-    }
-}
-
-//减号点击事件
-document.getElementById("removeRegExp").onclick = function(){
-    var regexpContainer = document.getElementsByClassName("regexp_container")
-    var len = regexpContainer.length
-    if(len > 1){
-        var lastRegexpContainer = regexpContainer[len - 1]
-        lastRegexpContainer.parentNode.removeChild(lastRegexpContainer)
-    }
-} */

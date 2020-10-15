@@ -152,8 +152,8 @@ function getTitleAddedPre(title, level) {
 
 //转义特殊字符
 function escape(markText){
-	var exceptRegexp = /!\[[\S| ]*\]\([\S| ]*\)/g
-	if(exceptRegexp.test(markText) == true){//文本中包含链接则不对链接中的特殊字符进行转义
+	var exceptRegexp = /!\[[\S| ]*\]\([\S| ]*\)/g//匹配图片
+	if(exceptRegexp.test(markText) == true){//不对图片进行转义
 		var list = markText.split(exceptRegexp)
 		var urls = markText.match(exceptRegexp)
 		var count = 0
@@ -175,7 +175,7 @@ function escape(markText){
 	}
 	
 	function escapeElem(text){
-		var patterns1 = ["\\\\","\\*","\\{","\\}","\\[","\\]","\\(","\\)","\\+","\\."]
+		var patterns1 = ["\\\\","\\*","\\{","\\}","\\[","\\]","\\(","\\)","\\+"]//因为转义英文句号会影响链接显示，故暂时不包含"\\."
 		var patterns2 = ["<",">","_","`","#","-","!"]
 		var patterns = patterns1.concat(patterns2)
 		for(var n=0,len=patterns.length;n<len;n++){
@@ -278,9 +278,9 @@ function traverseMarks(marks,regexpCollection,all){
 			continue
 		}
 		//转义特殊字符
-		//markTextEscaped = escape(markText)
-		var markTextEscaped = markText
-		//正则匹配
+		var markTextEscaped = escape(markText)
+		//var markTextEscaped = markText
+		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
 		markText = getRegExpMarkText(markText,markTextEscaped,regexpCollection)
 		var style = marks[j].style
 		res += addPreAndSuf(markText,style) + "\n\n"
@@ -298,7 +298,7 @@ chrome.contextMenus.create({
     "onclick":function() {
         chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
     }
-});
+})
 
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -308,16 +308,15 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 			for(var key in setting){
 				if(keys.indexOf(key) > -1){
 					value = setting[key]
-					document.getElementById(key).innerHTML = (typeof value == "boolean") ? String(value) : value
+					document.getElementById(key).innerHTML = value
 				}
 			}
 		})
 	}
-});
+})
 
 //测试
-/* var test = "#`_-{_\\刘刘浩![epub_da](https://liuhao.com)刘https://liuhao.com浩2!}[www.baidu.com]浩.+\\"
-test = "每个Java程序员都很熟悉在有问题的代码中插入一些System.out.println方法调用来帮助观察程序运行的操作过程。当然，一旦发现问题的根源，就要将这些语句从代码中删去。如果接下来又出现了问题，就需要再插入几个调用System.out.println方法的语句。记录日志API就是为了解决这个问题而设计的。下面先讨论这些API的优点。#`_-{_\\刘刘浩![epub_da](https://liuhao.com)刘https://liuhao.com浩2!}[]浩.+\\"
+/* var test = "![epub](黄河大道)"
 //console.log(test)
 console.log(escape(test)) */
 /* var re =  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g

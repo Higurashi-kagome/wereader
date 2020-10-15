@@ -22,7 +22,7 @@ window.onload = function () {
             /*绑定点击事件*/
             //获取书评
             document.getElementById("getComment").addEventListener('click', function () {
-                (choose.style.display != "block") ? (choose.style.display = "block") : (choose.style.display = "none")
+                choose.style.display = (choose.style.display != "block") ? "block" : "none"
             }, false);
             //纯文本
             getText.addEventListener('click', function () {
@@ -37,16 +37,18 @@ window.onload = function () {
             //获取标注
             var add = setting.addThoughts ? true : false
             document.getElementById("getBookMarks").addEventListener('click', function () {
-                (chooseMark.style.display != "block") ? (chooseMark.style.display = "block") : (chooseMark.style.display = "none")
+                chooseMark.style.display = (chooseMark.style.display != "block") ? "block" : "none"
             }, false);
             //本章
+            var regexpCollection = setting.checkedRe
+            regexpCollection = regexpCollection ? regexpCollection : []
             getThisChapter.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, false, add);
+                bg.copyBookMarks(bookId, false, add, regexpCollection);
                 window.close();
             }, false);
             //全部
             getAll.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, true, add);
+                bg.copyBookMarks(bookId, true, add, regexpCollection);
                 window.close();
             }, false);
             //获取目录
@@ -72,8 +74,6 @@ window.onload = function () {
             }, false);
             //测试
             document.getElementById("testBtn").addEventListener('click', function () {
-                //chapterAndMarks = bg.copyBookMarks(bookId,false,true)
-                //bg.aler(JSON.stringify(config))
                 //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
                 window.close()
             }, false);
