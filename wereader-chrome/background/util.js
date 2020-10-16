@@ -17,7 +17,7 @@ function catchErr(sender) {
 
 //获取当前背景页配置——用于测试
 function getConfig(){
-	var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","displayN","addThoughts"]
+	var keys = []
 	var items = {}
 	for(var i=0,len=keys.length;i<len;i++){
 		var key = keys[i]
@@ -47,7 +47,7 @@ function Setting() {
 			document.getElementById(keys[i]).innerHTML = setting[keys[i]]
 		}
 		//初始化默认选项
-		keys = ["checkedRe","codePre","codeSuf","preLang","addThoughts","re"]
+		keys = ["checkedRe","codePre","codeSuf","preLang","displayN","addThoughts","re","escape"]
 		for(var i=0,len=keys.length;i<len;i++){
 			var key = keys[i]
 			if(setting[key] == undefined){
@@ -58,8 +58,15 @@ function Setting() {
 					case "preLang":
 						setting[key] = ""
 						break
+					case "displayN":
+						setting[key] = false
+						break
 					case "addThoughts":
 						setting[key] = false
+						break
+					case "escape":
+						setting[key] = false
+						break
 					case "codePre":
 						setting[key] = "```"
 						break
@@ -265,7 +272,9 @@ function getContents(bookId,callback){
 }
 
 //获取章内标注
-function traverseMarks(marks,regexpCollection,all){
+function traverseMarks(marks,setting,all){
+	var regexpCollection = setting.checkedRe ? setting.checkedRe : []
+	var isEscape = setting.escape
 	var res = ""
 	var imgsArrIndext = 0
 	for (var j = 0, len = marks.length; j < len; j++) {//遍历章内标注
@@ -278,7 +287,7 @@ function traverseMarks(marks,regexpCollection,all){
 			continue
 		}
 		//转义特殊字符
-		var markTextEscaped = escape(markText)
+		var markTextEscaped = isEscape ? escape(markText) : markText
 		//var markTextEscaped = markText
 		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
 		markText = getRegExpMarkText(markText,markTextEscaped,regexpCollection)
@@ -314,12 +323,3 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 		})
 	}
 })
-
-//测试
-/* var test = "![epub](黄河大道)"
-//console.log(test)
-console.log(escape(test)) */
-/* var re =  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g
-re = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g
-//console.log(test.split(re))
-console.log(test.match(re)) */

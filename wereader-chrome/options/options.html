@@ -28,6 +28,9 @@
 		input[type="checkbox"] {
 			float: right;
 		}
+		.separate {
+			margin-bottom: 0.5em;
+		}
 	</style>
 	</head>
 	<body>
@@ -117,10 +120,15 @@
 		</div>
 		<hr>
 		<div>
+			<label>开启转义：</label>
+			<input type="checkbox" id="escape">
+		</div>
+		<p class="separate"></p>
+		<div>
 			<label>导出标注包含想法：</label>
 			<input type="checkbox" id="addThoughts">
 		</div>
-		<p style="margin-bottom: 0.5em;"></p>
+		<p class="separate"></p>
 		<div>
 			<label>热门标注显示标注人数：</label>
 			<input type="checkbox" id="displayN">

@@ -128,7 +128,8 @@ function getBookMarks(bookId, add, contents, callback) {
 //保存图片Markdown文本数组
 var imgsArr = []
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(bookId, all, add, regexpCollection) {
+function copyBookMarks(bookId, all, setting) {
+	var add = setting.addThoughts
 	//请求需要追加到文本中的图片 Markdown 文本
 	injectScript({ file: 'inject/inject-copyImgs.js' })
 	getContents(bookId,function(contents){
@@ -141,7 +142,7 @@ function copyBookMarks(bookId, all, add, regexpCollection) {
 					var title = contents[chapterUid].title
 					var level = contents[chapterUid].level
 					res += getTitleAddedPre(title, level) + "\n\n"
-					res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
+					res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
 				}
 				copy(res)
 			} else {	//获取本章标注
@@ -158,7 +159,7 @@ function copyBookMarks(bookId, all, add, regexpCollection) {
 				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
 					//寻找目标章节
 					if (chaptersAndMarks[i].chapterUid == chapterUid) {
-						res += traverseMarks(chaptersAndMarks[i].marks,regexpCollection,all)
+						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
 						//copy() 函数在此处调用可避免本章无标注的时候也进行复制（只复制到标题）
 						copy(res)
 						break
@@ -208,7 +209,9 @@ function getBestBookMarks(bookId, callback) {
 }
 
 //处理数据，复制热门标注
-function copyBestBookMarks(bookId,add) {
+function copyBestBookMarks(bookId,setting) {
+	var add = setting.displayN
+	var isEscape = setting.escape
 	getContents(bookId,function(contents){
 		getBestBookMarks(bookId, function (bestMarks) {
 			//得到res
@@ -220,7 +223,7 @@ function copyBestBookMarks(bookId,add) {
 				//遍历章内标注
 				for (var j = 0, len = bestMarks[key].length; j < len; j++) {
 					markText = bestMarks[key][j].markText
-					markText = escape(markText)
+					markText = isEscape ? escape(markText) : markText
 					totalCount = bestMarks[key][j].totalCount
 					res += markText + (add ? ("  <u>" + totalCount + "</u>") : "") + "\n\n"
 				}

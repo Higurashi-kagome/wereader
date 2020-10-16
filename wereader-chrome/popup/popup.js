@@ -35,20 +35,17 @@ window.onload = function () {
                 window.close();
             }, false);
             //获取标注
-            var add = setting.addThoughts ? true : false
             document.getElementById("getBookMarks").addEventListener('click', function () {
                 chooseMark.style.display = (chooseMark.style.display != "block") ? "block" : "none"
             }, false);
             //本章
-            var regexpCollection = setting.checkedRe
-            regexpCollection = regexpCollection ? regexpCollection : []
             getThisChapter.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, false, add, regexpCollection);
+                bg.copyBookMarks(bookId, false, setting);
                 window.close();
             }, false);
             //全部
             getAll.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, true, add, regexpCollection);
+                bg.copyBookMarks(bookId, true, setting);
                 window.close();
             }, false);
             //获取目录
@@ -57,9 +54,8 @@ window.onload = function () {
                 window.close();
             }, false);
             //获取热门标注
-            var add = setting.displayN ? true : false
             document.getElementById("getBestBookMarks").addEventListener('click', function () {
-                bg.copyBestBookMarks(bookId,add);
+                bg.copyBestBookMarks(bookId,setting);
                 window.close();
             }, false);
             //获取我的想法

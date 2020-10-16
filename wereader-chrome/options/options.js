@@ -109,7 +109,7 @@ function initialize(){
             }
         }
         //"是否显示热门标注人数"、"标注添加想法" 初始化
-        var CheckBoxIds = ["displayN","addThoughts"]
+        var CheckBoxIds = ["displayN","addThoughts","escape"]
         for(var i=0,len=CheckBoxIds.length;i<len;i++){
             let CheckBoxId = CheckBoxIds[i]
             if(setting[CheckBoxId] == true){
