@@ -54,7 +54,8 @@ Setting()	// 该函数在 util.js 中
 */
 
 //获取书评：popup
-function getComment(userVid, bookId, isHtml) {
+function getComment(userVid, bookId, isHtml,setting) {
+	var isEscape = setting.escape
 	var url = "https://i.weread.qq.com/review/list?listType=6&userVid=" + userVid + "&rangeType=2&mine=1&listMode=1"
 	getData(url, function (data) {
 		var reviews = JSON.parse(data).reviews
@@ -71,8 +72,9 @@ function getComment(userVid, bookId, isHtml) {
 				break
 			}
 		}
+		content = isEscape ? escape(content) : content
 		if (htmlContent != "" || content != "" || title != "") {
-			if (isHtml == true) {
+			if (isHtml) {
 				(title != "") ? copy("# " + title + "\n\n" + htmlContent) : copy(htmlContent)
 			} else {
 				(title != "") ? copy("### " + title + "\n\n" + content) : copy(content)

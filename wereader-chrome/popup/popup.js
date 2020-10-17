@@ -3,76 +3,65 @@ window.onload = function () {
     //获取并设置bid、vid
     getuserVid(function(userVid){
         chrome.storage.sync.get(null, function(setting) {
-            var bg = chrome.extension.getBackgroundPage();
-            var bookId = bg.getbookId();
-            document.getElementById("bookId").innerHTML = "bid：" + bookId;
-            document.getElementById("userVid").innerHTML = "vid：" + userVid;
+            var bg = chrome.extension.getBackgroundPage()
+            var bookId = bg.getbookId()
+            document.getElementById("bookId").innerHTML = "bid：" + bookId
+            document.getElementById("userVid").innerHTML = "vid：" + userVid
             //获取bid / vid失败则提醒
             if (!bookId || !userVid) {
-                bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", confirmButtonText: '确定',icon: "error"});
-                window.close();
-            }
-            //"获取书评"和"获取标注"元素及其子元素
-            var getText = document.getElementById("getComment_text");
-            var getHtml = document.getElementById("getComment_html");
-            var getThisChapter = document.getElementById("getThisChapter");
-            var getAll = document.getElementById("getAll");
-            var choose = document.getElementById("choose");
-            var chooseMark = document.getElementById("choose_mark");
-            /*绑定点击事件*/
-            //获取书评
-            document.getElementById("getComment").addEventListener('click', function () {
-                choose.style.display = (choose.style.display != "block") ? "block" : "none"
-            }, false);
-            //纯文本
-            getText.addEventListener('click', function () {
-                bg.getComment(userVid, bookId, false);
-                window.close();
-            }, false);
-            //HTML
-            getHtml.addEventListener('click', function () {
-                bg.getComment(userVid, bookId, true);
-                window.close();
-            }, false);
-            //获取标注
-            document.getElementById("getBookMarks").addEventListener('click', function () {
-                chooseMark.style.display = (chooseMark.style.display != "block") ? "block" : "none"
-            }, false);
-            //本章
-            getThisChapter.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, false, setting);
-                window.close();
-            }, false);
-            //全部
-            getAll.addEventListener('click', function () {
-                bg.copyBookMarks(bookId, true, setting);
-                window.close();
-            }, false);
-            //获取目录
-            document.getElementById("getBookContents").addEventListener('click', function () {
-                bg.injectScript({ file: 'inject/inject-getContents.js' })
-                window.close();
-            }, false);
-            //获取热门标注
-            document.getElementById("getBestBookMarks").addEventListener('click', function () {
-                bg.copyBestBookMarks(bookId,setting);
-                window.close();
-            }, false);
-            //获取我的想法
-            document.getElementById("getMyThoughts").addEventListener('click', function () {
-                bg.copyThought(bookId);
-                window.close();
-            }, false);
-            //开启复制图片
-            document.getElementById("inject").addEventListener('click', function () {
-                bg.injectScript({ file: 'inject/inject-copyBtn.js' })
-                window.close();
-            }, false);
-            //测试
-            document.getElementById("testBtn").addEventListener('click', function () {
-                //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
+                bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", confirmButtonText: '确定',icon: "error"})
                 window.close()
-            }, false);
+            }
+            //变量按钮绑定点击事件
+            var ids = ["getComment","getComment_text","getComment_html","getBookMarks","getThisChapter","getAll","getBookContents","getBestBookMarks","getMyThoughts","inject","testBtn"]
+            for(var i=0,len=ids.length;i<len;i++){
+                document.getElementById(ids[i]).addEventListener('click', function(){
+                    listener(this.id)
+                }, false)
+            }
+            //点击调用该函数
+            function listener(id){
+                switch(id){
+                    case "getComment":
+                        let choose = document.getElementById("choose")
+                        choose.style.display = (choose.style.display != "block") ? "block" : "none"
+                        return
+                    case "getComment_text":
+                        bg.getComment(userVid, bookId, false,setting)
+                        break
+                    case "getComment_html":
+                        bg.getComment(userVid, bookId, true,setting)
+                        break
+                    case "getBookMarks":
+                        let chooseMark = document.getElementById("choose_mark")
+                        chooseMark.style.display = (chooseMark.style.display != "block") ? "block" : "none"
+                        return
+                    case "getThisChapter":
+                        bg.copyBookMarks(bookId, false, setting)
+                        break
+                    case "getAll":
+                        bg.copyBookMarks(bookId, true, setting)
+                        break
+                    case "getBookContents":
+                        bg.injectScript({ file: 'inject/inject-getContents.js' })
+                        break
+                    case "getBestBookMarks":
+                        bg.copyBestBookMarks(bookId,setting)
+                        break
+                    case "getMyThoughts":
+                        bg.copyThought(bookId)
+                        break
+                    case "inject":
+                        bg.injectScript({ file: 'inject/inject-copyBtn.js' })
+                        break
+                    case "testBtn":
+                        //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
+                        break
+                    default:
+                        break
+                }
+                window.close()
+            }
         })
     })
     
@@ -92,15 +81,3 @@ function getuserVid(callback){
 		})
 	})
 }
-
-/*流程*/
-/*
-//页面加载完毕
-window.onload = function () {
-    //获取 userVid
-    getuserVid(callback){
-        //获取背景页
-        //给 popup 页面绑定点击事件（点击后调用背景页中相应的函数）
-    })
-}
-*/

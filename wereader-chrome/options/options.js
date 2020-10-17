@@ -1,18 +1,13 @@
 /* 设置页 */
-/* chrome.storage.local.clear(function(){
 
-}) */
-/* chrome.storage.local.get(["backup"],function(settings){
-    console.log(settings)
-}) */
-//备份
+//"备份"按钮点击事件
 function backup(){
-    //初始化备份命名提示
-    function ini(settings){
+    chrome.storage.local.get(null,function(settings){
         var container = document.getElementById("inputName")
         var aInput = document.getElementById("name")
         var submit = document.getElementById("submit")
         var cancle = document.getElementById("cancel")
+        var key = "backup"
         //"确定"
         submit.onclick = function(){
             if(aInput.value == ""){
@@ -35,18 +30,6 @@ function backup(){
             container.style.display = "none"
         }
         container.style.display = "block"
-    }
-    var key = "backup"
-    chrome.storage.local.get([key], function(settings) {
-        //检查是否有备份
-        if(settings[key] == undefined){
-            settings[key] = {}
-            chrome.storage.local.set(settings,function(){
-                ini(settings)
-            })
-        }else{
-            ini(settings)
-        }
     })
 }
 
@@ -197,4 +180,4 @@ function initialize(){
 }
 
 //初始化设置页
-initialize();
+initialize()

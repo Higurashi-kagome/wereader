@@ -34,7 +34,7 @@ function aler(text){
 //存储 / 初始化设置
 function Setting() {
 	chrome.storage.sync.get(null, function (setting) {
-		//从背景页初始化设置
+		/* 从背景页初始化设置 */
 		var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
 		for(var i=0,len=keys.length;i<len;i++){
 			var key = keys[i]
@@ -46,10 +46,11 @@ function Setting() {
 		for(var i=0,len=keys.length;i<len;i++){
 			document.getElementById(keys[i]).innerHTML = setting[keys[i]]
 		}
-		//初始化默认选项
+		/* 初始化默认选项 */
 		keys = ["checkedRe","codePre","codeSuf","preLang","displayN","addThoughts","re","escape"]
 		for(var i=0,len=keys.length;i<len;i++){
 			var key = keys[i]
+			//这里必须设置为 undefined，因为 false 在正常值之中
 			if(setting[key] == undefined){
 				switch(key){
 					case "checkedRe":
@@ -82,6 +83,18 @@ function Setting() {
 		chrome.storage.sync.set(setting, function () {
 			//设置存储完毕
 		})
+		/* 初始化本地storage */
+		var key = "backup"
+		chrome.storage.local.get([key], function(setting) {
+			//检查是否有备份数据
+			if(setting[key] == undefined){//无备份则初始化备份
+				setting[key] = {}
+				chrome.storage.local.set(setting,function(){
+					
+				})
+			}
+		})
+
 	})
 }
 
@@ -183,7 +196,7 @@ function escape(markText){
 	
 	function escapeElem(text){
 		var patterns1 = ["\\\\","\\*","\\{","\\}","\\[","\\]","\\(","\\)","\\+"]//因为转义英文句号会影响链接显示，故暂时不包含"\\."
-		var patterns2 = ["<",">","_","`","#","-","!"]
+		var patterns2 = ["<",">","_","`","!"]//因为#和-只会在出现在段落开头的时候才会生效，通常不用转义故暂不添加
 		var patterns = patterns1.concat(patterns2)
 		for(var n=0,len=patterns.length;n<len;n++){
 			let pattern = patterns[n]
