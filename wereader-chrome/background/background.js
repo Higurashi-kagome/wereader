@@ -46,7 +46,7 @@ chrome.contextMenus.create({
 })
 
 //初始化设置
-Setting()	// 该函数在 util.js 中
+settingInitialize()	// 该函数在 util.js 中
 */
 
 /* @剩余函数
@@ -300,7 +300,7 @@ function copyThought(bookId) {
 	})
 }
 
-Setting()
+settingInitialize()
 
 //监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {

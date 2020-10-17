@@ -77,10 +77,10 @@ function addThemeBtn(){
     theme.addEventListener('click', function(){
         try{
             changeTheme()
+            Flag = Flag + 1
         }catch (error) {
             Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
         }
-        Flag = Flag + 1
     },false)
 }
 

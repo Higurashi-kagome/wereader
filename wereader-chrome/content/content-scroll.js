@@ -28,12 +28,17 @@ function addProgressBtn(){
     //绑定点击事件
     var count = -1
     progressBtn.addEventListener('click', function(){
-        //切换滚筒条显隐
-        if(count == -1){
-            chrome.runtime.sendMessage({type: "injectCss", css: "inject/showScroll.css"})
-        }else{
-            chrome.runtime.sendMessage({type: "injectCss", css: "content/content-hideScroll.css"})
+        try {
+            //切换滚筒条显隐
+            if(count == -1){
+                chrome.runtime.sendMessage({type: "injectCss", css: "inject/showScroll.css"})
+            }else{
+                chrome.runtime.sendMessage({type: "injectCss", css: "content/content-hideScroll.css"})
+            }
+            count = count * (-1)
+        } catch (error) {
+            Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})
         }
-        count = count * (-1)
+        
     },false)
 }

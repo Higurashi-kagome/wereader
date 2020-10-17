@@ -7,7 +7,7 @@ function backup(){
         var aInput = document.getElementById("name")
         var submit = document.getElementById("submit")
         var cancle = document.getElementById("cancel")
-        var key = "backup"
+        const key = "backup"
         //"确定"
         submit.onclick = function(){
             if(aInput.value == ""){
@@ -76,15 +76,17 @@ function initialize(){
     chrome.storage.sync.get(null, function(setting) {
         console.log("chrome.storage.sync.get(null,function(setting){\nconsole.log(setting)\n})")
         console.log(setting)
-
+        //备份名初始化
+        var val = "backupName"
+        document.getElementById(val).textContent = "当前备份：" + setting[val]
         //"标注、标题、想法" 初始化
-        var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
-        for(var i=0,len=keys.length;i<len;i++){
-            var key = keys[i]
-            var elem = document.getElementById(key)
-            elem.value = setting[key]
+        var basicIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
+        for(var i=0,len=basicIds.length;i<len;i++){
+            let basicId = basicIds[i]
+            let elem = document.getElementById(basicId)
+            elem.value = setting[basicId]
             elem.onchange = function(){
-                config = {}
+                let config = {}
                 config[this.id] = this.value
                 chrome.storage.sync.set(config,function(){
                     //前后缀更新完毕
@@ -101,27 +103,20 @@ function initialize(){
                 document.getElementById(CheckBoxId).checked = false
             }
             document.getElementById(CheckBoxId).onclick = function(){
-                config = {}
-                config[CheckBoxId] = this.checked
+                let config = {}
+                config[this.id] = this.checked
                 chrome.storage.sync.set(config,function(){
                     //前后缀更新完毕
                 })
             }
         }
         //"代码块"初始化
-        keys = ["codePre","codeSuf","preLang"]
-        for(var i=0,len=keys.length;i<len;i++){
-            key = keys[i]
-            config = {}
-            if(setting[key] == undefined){
-                config[key] =  (key == "preLang") ? "" : "```"
-                chrome.storage.sync.set(config,function(){
-                    document.getElementById(key).value = config[key]
-                })
-            }else{
-                document.getElementById(key).value = setting[key]
-            }
-            document.getElementById(key).onchange = function(){
+        var preIds = ["codePre","codeSuf","preLang"]
+        for(var i=0,len=preIds.length;i<len;i++){
+            let preId = preIds[i]
+            document.getElementById(preId).value = setting[preId]
+            document.getElementById(preId).onchange = function(){
+                let config = {}
                 config[this.id] = this.value
                 chrome.storage.sync.set(config,function(){
                     
@@ -133,7 +128,7 @@ function initialize(){
         var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
         var checkedRe = setting.checkedRe
         //checkbox 初始化
-        if(checkedRe != undefined && checkedRe.length >= 0 && checkedRe.length <= 5){
+        if(checkedRe.length >= 0 && checkedRe.length <= 5){
             for(var i = 0,len1 = checkBoxCollection.length;i < len1;i++){
                 for(var j = 0,len2 = checkedRe.length;j < len2;j++){
                     if(checkedRe[j][0] == checkBoxCollection[i].id){
@@ -157,7 +152,7 @@ function initialize(){
         //正则表达式 input、textarea 初始化
         var regexpContainer = document.getElementsByClassName("regexp_container")
         var reCollection = setting.re
-        if(reCollection != undefined && reCollection.length == 5){
+        if(reCollection.length == 5){
             for(var i = 0,len = reCollection.length;i<len;i++){
                 regexpContainer[i].getElementsByClassName("regexp")[0].value = reCollection[i][1]
                 regexpContainer[i].getElementsByClassName("regexp_pre")[0].value = reCollection[i][2]

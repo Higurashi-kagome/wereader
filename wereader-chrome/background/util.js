@@ -32,51 +32,26 @@ function aler(text){
 }
 
 //存储 / 初始化设置
-function Setting() {
+function settingInitialize() {
 	chrome.storage.sync.get(null, function (setting) {
 		/* 从背景页初始化设置 */
-		var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
-		for(var i=0,len=keys.length;i<len;i++){
-			var key = keys[i]
+		var basicKeys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
+		for(var i=0,len=basicKeys.length;i<len;i++){
+			let key = basicKeys[i]
 			if(setting[key] == undefined){
 				setting[key] = document.getElementById(key).value
 			}
 		}
 		//同步设置到背景页
-		for(var i=0,len=keys.length;i<len;i++){
-			document.getElementById(keys[i]).innerHTML = setting[keys[i]]
+		for(var i=0,len=basicKeys.length;i<len;i++){
+			document.getElementById(basicKeys[i]).innerHTML = setting[basicKeys[i]]
 		}
 		/* 初始化默认选项 */
-		keys = ["checkedRe","codePre","codeSuf","preLang","displayN","addThoughts","re","escape"]
-		for(var i=0,len=keys.length;i<len;i++){
-			var key = keys[i]
-			//这里必须设置为 undefined，因为 false 在正常值之中
+		var defaultConfig = {checkedRe:[],codePre:"```",codeSuf:"```",preLang:"",displayN:false,addThoughts:false,escape:false,backupName:"未知",re:[]}
+		for(var key in defaultConfig){
+			//这里必须设置为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
-				switch(key){
-					case "checkedRe":
-						setting[key] = []
-						break
-					case "preLang":
-						setting[key] = ""
-						break
-					case "displayN":
-						setting[key] = false
-						break
-					case "addThoughts":
-						setting[key] = false
-						break
-					case "escape":
-						setting[key] = false
-						break
-					case "codePre":
-						setting[key] = "```"
-						break
-					case "codeSuf":
-						setting[key] = "```"
-						break
-					default:
-						break
-				}
+				setting[key] = defaultValue[key]
 			}
 		}
 		//存储初始化设置
@@ -84,11 +59,11 @@ function Setting() {
 			//设置存储完毕
 		})
 		/* 初始化本地storage */
-		var key = "backup"
-		chrome.storage.local.get([key], function(setting) {
+		const val = "backup"
+		chrome.storage.local.get([val], function(setting) {
 			//检查是否有备份数据
-			if(setting[key] == undefined){//无备份则初始化备份
-				setting[key] = {}
+			if(setting[val] == undefined){//无备份则初始化备份
+				setting[val] = {}
 				chrome.storage.local.set(setting,function(){
 					
 				})
@@ -113,8 +88,8 @@ function injectScript(detail){
 //发送消息到content.js
 function sendMessageToContentScript(message) {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, message);
-	});
+		chrome.tabs.sendMessage(tabs[0].id, message)
+	})
 }
 
 //通知函数

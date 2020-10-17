@@ -2,8 +2,8 @@
 
 //console.log("content-notification.js：被注入")
 chrome.runtime.onMessage.addListener(function(msg){
-    if(msg.isAlertMsg == true){
-        if(msg.alertMsg.icon == 'success' || msg.alertMsg.icon == 'warning'){
+    if(msg.isAlertMsg){
+        if(msg.alertMsg.icon == 'success' || msg.alertMsg.icon == 'warning'){//复制成功的消息
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(function(msg){
                 }
             })
             Toast.fire(msg.alertMsg)
-        }else{
+        }else{//其他消息
             Swal.fire(msg.alertMsg)
         }
     }

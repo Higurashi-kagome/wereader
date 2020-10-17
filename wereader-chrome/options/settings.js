@@ -9,7 +9,7 @@ function getJsonLength(jsonData) {
     return length;
 }
 
-var key = "backup"
+const key = "backup"
 chrome.storage.local.get([key], function(settings) {
     console.log("chrome.storage.local.get([\"backup\"],function(settings){\nconsole.log(settings)\n})")
     console.log(settings)
@@ -28,7 +28,9 @@ chrome.storage.local.get([key], function(settings) {
         var i = 0
         var div = document.getElementById("settingList")
         for(let k in settings[key]){
+            //设置备份名
             let setting = settings[key][k]
+            setting["backupName"] = k
             //容器
             elem1 = document.createElement("div")
             //"导入"、"删除"
