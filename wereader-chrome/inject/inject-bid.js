@@ -19,7 +19,7 @@ function getClass(classname){
 	}
 }
 
-var element = getClass("wr_bookCover_img");
-var list = element.item(0).src.split("/");
-var bookId = list[list.length - 2];
-chrome.runtime.sendMessage({type: "getBid", bid: bookId});
+var element = getClass("wr_bookCover_img")
+var list = element.item(0).src.split("/")
+var bookId = list[list.length - 2]
+chrome.runtime.sendMessage({type: "bookId", bid: bookId})

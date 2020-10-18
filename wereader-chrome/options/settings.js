@@ -28,25 +28,26 @@ chrome.storage.local.get([key], function(settings) {
         var i = 0
         var div = document.getElementById("settingList")
         for(let k in settings[key]){
-            //设置备份名
             let setting = settings[key][k]
+            //设置备份名
             setting["backupName"] = k
             //容器
-            elem1 = document.createElement("div")
+            let elem1 = document.createElement("div")
             //"导入"、"删除"
-            elem2 = document.createElement("input")
+            let elem2 = document.createElement("input")
             elem2.type = "button"
             elem2.value = "导入"
             elem2.style.cssFloat = "right"
-            elem3 = document.createElement("input")
+            let elem3 = document.createElement("input")
             elem3.type = "button"
             elem3.value = "删除"
             elem3.style.cssFloat = "right"
             //名字
-            elem4 = document.createElement("lable")
+            let elem4 = document.createElement("lable")
             elem4.id = "setting" + i
             elem4.textContent = k
-            elem5 = document.createElement("div")
+            //分隔
+            let elem5 = document.createElement("div")
             elem5.className = "blank"
             elem5.style.margin = "10px"
             //导入按钮点击事件

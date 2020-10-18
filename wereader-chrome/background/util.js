@@ -78,7 +78,7 @@ function getbookId() {
 	return document.getElementById('bookId').value;
 }
 
-//动态注入
+//给当前页面注入脚本
 function injectScript(detail){
 	chrome.tabs.executeScript(detail, function (result) {
 		catchErr("injectScript()")
@@ -139,10 +139,17 @@ function getData(url, callback) {
 
 //获取添加级别的标题
 function getTitleAddedPre(title, level) {
+	//添加4 5 6级是为了处理特别的书（如导入的书籍）获取数据
+	var lev3 = document.getElementById("lev3")
+	var leave = 6 - (lev3.value.split("#").length - 1)
+	var chars = new Array(leave).join("#")
 	return (level == 1) ? (document.getElementById("lev1").value + title)
 		: (level == 2) ? (document.getElementById("lev2").value + title)
-		: (level == 3) ? (document.getElementById("lev3").value + title)
-		: ""
+		: (level == 3) ? (lev3.value + title)
+		: (level == 4) ? (("#".length <= level ? "#" : chars) + lev3.value + title)
+		: (level == 5) ? (("##".length <= level ? "##" : chars) + lev3.value + title)
+		: (level == 6) ? (("###".length <= level ? "###" : chars) + lev3.value + title)
+		: (("###".length <= level ? "###" : chars) + lev3.value + title)
 }
 
 //转义特殊字符
@@ -311,3 +318,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 		})
 	}
 })
+
+//监听请求用于获取导入书籍的bookId
+chrome.webRequest.onBeforeRequest.addListener(details => {
+	let url = details.url
+	if(url.indexOf("bookmarklist?bookId=") > -1) {
+		let bookId = url.replace(/(^[\S| ]*bookId=|&type=1)/g,"")
+		document.getElementById("tempbookId").value = bookId
+		//在内部重新注入脚本以重新获取bid
+		injectScript({ file: 'inject/inject-bid.js' })
+	}
+}, {urls: ["*://weread.qq.com/web/book/*"]})

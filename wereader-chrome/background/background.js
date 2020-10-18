@@ -90,39 +90,51 @@ function getBookMarks(bookId, add, contents, callback) {
 	var url = "https://i.weread.qq.com/book/bookmarklist?bookId=" + bookId
 	getData(url, function (data) {
 		var json = JSON.parse(data)
-		//获取章节并排序
+		var updated = json.updated
 		var chapters = json.chapters
-		//处理书本无标注的情况
-		if(chapters.length == 0){
+		//检查书本是否有标注
+		if(updated.length == 0){
 			sendAlertMsg({text: "该书无标注",icon:'warning'})
 			return
 		}
-		colId = "chapterUid";
-		chapters.sort(rank);
-		/* 生成标注数据 */
-		//遍历章节
-		for (var i = 0, len1 = chapters.length; i < len1; i++) {
-			var chapterUid = chapters[i].chapterUid.toString()
-			var updated = json.updated
-			var marksInAChapter = []
-			//遍历标注获得章内标注
-			for (var j = 0, len2 = updated.length; j < len2; j++) {
-				if (updated[j].chapterUid.toString() == chapterUid) {
-					updated[j].range = parseInt(updated[j].range.replace("-[0-9]*?\"", "").replace("\"", ""))
-					marksInAChapter.push(updated[j])
-				}
-			}
-			//排序章内标注并加入到章节内
-			colId = "range"
-			marksInAChapter.sort(rank)
-			chapters[i].marks = marksInAChapter
-		}
-		if(add){
-			addThoughts(chapters,bookId,contents,function(chapters){
-				callback(chapters)
+		//处理包含标注但没有章节记录的情况（一般发生在导入书籍中）
+		if(chapters.length == 0){
+			let url = "https://i.weread.qq.com/book/chapterInfos?bookIds=" + bookId + "&synckeys=0"
+			getData(url, function (data) {
+				//得到目录
+				var chapters = JSON.parse(data).data[0].updated
+				organizingData(chapters)
 			})
-		}else{
-			callback(chapters)
+		}
+		organizingData(chapters)
+		//章节排序
+		function organizingData(chapters){
+			colId = "chapterUid";
+			chapters.sort(rank);
+			/* 生成标注数据 */
+			//遍历章节
+			for (var i = 0, len1 = chapters.length; i < len1; i++) {
+				let chapterUid = chapters[i].chapterUid.toString()
+				let marksInAChapter = []
+				//遍历标注获得章内标注
+				for (var j = 0, len2 = updated.length; j < len2; j++) {
+					if (updated[j].chapterUid.toString() == chapterUid) {
+						updated[j].range = parseInt(updated[j].range.replace("-[0-9]*?\"", "").replace("\"", ""))
+						marksInAChapter.push(updated[j])
+					}
+				}
+				//排序章内标注并加入到章节内
+				colId = "range"
+				marksInAChapter.sort(rank)
+				chapters[i].marks = marksInAChapter
+			}
+			if(add){
+				addThoughts(chapters,bookId,contents,function(chapters){
+					callback(chapters)
+				})
+			}else{
+				callback(chapters)
+			}
 		}
 	});
 }
@@ -143,8 +155,10 @@ function copyBookMarks(bookId, all, setting) {
 					var chapterUid = chaptersAndMarks[i].chapterUid
 					var title = contents[chapterUid].title
 					var level = contents[chapterUid].level
-					res += getTitleAddedPre(title, level) + "\n\n"
-					res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+					if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
+						res += getTitleAddedPre(title, level) + "\n\n"
+						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+					}
 				}
 				copy(res)
 			} else {	//获取本章标注
@@ -161,9 +175,10 @@ function copyBookMarks(bookId, all, setting) {
 				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
 					//寻找目标章节
 					if (chaptersAndMarks[i].chapterUid == chapterUid) {
-						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
-						//copy() 函数在此处调用可避免本章无标注的时候也进行复制（只复制到标题）
-						copy(res)
+						if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
+							res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+							copy(res)
+						}
 						break
 					}
 					//处理该章节无标注的情况
@@ -311,8 +326,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "imgsArr":
 			imgsArr = message.RimgsArr
 			break
-		case "getBid":
-			document.getElementById('bookId').value = message.bid;
+		case "bookId":
+			message.bid == "wrepub" ? document.getElementById('bookId').value = document.getElementById("tempbookId").value
+			: document.getElementById('bookId').value = message.bid
 			break
 		case "getUserVid":	//content-shelf.js 请求获取 userVid
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
@@ -374,16 +390,17 @@ function setPopupAndBid(tab){
 		isBookPage = true;
 	}
 	if (isBookPage != true) {//如果当前页面为其他页面
-		document.getElementById('bookId').value = "null";
-		chrome.browserAction.setPopup({ popup: '' });
+		document.getElementById('bookId').value = "null"
+		chrome.browserAction.setPopup({ popup: '' })
 	} else {
 		//获取目录到background-page
 		document.getElementById("Bookcontents").innerHTML = "getBookContents";
 		//注入脚本获取全部目录数据和当前目录
 		injectScript({ file: 'inject/inject-getContents.js' })
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
+			injectScript({ file: 'inject/inject-notifyBookType.js' })
 			catchErr("setPopupAndBid(tab)")
-		});
-		chrome.browserAction.setPopup({ popup: 'popup/popup.html' });
+		})
+		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}
 }

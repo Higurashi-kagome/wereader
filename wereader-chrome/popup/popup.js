@@ -8,11 +8,11 @@ window.onload = function () {
             document.getElementById("bookId").innerHTML = "bid：" + bookId
             document.getElementById("userVid").innerHTML = "vid：" + userVid
             //获取bid / vid失败则提醒
-            if (!bookId || !userVid) {
-                bg.sendAlertMsg({title:"Oops...", text:"获取信息出错，请确保正常登陆后刷新重试", confirmButtonText: '确定',icon: "error"})
+            if (bookId == "null" || userVid == "null") {
+                bg.aler("似乎出了一点问题...请确保正常登陆后刷新重试~")
                 window.close()
             }
-            //变量按钮绑定点击事件
+            //遍历按钮绑定点击事件
             var ids = ["getComment","getComment_text","getComment_html","getBookMarks","getThisChapter","getAll","getBookContents","getBestBookMarks","getMyThoughts","inject","testBtn"]
             for(var i=0,len=ids.length;i<len;i++){
                 document.getElementById(ids[i]).addEventListener('click', function(){

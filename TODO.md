@@ -1,14 +1,13 @@
 ## TODO
 
 -   [ ] 想法中包含 HTML 内容的问题 ( 停 )
--   [ ] 主题切换按钮加载缓慢 ( 停 )
 -   [ ] 错误：
   -   [ ] Unchecked runtime.lastError: Cannot access a chrome-extension://URL of different extension ( 观察 )
   -   [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host. ( 观察 )
   -   [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme ( 观察 )
   -   [ ] Unchecked runtime.lastError: Invalid url: "" ( 观察 )
   -   [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
-  -   [ ] 直接从QQ打开QQ邮箱时报错：Unchecked runtime.lastError: Cannot access contents of url "https://mail.qq.com/cgi-bin/frame_html?sid=5h69ZXKVawRraXol&r=d0d4742ddae71acb0670e45c1f0e35a5". Extension manifest must request permission to access this host.
+  -   [ ] 直接从QQ打开QQ邮箱时报错（很可能此时浏览器保存了微信读书的页面没有关闭）：Unchecked runtime.lastError: Cannot access contents of url "https://mail.qq.com/cgi-bin/frame_html?sid=5h69ZXKVawRraXol&r=d0d4742ddae71acb0670e45c1f0e35a5". Extension manifest must request permission to access this host.
   -   [ ] 页面加载缓慢时出现的报错
   -   [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况 ( 观察 )
 -   [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项 ( 缓 )
@@ -27,31 +26,27 @@
 -   [ ] 实现方法总结 ( 开发经验 )
 -   [ ] option.html、help.html、书架按钮美化
 -   [ ] 直接复制图片到剪切板或是复制 Markdown
--   [ ] 代码简化 ( 分为多个 background.js 文件 )
+-   [ ] 代码简化（添加新功能的过程）
 -   [ ] 帮助页与设置页合并 ( 缓 )
 -   [ ] 正则表达式命名 ( 缓 )
--   [ ] 隐藏阅读进度（缓）
 -   [ ] Firefox 主题切换问题
 -   [ ] 充分利用 sweetalert 实现功能 ( 利用其作为复制窗口而不只是提示界面 )
 -   [ ] 书架置于 popup 页面
 -   [ ] 背景色完善 ( 类似于「微信读书助手-开源版」 )
 -   [ ] 阅读页颜色设置改为 js 动态更改（Firefox）
--   [ ] 经验总结：
-  -   [ ] 如何动态设置 popup 页面（消失或是设置为不用 HTML）
-  -   [ ] 如何使用 clipboard.js
-  -   [ ] 如何使用 sweetalert2.js
-- 对传书中的笔记进行支持
-  - 下载最新版微信读书并对书架、标注等内容进行抓包
-  - 支持设置图片格式比如调整大小（暂缓）
-- 复制按钮在标注下而导致无法点击的问题
-- Markdown转义字符问题
-- 《认知天性》第一章导出问题
-- 多本书设置数据的保存问题
-- 图片直接复制而不是复制链接
-- 优化结构
-- 备份删除确定
-- 备份成功提示
-- 获取设置的json文本、从文本导入？
-- 备份中包含backup键的问题
-- 备份重命名？
-- 当前设置名称显示
+-   [ ] 支持设置图片格式比如调整大小（暂缓）
+-   [ ] 复制按钮在标注下而导致无法点击的问题
+-   [ ] Markdown转义字符问题完善（缓）
+-   [ ] 《认知天性》第一章导出问题
+-   [ ] 多本书设置数据的保存问题
+-   [ ] 图片直接复制而不是复制链接
+-   [ ] 优化结构
+-   [ ] 备份删除确定
+-   [ ] 备份成功提示
+-   [ ] 获取设置的json文本、从文本导入？
+-   [ ] 备份中包含backup键的问题
+-   [ ] 备份重命名？
+-   [ ] 注释复制按钮改为选中复制（缓）
+-   [ ] 简化选项添加流程
+-   [ ] 重新安装后直接进入读书页面时提示刷新
+-   [ ] 直接使用插件时的通知
