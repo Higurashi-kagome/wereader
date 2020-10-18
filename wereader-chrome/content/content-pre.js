@@ -1,7 +1,7 @@
 /*用于当检测到读书页中存在代码块时，提示不要在网页中对代码块进行标注*/
 
 //console.log("content-pre.js：被注入")
-var interval = setInterval(() => {
+var interval1 = setInterval(() => {
     //如果页面不再显示正在加载（确保页面加载完毕）
     if (document.getElementsByClassName("readerChapterContentLoading").length == 0) {
         var pre = document.getElementsByTagName("pre")
@@ -13,6 +13,6 @@ var interval = setInterval(() => {
             })
         }
         //结束定时器
-        clearInterval(interval)
+        clearInterval(interval1)
     }
 },2000)

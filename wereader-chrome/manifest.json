@@ -27,7 +27,7 @@
       {
 			"matches": ["*://weread.qq.com/web/reader/*"],
          "js": ["content/content-scroll.js","content/content-theme.js"],
-         "css": ["content/content-hideScroll.css"],
+         "css": ["content/content-hideScroll.css","content/rankChapter.css"],
 			"run_at": "document_start"
       },
       {
@@ -37,7 +37,7 @@
       },
       {
 			"matches": ["*://weread.qq.com/web/reader/*"],
-			"js": ["content/content-pre.js"],
+			"js": ["content/content-pre.js","content/content-bookType.js"],
 			"run_at": "document_end"
       },
       {

@@ -398,7 +398,6 @@ function setPopupAndBid(tab){
 		//注入脚本获取全部目录数据和当前目录
 		injectScript({ file: 'inject/inject-getContents.js' })
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			injectScript({ file: 'inject/inject-notifyBookType.js' })
 			catchErr("setPopupAndBid(tab)")
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })

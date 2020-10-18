@@ -9,7 +9,7 @@ function getClass(classname){
 		//定义一个数组放classname
 		var results = new Array();
 		//获取所有节点元素
-		var elem = document.getElementsByTagName("*");
+		let elem = document.getElementsByTagName("*");
 		for (var i = 0; i < elem.length; i++) {
 			if (elem[i].className.indexOf(classname) != -1) {
 				results[results.length] = elem[i];

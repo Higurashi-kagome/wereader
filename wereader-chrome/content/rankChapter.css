@@ -1,0 +1,7 @@
+/*level4开始微信读书目录无法正常显示，故添加这个文件以完善*/
+.chapterItem_level4 {
+    padding-left: 45px;
+}
+.chapterItem_level5 {
+    padding-left: 60px;
+}
