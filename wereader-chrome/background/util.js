@@ -11,7 +11,7 @@ var rank = function (x, y) {
 //报错捕捉函数
 function catchErr(sender) {
 	if (chrome.runtime.lastError) {
-		console.log(sender + " => chrome.runtime.lastError：" + chrome.runtime.lastError.message)
+		console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
 	}
 }
 
@@ -223,7 +223,6 @@ function getRegExpMarkText(markText,markTextEscaped,regexpCollection){
 }
 
 function addThoughts(chaptersAndMarks,bookId,contents,callback){
-	
 	getMyThought(bookId, function (thoughts) {
 		//遍历想法
 		for(var key in thoughts){

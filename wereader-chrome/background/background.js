@@ -255,11 +255,6 @@ function getMyThought(bookId, callback) {
 	var url = "https://i.weread.qq.com/review/list?bookId=" + bookId + "&listType=11&mine=1&synckey=0&listMode=0"
 	getData(url, function (data) {
 		var json = JSON.parse(data)
-		//处理书本无想法的请况
-		if(json.reviews.length == 0){
-			sendAlertMsg({text: "该书无想法",icon:'warning'})
-			return
-		}
 		//获取章节并排序
 		var chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
 		colId = "chapterUid"
@@ -309,6 +304,11 @@ function copyThought(bookId) {
 					res += thoughts[key][j].abstract + "\n\n"
 					res += document.getElementById("thouPre").innerHTML + thoughts[key][j].content + document.getElementById("thouSuf").innerHTML + "\n\n"
 				}
+			}
+			//处理书本无想法的请况
+			if(!res){
+				sendAlertMsg({text: "该书无想法",icon:'warning'})
+				return
 			}
 			copy(res)
 		})
@@ -365,31 +365,34 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 //页面监测：是否在已打开页面之间切换
 chrome.tabs.onActivated.addListener(function (moveInfo) {
 	chrome.tabs.get(moveInfo.tabId, function (tab) {
-		setPopupAndBid(tab)
+		try {
+			setPopupAndBid(tab)
+		} catch (error) {
+			console.warn(error.message)
+		}
 	});
 });
 
 //页面监控：是否发生更新
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	if (changeInfo.status == "loading") {
-		setPopupAndBid(tab)
+		try {
+			setPopupAndBid(tab)
+		} catch (error) {
+			console.warn(error.message)
+		}
 	}
 });
 
 //根据当前tab设置popup并判断是否需要注入inject-bid.js
 function setPopupAndBid(tab){
-	var currentUrl = ""
-	try {
-		currentUrl = tab.url;
-	} catch (err) {
-		console.log(err)
-	}
-	var list = currentUrl.split('/');
-	var isBookPage = false;
+	var currentUrl = tab.url
+	var list = currentUrl.split('/')
+	var isBookPage = false
 	if (list.length > 5 && list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
 		isBookPage = true;
 	}
-	if (isBookPage != true) {//如果当前页面为其他页面
+	if (!isBookPage) {//如果当前页面为其他页面
 		document.getElementById('bookId').value = "null"
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
