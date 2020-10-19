@@ -3,11 +3,8 @@
 -   [ ] 想法中包含 HTML 内容的问题 ( 停 )
 -   [ ] 错误：
   -   [ ] Unchecked runtime.lastError: Cannot access a chrome-extension://URL of different extension ( 观察 )
-  -   [ ] Unchecked runtime.lastError: Cannot access contents of url "`www.google.com/search....`". Extension manifest must request permission to access this host. ( 观察 )
   -   [ ] Uncaught TypeError: Cannot read property 'sendMessage' of undefined at changeTheme ( 观察 )
   -   [ ] Unchecked runtime.lastError: Invalid url: "" ( 观察 )
-  -   [ ] Unchecked runtime.lastError: Cannot access contents of url "chrome-search://local-ntp/local-ntp.html". Extension manifest must request permission to access this host.
-  -   [ ] 直接从QQ打开QQ邮箱时报错（很可能此时浏览器保存了微信读书的页面没有关闭）：Unchecked runtime.lastError: Cannot access contents of url "https://mail.qq.com/cgi-bin/frame_html?sid=5h69ZXKVawRraXol&r=d0d4742ddae71acb0670e45c1f0e35a5". Extension manifest must request permission to access this host.
   -   [ ] 页面加载缓慢时出现的报错
   -   [ ] 偶尔出现的在读书页面无法打开 popup 页面的情况 ( 观察 )
 -   [ ] 匹配功能/直接在页面中提供标注添加前后缀的选项 ( 缓 )
@@ -21,7 +18,6 @@
 -   [ ] 发送通知 ( 缓 )
 -   [ ] Firefox 复制窗口美化 ( 缓 )
 -   [ ] Firefox 中图片链接等直接复制 ( 缓 )
--   [ ] 流程图
 -   [ ] 函数名、变量名改善
 -   [ ] 实现方法总结 ( 开发经验 )
 -   [ ] option.html、help.html、书架按钮美化
@@ -34,13 +30,10 @@
 -   [ ] 书架置于 popup 页面
 -   [ ] 背景色完善 ( 类似于「微信读书助手-开源版」 )
 -   [ ] 阅读页颜色设置改为 js 动态更改（Firefox）
--   [ ] 支持设置图片格式比如调整大小（暂缓）
--   [ ] 复制按钮在标注下而导致无法点击的问题
+-   [ ] 支持设置图片格式比如调整大小（缓）
 -   [ ] Markdown转义字符问题完善（缓）
--   [ ] 《认知天性》第一章导出问题
--   [ ] 多本书设置数据的保存问题
+-   [ ] 《终身成长》第一章导出问题（停）：锚点问题
 -   [ ] 图片直接复制而不是复制链接
--   [ ] 优化结构
 -   [ ] 备份删除确定
 -   [ ] 备份成功提示
 -   [ ] 获取设置的json文本、从文本导入？
