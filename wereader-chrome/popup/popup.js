@@ -43,7 +43,9 @@ window.onload = function () {
                         bg.copyBookMarks(bookId, true, setting)
                         break
                     case "getBookContents":
-                        bg.injectScript({ file: 'inject/inject-getContents.js' })
+                        chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
+                            bg.catchErr("popup.js => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+                        })
                         break
                     case "getBestBookMarks":
                         bg.copyBestBookMarks(bookId,setting)
@@ -52,7 +54,9 @@ window.onload = function () {
                         bg.copyThought(bookId)
                         break
                     case "inject":
-                        bg.injectScript({ file: 'inject/inject-copyBtn.js' })
+                        chrome.tabs.executeScript({ file: 'inject/inject-copyBtn.js' }, function (result) {
+                            bg.catchErr("popup.js => chrome.tabs.executeScript({ file: 'inject/inject-copyBtn.js' })")
+                        })
                         break
                     case "testBtn":
                         //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
@@ -71,13 +75,13 @@ window.onload = function () {
 function getuserVid(callback){
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 		var url = ""
-		try{
-			url = tabs[0].url
-		}catch(err){
-			console.log(err)
-		}
+        url = tabs[0].url
 		chrome.cookies.get({url: url,name: 'wr_vid'}, function (cookie) {
-			cookie == null ? callback("null") : callback(cookie.value.toString())
+            if(chrome.runtime.lastError){
+                bg.catchErr("popup.js => chrome.cookies.get()")
+            }else{
+			    cookie == null ? callback("null") : callback(cookie.value.toString())
+            }
 		})
 	})
 }

@@ -78,13 +78,6 @@ function getbookId() {
 	return document.getElementById('bookId').value;
 }
 
-//给当前页面注入脚本
-function injectScript(detail){
-	chrome.tabs.executeScript(detail, function (result) {
-		catchErr("injectScript()")
-	})
-}
-
 //发送消息到content.js
 function sendMessageToContentScript(message) {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -323,8 +316,12 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 	let url = details.url
 	if(url.indexOf("bookmarklist?bookId=") > -1) {
 		let bookId = url.replace(/(^[\S| ]*bookId=|&type=1)/g,"")
-		document.getElementById("tempbookId").value = bookId
-		//在内部重新注入脚本以重新获取bid
-		injectScript({ file: 'inject/inject-bid.js' })
+		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
+			document.getElementById("tempbookId").value = bookId
+			//在内部重新注入脚本以重新获取bid
+			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
+				catchErr("chrome.webRequest.onBeforeRequest.addListener()")
+			})
+		}
 	}
 }, {urls: ["*://weread.qq.com/web/book/*"]})

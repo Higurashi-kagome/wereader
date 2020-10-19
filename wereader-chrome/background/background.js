@@ -3,8 +3,6 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
 */
 
-/*************流程*************/
-
 /* @监听器：
 
 //页面是否发生更新
@@ -32,8 +30,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 getComment()
 //获取标注
 copyBookMarks()
-//获取目录和开启复制按钮
-injectScript()	// 该函数在 util.js 中
 //获取热门标注
 copyBestBookMarks()
 */
@@ -145,7 +141,9 @@ var imgsArr = []
 function copyBookMarks(bookId, all, setting) {
 	var add = setting.addThoughts
 	//请求需要追加到文本中的图片 Markdown 文本
-	injectScript({ file: 'inject/inject-copyImgs.js' })
+	chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' }, function (result) {
+		catchErr("copyBookMarks() => chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' })")
+	})
 	getContents(bookId,function(contents){
 		getBookMarks(bookId, add,contents, function (chaptersAndMarks) {
 			//得到res
@@ -338,20 +336,21 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			})
 			break
 		case "injectCss":
-			try{
-				chrome.tabs.insertCSS({ file: message.css })
-			}catch(err){
-				catchErr("chrome.tabs.insertCSS()：出错")
-			}
+			let tabId = sender.tab.id
+			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
+				if(chrome.runtime.lastError){
+					catchErr("chrome.tabs.insertCSS()")
+				}
+			})
 			break
 		case "getContents":
-			var texts = message.contents;
-			var res = '';
+			let contents = message.contents
+			let res = ''
 			//生成目录res
-			for (var i = 0, len = texts.length; i < len; i++) {
-				var level = texts[i].charAt(0);
-				var chapterInfo = texts[i].substr(1);
-				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n";
+			for (var i = 0, len = contents.length; i < len; i++) {
+				var level = contents[i].charAt(0)
+				var chapterInfo = contents[i].substr(1)
+				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
 			//如果需要获取目录，则设置，如果不需要获取目录，直接复制
 			(document.getElementById("Bookcontents").innerHTML == "getBookContents") ? 
@@ -360,29 +359,27 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			document.getElementById("currentContent").innerHTML = message.currentContent
 			break
 	}
-});
+})
 
 //页面监测：是否在已打开页面之间切换
 chrome.tabs.onActivated.addListener(function (moveInfo) {
 	chrome.tabs.get(moveInfo.tabId, function (tab) {
-		try {
-			setPopupAndBid(tab)
-		} catch (error) {
-			console.warn(error.message)
+		if(chrome.runtime.lastError){
+			catchErr("chrome.tabs.onActivated.addListener()")
 		}
-	});
-});
+		setPopupAndBid(tab)
+	})
+})
 
 //页面监控：是否发生更新
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	if (changeInfo.status == "loading") {
-		try {
-			setPopupAndBid(tab)
-		} catch (error) {
-			console.warn(error.message)
+		if(chrome.runtime.lastError){
+			catchErr("chrome.tabs.onUpdated.addListener()")
 		}
+		setPopupAndBid(tab)
 	}
-});
+})
 
 //根据当前tab设置popup并判断是否需要注入inject-bid.js
 function setPopupAndBid(tab){
@@ -399,9 +396,11 @@ function setPopupAndBid(tab){
 		//获取目录到background-page
 		document.getElementById("Bookcontents").innerHTML = "getBookContents";
 		//注入脚本获取全部目录数据和当前目录
-		injectScript({ file: 'inject/inject-getContents.js' })
+		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
+			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+		})
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("setPopupAndBid(tab)")
+			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-bid.js' })")
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}
