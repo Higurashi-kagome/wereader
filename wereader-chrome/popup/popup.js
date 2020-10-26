@@ -79,6 +79,7 @@ function getuserVid(callback){
 		chrome.cookies.get({url: url,name: 'wr_vid'}, function (cookie) {
             if(chrome.runtime.lastError){
                 bg.catchErr("popup.js => chrome.cookies.get()")
+                callback("null")
             }else{
 			    cookie == null ? callback("null") : callback(cookie.value.toString())
             }
