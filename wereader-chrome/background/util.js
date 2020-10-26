@@ -81,7 +81,9 @@ function getbookId() {
 //发送消息到content.js
 function sendMessageToContentScript(message) {
 	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		chrome.tabs.sendMessage(tabs[0].id, message)
+		if(tabs[0].id != undefined){
+			chrome.tabs.sendMessage(tabs[0].id, message)
+		}
 	})
 }
 
