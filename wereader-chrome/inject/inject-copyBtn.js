@@ -19,7 +19,7 @@ function generateBtn(imgs){
         btn.innerHTML = "📋";
         btn.id = "linkCopy" + i
         btn.className = "wr_absolute wr_readerImage_opacity"
-        btn.style.zIndex = 100
+        btn.style.zIndex = 4
         //判断是否为style.left == "0px"的小图
         if(imgs[i].style.left == "0px"){
             btn.style.left = "0px"
@@ -57,7 +57,7 @@ function addCopyBtn2(){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
-        btn.style.cssText = "width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:100;"
+        btn.style.cssText = "width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"
         btn.innerHTML = "📋"
         btn.id = "noteCopy" + i
         btn.addEventListener('click', function(){
@@ -94,7 +94,7 @@ function addCopyBtn3(){
             btn.innerHTML = "📋";
             btn.id = "codeCopy" + i
             btn.className = "wr_absolute"
-            btn.style.cssText = "right:0px;width:16px;height:32px;cursor:pointer;z-index:100;"
+            btn.style.cssText = "right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 32 + "px"
             let parent = pre[i].parentNode
             let inser = parent.insertBefore(btn,pre[i]);
