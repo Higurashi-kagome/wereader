@@ -81,7 +81,7 @@
             匹配表格标题如"<span class="lineinline">表1-1 Flask的依赖包</span>"：<code>^表[0-9]{1,2}-[0-9]{1,2} [\S ]*$</code>
           </li>
           <li>
-            匹配开头为数字加一点的标注如"<span class="lineinline">1．Flask与HTTP</span>"：<code>^[1-9][．\.][\S ]*$</code>
+            匹配开头为数字加一点的标注如"<span class="lineinline">1．Flask与HTTP</span>"：<code>^[1-9](\.|\. |．)[\S ]*$</code>
           </li>
           <li>
             匹配开头为"<span class="lineinline">注意：</span>"或"<span class="lineinline">附注：</span>"或"<span
