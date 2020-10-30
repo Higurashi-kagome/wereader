@@ -8,7 +8,7 @@ initialize()
 // 新建设置
 function addProfile(){
     chrome.storage.local.get(function(settings){
-        var promptContainer = document.getElementById("promptContainer")
+        let promptContainer = document.getElementById("promptContainer")
         document.getElementById("promptLabel").textContent = "请输入这个新的配置文件名"
         let input = document.getElementById("promptInput")
         //"确定"
@@ -23,11 +23,14 @@ function addProfile(){
                 //在local中新建设置（以sync中的数据为值）
                 chrome.storage.sync.get(function(setting) {
                     settings[backupKey][profileName] = setting
+                    settings[backupKey][profileName][backupName] = undefined
                     chrome.storage.local.set(settings)
                     //设置sync backupName后初始化页面
                     setting[backupName] = profileName
                     chrome.storage.sync.set(setting,function(){
                         promptContainer.style.display = "none"
+                        input.value = ""
+                        input.placeholder = ""
                         initialize()
                     })
                 })
@@ -36,6 +39,7 @@ function addProfile(){
         //"取消"
         document.getElementById("promptCancelButton").onclick = function(){
             input.value = ""
+            input.placeholder = ""
             promptContainer.style.display = "none"
         }
         //enter键确认
@@ -96,15 +100,18 @@ function renameProfile(){
             }else{
                 let currentSelect = document.getElementById("profileNamesInput").value
                 let profile = settings[backupKey][currentSelect]
+                let profileName = input.value
                 delete settings[backupKey][currentSelect]
-                settings[backupKey][input.value] = profile
+                settings[backupKey][profileName] = profile
                 chrome.storage.local.set(settings)
                 //设置sync后初始化页面
                 chrome.storage.sync.get(function(setting){
                     setting = profile
-                    setting[backupName] = input.value
+                    setting[backupName] = profileName
                     chrome.storage.sync.set(setting,function(){
                         promptContainer.style.display = "none"
+                        input.value = ""
+                        input.placeholder = ""
                         initialize()
                     })
                 })
@@ -114,6 +121,7 @@ function renameProfile(){
     //取消
     document.getElementById("promptCancelButton").onclick = function(){
         input.value = ""
+        input.placeholder = ""
         promptContainer.style.display = "none"
     }
     //enter键确认
@@ -139,12 +147,12 @@ function updateSyncAndLocal(key,value){
 
 //更新已启用正则匹配
 function updateCheckedRegexp(){
-    var checkedRegexp = {}
+    let checkedRegexp = {}
     const checkedRexpKey = "checkedRe"
     checkedRegexp[checkedRexpKey] = []
-    var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-    for(var i = 0,len = checkBoxCollection.length;i < len;i++){
-        if(checkBoxCollection[i].checked == true){
+    let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
+    for(let i = 0,len = checkBoxCollection.length;i < len;i++){
+        if(checkBoxCollection[i].checked){
             let parent = checkBoxCollection[i].parentNode.parentNode
             let id = checkBoxCollection[i].id
             let re = parent.getElementsByClassName("regexp")[0].value
@@ -166,11 +174,11 @@ function updateCheckedRegexp(){
 
 //更新所有正则
 function updateRegexp(){
-    var Regexp = {}
+    let Regexp = {}
     const RexpKey = "re"
     Regexp[RexpKey] = []
-    var regexpContainers = document.getElementsByClassName("regexpContainer")
-    for(var i = 0,len = regexpContainers.length;i < len;i++){
+    let regexpContainers = document.getElementsByClassName("regexpContainer")
+    for(let i = 0,len = regexpContainers.length;i < len;i++){
         let id = regexpContainers[i].getElementsByClassName("contextMenuEnabledInput")[0].id
         let re = regexpContainers[i].getElementsByClassName("regexp")[0].value
         let pre = regexpContainers[i].getElementsByClassName("regexp_pre")[0].value
@@ -221,7 +229,8 @@ function initialize(){
         chrome.storage.local.get(function(settings){
             console.log("chrome.storage.local.get(function(settings){\nconsole.log(settings)\n})")
             console.log(settings)
-            var profileNamesInput = document.getElementById("profileNamesInput")
+            console.log("********************************************")
+            let profileNamesInput = document.getElementById("profileNamesInput")
             //先清空select列表
             profileNamesInput.options.length = 0
             //各配置添加到select列表
@@ -235,13 +244,14 @@ function initialize(){
                 }
             }
             //选中当前配置
-            var currentProfile = setting[backupName]
+            let currentProfile = setting[backupName]
             if(settings[backupKey][currentProfile] == undefined){//处理当前配置在local中不存在的情况
                 settings[backupKey][currentProfile] = setting
+                settings[backupKey][currentProfile][backupName] = undefined
                 chrome.storage.local.set(settings)
             }
-            var options = profileNamesInput.options
-            for (i=0; i<options.length; i++){
+            let options = profileNamesInput.options
+            for (let i=0; i<options.length; i++){
                 if(options[i].text == currentProfile){
                     options[i].selected = true
                     //设置重命名按钮和删除配置按钮的disabled属性
@@ -251,7 +261,7 @@ function initialize(){
                     break
                 }
             }
-            //设置select控件的disabled属性
+            //当只存在默认设置时select控件的disabled属性设置为true
             if(options.length == 1 && profileNamesInput.value == defaultBackupName){
                 profileNamesInput.disabled = true
             }
@@ -277,7 +287,7 @@ function initialize(){
 
         //"标注、标题、想法" 初始化
         const basicIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
-        for(var i=0,len=basicIds.length;i<len;i++){
+        for(let i=0,len=basicIds.length;i<len;i++){
             let basicId = basicIds[i]
             let inputElememt = document.getElementById(basicId)
             inputElememt.value = setting[basicId]
@@ -285,22 +295,18 @@ function initialize(){
                 updateSyncAndLocal(this.id,this.value)
             }
         }
-        //"是否显示热门标注人数"、"标注添加想法" 初始化
+        //"是否显示热门标注人数"、"标注添加想法"、"开启转义" 初始化
         const CheckBoxIds = ["displayN","addThoughts","escape"]
-        for(var i=0,len=CheckBoxIds.length;i<len;i++){
+        for(let i=0,len=CheckBoxIds.length;i<len;i++){
             let CheckBoxId = CheckBoxIds[i]
-            if(setting[CheckBoxId] == true){
-                document.getElementById(CheckBoxId).checked = true
-            }else{
-                document.getElementById(CheckBoxId).checked = false
-            }
+            document.getElementById(CheckBoxId).checked = setting[CheckBoxId]
             document.getElementById(CheckBoxId).onclick = function(){
                 updateSyncAndLocal(this.id,this.checked)
             }
         }
         //"代码块"初始化
         const preIds = ["codePre","codeSuf"]
-        for(var i=0,len=preIds.length;i<len;i++){
+        for(let i=0,len=preIds.length;i<len;i++){
             let preId = preIds[i]
             document.getElementById(preId).value = setting[preId]
             document.getElementById(preId).onchange = function(){
@@ -310,22 +316,21 @@ function initialize(){
         /************************************************************************************/
         /* 正则匹配初始化 */
         const checkedRe = setting.checkedRe
-        var checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-        //正则表达式 checkbox checked 初始化
+        let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
+        //checkbox checked 初始化
         if(checkedRe.length >= 0 && checkedRe.length <= 5){
-            for(var i = 0,len1 = checkBoxCollection.length;i < len1;i++){
-                for(var j = 0,len2 = checkedRe.length;j < len2;j++){
-                    if(checkedRe[j][0] != checkBoxCollection[i].id)continue
-                    let parent = checkBoxCollection[i].parentNode.parentNode
-                    checkBoxCollection[i].checked = true
-                    parent.getElementsByClassName("regexp")[0].value = checkedRe[j][1]
-                    parent.getElementsByClassName("regexp_pre")[0].value = checkedRe[j][2]
-                    parent.getElementsByClassName("regexp_suf")[0].value = checkedRe[j][3]
+            for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
+                checkBoxCollection[i].checked = false
+                for(let j = 0,len2 = checkedRe.length;j < len2;j++){
+                    if(checkedRe[j][0] == checkBoxCollection[i].id){
+                        checkBoxCollection[i].checked = true
+                        break
+                    }
                 }
             }
         }
         //正则表达式 checkbox 点击事件
-        for(var i = 0,len = checkBoxCollection.length;i < len;i++){
+        for(let i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
                 let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
                 if(regexpInput.value != ""){
@@ -337,11 +342,13 @@ function initialize(){
             }
         }
         //正则表达式 input、textarea 内容初始化
-        var regexpContainers = document.getElementsByClassName("regexpContainer")
-        var reCollection = setting.re
+        let regexpContainers = document.getElementsByClassName("regexpContainer")
+        let reCollection = setting.re
         if(reCollection.length == 5){
-            for(var i = 0,len = reCollection.length;i<len;i++){
-                regexpContainers[i].getElementsByClassName("regexp")[0].value = reCollection[i][1]
+            for(let i = 0,len = reCollection.length;i<len;i++){
+                let regexpInput = regexpContainers[i].getElementsByClassName("regexp")[0]
+                regexpInput.placeholder = ""
+                regexpInput.value = reCollection[i][1]
                 regexpContainers[i].getElementsByClassName("regexp_pre")[0].value = reCollection[i][2]
                 regexpContainers[i].getElementsByClassName("regexp_suf")[0].value = reCollection[i][3]
             }
@@ -350,8 +357,8 @@ function initialize(){
         }
         //正则表达式 input、textarea 改变事件
         const classNameArr = ["regexp","regexp_pre","regexp_suf"]
-        for(var i = 0,len1 = regexpContainers.length;i < len1;i++){
-            for(var j=0,len2=classNameArr.length;j<len2;j++){
+        for(let i = 0,len1 = regexpContainers.length;i < len1;i++){
+            for(let j=0,len2=classNameArr.length;j<len2;j++){
                 regexpContainers[i].getElementsByClassName(classNameArr[j])[0].onchange = function(){
                     updateRegexp()
                     updateCheckedRegexp()
