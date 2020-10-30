@@ -60,9 +60,7 @@ function addThemeBtn(){
             }
         }
         //保存当前主题对应编号
-        chrome.storage.sync.set({flag: Flag}, function() {
-            //设置存储完毕
-        })
+        chrome.storage.sync.set({flag: Flag})
     }
     //点击原网页的白色/黑色主题切换按钮
     function clickDarkOrWhite(classN){

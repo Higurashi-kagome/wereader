@@ -1,155 +1,376 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	<meta charset="utf-8">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>options-page</title>
-	<strong>options-page</strong>
-	<br>
-	<style>
-		body {
-			margin: 8px 8px 8px 8px;
-			font-size: 95%;
-		}
-		p {
-			display: block;
-			margin-block-start: 0em;
-			margin-block-end: 0em;
-			margin-inline-start: 0px;
-			margin-inline-end: 0px;
-		}
-		textarea {
-			margin: 0px;
-			width: 159px;
-			height: 55px;
-		}
-		input[type="text"] {
-			width: 159px;
-		}
-		input[type="checkbox"] {
-			float: right;
-		}
-		.separate {
-			margin-bottom: 0.5em;
-		}
-	</style>
-	</head>
-	<body>
-		<hr>
-		<p id="backupName"></p>
-		<hr>
-		<p>一级标注前缀: </p>
-		<textarea type="text" maxlength="150" id="s1Pre"></textarea>
-		<p>一级标注后缀: </p>
-		<textarea type="text" maxlength="150" id="s1Suf"></textarea>
-		<p>二级标注前缀: </p>
-		<textarea type="text" maxlength="150" id="s2Pre"></textarea>
-		<p>二级标注后缀: </p>
-		<textarea type="text" maxlength="150" id="s2Suf"></textarea>
-		<p>三级标注前缀: </p>
-		<textarea type="text" maxlength="150" id="s3Pre"></textarea>
-		<p>三级标注后缀: </p>
-		<textarea type="text" maxlength="150" id="s3Suf"></textarea>
-		<hr>
-		<p>一级标题前缀: </p>
-		<textarea type="text" maxlength="150" id="lev1"></textarea>
-		<p>二级标题前缀: </p>
-		<textarea type="text" maxlength="150" id="lev2"></textarea>
-		<p>三级标题前缀: </p>
-		<textarea type="text" maxlength="150" id="lev3"></textarea>
-		<hr>
-		<p>我的想法前缀: </p>
-		<textarea type="text" maxlength="150" id="thouPre"></textarea>
-		<p>我的想法后缀: </p>
-		<textarea type="text" maxlength="150" id="thouSuf"></textarea>
-		<hr>
-		<p>代码块前缀：</p>
-		<input type="text" maxlength="15" id="codePre"></input>
-		<br>
-		<p>代码块后缀：</p>
-		<input type="text" maxlength="15" id="codeSuf"></input>
-		<br>
-		<p>代码块语言：</p>
-		<input type="text" maxlength="15" id="preLang"></input>
-		<div class="regexp_container">
-			<hr>
-            <p>正则表达式1：</p>
-			<input type="text" maxlength="150" class="regexp">
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput1">
-            <p>前缀：</p>
-            <textarea type="text" maxlength="150" class="regexp_pre"></textarea>
-            <p>后缀：</p>
-			<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+	<link rel="icon" type="image/x-icon" href="../icons/icon48.png">
+	<link rel="stylesheet" href="options.css">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+	<main>
+		<h3>
+			<span class="options-title">
+				<span id="expandAllButton"></span>
+				<span id="titleLabel">选项</span>
+				<a href="options.html#" target="_blank" class="new-window-link"><img
+						src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg=="></a>
+			</span>
+			<!-- 配置切换 -->
+			<span class="profiles">
+				<select id="profileNamesInput">
+					<!-- <option>默认设置</option> -->
+				</select>
+				<button id="addProfileButton" title="添加一个新的配置文件"><img src="icons/button_new.png"></button>
+				<button id="deleteProfileButton" title="删除配置文件" disabled=""><img src="icons/button_delete.png"></button>
+				<button id="renameProfileButton" title="重命名配置文件" disabled=""><img src="icons/button_edit.png"></button>
+			</span>
+		</h3>
+		<!-- 标注 -->
+		<details>
+			<summary>标注</summary>
+			<!-- 一级标注前缀 -->
+			<div class="option vertical">
+				<label for="s1Pre" id="s1PreLabel">一级标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<textarea type="text" maxlength="150" id="s1Pre"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>一级标注是指被直线标注的文本：</p>
+				<img src="icons/markstyle1.png">
+				<p>输入框中的内容在导出标注时将会被添加到一级标注前面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">**我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却</span></p>
+			</div>
+			<!-- 一级标注后缀 -->
+			<div class="option vertical">
+				<label for="s1Suf" id="s1SufLabel">一级标注后缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<textarea type="text" maxlength="150" id="s1Suf"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>一级标注是指被直线标注的文本：</p>
+				<img src="icons/markstyle1.png">
+				<p>输入框中的内容在导出标注时将会被添加到一级标注后面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却**</span></p>
+			</div>
+			<!-- 二级标注前缀 -->
+			<div class="option vertical">
+				<label for="s2Pre" id="s2PreLabel">二级标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="s2Pre"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>二级标注是指被马克笔标注的文本：</p>
+				<img src="icons/markstyle2.png">
+				<p>输入框中的内容在导出标注时将会被添加到二级标注前面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">**我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却</span></p>
+			</div>
+			<!-- 二级标注后缀 -->
+			<div class="option vertical">
+				<label for="s2Suf" id="s2SufLabel">二级标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="s2Suf"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>二级标注是指被马克笔标注的文本：</p>
+				<img src="icons/markstyle2.png">
+				<p>输入框中的内容在导出标注时将会被添加到二级标注后面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却**</span></p>
+			</div>
+			<!-- 三级标注前缀 -->
+			<div class="option vertical">
+				<label for="s3Pre" id="s3PreLabel">二级标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="s3Pre"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>三级标注是指被波浪线标注的文本：</p>
+				<img src="icons/markstyle3.png">
+				<p>输入框中的内容在导出标注时将会被添加到三级标注前面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">**我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却</span></p>
+			</div>
+			<!-- 三级标注后缀 -->
+			<div class="option vertical">
+				<label for="s3Suf" id="s3SufLabel">二级标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="s3Suf"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>三级标注是指被波浪线标注的文本：</p>
+				<img src="icons/markstyle3.png">
+				<p>输入框中的内容在导出标注时将会被添加到三级标注后面。如，若这里设置为两个星号(**)，则上图中的标注导出来后为<span class="lineinline">我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却**</span></p>
+			</div>
+		</details>
+		<!-- 标题 -->
+		<details>
+			<summary>标题</summary>
+			<!-- 一级标题前缀 -->
+			<div class="option vertical">
+				<label for="lev1" id="lev1Label">一级标题前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="lev1"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>微信读书中的书通常最多只有三级目录：</p>
+				<img src="icons/chapterLevel.png">
+				<p>其中排第一的标题(朗读者1)即为一级标题。</p>
+				<p>输入框中的内容在导出标题时将会被添加到一级标题前面。如，若这里设置为一个井号加一个空格(# )，则上面的一级标题导出来后为<span class="lineinline"># 朗读者1</span></p>
+			</div>
+			<!-- 二级标题前缀 -->
+			<div class="option vertical">
+				<label for="lev2" id="lev2Label">二级标题前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="lev2"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>微信读书中的书通常最多只有三级目录：</p>
+				<img src="icons/chapterLevel.png">
+				<p>其中排第二的标题(遇见)即为二级标题。</p>
+				<p>输入框中的内容在导出标题时将会被添加到二级标题前面。如，若这里设置为两个井号加一个空格(## )，则上面的二级标题导出来后为<span class="lineinline">## 遇见</span></p>
+			</div>
+			<!-- 三级标题前缀 -->
+			<div class="option vertical">
+				<label for="lev3" id="lev3Label">三级标题前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="lev3"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>微信读书中的书通常最多只有三级目录：</p>
+				<img src="icons/chapterLevel.png">
+				<p>其中排第三的标题(朗读者 濮存昕)即为三级标题。</p>
+				<p>输入框中的内容在导出标题时将会被添加到三级标题前面。如，若这里设置为三个井号加一个空格(### )，则上面的三级标题导出来后为<span class="lineinline">### 朗读者 濮存昕</span></p>
+			</div>
+		</details>
+		<!-- 想法 -->
+		<details>
+			<summary>想法</summary>
+			<!-- 我的想法前缀 -->
+			<div class="option vertical">
+				<label for="thouPre" id="thouPreLabel">前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="thouPre"></textarea>
+			</div>
+			<!-- 我的想法后缀 -->
+			<div class="option vertical">
+				<label for="thouSuf" id="thouSufLabel">后缀</label>
+				<textarea type="text" maxlength="150" id="thouSuf"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>想法也就是你平时读书的时候在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>
+			</div>
+		</details>
+		<!-- 代码块 -->
+		<details>
+			<summary>代码块</summary>
+			<div class="option vertical">
+				<label for="codePre" id="codePreLabel">代码块前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<input type="text" maxlength="15" id="codePre">
+			</div>
+			<div class="option vertical">
+				<label for="codeSuf" id="codeSufLabel">代码块后缀</label>
+				<input type="text" maxlength="15" id="codeSuf">
+			</div>
+			<div hidden="" class="help-content">
+				<p>当你借助插件复制书本中的代码块的时候，你可以在这里设置代码块前后缀。</p>
+				<p>比如假设书中有一段代码，当你将代码块前缀设置为<code>```python</code>同时将代码块后缀设置为<code>```</code>时，你复制得到的文本在 Markdown 中会按照 python 的语法高亮显示。</p>
+				<p>有时你可能不希望导出的代码块前后包含任何内容，这时你可以将代码块前后缀设置为空。</p>
+			</div>
+		</details>
+		<!-- 正则匹配 -->
+		<details>
+			<summary>正则匹配</summary>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option">
+					<label for="thouSuf" id="thouSufLabel">正则表达式1<span class="help-icon"><img
+								src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+								tabindex="0">
+						</span>
+					</label>
+					<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput1">
+				</div>
+				<div class="option vertical">
+					<input type="text" maxlength="150" class="regexp">
+					<label>前缀</label>
+					<textarea type="text" maxlength="150" class="regexp_pre"></textarea>
+					<label>后缀</label>
+					<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+				</div>
+				<div hidden="" class="help-content">
+					<p>
+					当微信读书中的三种标注不能满足你添加前后缀的需求时，你可以借助正则表达式匹配标注，被匹配的标注可被添加前后缀。比如，当你要匹配一个开头为"提示"二字的标注时，可输入正则表达式：
+					</p>
+					<code>^提示[\S ]*$</code>
+					<p>下面是一些比较常用的正则表达式：</p>
+					<ul>
+						<li>
+							匹配开头为"步骤x："(x为0到99中任意整数)的标注：<code>^步骤[0-9]{1,2}[:：][\S ]*$</code>
+						</li>
+						<li>
+							匹配图片标题如"图2-5 404错误响应"：<code>^图[0-9]{1,2}-[0-9]{1,2} [\S ]*$</code>
+						</li>
+						<li>
+							匹配表格标题如"表1-1 Flask的依赖包"：<code>^表[0-9]{1,2}-[0-9]{1,2} [\S ]*$</code>
+						</li>
+						<li>
+							匹配开头为数字加一点的标注如"1．Flask与HTTP"：<code>^[1-9][．\.][\S ]*$</code>
+						</li>
+						<li>
+							匹配开头为"注意："或"附注："或"提示："的标注如"提示：你可以借助微信读书笔记助手快速导出笔记为 Markdown
+							文本"：<code>^(注意|附注|提示)[:：][\S ]*$</code>
+						</li>
+					</ul>
+					<p><em>注意：</em></p>
+					<ul>
+						<li>选中正则表达式右方的选中框该正则表达式才会生效。</li>
+						<li>因为正则表达式的设置很容易影响导出效果，所以最好在对正则表达式进行充分测试后再使用正则匹配。</li>
+					</ul>
+				</div>
+			</div>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option">
+					<label for="thouSuf" id="thouSufLabel">正则表达式2</label>
+					<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput2">
+				</div>
+				<div class="option vertical">
+					<input type="text" maxlength="150" class="regexp">
+					<label>前缀</label>
+					<textarea type="text" maxlength="150" class="regexp_pre"></textarea>
+					<label>后缀</label>
+					<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+				</div>
+			</div>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option">
+					<label for="thouSuf" id="thouSufLabel">正则表达式3</label>
+					<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput3">
+				</div>
+				<div class="option vertical">
+					<input type="text" maxlength="150" class="regexp">
+					<label>前缀</label>
+					<textarea type="text" maxlength="150" class="regexp_pre"></textarea>
+					<label>后缀</label>
+					<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+				</div>
+			</div>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option">
+					<label for="thouSuf" id="thouSufLabel">正则表达式4</label>
+					<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput4">
+				</div>
+				<div class="option vertical">
+					<input type="text" maxlength="150" class="regexp">
+					<label>前缀</label>
+					<textarea type="text" maxlength="150" class="regexp_pre"></textarea>
+					<label>后缀</label>
+					<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+				</div>
+			</div>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option">
+					<label for="thouSuf" id="thouSufLabel">正则表达式5</label>
+					<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput5">
+				</div>
+				<div class="option vertical">
+					<input type="text" maxlength="150" class="regexp">
+					<label>前缀</label>
+					<textarea type="text" maxlength="150" class="regexp_pre"></textarea>
+					<label>后缀</label>
+					<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+				</div>
+			</div>
+		</details>
+		<!-- 其他 -->
+		<details>
+			<summary>其他</summary>
+			<div class="option">
+				<label for="escape" id="escapeLabel">开启转义<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<input type="checkbox" id="escape">
+			</div>
+			<div hidden="" class="help-content">
+				<p>选中该选项之后，标注及纯文本书评中的 Markdown 特殊字符（如 \ * { [ ( + &lt; _ ` !）将被转义。 </p>
+				<p>一个常见的应用是，当你的标注中包含星号(*)时，为防止其导致生成 Markdown 斜体或黑体，可开启该选项以转义这个字符。</p>
+			</div>
+			<div class="option">
+				<label for="addThoughts" id="addThoughtsLabel">导出标注包含想法<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<input type="checkbox" id="addThoughts">
+			</div>
+			<div hidden="" class="help-content">
+				<p>选中该选项之后，导出的标注（本章标注或是全书标注）中将包含你在书中留下的想法。</p>
+			</div>
+			<div class="option">
+				<label for="displayN" id="displayNLabel">热门标注显示标注人数<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<input type="checkbox" id="displayN">
+			</div>
+			<div hidden="" class="help-content">
+				<p>选中该选项之后，导出的热门标注中将包含每条热门标注的标记人数。</p>
+			</div>
+		</details>
+		<div class="option"><a href="help.html" target="_blank">帮助</a></div>
+		<!-- 确认提示 -->
+		<div id="confirmContainer" class="popup">
+			<div class="popup-content">
+				<header>
+					<span id="confirmLabel"></span>
+				</header>
+				<footer>
+					<button type="submit" id="confirmButton">确定</button>
+					<button id="cancelButton">取消</button>
+				</footer>
+			</div>
 		</div>
-		<div class="regexp_container">
-			<hr>
-            <p>正则表达式2：</p>
-			<input type="text" maxlength="150" class="regexp">
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput2">
-            <p>前缀：</p>
-            <textarea type="text" maxlength="150" class="regexp_pre"></textarea>
-            <p>后缀：</p>
-			<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
+		<!-- 输入提示 -->
+		<div id="promptContainer" class="popup">
+			<div class="popup-content">
+				<header>
+					<span id="promptLabel"></span>
+				</header>
+				<main><input id="promptInput" type="text"></main>
+				<footer>
+					<button type="submit" id="promptConfirmButton">确定</button>
+					<button id="promptCancelButton">取消</button>
+				</footer>
+			</div>
 		</div>
-		<div class="regexp_container">
-			<hr>
-            <p>正则表达式3：</p>
-			<input type="text" maxlength="150" class="regexp">
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput3">
-            <p>前缀：</p>
-            <textarea type="text" maxlength="150" class="regexp_pre"></textarea>
-            <p>后缀：</p>
-			<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
-		</div>
-		<div class="regexp_container">
-			<hr>
-            <p>正则表达式4：</p>
-			<input type="text" maxlength="150" class="regexp">
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput4">
-            <p>前缀：</p>
-            <textarea type="text" maxlength="150" class="regexp_pre"></textarea>
-            <p>后缀：</p>
-			<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
-		</div>
-		<div class="regexp_container">
-			<hr>
-            <p>正则表达式5：</p>
-			<input type="text" maxlength="150" class="regexp">
-			<input type="checkbox" class="contextMenuEnabledInput" id="contextMenuEnabledInput5">
-            <p>前缀：</p>
-            <textarea type="text" maxlength="150" class="regexp_pre"></textarea>
-            <p>后缀：</p>
-			<textarea type="text" maxlength="150" class="regexp_suf"></textarea>
-		</div>
-		<hr>
-		<div>
-			<label>开启转义：</label>
-			<input type="checkbox" id="escape">
-		</div>
-		<p class="separate"></p>
-		<div>
-			<label>导出标注包含想法：</label>
-			<input type="checkbox" id="addThoughts">
-		</div>
-		<p class="separate"></p>
-		<div>
-			<label>热门标注显示标注人数：</label>
-			<input type="checkbox" id="displayN">
-		</div>
-		<hr>
-		<div>
-			<input type="button" id="backup" value="备份"/>
-			<a href="settings.html">
-				<input type="button" id="import" value="导入"/>
-			</a>
-		</div>
-		<div id="inputName" style="display: none">
-			<input type="text" id="name" placeholder="输入备份名"/>
-			<br>
-			<input type="button" id="submit" value="确定"/>
-			<input type="button" id="cancel" value="取消"/>
-		</div>
-		<hr>
-		<a href="help.html">帮助</a>
-	</body>
+	</main>
 	<script type="text/javascript" src="options.js"></script>
+</body>
+
 </html>

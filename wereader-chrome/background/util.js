@@ -33,8 +33,8 @@ function aler(text){
 
 //存储 / 初始化设置
 function settingInitialize() {
-	chrome.storage.sync.get(null, function (setting) {
-		/* 从背景页初始化设置 */
+	chrome.storage.sync.get(function (setting) {
+		/* 检查可从背景页获取到的设置 */
 		var basicKeys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
 		for(var i=0,len=basicKeys.length;i<len;i++){
 			let key = basicKeys[i]
@@ -46,8 +46,8 @@ function settingInitialize() {
 		for(var i=0,len=basicKeys.length;i<len;i++){
 			document.getElementById(basicKeys[i]).innerHTML = setting[basicKeys[i]]
 		}
-		/* 初始化默认选项 */
-		var defaultConfig = {checkedRe:[],codePre:"```",codeSuf:"```",preLang:"",displayN:false,addThoughts:false,escape:false,backupName:"未知",re:[]}
+		/* 检查默认选项 */
+		var defaultConfig = {checkedRe:[],codePre:"```",codeSuf:"```",displayN:false,addThoughts:false,escape:false,backupName:"默认设置",re:[]}
 		for(var key in defaultConfig){
 			//这里必须设置为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
@@ -55,21 +55,20 @@ function settingInitialize() {
 			}
 		}
 		//存储初始化设置
-		chrome.storage.sync.set(setting, function () {
-			//设置存储完毕
-		})
-		/* 初始化本地storage */
-		const val = "backup"
-		chrome.storage.local.get([val], function(setting) {
-			//检查是否有备份数据
-			if(setting[val] == undefined){//无备份则初始化备份
-				setting[val] = {}
-				chrome.storage.local.set(setting,function(){
-					
-				})
+		chrome.storage.sync.set(setting)
+		/* 检查本地storage */
+		const backupKey = "backup"
+		chrome.storage.local.get([backupKey], function(localSetting) {
+			const defaultBackupName = "默认设置"
+			setting.backupName = undefined
+			if(localSetting[backupKey] == undefined){//无备份
+				localSetting[backupKey] = {}
+				localSetting[backupKey][defaultBackupName] = setting
+			}else if(localSetting[backupKey][defaultBackupName] == undefined){//无默认备份
+				localSetting[backupKey][defaultBackupName] = setting
 			}
+			chrome.storage.local.set(localSetting)
 		})
-
 	})
 }
 

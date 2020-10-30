@@ -1,0 +1,20 @@
+{
+    "s1Pre":"",
+    "s1Suf":"",
+    "s2Pre":"",
+    "s2Suf":"",
+    "s3Pre":"",
+    "s3Suf":"",
+    "lev1":"",
+    "lev2":"",
+    "lev3":"",
+    "thouPre":"",
+    "thouSuf":"",
+    "codePre":"",
+    "codeSuf":"",
+    "checkedRe":"",
+    "re":"",
+    "escape":false,
+    "displayN":false,
+    "addThoughts":false
+}

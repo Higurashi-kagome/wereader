@@ -101,16 +101,9 @@ function addCopyBtn3(){
             inser.addEventListener('click', function(){
                 this.innerHTML = "✔"
                 var id = this.id
-                //每次点击复制按钮都获取一次"代码块语言 "
-                keys = ["preLang","codePre","codeSuf"]
-                chrome.storage.sync.get(keys, function(setting) {
-                    for(var i=0,len=keys.length;i<len;i++){
-                        key = keys[i]
-                        if(setting[key] == undefined){
-                            setting[key] = (key == "preLang") ? "" : "```"
-                        }
-                    }
-                    code =  setting.codePre + setting.preLang + "\n" + _code + setting.codeSuf
+                //每次点击复制按钮都获取一次代码块设置
+                chrome.storage.sync.get(["codePre","codeSuf"], function(setting) {
+                    let code =  setting.codePre + "\n" + _code + setting.codeSuf
                     sendMsgToBg(code)
                 })
                 setTimeout(function () {

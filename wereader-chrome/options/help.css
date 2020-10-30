@@ -1,0 +1,119 @@
+body {
+    background-color: #eee;
+    font-size: 12pt;
+}
+
+/*设置链接点击后不变色*/
+a:link {color:#0000EE}     /* 未访问的链接 */
+a:visited {color:#0000EE}  /* 已访问的链接 */
+
+body>div {
+    position: relative;
+    background-color: #fff;
+    font-family: sans-serif;
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px #bfbfbf solid;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+.lineinline {
+    font-family: cursive;
+    font-size: 1.1em;
+}
+
+ol {
+    -webkit-padding-start: 30px;
+    margin: 0px;
+    padding-right: 10px;
+}
+
+ol>li {
+    padding-top: 1.8em;
+}
+
+a[id] {
+    font-weight: bold;
+}
+
+ol>li>ul {
+    padding-left: 25px;
+}
+
+ol>li>ul>li {
+    padding-top: .5em;
+}
+
+ol>li>ul>li>ul {
+    padding-left: 25px;
+}
+
+.icon {
+    height: 1em;
+}
+
+#titleBorder {
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h2, h4 {
+    margin-bottom: 0px;
+}
+
+li {
+    line-height: 1.5em;
+}
+
+code {
+    white-space:pre;
+    font-family: aoto;
+    background-color: #f5f5f5 !important;
+    border: 0.5px solid #ccc !important;
+    padding: 0 5px !important;
+    border-radius: 3px !important;
+    /* line-height: 1.8; */
+    margin: 0px 4px;
+    display: inline-block;
+}
+
+
+@media (max-width:800px) {
+    body {
+        background-color: white;
+        margin: 0px;
+    }
+    body>div {
+        border-width: 0px;
+    }
+    ol {
+        padding-left: 20px;
+    }
+    ul {
+        padding-left: 10px;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #373737;
+    }
+    @media (max-width:800px) {
+        body {
+            background-color: #202023;
+        }
+    }
+    body>div {
+        background-color: #202023;
+        border-color: rgb(81, 81, 81);
+    }
+    body>div, a {
+        color: #fdfdfd;
+    }
+}

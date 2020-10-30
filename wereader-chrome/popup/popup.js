@@ -2,7 +2,7 @@
 window.onload = function () {
     //获取并设置bid、vid
     getuserVid(function(userVid){
-        chrome.storage.sync.get(null, function(setting) {
+        chrome.storage.sync.get( function(setting) {
             var bg = chrome.extension.getBackgroundPage()
             var bookId = bg.getbookId()
             document.getElementById("bookId").innerHTML = "bid：" + bookId

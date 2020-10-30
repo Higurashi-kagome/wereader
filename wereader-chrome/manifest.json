@@ -51,7 +51,7 @@
    "options_ui":
 	{
     	"page": "options/options.html",
-    	"chrome_style": true
+    	"open_in_tab": false
    },
    "homepage_url": "https://github.com/liuhao326/wereader",
 	"permissions":
