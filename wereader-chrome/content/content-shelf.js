@@ -92,11 +92,7 @@ chrome.runtime.onMessage.addListener(function(data){
 				}
 			}
 			categoryElement.addEventListener("click",function(){
-				if(booksContainer.style.display == "none"){
-					booksContainer.style.display = "block"
-				}else{
-					booksContainer.style.display = "none"
-				}
+				booksContainer.style.display = (booksContainer.style.display == "none") ? "block" : "none"
 			})
 			div.appendChild(categoryElement)
 			div.appendChild(booksContainer)
