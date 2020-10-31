@@ -51,7 +51,7 @@ function settingInitialize() {
 		for(var key in defaultConfig){
 			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
-				setting[key] = defaultValue[key]
+				setting[key] = defaultConfig[key]
 			}
 		}
 		//存储初始化设置
