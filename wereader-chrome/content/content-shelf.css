@@ -1,0 +1,57 @@
+#shelfDIV {
+    width: 0px;
+    border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;
+    border-style: solid solid solid none;
+    border-width: 1.5px 1.5px 1.5px medium;
+    border-image: none 100% / 1 / 0 stretch;
+    border-radius: 0px 4px 4px 0px;
+    max-height: 595px;
+    overflow: hidden auto;
+    transition: width 1s;
+}
+
+.category {
+    color: black;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.bookLink {
+    width: 100%;
+    height: 100%;
+    margin: 2px;
+    display: inline-table;
+    border-radius: 4px;
+}
+
+#hoverElement {
+    color: black;
+    background-color: rgb(241, 245, 248);
+    border-radius: 0px 4px 4px 0px;
+    border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px medium;
+    border-image: none 100% / 1 / 0 stretch;
+    width: 14px;
+    padding: 6px;
+    display: block;
+    left: 0px;
+    top: 100px;
+    position: fixed;
+}
+
+#parentElement {
+    background-color: rgb(241, 248, 255);
+    font-size: 14px;
+    line-height: 1.5;
+    width: auto;
+    max-height: 600px;
+    left: 0px;
+    top: 100px;
+    position: fixed;
+    border-radius: 0px 4px 4px 0px;
+}

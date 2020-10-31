@@ -68,7 +68,7 @@ function getComment(userVid, bookId, isHtml,setting) {
 				break
 			}
 		}
-		content = isEscape ? escape(content) : content
+		content = isEscape ? escapeText(content) : content
 		if (htmlContent != "" || content != "" || title != "") {
 			if (isHtml) {
 				(title != "") ? copy("# " + title + "\n\n" + htmlContent) : copy(htmlContent)
@@ -238,7 +238,7 @@ function copyBestBookMarks(bookId,setting) {
 				//遍历章内标注
 				for (var j = 0, len = bestMarks[key].length; j < len; j++) {
 					markText = bestMarks[key][j].markText
-					markText = isEscape ? escape(markText) : markText
+					markText = isEscape ? escapeText(markText) : markText
 					totalCount = bestMarks[key][j].totalCount
 					res += markText + (add ? ("  <u>" + totalCount + "</u>") : "") + "\n\n"
 				}
@@ -317,6 +317,7 @@ settingInitialize()
 
 //监听消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+	let tabId = sender.tab.id
 	switch(message.type){
 		case "copyImg":
 			copy(message.picText)
@@ -328,15 +329,15 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			message.bid == "wrepub" ? document.getElementById('bookId').value = document.getElementById("tempbookId").value
 			: document.getElementById('bookId').value = message.bid
 			break
-		case "getUserVid":	//content-shelf.js 请求获取 userVid
+		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
-				if(cookie != undefined && cookie != null){
-					sendMessageToContentScript({ userVid: cookie.value.toString() })
-				}
+				if(!cookie)return
+				getData("https://i.weread.qq.com/shelf/sync?userVid=" + cookie.value.toString() + "&synckey=0&lectureSynckey=0",function(data){
+					sendMessageToContentScript(data,tabId)
+				})
 			})
 			break
 		case "injectCss":
-			let tabId = sender.tab.id
 			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
 				if(chrome.runtime.lastError){
 					catchErr("chrome.tabs.insertCSS()")

@@ -49,7 +49,7 @@ function settingInitialize() {
 		/* 检查默认选项 */
 		var defaultConfig = {checkedRe:[],codePre:"```",codeSuf:"```",displayN:false,addThoughts:false,escape:false,backupName:"默认设置",re:[]}
 		for(var key in defaultConfig){
-			//这里必须设置为 undefined，因为 false 属于正常值
+			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
 				setting[key] = defaultValue[key]
 			}
@@ -78,12 +78,16 @@ function getbookId() {
 }
 
 //发送消息到content.js
-function sendMessageToContentScript(message) {
-	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-		if(tabs[0].id != undefined){
-			chrome.tabs.sendMessage(tabs[0].id, message)
-		}
-	})
+function sendMessageToContentScript(message,id) {
+	if(id != undefined){
+		chrome.tabs.sendMessage(id, message)
+	}else{
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			if(tabs[0].id != undefined){
+				chrome.tabs.sendMessage(tabs[0].id, message)
+			}
+		})
+	}
 }
 
 //通知函数
@@ -147,7 +151,7 @@ function getTitleAddedPre(title, level) {
 }
 
 //转义特殊字符
-function escape(markText){
+function escapeText(markText){
 	var exceptRegexp = /!\[[\S| ]*\]\([\S| ]*\)/g//匹配图片
 	if(exceptRegexp.test(markText) == true){//不对图片进行转义
 		var list = markText.split(exceptRegexp)
@@ -261,8 +265,6 @@ function getContents(bookId,callback){
 
 //获取章内标注
 function traverseMarks(marks,setting,all){
-	var regexpCollection = setting.checkedRe ? setting.checkedRe : []
-	var isEscape = setting.escape
 	var res = ""
 	var imgsArrIndext = 0
 	for (var j = 0, len = marks.length; j < len; j++) {//遍历章内标注
@@ -275,10 +277,10 @@ function traverseMarks(marks,setting,all){
 			continue
 		}
 		//转义特殊字符
-		var markTextEscaped = isEscape ? escape(markText) : markText
+		var markTextEscaped = setting.escape ? escapeText(markText) : markText
 		//var markTextEscaped = markText
 		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
-		markText = getRegExpMarkText(markText,markTextEscaped,regexpCollection)
+		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
 		var style = marks[j].style
 		res += addPreAndSuf(markText,style) + "\n\n"
 		if(abstract){

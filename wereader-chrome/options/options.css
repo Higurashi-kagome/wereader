@@ -2,15 +2,11 @@ body {
     background-color: #fff;
     font-family: sans-serif;
     font-size: 12px;
-    max-width: 1024px;
+    max-width: 730px;
     width: 100%;
     margin: 0;
     margin-left: auto;
     margin-right: auto;
-}
-
-html:not(.maximized){
-    height: 575px;
 }
 
 .lineinline {
@@ -151,7 +147,7 @@ h3 a {
 }
 
 .help-content img {
-    width: calc(100% - 12px);
+    max-width: 60%;
     margin-left: 6px;
 }
 
@@ -383,7 +379,6 @@ a {
     background-color: #fbfbfb;
 }
 
-/* <html class="maximized"> */
 html.maximized {
     background-color: #f0f0f0;
 }
@@ -435,11 +430,6 @@ html.maximized {
 
     .maximized main {
         border-color: rgb(81, 81, 81);
-    }
-
-    .new-window-link img,
-    .profiles button img {
-        filter: invert(100%);
     }
 
     .profiles button img:hover {
