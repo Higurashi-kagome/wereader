@@ -196,14 +196,14 @@ function initializeBasic(){
     }
     /* 全部展开 */
     let expandAllButton = document.getElementById("expandAllButton")
-    expandAllButton.addEventListener("click", () => {
+    expandAllButton.onclick = function(){
 		if (expandAllButton.className) {
 			expandAllButton.className = ""
 		} else {
 			expandAllButton.className = "opened"
 		}
 		document.querySelectorAll("details").forEach(detailElement => detailElement.open = Boolean(expandAllButton.className))
-    }, false)
+    }
 }
 
 //初始化
