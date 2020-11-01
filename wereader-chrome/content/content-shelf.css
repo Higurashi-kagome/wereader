@@ -17,15 +17,6 @@
     background-color: whitesmoke;
     overflow: hidden auto;
 }
-/* {
-    width: 0px;
-    border-color: rgb(230, 230, 230) rgb(230, 230, 230) rgb(230, 230, 230) currentcolor;
-    border-style: solid solid solid none;
-    border-width: 1.5px 1.5px 1.5px medium;
-    border-image: none 100% / 1 / 0 stretch;
-    border-radius: 0px 4px 4px 0px;
-    max-height: 595px;
-} */
 
 li {
     margin-right: 7px;
@@ -47,9 +38,11 @@ li {
     margin: 2px;
     display: inline-table;
     border-radius: 4px;
+    user-select: none;
 }
 
 #hoverElement {
+    user-select: none;
     color: black;
     text-align: center;
     background:whitesmoke;
