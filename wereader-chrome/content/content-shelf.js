@@ -3,44 +3,52 @@
 //console.log("content-shelf.js：被注入")
 chrome.runtime.sendMessage({type: "getShelf"})
 chrome.runtime.onMessage.addListener(function(data){
-		var books = JSON.parse(data).books
-		var archive = JSON.parse(data).archive
-		var bookDic = {}
+		var booksData = JSON.parse(data).books
+		var categoryData = JSON.parse(data).archive
+		var bookId_bookObj = {}
 		var shelf = {}
 		//bookDic = {'bookId':bookObj}
-		for(var i=0,len=books.length;i<len;i++){
-			bookDic[books[i].bookId] = books[i]
+		for(let i=0,len=booksData.length;i<len;i++){
+			bookId_bookObj[booksData[i].bookId] = booksData[i]
 		}
 		//得到 shelf = {'类别1': [bookObj1,bookObj2,...], '类别2': [bookObj1,bookObj2,...]}
-		for(var j=archive.length-1;j>=0;j--){
-			let archiveName = archive[j].name
-			let bookIdsObj = archive[j].bookIds
-			shelf[archiveName] = []
+		for(let j=categoryData.length-1;j>=0;j--){
+			let categoryName = categoryData[j].name
+			let allBookId = categoryData[j].bookIds
+			shelf[categoryName] = []
 			//遍历某类别内的书本id
-			for(var k=0,len2=bookIdsObj.length;k<len2;k++){
-				let id = bookIdsObj[k]
-				let bookObj = bookDic[id]
-				shelf[archiveName].push(bookObj)
-				delete bookDic[id]
+			for(let k=0,len2=allBookId.length;k<len2;k++){
+				let id = allBookId[k]
+				let bookObj = bookId_bookObj[id]
+				shelf[categoryName].push(bookObj)
+				delete bookId_bookObj[id]
 			}
 		}
 		//将书架中未分类的书籍归为 "未分类书籍"
 		shelf["未分类书籍"] = []
-		for(var key in bookDic){
-			shelf["未分类书籍"].push(bookDic[key])
+		for(let key in bookId_bookObj){
+			shelf["未分类书籍"].push(bookId_bookObj[key])
 		}
-		//遍历分类给书本按readUpdateTime排序
-		for(var key in shelf){
-			shelf[key].sort(function(x,y){
-				const colId = "readUpdateTime"
-				return (x[colId] > y[colId]) ? 1 : -1
-			})
-			shelf[key].reverse()
+		const updateTime = "readUpdateTime"
+		var rank = function(x,y){
+			return (x[updateTime] > y[updateTime]) ? -1 : 1
 		}
+		//遍历分类给书本按readUpdateTime排序并初始化categorySorter方便给分类排序
+		var categorySorter = []
+		for(let categoryName in shelf){
+			shelf[categoryName].sort(rank)
+			//初始化categorySorter
+			let categoryNameAndUpdateTime = {}
+			if(shelf[categoryName].length == 0)continue
+			categoryNameAndUpdateTime[updateTime] = shelf[categoryName][0][updateTime]
+			categoryNameAndUpdateTime["categoryName"] = categoryName
+			categorySorter.push(categoryNameAndUpdateTime)
+		}
+		categorySorter.sort(rank)
 		//获取创建目录所需书本url
 		var booksDic = {}
 		var booksElement = document.getElementsByClassName("shelf_list")[0].childNodes
-		for(var i=0,len=booksElement.length;i<len-1;i++){
+		for(let i=0,len=booksElement.length;i<len-1;i++){
 			let child = booksElement[i].childNodes[0]
 			if(child && child.getElementsByClassName("wr_bookCover_img")[0]){
 				let coverSrc = child.getElementsByClassName("wr_bookCover_img")[0].src.split("/")[5]
@@ -52,8 +60,9 @@ chrome.runtime.onMessage.addListener(function(data){
 		//目录部分
 		var shelfElement = document.createElement("div")
 		shelfElement.id = "shelfDIV"
-		//遍历类别
-		for(var key in shelf){
+		//遍历categorySorter
+		for(let i=0,len1=categorySorter.length;i<len1;i++){
+			let key = categorySorter[i]["categoryName"]
 			let categoryElement = document.createElement('ol')//书架类别
 			categoryElement.textContent = key
 			categoryElement.className = "category"
@@ -71,10 +80,10 @@ chrome.runtime.onMessage.addListener(function(data){
 			let booksContainer = document.createElement("ul")//章内书本容器
 			booksContainer.style.display = "none"
 			booksContainer.style.marginLeft = "15px"
-			for(var i=0,len=categoryObjList.length;i<len;i++){
+			for(let j=0,len2=categoryObjList.length;j<len2;j++){
 				let bookLink = document.createElement('a')
-				bookLink.textContent = categoryObjList[i].title
-				let coverLink = categoryObjList[i].cover.split("/")[5]
+				bookLink.textContent = categoryObjList[j].title
+				let coverLink = categoryObjList[j].cover.split("/")[5]
 				bookLink.href = booksDic[coverLink]
 				if(booksDic[coverLink]){
 					bookLink.className = "bookLink"
