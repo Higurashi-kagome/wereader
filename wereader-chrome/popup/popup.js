@@ -5,8 +5,8 @@ window.onload = function () {
         chrome.storage.sync.get( function(setting) {
             var bg = chrome.extension.getBackgroundPage()
             var bookId = bg.getbookId()
-            document.getElementById("bookId").innerHTML = "bid：" + bookId
-            document.getElementById("userVid").innerHTML = "vid：" + userVid
+            document.getElementById("bookId").textContent = "bid：" + bookId
+            document.getElementById("userVid").textContent = "vid：" + userVid
             //获取bid / vid失败则提醒
             if (bookId == "null" || userVid == "null") {
                 bg.aler("似乎出了一点问题...请确保正常登陆后刷新重试~")

@@ -6,9 +6,7 @@ function addProgressBtn(){
     var progressBtn = document.createElement("button")
     var btnDiv = document.getElementsByClassName("readerControls readerControls")[0]
     var appCode = document.getElementsByClassName("readerControls_item download")[0]
-    if(!appCode || !btnDiv){
-        return
-    }
+    if(!appCode || !btnDiv)return
     btnDiv.insertBefore(progressBtn, appCode)
     appCode.style.display = "none"
     progressBtn.setAttribute("title", "进度")
@@ -30,11 +28,9 @@ function addProgressBtn(){
     progressBtn.addEventListener('click', function(){
         try {
             //切换滚筒条显隐
-            if(count == -1){
-                chrome.runtime.sendMessage({type: "injectCss", css: "inject/showScroll.css"})
-            }else{
-                chrome.runtime.sendMessage({type: "injectCss", css: "content/content-hideScroll.css"})
-            }
+            let message = {type: "injectCss"}
+            message.css = (count == -1) ? "inject/showScroll.css" : "content/content-hideScroll.css"
+            chrome.runtime.sendMessage(message)
             count = count * (-1)
         } catch (error) {
             Swal.fire({title: "Oops...",text: "似乎出了点问题，刷新一下试试吧~",icon: "error",confirmButtonText: 'OK'})

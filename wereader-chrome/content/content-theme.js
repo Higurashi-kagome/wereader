@@ -1,5 +1,14 @@
 /* 主要用于实现阅读页主题色切换，另外还负责从 content-scroll.js 中调用函数帮助实现进度*/
 
+//点击原网页的白色/黑色主题切换按钮
+function clickDarkOrWhite(classN){
+    try{
+        document.getElementsByClassName(classN)[0].click();
+    }catch(err){
+        console.log("clickDarkOrWhite(classN) => " + err.message);
+    }
+}
+
 //console.log("inject-theme.js：被注入")
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
@@ -61,14 +70,6 @@ function addThemeBtn(){
         }
         //保存当前主题对应编号
         chrome.storage.sync.set({flag: Flag})
-    }
-    //点击原网页的白色/黑色主题切换按钮
-    function clickDarkOrWhite(classN){
-        try{
-            document.getElementsByClassName(classN)[0].click();
-        }catch(err){
-            console.log("clickDarkOrWhite(classN) => " + err.message);
-        }
     }
 
     //绑定点击事件
