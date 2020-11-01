@@ -1,0 +1,53 @@
+#bookId,#userVid {
+    display: none;
+}
+.provided {
+    cursor: pointer;
+    color: black;
+}
+#testBtn {
+    display: none;
+    cursor: pointer;
+    color: black;
+}
+#choose,#choose_mark {
+    display: none;
+}
+p {
+    padding: 2px 8px;
+    margin: 2px;
+    font-family: 'Arial';
+    font-size: small;
+    white-space: nowrap;
+    border-radius: 4px;
+    user-select:none;
+}
+div {
+    padding: 2px 8px;
+    margin: 2px;
+    font-family: 'Arial';
+    font-size: small;
+    white-space: nowrap;
+    border-radius: 4px;
+    user-select:none;
+}
+.provided:hover {
+    background-color: rgb(227,227,227);
+}
+#testBtn:hover {
+    background-color: rgb(139, 181, 245);
+}
+#choose,#choose_mark {
+    padding: 0px 0px;
+    margin: 2px;
+    white-space: nowrap;
+    border-radius: 0px;
+}
+#getComment_html,#getComment_text,#getThisChapter,#getAll {
+    padding: 2px 11px;
+    margin: 2px;
+    font-family: 'Arial';
+    font-size: small;
+    white-space: nowrap;
+    border-radius: 4px;
+}
