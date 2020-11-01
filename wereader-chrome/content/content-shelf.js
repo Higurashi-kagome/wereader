@@ -50,11 +50,11 @@ chrome.runtime.onMessage.addListener(function(data){
 		}
 		/*创建目录*/
 		//目录部分
-		var div = document.createElement("div")
-		div.id = "shelfDIV"
+		var shelfElement = document.createElement("div")
+		shelfElement.id = "shelfDIV"
 		//遍历类别
 		for(var key in shelf){
-			let categoryElement = document.createElement('ol')
+			let categoryElement = document.createElement('ol')//书架类别
 			categoryElement.textContent = key
 			categoryElement.className = "category"
 			categoryElement.onmouseenter = function () {
@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(function(data){
 			let categoryObjList = shelf[key]
 			if(categoryObjList.length == 0)continue
 			//遍历书本
-			let booksContainer = document.createElement("ul")
+			let booksContainer = document.createElement("ul")//章内书本容器
 			booksContainer.style.display = "none"
 			booksContainer.style.marginLeft = "15px"
 			for(var i=0,len=categoryObjList.length;i<len;i++){
@@ -94,8 +94,8 @@ chrome.runtime.onMessage.addListener(function(data){
 			categoryElement.addEventListener("click",function(){
 				booksContainer.style.display = (booksContainer.style.display == "none") ? "block" : "none"
 			})
-			div.appendChild(categoryElement)
-			div.appendChild(booksContainer)
+			shelfElement.appendChild(categoryElement)
+			shelfElement.appendChild(booksContainer)
 		}
 		//父容器
 		var parentElement = document.createElement("div")
@@ -104,16 +104,17 @@ chrome.runtime.onMessage.addListener(function(data){
 		var hoverElement = document.createElement("div")
 		hoverElement.id = "hoverElement"
 		hoverElement.textContent = "书架"
-		hoverElement.onmouseenter = function(){
-			div.style.width = "200px"
-			hoverElement.style.display = "none"
-		}
+		var count = 1
 		//目录部分和侧边部分嵌入到父容器中
-		parentElement.appendChild(div)
-		document.body.appendChild(hoverElement)
-		parentElement.onmouseleave = function(){
-			div.style.width = "0px"
-			hoverElement.style.display = "block"
-		}
+		parentElement.appendChild(shelfElement)
+		parentElement.appendChild(hoverElement)
 		document.body.appendChild(parentElement)
+		hoverElement.onclick = function(){
+			if (count == 1){
+				parentElement.style.left = "-200px"
+			}else{
+				parentElement.style.left = "6px"
+			}
+		  	count = count*(-1)
+		}
 });
