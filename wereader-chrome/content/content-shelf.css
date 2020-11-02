@@ -42,7 +42,6 @@ li {
 }
 
 #hoverElement {
-    user-select: none;
     color: black;
     text-align: center;
     background:whitesmoke;
@@ -56,4 +55,5 @@ li {
     border-width: 1px 1px 1px medium;
     cursor: pointer;
     font-size: 16px;
+    user-select: none;
 }
