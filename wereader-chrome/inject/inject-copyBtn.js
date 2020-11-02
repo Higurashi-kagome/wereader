@@ -4,22 +4,31 @@
 function sendMsgToBg(picStr){
     chrome.runtime.sendMessage({type: "copyImg", picText: picStr});
 }
+//设置属性
+function setAttributes(element,attributes){
+	for(let key in attributes){
+		if(Object.prototype.toString.call(attributes[key]) === '[object Object]'){
+			setAttributes(element[key],attributes[key])
+		}else{
+			element[key] = attributes[key]
+		}
+	}
+}
 
-//为图片遍历HTMLCollection生成按钮
-function generateBtn(imgs){
+//给图片添加复制按钮
+function addCopyBtn1(){
+    let imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
     for(var i=0,len=imgs.length;i<len;i++){
         var src = imgs[i].getAttribute("data-src")
-        if(src == null || src == ""){
-            Swal.fire({title: "Oops...",html: "generateBtn(imgs)：<br>图片链接获取失败。",icon: "error",confirmButtonText: '确定'})
+        if(!src){
+            Swal.fire({title: "Oops...",html: "图片链接获取失败。",icon: "error",confirmButtonText: '确定'})
             return
         }
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"
         var top = imgs[i].style.top
         var btn =  document.createElement("a" + i);
-        btn.innerHTML = "📋";
+        //btn.textContent = "📋";
         btn.id = "linkCopy" + i
-        btn.className = "wr_absolute wr_readerImage_opacity"
-        btn.style.zIndex = 4
         //判断是否为style.left == "0px"的小图
         if(imgs[i].style.left == "0px"){
             btn.style.left = "0px"
@@ -28,25 +37,18 @@ function generateBtn(imgs){
             btn.style.right = "0px"
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 20 + "px"
         }
-        btn.style.width = "16px"
-        btn.style.cursor = "pointer"
+        setAttributes(btn,{textContent:"📋",className:"wr_absolute wr_readerImage_opacity",style:{zIndex:4,width:"16px",cursor:"pointer"}})
         var parent = imgs[i].parentNode
         var inser = parent.insertBefore(btn,imgs[i]);
         inser.addEventListener('click', function(){
-            this.innerHTML = "✔"
             sendMsgToBg(picStr)
+            this.textContent = "✔"
             var id = this.id
             setTimeout(function () {
-                document.getElementById(id).innerHTML = "📋"
+                document.getElementById(id).textContent = "📋"
             }, 1500);
          }, false);
     }
-}
-
-//给图片添加复制按钮
-function addCopyBtn1(){
-    var imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    generateBtn(imgs);
 }
 
 //给注释添加复制按钮
@@ -57,24 +59,26 @@ function addCopyBtn2(){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
-        btn.style.cssText = "width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"
-        btn.innerHTML = "📋"
+        setAttributes(btn,{textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"}})
         btn.id = "noteCopy" + i
         btn.addEventListener('click', function(){
             sendMsgToBg(footernote)
-            this.innerHTML = "✔"
-        }, false);
-        btn.onmouseleave = function(){
-            this.innerHTML = "📋"
-        }
-        //btn.className = "wr_absolute wr_readerImage_opacity"
+            this.textContent = "✔"
+            var id = this.id
+            setTimeout(function () {
+                let element = document.getElementById(id)
+                if(element){//处理btn被移除的情况
+                    element.textContent = "📋"
+                }
+            }, 1500);
+         }, false);
         //给注释按钮注册点击事件
         footerNotes[i].addEventListener('click', function(){
             var interval = setInterval(() => {
                 let p = document.getElementsByClassName("reader_footerNote_text")[0]
-                if(p != undefined){
-                    let parent = p.parentNode
-                    parent.appendChild(btn)
+                if(p){
+                    btn.textContent = "📋"//处理btn的textContent在点击后未被及时还原的情况
+                    p.parentNode.appendChild(btn)
                     //结束定时器
                     clearInterval(interval)
                 }
@@ -91,15 +95,12 @@ function addCopyBtn3(){
             let _code = pre[i].innerHTML
             let top = pre[i].style.top
             let btn =  document.createElement("b" + i);
-            btn.innerHTML = "📋";
             btn.id = "codeCopy" + i
-            btn.className = "wr_absolute"
-            btn.style.cssText = "right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"
+            setAttributes(btn,{textContent:"📋",className:"wr_absolute",style:{cssText:"right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"}})
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 32 + "px"
-            let parent = pre[i].parentNode
-            let inser = parent.insertBefore(btn,pre[i]);
+            let inser = pre[i].parentNode.insertBefore(btn,pre[i]);
             inser.addEventListener('click', function(){
-                this.innerHTML = "✔"
+                this.textContent = "✔"
                 var id = this.id
                 //每次点击复制按钮都获取一次代码块设置
                 chrome.storage.sync.get(["codePre","codeSuf"], function(setting) {
@@ -107,7 +108,7 @@ function addCopyBtn3(){
                     sendMsgToBg(code)
                 })
                 setTimeout(function () {
-                    document.getElementById(id).innerHTML = "📋"
+                    document.getElementById(id).textContent = "📋"
                 }, 1500);
             }, false);
         }
