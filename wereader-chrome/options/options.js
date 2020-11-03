@@ -135,14 +135,16 @@ function renameProfile(){
 }
 
 //更新sync和local
-function updateSyncAndLocal(key,value){
+function updateSyncAndLocal(key,value,callback=function(){}){//存在异步问题，故设置了回调函数
     let config = {}
     config[key] = value
     chrome.storage.sync.set(config)
     chrome.storage.local.get(function(settings){
         const currentProfile = document.getElementById("profileNamesInput").value
         settings[backupKey][currentProfile][key] = value
-        chrome.storage.local.set(settings)
+        chrome.storage.local.set(settings,function(){
+            callback()
+        })
     })
 }
 
@@ -168,7 +170,7 @@ function updateCheckedRegexp(){
 }
 
 //更新所有正则
-function updateRegexp(){
+function updateRegexp(callback=function(){}){//短时间同时调用updateRegexp和updateCheckedRegexp会出现异步问题，故设置回调
     const regexpKey = "re"
     let regexpValue = []
     let regexpContainers = document.getElementsByClassName("regexpContainer")
@@ -180,7 +182,9 @@ function updateRegexp(){
         regexpValue.push([id,re,pre,suf])
     }
     //更新sync和local
-    updateSyncAndLocal(regexpKey,regexpValue)
+    updateSyncAndLocal(regexpKey,regexpValue,function(){
+        callback()
+    })
 }
 
 //初始化一般选项
@@ -272,7 +276,7 @@ function initialize(){
         //重命名设置
         document.getElementById("renameProfileButton").onclick = renameProfile
 
-        //"标注、标题、想法、代码块" 改变事件
+        //"标注、标题、想法、代码块" input 事件
         const inputIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","codePre","codeSuf"]
         //"是否显示热门标注人数"、"标注添加想法"、"开启转义" CheckBox 点击事件
         const CheckBoxIds = ["displayN","addThoughts","escape"]
@@ -280,10 +284,16 @@ function initialize(){
         for(let i=0,len=ids.length;i<len;i++){
             let id = ids[i]
             let element = document.getElementById(id)
-            let isInput = inputIds.indexOf(id) > -1
-            isInput ? element.value = setting[id] : element.checked = setting[id]
-            element.onclick = function(){
-                updateSyncAndLocal(this.id,isInput ? this.value : this.checked)
+            if(inputIds.indexOf(id) > -1){//"标注、标题、想法、代码块"
+                element.value = setting[id]
+                element.oninput = function(){//因为onchange是在改变内容后失去焦点时触发，故改为oninput
+                    updateSyncAndLocal(this.id,this.value)
+                }
+            }else{
+                element.checked = setting[id]
+                element.onclick = function(){
+                    updateSyncAndLocal(this.id,this.checked)
+                }
             }
         }
         /************************************************************************************/
@@ -322,14 +332,15 @@ function initialize(){
             regexpContainers[i].getElementsByClassName("regexp_pre")[0].value = reCollection[i][2]
             regexpContainers[i].getElementsByClassName("regexp_suf")[0].value = reCollection[i][3]
         }
-        //正则表达式 input、textarea 改变事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
+        //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
         const classNameArray = ["regexp","regexp_pre","regexp_suf"]
         for(let i=0,len1=classNameArray.length;i<len1;i++){
             let collection = document.getElementsByClassName(classNameArray[i])
             for(let j=0,len2=collection.length;j<len2;j++){
-                collection[j].onchange = function(){
-                    updateRegexp()
-                    updateCheckedRegexp()
+                collection[j].oninput = function(){
+                    updateRegexp(function(){
+                        updateCheckedRegexp()
+                    })
                 }
             }
         }
