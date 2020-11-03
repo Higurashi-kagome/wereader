@@ -5,6 +5,42 @@ const defaultBackupName = "默认设置"
 //初始化设置页
 initialize()
 
+//报错捕捉函数
+function catchErr(sender) {
+	if (chrome.runtime.lastError) {
+        console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
+        return true
+	}else{
+        return false
+    }
+}
+
+//设置属性
+function setAttributes(element,attributes){
+	for(let key in attributes){
+		if(Object.prototype.toString.call(attributes[key]) === '[object Object]'){
+			setAttributes(element[key],attributes[key])
+		}else{
+			element[key] = attributes[key]
+		}
+	}
+}
+
+//存储出错通知
+function setError(text){
+    let confirmContainer = document.getElementById("confirmContainer")
+    let confirmLabel = document.getElementById("confirmLabel")
+    confirmLabel.textContent = text
+    function hide(){
+        confirmLabel.textContent = ""
+        confirmContainer.style.display = "none"
+    }
+    document.getElementById("confirmButton").onclick = hide
+    //取消
+    document.getElementById("cancelButton").onclick = hide
+    confirmContainer.style.display = "block"
+}
+
 // 新建设置
 function addProfile(){
     chrome.storage.local.get(function(settings){
@@ -15,31 +51,32 @@ function addProfile(){
         document.getElementById("promptConfirmButton").onclick = function(){
             let profileName = input.value
             if(profileName == ""){//未输入
-                input.placeholder = "请输入配置名..."
+                input.placeholder = "请输入配置名"
             }else if(settings[backupKey][profileName] != undefined){//键值在local中存在
-                input.value = ""
-                input.placeholder = "重名，请重新输入..."
+                setAttributes(input,{value:"",placeholder:"该配置名已存在，请重新输入"})
             }else{
                 //在local中新建设置（以sync中的数据为值）
                 chrome.storage.sync.get(function(setting) {
                     settings[backupKey][profileName] = setting
                     settings[backupKey][profileName][backupName] = undefined
-                    chrome.storage.local.set(settings)
-                    //设置sync backupName后初始化页面
-                    setting[backupName] = profileName
-                    chrome.storage.sync.set(setting,function(){
-                        promptContainer.style.display = "none"
-                        input.value = ""
-                        input.placeholder = ""
-                        initialize()
+                    chrome.storage.local.set(settings,function(){
+                        if(catchErr("addProfile"))setError("数据过大,存储出错,请缩短数据。")
+                        //设置sync backupName后初始化页面
+                        setting[backupName] = profileName
+                        chrome.storage.sync.set(setting,function(){
+                            if(catchErr("addProfile"))setError("数据过大,存储出错,请缩短数据。")
+                            promptContainer.style.display = "none"
+                            setAttributes(input,{value:"",placeholder:""})
+                            initialize()
+                        })
                     })
+                    
                 })
             }
         }
         //"取消"
         document.getElementById("promptCancelButton").onclick = function(){
-            input.value = ""
-            input.placeholder = ""
+            setAttributes(input,{value:"",placeholder:""})
             promptContainer.style.display = "none"
         }
         //enter键确认
@@ -57,6 +94,7 @@ function addProfile(){
 function deleteProfile(){
     let confirmContainer = document.getElementById("confirmContainer")
     document.getElementById("confirmLabel").textContent = "请确认是否移除所选配置文件"
+    let confirmLabel = document.getElementById("confirmLabel")
     //确认
     document.getElementById("confirmButton").onclick = function(){
         //删除local数据
@@ -64,20 +102,25 @@ function deleteProfile(){
             let currentSelect = document.getElementById("profileNamesInput").value
             if(currentSelect == defaultBackupName)return
             delete settings[backupKey][currentSelect]
-            chrome.storage.local.set(settings)
-            //设置sync为默认
-            chrome.storage.sync.get(function(setting){
-                setting = settings[backupKey][defaultBackupName]
-                setting[backupName] = defaultBackupName
-                chrome.storage.sync.set(setting,function(){
-                    confirmContainer.style.display = "none"
-                    initialize()
+            chrome.storage.local.set(settings,function(){
+                if(catchErr("deleteProfile"))setError("数据过大,存储出错,请缩短数据。")
+                //设置sync为默认
+                chrome.storage.sync.get(function(setting){
+                    setting = settings[backupKey][defaultBackupName]
+                    setting[backupName] = defaultBackupName
+                    chrome.storage.sync.set(setting,function(){
+                        if(catchErr("deleteProfile"))setError("数据过大,存储出错,请缩短数据。")
+                        confirmLabel.textContent = ""
+                        confirmContainer.style.display = "none"
+                        initialize()
+                    })
                 })
             })
         })
     }
     //取消
     document.getElementById("cancelButton").onclick = function(){
+        confirmLabel.textContent = ""
         confirmContainer.style.display = "none"
     }
     confirmContainer.style.display = "block"
@@ -95,33 +138,34 @@ function renameProfile(){
             if(input.value == ""){
                 input.placeholder = "请输入新的名称"
             }else if(settings[backupKey][input.value] != undefined){
-                input.value = ""
-                input.placeholder = "该配置名已存在，请重新输入"
+                setAttributes(input,{value:"",placeholder:"该配置名已存在，请重新输入"})
             }else{
                 let currentSelect = document.getElementById("profileNamesInput").value
                 let profile = settings[backupKey][currentSelect]
                 let profileName = input.value
                 delete settings[backupKey][currentSelect]
                 settings[backupKey][profileName] = profile
-                chrome.storage.local.set(settings)
-                //设置sync后初始化页面
-                chrome.storage.sync.get(function(setting){
-                    setting = profile
-                    setting[backupName] = profileName
-                    chrome.storage.sync.set(setting,function(){
-                        promptContainer.style.display = "none"
-                        input.value = ""
-                        input.placeholder = ""
-                        initialize()
+                chrome.storage.local.set(settings,function(){
+                    if(catchErr("renameProfile"))setError("数据过大,存储出错,请缩短数据。")
+                    //设置sync后初始化页面
+                    chrome.storage.sync.get(function(setting){
+                        setting = profile
+                        setting[backupName] = profileName
+                        chrome.storage.sync.set(setting,function(){
+                            if(catchErr("renameProfile"))setError("数据过大,存储出错,请缩短数据。")
+                            promptContainer.style.display = "none"
+                            setAttributes(input,{value:"",placeholder:""})
+                            initialize()
+                        })
                     })
                 })
+                
             }
         })
     }
     //取消
     document.getElementById("promptCancelButton").onclick = function(){
-        input.value = ""
-        input.placeholder = ""
+        setAttributes(input,{value:"",placeholder:""})
         promptContainer.style.display = "none"
     }
     //enter键确认
@@ -135,56 +179,44 @@ function renameProfile(){
 }
 
 //更新sync和local
-function updateSyncAndLocal(key,value,callback=function(){}){//存在异步问题，故设置了回调函数
+function updateSyncAndLocal(key,value,callback=function(){}){//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
     let config = {}
     config[key] = value
-    chrome.storage.sync.set(config)
-    chrome.storage.local.get(function(settings){
-        const currentProfile = document.getElementById("profileNamesInput").value
-        settings[backupKey][currentProfile][key] = value
-        chrome.storage.local.set(settings,function(){
-            callback()
+    chrome.storage.sync.set(config,function(){
+        if(catchErr("updateSyncAndLocal"))setError("数据过大,存储出错,请缩短数据。")
+        chrome.storage.local.get(function(settings){
+            const currentProfile = document.getElementById("profileNamesInput").value
+            settings[backupKey][currentProfile][key] = value
+            chrome.storage.local.set(settings,function(){
+                if(catchErr("updateSyncAndLocal"))setError("数据过大,存储出错,请缩短数据。")
+                callback()
+            })
         })
     })
 }
 
-//更新已启用正则
-function updateCheckedRegexp(){
+//更新正则
+function updateRegexp(){
     const checkedRexpKey = "checkedRe"
+    const regexpKey = "re"
     let checkedRegexpValue = []
+    let regexpValue = []
     let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
     for(let i = 0,len = checkBoxCollection.length;i < len;i++){
-        if(checkBoxCollection[i].checked){
-            let parent = checkBoxCollection[i].parentNode.parentNode
-            let id = checkBoxCollection[i].id
-            let re = parent.getElementsByClassName("regexp")[0].value
-            let pre = parent.getElementsByClassName("regexp_pre")[0].value
-            let suf = parent.getElementsByClassName("regexp_suf")[0].value
-            if(re != ""){
-                checkedRegexpValue.push([id,re,pre,suf])
-            }
+        let parent = checkBoxCollection[i].parentNode.parentNode
+        let id = checkBoxCollection[i].id
+        let re = parent.getElementsByClassName("regexp")[0].value
+        let pre = parent.getElementsByClassName("regexp_pre")[0].value
+        let suf = parent.getElementsByClassName("regexp_suf")[0].value
+        let regexpData = [id,re,pre,suf]
+        regexpValue.push(regexpData)
+        if(checkBoxCollection[i].checked && re != ""){//获取已启用正则数据
+            checkedRegexpValue.push(regexpData)
         }
+        updateSyncAndLocal(regexpKey,regexpValue,function(){//更新全部正则
+            updateSyncAndLocal(checkedRexpKey,checkedRegexpValue)//更新已启用正则
+        })
     }
-    //更新sync和local
-    updateSyncAndLocal(checkedRexpKey,checkedRegexpValue)
-}
-
-//更新所有正则
-function updateRegexp(callback=function(){}){//短时间同时调用updateRegexp和updateCheckedRegexp会出现异步问题，故设置回调
-    const regexpKey = "re"
-    let regexpValue = []
-    let regexpContainers = document.getElementsByClassName("regexpContainer")
-    for(let i = 0,len = regexpContainers.length;i < len;i++){
-        let id = regexpContainers[i].getElementsByClassName("contextMenuEnabledInput")[0].id
-        let re = regexpContainers[i].getElementsByClassName("regexp")[0].value
-        let pre = regexpContainers[i].getElementsByClassName("regexp_pre")[0].value
-        let suf = regexpContainers[i].getElementsByClassName("regexp_suf")[0].value
-        regexpValue.push([id,re,pre,suf])
-    }
-    //更新sync和local
-    updateSyncAndLocal(regexpKey,regexpValue,function(){
-        callback()
-    })
 }
 
 //初始化一般选项
@@ -241,7 +273,9 @@ function initialize(){
             if(settings[backupKey][currentProfile] == undefined){//处理当前配置在local中不存在的情况
                 settings[backupKey][currentProfile] = setting
                 settings[backupKey][currentProfile][backupName] = undefined
-                chrome.storage.local.set(settings)
+                chrome.storage.local.set(settings,function(){
+                    if(catchErr("initialize"))setError("数据过大,存储出错,请缩短数据。")
+                })
             }
             let options = profileNamesInput.options
             for (let i=0; i<options.length; i++){
@@ -264,6 +298,7 @@ function initialize(){
                     if(setting == undefined)return
                     setting[backupName] = profileName
                     chrome.storage.sync.set(setting,function(){
+                        if(catchErr("initialize"))setError("数据过大,存储出错,请缩短数据。")
                         initialize()
                     })
                 })
@@ -284,16 +319,11 @@ function initialize(){
         for(let i=0,len=ids.length;i<len;i++){
             let id = ids[i]
             let element = document.getElementById(id)
-            if(inputIds.indexOf(id) > -1){//"标注、标题、想法、代码块"
-                element.value = setting[id]
-                element.oninput = function(){//因为onchange是在改变内容后失去焦点时触发，故改为oninput
-                    updateSyncAndLocal(this.id,this.value)
-                }
-            }else{
-                element.checked = setting[id]
-                element.onclick = function(){
-                    updateSyncAndLocal(this.id,this.checked)
-                }
+            let isInput = inputIds.indexOf(id) > -1
+            isInput ? element.value = setting[id] : element.checked = setting[id]
+            element.onchange = function(){
+                let value = isInput ? this.value : this.checked
+                updateSyncAndLocal(this.id,value)
             }
         }
         /************************************************************************************/
@@ -302,7 +332,7 @@ function initialize(){
         let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
         //checkbox checked 初始化
         for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
-            checkBoxCollection[i].checked = false
+            checkBoxCollection[i].checked = false//先确保取消选中
             for(let j = 0,len2 = checkedRe.length;j < len2;j++){
                 if(checkedRe[j][0] == checkBoxCollection[i].id){
                     checkBoxCollection[i].checked = true
@@ -315,7 +345,7 @@ function initialize(){
             checkBoxCollection[i].onclick = function(){
                 let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
                 if(regexpInput.value != ""){
-                    updateCheckedRegexp()
+                    updateRegexp()
                 }else{
                     regexpInput.placeholder = "请输入正则表达式"
                     this.checked = false
@@ -337,12 +367,18 @@ function initialize(){
         for(let i=0,len1=classNameArray.length;i<len1;i++){
             let collection = document.getElementsByClassName(classNameArray[i])
             for(let j=0,len2=collection.length;j<len2;j++){
-                collection[j].oninput = function(){
-                    updateRegexp(function(){
-                        updateCheckedRegexp()
-                    })
+                collection[j].onchange = function(){
+                    updateRegexp()
                 }
             }
         }
     })
+}
+
+//处理直接关闭网页不触发onchange事件的问题
+window.onbeforeunload = function(){
+    let element = document.activeElement
+    if(element.nodeName.toLocaleLowerCase() == "input" || element.nodeName.toLocaleLowerCase() == "textarea"){
+        element.onchange()
+    }
 }
