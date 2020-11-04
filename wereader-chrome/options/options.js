@@ -26,21 +26,6 @@ function setAttributes(element,attributes){
 	}
 }
 
-//存储出错通知
-function setError(text){
-    let confirmContainer = document.getElementById("confirmContainer")
-    let confirmLabel = document.getElementById("confirmLabel")
-    confirmLabel.textContent = text
-    function hide(){
-        confirmLabel.textContent = ""
-        confirmContainer.style.display = "none"
-    }
-    document.getElementById("confirmButton").onclick = hide
-    //取消
-    document.getElementById("cancelButton").onclick = hide
-    confirmContainer.style.display = "block"
-}
-
 // 新建设置
 function addProfile(){
     chrome.storage.local.get(function(settings){
@@ -59,18 +44,12 @@ function addProfile(){
                 chrome.storage.sync.get(function(setting) {
                     settings[backupKey][profileName] = setting
                     settings[backupKey][profileName][backupName] = undefined
-                    chrome.storage.local.set(settings,function(){
-                        if(catchErr("addProfile"))setError("数据过大,存储出错,请缩短数据。")
-                        //设置sync backupName后初始化页面
-                        setting[backupName] = profileName
-                        chrome.storage.sync.set(setting,function(){
-                            if(catchErr("addProfile"))setError("数据过大,存储出错,请缩短数据。")
-                            promptContainer.style.display = "none"
-                            setAttributes(input,{value:"",placeholder:""})
-                            initialize()
-                        })
+                    setting[backupName] = profileName
+                    updateStorageArea({setting:setting,settings:settings},function(){
+                        promptContainer.style.display = "none"
+                        setAttributes(input,{value:"",placeholder:""})
+                        initialize()
                     })
-                    
                 })
             }
         }
@@ -102,19 +81,12 @@ function deleteProfile(){
             let currentSelect = document.getElementById("profileNamesInput").value
             if(currentSelect == defaultBackupName)return
             delete settings[backupKey][currentSelect]
-            chrome.storage.local.set(settings,function(){
-                if(catchErr("deleteProfile"))setError("数据过大,存储出错,请缩短数据。")
-                //设置sync为默认
-                chrome.storage.sync.get(function(setting){
-                    setting = settings[backupKey][defaultBackupName]
-                    setting[backupName] = defaultBackupName
-                    chrome.storage.sync.set(setting,function(){
-                        if(catchErr("deleteProfile"))setError("数据过大,存储出错,请缩短数据。")
-                        confirmLabel.textContent = ""
-                        confirmContainer.style.display = "none"
-                        initialize()
-                    })
-                })
+            let setting = settings[backupKey][defaultBackupName]//设置sync为默认
+            setting[backupName] = defaultBackupName
+            updateStorageArea({setting:setting,settings:settings},function(){
+                confirmLabel.textContent = ""
+                confirmContainer.style.display = "none"
+                initialize()
             })
         })
     }
@@ -145,21 +117,13 @@ function renameProfile(){
                 let profileName = input.value
                 delete settings[backupKey][currentSelect]
                 settings[backupKey][profileName] = profile
-                chrome.storage.local.set(settings,function(){
-                    if(catchErr("renameProfile"))setError("数据过大,存储出错,请缩短数据。")
-                    //设置sync后初始化页面
-                    chrome.storage.sync.get(function(setting){
-                        setting = profile
-                        setting[backupName] = profileName
-                        chrome.storage.sync.set(setting,function(){
-                            if(catchErr("renameProfile"))setError("数据过大,存储出错,请缩短数据。")
-                            promptContainer.style.display = "none"
-                            setAttributes(input,{value:"",placeholder:""})
-                            initialize()
-                        })
-                    })
+                let setting = profile
+                setting[backupName] = profileName
+                updateStorageArea({setting:setting,settings:settings},function(){
+                    promptContainer.style.display = "none"
+                    setAttributes(input,{value:"",placeholder:""})
+                    initialize()
                 })
-                
             }
         })
     }
@@ -179,20 +143,33 @@ function renameProfile(){
 }
 
 //更新sync和local
-function updateSyncAndLocal(key,value,callback=function(){}){//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-    let config = {}
-    config[key] = value
-    chrome.storage.sync.set(config,function(){
-        if(catchErr("updateSyncAndLocal"))setError("数据过大,存储出错,请缩短数据。")
-        chrome.storage.local.get(function(settings){
-            const currentProfile = document.getElementById("profileNamesInput").value
-            settings[backupKey][currentProfile][key] = value
-            chrome.storage.local.set(settings,function(){
-                if(catchErr("updateSyncAndLocal"))setError("数据过大,存储出错,请缩短数据。")
+function updateStorageArea(configMsg={},callback=function(){}){
+    //存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
+    if(configMsg.setting && configMsg.settings){
+        chrome.storage.sync.set(configMsg.setting,function(){
+            if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+            chrome.storage.local.set(configMsg.settings,function(){
+                if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
                 callback()
+            })  
+        })
+    }else if(configMsg.key && configMsg.value){
+        let config = {}
+        let key = configMsg.key
+        let value = configMsg.value
+        config[key] = value
+        chrome.storage.sync.set(config,function(){
+            if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+            chrome.storage.local.get(function(settings){
+                const currentProfile = document.getElementById("profileNamesInput").value
+                settings[backupKey][currentProfile][key] = (key == backupName) ? undefined : value
+                chrome.storage.local.set(settings,function(){
+                    if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+                    callback()
+                })
             })
         })
-    })
+    }
 }
 
 //更新正则
@@ -213,8 +190,8 @@ function updateRegexp(){
         if(checkBoxCollection[i].checked && re != ""){//获取已启用正则数据
             checkedRegexpValue.push(regexpData)
         }
-        updateSyncAndLocal(regexpKey,regexpValue,function(){//更新全部正则
-            updateSyncAndLocal(checkedRexpKey,checkedRegexpValue)//更新已启用正则
+        updateStorageArea({key:regexpKey,value:regexpValue},function(){//更新全部正则
+            updateStorageArea({key:checkedRexpKey,value:regexpValue})//更新已启用正则
         })
     }
 }
@@ -274,7 +251,7 @@ function initialize(){
                 settings[backupKey][currentProfile] = setting
                 settings[backupKey][currentProfile][backupName] = undefined
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("initialize"))setError("数据过大,存储出错,请缩短数据。")
+                    if(catchErr("initialize"))alert("数据过大,存储出错,请缩短数据")
                 })
             }
             let options = profileNamesInput.options
@@ -298,7 +275,7 @@ function initialize(){
                     if(setting == undefined)return
                     setting[backupName] = profileName
                     chrome.storage.sync.set(setting,function(){
-                        if(catchErr("initialize"))setError("数据过大,存储出错,请缩短数据。")
+                        if(catchErr("initialize"))alert("数据过大,存储出错,请缩短数据")
                         initialize()
                     })
                 })
@@ -322,8 +299,9 @@ function initialize(){
             let isInput = inputIds.indexOf(id) > -1
             isInput ? element.value = setting[id] : element.checked = setting[id]
             element.onchange = function(){
+                let key = this.id
                 let value = isInput ? this.value : this.checked
-                updateSyncAndLocal(this.id,value)
+                updateStorageArea({key:key,value:value})
             }
         }
         /************************************************************************************/
