@@ -1,7 +1,7 @@
 #parentElement{
     position: fixed;
     top: 100px;
-    left: 6px;
+    left: -200px;
     transition: left .8s;
     line-height: 1.5;
     font-size: 14px;
@@ -32,6 +32,10 @@ li {
     white-space: nowrap;
 }
 
+.category:hover {
+    background-color:rgb(227,227,227);
+}
+
 .bookLink {
     width: 100%;
     height: 100%;
@@ -39,6 +43,10 @@ li {
     display: inline-table;
     border-radius: 4px;
     user-select: none;
+}
+
+.bookLink:hover {
+    background-color: rgb(227,227,227);
 }
 
 #hoverElement {
