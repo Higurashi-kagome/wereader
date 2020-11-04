@@ -53,19 +53,8 @@ function addProfile(){
                 })
             }
         }
-        //"取消"
-        document.getElementById("promptCancelButton").onclick = function(){
-            setAttributes(input,{value:"",placeholder:""})
-            promptContainer.style.display = "none"
-        }
-        //enter键确认
-        input.onkeyup = event => {
-            if (event.code == "Enter") {
-                document.getElementById("promptConfirmButton").click()
-                return false
-            }
-        }
         promptContainer.style.display = "block"
+        input.focus()
     })
 }
 
@@ -127,19 +116,8 @@ function renameProfile(){
             }
         })
     }
-    //取消
-    document.getElementById("promptCancelButton").onclick = function(){
-        setAttributes(input,{value:"",placeholder:""})
-        promptContainer.style.display = "none"
-    }
-    //enter键确认
-    input.onkeyup = event => {
-        if (event.code == "Enter") {
-            document.getElementById("promptConfirmButton").click()
-            return false
-        }
-    }
     promptContainer.style.display = "block"
+    input.focus()
 }
 
 //更新sync和local
@@ -216,6 +194,20 @@ function initializeBasic(){
 			expandAllButton.className = "opened"
 		}
 		document.querySelectorAll("details").forEach(detailElement => detailElement.open = Boolean(expandAllButton.className))
+    }
+    /* prompt 弹窗初始化 */
+    let input = document.getElementById("promptInput")
+    //prompt 取消
+    document.getElementById("promptCancelButton").onclick = function(){
+        setAttributes(input,{value:"",placeholder:""})
+        document.getElementById("promptContainer").style.display = "none"
+    }
+    //prompt 回车确定
+    input.onkeyup = event => {
+        if (event.code == "Enter") {
+            document.getElementById("promptConfirmButton").click()
+            return false
+        }
     }
 }
 

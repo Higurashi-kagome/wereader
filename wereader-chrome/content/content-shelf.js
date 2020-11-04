@@ -85,40 +85,20 @@ chrome.runtime.onMessage.addListener(function(data){
 		for(let i=0,len1=categorySorter.length;i<len1;i++){
 			let key = categorySorter[i]["categoryName"]
 			let categoryElement = document.createElement('ol')//书架类别
-			categoryElement.textContent = key
-			categoryElement.className = "category"
-			categoryElement.onmouseenter = function () {
-				//设置其背景颜色
-				this.style.backgroundColor = "rgb(227,227,227)"
-			}
-			categoryElement.onmouseleave = function () {
-				//恢复到这个标签默认的颜色
-				this.style.backgroundColor = ""
-			}
+			setAttributes(categoryElement,{textContent:key,className:"category"})
 			let categoryObjList = shelf[key]
 			if(categoryObjList.length == 0)continue
 			//遍历书本
 			let booksContainer = document.createElement("ul")//章内书本容器
 			setAttributes(booksContainer,{style:{display:"none",marginLeft:"15px"}})
-			//booksContainer.style.display = "none"
-			//booksContainer.style.marginLeft = "15px"
 			for(let j=0,len2=categoryObjList.length;j<len2;j++){
 				let splitedCover = categoryObjList[j].cover.split("/")
 				let bookId = splitedCover[5] ? splitedCover[5] : splitedCover[4]
 				if(books_bookId_href[bookId]){
 					let bookLink = document.createElement('a')
-					let attributes = {target:"_blanck",className:"bookLink"}
-					attributes.textContent = categoryObjList[j].title
-					attributes.href = books_bookId_href[bookId]
+					let attributes = {target:"_blanck",className:"bookLink",
+					textContent:categoryObjList[j].title,href:books_bookId_href[bookId]}
 					setAttributes(bookLink,attributes)
-					bookLink.onmouseenter = function () {
-						//设置其背景颜色
-						this.style.backgroundColor = "rgb(227,227,227)"
-					}
-					bookLink.onmouseleave = function () {
-						//恢复到这个标签默认的颜色
-						this.style.backgroundColor = ""
-					}
 					let li = document.createElement("li")
 					li.appendChild(bookLink)
 					booksContainer.appendChild(li)
@@ -133,7 +113,7 @@ chrome.runtime.onMessage.addListener(function(data){
 		//侧边部分
 		var hoverElement = document.createElement("div")
 		setAttributes(hoverElement,{id:"hoverElement",textContent:"书架"})
-		var count = 1
+		var count = -1
 		hoverElement.onclick = function(){
 			parentElement.style.left = (count == 1) ? "-200px" : "6px"
 		  	count = count*(-1)

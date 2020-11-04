@@ -1,9 +1,21 @@
-/*用于当检测到读书页中存在代码块时，提示不要在网页中对代码块进行标注*/
+/*通知为导入书籍或读书页中存在代码块时的注意点*/
 
-//console.log("content-pre.js：被注入")
-var interval1 = setInterval(() => {
+//console.log("content-notice.js：被注入")
+var interval_notice = setInterval(() => {
     //如果页面不再显示正在加载（确保页面加载完毕）
     if (document.getElementsByClassName("readerChapterContentLoading").length == 0) {
+        /* 不直接在inject-bid.js中通知是因为inject-bid.js在导入书籍页会分别在两个时间点被注入，最终导致通知两次 */
+        //为导入书籍
+		let list = document.getElementsByClassName("wr_bookCover_img").item(0).src.split("/")
+		let bid = list[list.length - 2]
+		if(bid == "wrepub"){
+			Swal.fire({
+				title:"导入书籍", 
+				html:"<p align=left>检测到该书为导入书籍，如无法正常导出内容，请刷新页面后重试~</p>",
+				confirmButtonText: 'OK'
+			})
+        }
+        //含代码块
         if(document.getElementsByTagName("pre").length > 0){
             Swal.fire({
                 title:"代码块", 
@@ -12,6 +24,6 @@ var interval1 = setInterval(() => {
             })
         }
         //结束定时器
-        clearInterval(interval1)
+        clearInterval(interval_notice)
     }
 },2000)

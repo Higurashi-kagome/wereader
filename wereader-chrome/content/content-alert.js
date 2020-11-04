@@ -1,6 +1,6 @@
 /*用于借助于 sweetalert2 来生成通知*/
 
-//console.log("content-notification.js：被注入")
+//console.log("content-alert.js：被注入")
 chrome.runtime.onMessage.addListener(function(msg){
     if(msg.isAlertMsg){
         if(msg.alertMsg.icon == 'success' || msg.alertMsg.icon == 'warning'){//复制成功的消息

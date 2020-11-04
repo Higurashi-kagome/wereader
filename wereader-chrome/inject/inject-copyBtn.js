@@ -27,8 +27,6 @@ function addCopyBtn1(){
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"
         var top = imgs[i].style.top
         var btn =  document.createElement("a" + i);
-        //btn.textContent = "📋";
-        btn.id = "linkCopy" + i
         //判断是否为style.left == "0px"的小图
         if(imgs[i].style.left == "0px"){
             btn.style.left = "0px"
@@ -37,7 +35,7 @@ function addCopyBtn1(){
             btn.style.right = "0px"
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 20 + "px"
         }
-        setAttributes(btn,{textContent:"📋",className:"wr_absolute wr_readerImage_opacity",style:{zIndex:4,width:"16px",cursor:"pointer"}})
+        setAttributes(btn,{id:"linkCopy" + i,textContent:"📋",className:"wr_absolute wr_readerImage_opacity",style:{zIndex:4,width:"16px",cursor:"pointer"}})
         var parent = imgs[i].parentNode
         var inser = parent.insertBefore(btn,imgs[i]);
         inser.addEventListener('click', function(){
@@ -59,8 +57,7 @@ function addCopyBtn2(){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
-        setAttributes(btn,{textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"}})
-        btn.id = "noteCopy" + i
+        setAttributes(btn,{id:"noteCopy" + i,textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"}})
         btn.addEventListener('click', function(){
             sendMsgToBg(footernote)
             this.textContent = "✔"
@@ -95,8 +92,7 @@ function addCopyBtn3(){
             let _code = pre[i].innerHTML
             let top = pre[i].style.top
             let btn =  document.createElement("b" + i);
-            btn.id = "codeCopy" + i
-            setAttributes(btn,{textContent:"📋",className:"wr_absolute",style:{cssText:"right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"}})
+            setAttributes(btn,{id:"codeCopy" + i,textContent:"📋",className:"wr_absolute",style:{cssText:"right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"}})
             btn.style.top = parseInt(top.substr(0, top.length - 2)) - 32 + "px"
             let inser = pre[i].parentNode.insertBefore(btn,pre[i]);
             inser.addEventListener('click', function(){
