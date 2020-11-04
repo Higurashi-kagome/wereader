@@ -12,6 +12,9 @@ var rank = function (x, y) {
 function catchErr(sender) {
 	if (chrome.runtime.lastError) {
 		console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
+		return true
+	}else{
+		return false
 	}
 }
 
@@ -55,7 +58,9 @@ function settingInitialize() {
 			}
 		}
 		//存储初始化设置
-		chrome.storage.sync.set(setting)
+		chrome.storage.sync.set(setting,function(){
+			if(catchErr("settingInitialize"))alert("存储出错")
+		})
 		/* 检查本地storage */
 		const backupKey = "backup"
 		chrome.storage.local.get([backupKey], function(localSetting) {
@@ -67,7 +72,9 @@ function settingInitialize() {
 			}else if(localSetting[backupKey][defaultBackupName] == undefined){//无默认备份
 				localSetting[backupKey][defaultBackupName] = setting
 			}
-			chrome.storage.local.set(localSetting)
+			chrome.storage.local.set(localSetting,function(){
+				if(catchErr("settingInitialize"))alert("存储出错")
+			})
 		})
 	})
 }
