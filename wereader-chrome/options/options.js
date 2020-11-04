@@ -168,10 +168,10 @@ function updateRegexp(){
         if(checkBoxCollection[i].checked && re != ""){//获取已启用正则数据
             checkedRegexpValue.push(regexpData)
         }
-        updateStorageArea({key:regexpKey,value:regexpValue},function(){//更新全部正则
-            updateStorageArea({key:checkedRexpKey,value:regexpValue})//更新已启用正则
-        })
     }
+    updateStorageArea({key:regexpKey,value:regexpValue},function(){//更新全部正则
+        updateStorageArea({key:checkedRexpKey,value:checkedRegexpValue})//更新已启用正则
+    })
 }
 
 //初始化一般选项
@@ -298,14 +298,19 @@ function initialize(){
         }
         /************************************************************************************/
         /* 正则匹配初始化 */
-        const checkedRe = setting.checkedRe
+        const checkedReCollection = setting.checkedRe
         let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-        //checkbox checked 初始化
+        //已开启正则初始化
         for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
             checkBoxCollection[i].checked = false//先确保取消选中
-            for(let j = 0,len2 = checkedRe.length;j < len2;j++){
-                if(checkedRe[j][0] == checkBoxCollection[i].id){
+            for(let j = 0,len2 = checkedReCollection.length;j < len2;j++){
+                if(checkedReCollection[j][0] == checkBoxCollection[i].id){
                     checkBoxCollection[i].checked = true
+                    let parent = checkBoxCollection[i].parentNode.parentNode
+                    let regexpInput = parent.getElementsByClassName("regexp")[0]
+                    setAttributes(regexpInput,{placeholder:"",value:checkedReCollection[j][1]})
+                    parent.getElementsByClassName("regexp_pre")[0].value = checkedReCollection[j][2]
+                    parent.getElementsByClassName("regexp_suf")[0].value = checkedReCollection[j][3]
                     break
                 }
             }
@@ -314,9 +319,8 @@ function initialize(){
         for(let i = 0,len = checkBoxCollection.length;i < len;i++){
             checkBoxCollection[i].onclick = function(){
                 let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
-                if(regexpInput.value != ""){
-                    updateRegexp()
-                }else{
+                updateRegexp()//不检查regexpInput.value是否为空，将其留在updateRegexp中检查
+                if(regexpInput.value == "" && this.checked){//检查this.checked使得取消选中的动作中不会触发
                     regexpInput.placeholder = "请输入正则表达式"
                     this.checked = false
                 }
@@ -324,11 +328,19 @@ function initialize(){
         }
         //正则表达式 input、textarea 内容初始化
         let regexpContainers = document.getElementsByClassName("regexpContainer")
-        let reCollection = setting.re
-        for(let i = 0,len = reCollection.length;i<len;i++){
+        const reCollection = setting.re
+        for(let i = 0,len1 = reCollection.length;i<len1;i++){
+            //检查是否属于已开启正则
+            let checked = false
+            for(let j = 0,len2 = checkBoxCollection.length;j < len2;j++){
+                if(reCollection[i][0] == checkBoxCollection[j][0]){
+                    checked = true
+                    break
+                }
+            }
+            if(checked)continue//是则不再进行赋值
             let regexpInput = regexpContainers[i].getElementsByClassName("regexp")[0]
-            regexpInput.placeholder = ""
-            regexpInput.value = reCollection[i][1]
+            setAttributes(regexpInput,{placeholder:"",value:reCollection[i][1]})
             regexpContainers[i].getElementsByClassName("regexp_pre")[0].value = reCollection[i][2]
             regexpContainers[i].getElementsByClassName("regexp_suf")[0].value = reCollection[i][3]
         }
@@ -348,7 +360,7 @@ function initialize(){
 //处理直接关闭网页不触发onchange事件的问题
 window.onbeforeunload = function(){
     let element = document.activeElement
-    if(element.nodeName.toLocaleLowerCase() == "input" || element.nodeName.toLocaleLowerCase() == "textarea"){
-        element.onchange()
+    if(element.nodeName == "INPUT" || element.nodeName == "TEXTAREA"){
+        if(element.onchange)element.onchange()
     }
 }
