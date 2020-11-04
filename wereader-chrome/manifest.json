@@ -31,19 +31,19 @@
 			"run_at": "document_start"
       },
       {
-			"matches": ["*://weread.qq.com/web/shelf"],
-         "js": ["content/content-shelf.js"],
+         "matches": ["*://weread.qq.com/web/shelf"],
          "css": ["content/content-shelf.css"],
+         "js": ["content/content-shelf.js"],
 			"run_at": "document_idle"
       },
       {
 			"matches": ["*://weread.qq.com/web/reader/*"],
-			"js": ["content/content-pre.js","content/content-bookType.js"],
+			"js": ["content/content-notice.js"],
 			"run_at": "document_end"
       },
       {
 			"matches": ["*://weread.qq.com/web/reader/*"],
-         "js": ["content/content-notification.js","content/sweetalert2.min.js"],
+         "js": ["content/content-alert.js","content/sweetalert2.min.js"],
          "css": ["content/sweetalert2.min.css"],
 			"run_at": "document_idle"
       }
