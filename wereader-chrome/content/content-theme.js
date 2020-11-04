@@ -69,7 +69,9 @@ function addThemeBtn(){
             }
         }
         //保存当前主题对应编号
-        chrome.storage.sync.set({flag: Flag})
+        chrome.storage.sync.set({flag: Flag},function(){
+            if(chrome.runtime.lastError)alert("存储出错")
+        })
     }
 
     //绑定点击事件
