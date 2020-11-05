@@ -31,7 +31,8 @@ function getConfig(){
 
 //alert()——用于测试
 function aler(text){
-	alert(text)
+	//alert(text)
+	console.log(text)
 }
 
 //存储 / 初始化设置

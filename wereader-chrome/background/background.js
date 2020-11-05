@@ -359,6 +359,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			//设置当前所在目录
 			document.getElementById("currentContent").innerHTML = message.currentContent
 			break
+		case "aler":
+			aler(message.message)
+			break
 	}
 })
 
