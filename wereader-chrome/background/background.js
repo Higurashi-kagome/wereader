@@ -362,7 +362,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "aler"://用于调试
 			aler(message.message)
 			break
-		case "setoptions"://保存直接关闭设置页时onchange未保存的信息
+		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
 			updateStorageArea(message.regexpSet.allRegexp,function(){//更新全部正则
 				updateStorageArea(message.regexpSet.checkedRegexp)//更新已启用正则
 			})

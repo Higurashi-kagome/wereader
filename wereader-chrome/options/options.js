@@ -125,9 +125,9 @@ function updateStorageArea(configMsg={},callback=function(){}){
     //存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
     if(configMsg.setting && configMsg.settings){
         chrome.storage.sync.set(configMsg.setting,function(){
-            if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+            if(catchErr("updateSyncAndLocal"))alert("存储出错")
             chrome.storage.local.set(configMsg.settings,function(){
-                if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+                if(catchErr("updateSyncAndLocal"))alert("存储出错")
                 callback()
             })  
         })
@@ -137,12 +137,12 @@ function updateStorageArea(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+            if(catchErr("updateSyncAndLocal"))alert("存储出错")
             chrome.storage.local.get(function(settings){
                 const currentProfile = document.getElementById("profileNamesInput").value
                 settings[backupKey][currentProfile][key] = (key == backupName) ? undefined : value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+                    if(catchErr("updateSyncAndLocal"))alert("存储出错")
                     callback()
                 })
             })
@@ -249,7 +249,7 @@ function initialize(){
                 settings[backupKey][currentProfile] = setting
                 settings[backupKey][currentProfile][backupName] = undefined
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("initialize"))alert("数据过大,存储出错,请缩短数据")
+                    if(catchErr("initialize"))alert("存储出错")
                 })
             }
             let options = profileNamesInput.options
@@ -273,7 +273,7 @@ function initialize(){
                     if(setting == undefined)return
                     setting[backupName] = profileName
                     chrome.storage.sync.set(setting,function(){
-                        if(catchErr("initialize"))alert("数据过大,存储出错,请缩短数据")
+                        if(catchErr("initialize"))alert("存储出错")
                         initialize()
                     })
                 })
@@ -322,7 +322,9 @@ function initialize(){
         for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
             checkBoxCollection[i].checked = false//先确保取消选中
             for(let j = 0,len2 = checkedReCollection.length;j < len2;j++){
-                if(checkedReCollection[j][0] == checkBoxCollection[i].id){
+                let checkedId = checkedReCollection[j][0]
+                let checkboxId = checkBoxCollection[i].id
+                if(checkedId.substr(checkedId.length-1,1) == checkboxId.substr(checkboxId.length-1,1)){//因为需要更改id而这样写
                     checkBoxCollection[i].checked = true
                     let parent = checkBoxCollection[i].parentNode.parentNode
                     setRegexpValue(parent,checkedReCollection[j])
@@ -355,9 +357,12 @@ function initialize(){
 }
 
 window.onbeforeunload = function(){//处理直接关闭设置页时onchange不生效的情况
-    const regexpSet = getRegexpSet()
-    const currentProfile = document.getElementById("profileNamesInput").value
-    regexpSet.allRegexp.currentProfile = currentProfile
-    regexpSet.checkedRegexp.currentProfile = currentProfile
-    chrome.runtime.sendMessage({type:"setoptions",regexpSet:regexpSet})
+    let activeElement = document.activeElement
+    if(activeElement.nodeName == "INPUT" || activeElement.nodeName == "TEXTAREA"){
+        const regexpSet = getRegexpSet()
+        const currentProfile = document.getElementById("profileNamesInput").value
+        regexpSet.allRegexp.currentProfile = currentProfile
+        regexpSet.checkedRegexp.currentProfile = currentProfile
+        chrome.runtime.sendMessage({type:"saveRegexpOptions",regexpSet:regexpSet})
+    }
 }
