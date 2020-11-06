@@ -29,12 +29,12 @@ function updateStorageArea(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("bg.updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+            if(catchErr("bg.updateSyncAndLocal"))alert("存储出错")
             chrome.storage.local.get(function(settings){
                 const currentProfile = configMsg.currentProfile
                 settings[backupKey][currentProfile][key] = (key == backupName) ? undefined : value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("bg.updateSyncAndLocal"))alert("数据过大,存储出错,请缩短数据")
+                    if(catchErr("bg.updateSyncAndLocal"))alert("存储出错")
                     callback()
                 })
             })
