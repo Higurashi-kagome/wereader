@@ -4,9 +4,6 @@ const backupName = "backupName"
 const defaultBackupName = "默认设置"
 //初始化设置页
 initialize()
-setTimeout(function(){
-    alert("在离开设置页前，请点击空白处以确保更改被正常保存~")
-},500)
 
 //报错捕捉函数
 function catchErr(sender) {
@@ -153,8 +150,8 @@ function updateStorageArea(configMsg={},callback=function(){}){
     }
 }
 
-//更新正则
-function updateRegexp(){
+//从页面获取正则设置
+function getRegexpSet(){
     const checkedRexpKey = "checkedRe"
     const regexpKey = "re"
     let checkedRegexpValue = []
@@ -172,8 +169,14 @@ function updateRegexp(){
             checkedRegexpValue.push(regexpData)
         }
     }
-    updateStorageArea({key:regexpKey,value:regexpValue},function(){//更新全部正则
-        updateStorageArea({key:checkedRexpKey,value:checkedRegexpValue})//更新已启用正则
+    return {allRegexp:{key:regexpKey,value:regexpValue},checkedRegexp:{key:checkedRexpKey,value:checkedRegexpValue}}
+}
+
+//更新正则
+function updateRegexp(){
+    const regexpSet = getRegexpSet()
+    updateStorageArea(regexpSet.allRegexp,function(){//更新全部正则
+        updateStorageArea(regexpSet.checkedRegexp)//更新已启用正则
     })
 }
 
@@ -307,16 +310,20 @@ function initialize(){
             parent.getElementsByClassName("regexp_pre")[0].value = reMsg[2]
             parent.getElementsByClassName("regexp_suf")[0].value = reMsg[3]
         }
+        //正则表达式 input、textarea 内容初始化
+        let regexpContainers = document.getElementsByClassName("regexpContainer")
+        const reCollection = setting.re
+        for(let i = 0,len1 = reCollection.length;i<len1;i++){
+            setRegexpValue(regexpContainers[i],reCollection[i])
+        }
         const checkedReCollection = setting.checkedRe
         let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-        let regexpCheckBoxIds = []//保存已选中正则id
         //已开启正则初始化
         for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
             checkBoxCollection[i].checked = false//先确保取消选中
             for(let j = 0,len2 = checkedReCollection.length;j < len2;j++){
                 if(checkedReCollection[j][0] == checkBoxCollection[i].id){
                     checkBoxCollection[i].checked = true
-                    regexpCheckBoxIds.push(checkedReCollection[j][0])
                     let parent = checkBoxCollection[i].parentNode.parentNode
                     setRegexpValue(parent,checkedReCollection[j])
                     break
@@ -334,14 +341,6 @@ function initialize(){
                 }
             }
         }
-        //正则表达式 input、textarea 内容初始化
-        let regexpContainers = document.getElementsByClassName("regexpContainer")
-        const reCollection = setting.re
-        for(let i = 0,len1 = reCollection.length;i<len1;i++){
-            //检查是否属于已开启正则
-            if(regexpCheckBoxIds.indexOf(reCollection[i][0]) > -1)continue
-            setRegexpValue(regexpContainers[i],reCollection[i])
-        }
         //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
         const classNameArray = ["regexp","regexp_pre","regexp_suf"]
         for(let i=0,len1=classNameArray.length;i<len1;i++){
@@ -353,4 +352,12 @@ function initialize(){
             }
         }
     })
+}
+
+window.onbeforeunload = function(){//处理直接关闭设置页时onchange不生效的情况
+    const regexpSet = getRegexpSet()
+    const currentProfile = document.getElementById("profileNamesInput").value
+    regexpSet.allRegexp.currentProfile = currentProfile
+    regexpSet.checkedRegexp.currentProfile = currentProfile
+    chrome.runtime.sendMessage({type:"setoptions",regexpSet:regexpSet})
 }
