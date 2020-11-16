@@ -21,7 +21,6 @@ function catchErr(sender) {
 //更新sync和local——处理设置页onchange不生效的问题
 function updateStorageArea(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	const backupKey = "backup"
 	const backupName = "backupName"
 	if(configMsg.key && configMsg.value){
         let config = {}
@@ -29,12 +28,12 @@ function updateStorageArea(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("bg.updateSyncAndLocal"))alert("存储出错")
+            if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
             chrome.storage.local.get(function(settings){
                 const currentProfile = configMsg.currentProfile
-                settings[backupKey][currentProfile][key] = (key == backupName) ? undefined : value
+                settings[background_backupKey][currentProfile][key] = (key == backupName) ? undefined : value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("bg.updateSyncAndLocal"))alert("存储出错")
+                    if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
                     callback()
                 })
             })
@@ -44,13 +43,7 @@ function updateStorageArea(configMsg={},callback=function(){}){
 
 //获取当前背景页配置——用于测试
 function getConfig(){
-	var keys = []
-	var items = {}
-	for(var i=0,len=keys.length;i<len;i++){
-		var key = keys[i]
-		items[key] = document.getElementById(key).value
-	}
-	return items
+	return Config
 }
 
 //alert()——用于测试
@@ -62,43 +55,29 @@ function aler(text){
 //存储 / 初始化设置
 function settingInitialize() {
 	chrome.storage.sync.get(function (setting) {
-		/* 检查可从背景页获取到的设置 */
-		var basicKeys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
-		for(var i=0,len=basicKeys.length;i<len;i++){
-			let key = basicKeys[i]
-			if(setting[key] == undefined){
-				setting[key] = document.getElementById(key).value
-			}
-		}
-		//同步设置到背景页
-		for(var i=0,len=basicKeys.length;i<len;i++){
-			document.getElementById(basicKeys[i]).innerHTML = setting[basicKeys[i]]
-		}
 		/* 检查默认选项 */
-		var defaultConfig = {checkedRe:[],codePre:"```",codeSuf:"```",displayN:false,addThoughts:false,escape:false,backupName:"默认设置",re:[]}
-		for(var key in defaultConfig){
+		for(let key in Config){
 			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
-				setting[key] = defaultConfig[key]
+				setting[key] = Config[key]
 			}
 		}
-		//存储初始化设置
+		//存储到 sync
 		chrome.storage.sync.set(setting,function(){
-			if(catchErr("settingInitialize"))alert("存储出错")
+			if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
 		})
-		/* 检查本地storage */
-		const backupKey = "backup"
-		chrome.storage.local.get([backupKey], function(localSetting) {
+		/* 检查本地 storage */
+		chrome.storage.local.get([background_backupKey], function(localSetting) {
 			const defaultBackupName = "默认设置"
 			setting.backupName = undefined
-			if(localSetting[backupKey] == undefined){//无备份
-				localSetting[backupKey] = {}
-				localSetting[backupKey][defaultBackupName] = setting
-			}else if(localSetting[backupKey][defaultBackupName] == undefined){//无默认备份
-				localSetting[backupKey][defaultBackupName] = setting
+			if(localSetting[background_backupKey] == undefined){//无备份
+				localSetting[background_backupKey] = {}
+				localSetting[background_backupKey][defaultBackupName] = setting
+			}else if(localSetting[background_backupKey][defaultBackupName] == undefined){//无默认备份
+				localSetting[background_backupKey][defaultBackupName] = setting
 			}
 			chrome.storage.local.set(localSetting,function(){
-				if(catchErr("settingInitialize"))alert("存储出错")
+				if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
 			})
 		})
 	})
@@ -106,7 +85,7 @@ function settingInitialize() {
 
 //获取bid，popup.js调用
 function getbookId() {
-	return document.getElementById('bookId').value;
+	return background_bookId
 }
 
 //发送消息到content.js
@@ -170,16 +149,16 @@ function getData(url, callback) {
 //获取添加级别的标题
 function getTitleAddedPre(title, level) {
 	//添加4 5 6级是为了处理特别的书（如导入的书籍）获取数据
-	var lev3 = document.getElementById("lev3")
-	var leave = 6 - (lev3.value.split("#").length - 1)
+	var lev3 = Config["lev3"]
+	var leave = 6 - (lev3.split("#").length - 1)
 	var chars = new Array(leave).join("#")
-	return (level == 1) ? (document.getElementById("lev1").value + title)
-		: (level == 2) ? (document.getElementById("lev2").value + title)
-		: (level == 3) ? (lev3.value + title)
-		: (level == 4) ? (("#".length <= level ? "#" : chars) + lev3.value + title)
-		: (level == 5) ? (("##".length <= level ? "##" : chars) + lev3.value + title)
-		: (level == 6) ? (("###".length <= level ? "###" : chars) + lev3.value + title)
-		: (("###".length <= level ? "###" : chars) + lev3.value + title)
+	return (level == 1) ? (Config["lev1"] + title)
+		: (level == 2) ? (Config["lev2"] + title)
+		: (level == 3) ? (lev3 + title)
+		: (level == 4) ? (("#".length <= level ? "#" : chars) + lev3 + title)
+		: (level == 5) ? (("##".length <= level ? "##" : chars) + lev3 + title)
+		: (level == 6) ? (("###".length <= level ? "###" : chars) + lev3 + title)
+		: (("###".length <= level ? "###" : chars) + lev3 + title)
 }
 
 //转义特殊字符
@@ -224,14 +203,14 @@ function escapeText(markText){
 //根据标注类型获取前后缀
 function addPreAndSuf(markText,style){
 
-	pre = (style == 0) ? document.getElementById("s1Pre").value
-	: (style == 1) ? document.getElementById("s2Pre").value
-	: (style == 2) ? document.getElementById("s3Pre").value
+	pre = (style == 0) ? Config["s1Pre"]
+	: (style == 1) ? Config["s2Pre"]
+	: (style == 2) ? Config["s3Pre"]
 	: ""
 
-	suf = (style == 0) ? document.getElementById("s1Suf").value
-	: (style == 1) ? document.getElementById("s2Suf").value
-	: (style == 2) ? document.getElementById("s3Suf").value
+	suf = (style == 0) ? Config["s1Suf"]
+	: (style == 1) ? Config["s2Suf"]
+	: (style == 2) ? Config["s3Suf"]
 	: ""
 	
 	return pre + markText + suf
@@ -316,7 +295,7 @@ function traverseMarks(marks,setting,all){
 		var style = marks[j].style
 		res += addPreAndSuf(markText,style) + "\n\n"
 		if(abstract){
-			res += document.getElementById("thouPre").innerHTML + marks[j].content + document.getElementById("thouSuf").innerHTML + "\n\n"
+			res += Config["thouPre"] + marks[j].content + Config["thouSuf"] + "\n\n"
 		}
 	}
 	return res
@@ -334,12 +313,14 @@ chrome.contextMenus.create({
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if(namespace == "sync"){
-		var keys = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf"]
+		var keys = []
+		for (let key in Config) {
+			keys.push(key)
+		}
 		chrome.storage.sync.get(keys,function(setting){
-			for(var key in setting){
+			for(let key in setting){
 				if(keys.indexOf(key) > -1){
-					value = setting[key]
-					document.getElementById(key).innerHTML = value
+					Config[key] = setting[key]
 				}
 			}
 		})
@@ -352,7 +333,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 	if(url.indexOf("bookmarklist?bookId=") > -1) {
 		let bookId = url.replace(/(^[\S| ]*bookId=|&type=1)/g,"")
 		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
-			document.getElementById("tempbookId").value = bookId
+			background_tempbookId = bookId
 			//在内部重新注入脚本以重新获取bid
 			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
 				catchErr("chrome.webRequest.onBeforeRequest.addListener()")
@@ -360,3 +341,10 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 		}
 	}
 }, {urls: ["*://weread.qq.com/web/book/*"]})
+
+//安装事件
+chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues/4"})
+    }
+})

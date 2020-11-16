@@ -3,52 +3,6 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
 */
 
-/* @监听器：
-
-//页面是否发生更新
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	...
-	setPopupAndBid(Tab)
-	...
-});
-
-//是否在已打开页面之间切换
-chrome.tabs.onActivated.addListener(function (moveInfo) {
-	...
-	setPopupAndBid(Tab)
-	...
-});
-
-//监听消息
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-	//根据收到的不同消息调用不同的函数或是处理数据
-});
-*/
-
-/* @直接被 popup.js 调用的函数（被绑定为点击事件的函数）
-//获取书评
-getComment()
-//获取标注
-copyBookMarks()
-//获取热门标注
-copyBestBookMarks()
-*/
-
-/* @其他
-
-//在右键菜单中添加反馈选项（包含在 util.js 中）
-chrome.contextMenus.create({
-	...
-})
-
-//初始化设置
-settingInitialize()	// 该函数在 util.js 中
-*/
-
-/* @剩余函数
-//剩余函数都用于被调用而实现某一功能
-*/
-
 //获取书评：popup
 function getComment(userVid, bookId, isHtml,setting) {
 	var isEscape = setting.escape
@@ -135,8 +89,6 @@ function getBookMarks(bookId, add, contents, callback) {
 	});
 }
 
-//保存图片Markdown文本数组
-var imgsArr = []
 //获取标注并复制标注到剪切板：popup
 function copyBookMarks(bookId, all, setting) {
 	var add = setting.addThoughts
@@ -163,7 +115,7 @@ function copyBookMarks(bookId, all, setting) {
 				//遍历目录
 				for (var key in contents) {
 					//寻找目标章节
-					if (contents[key].title == document.getElementById("currentContent").value.substring(1)) {
+					if (contents[key].title == background_currentContent.substring(1)) {
 						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
 						var chapterUid = key
 						break
@@ -300,7 +252,7 @@ function copyThought(bookId) {
 				//遍历章内想法
 				for (var j = 0, len2 = thoughts[key].length; j < len2; j++) {
 					res += thoughts[key][j].abstract + "\n\n"
-					res += document.getElementById("thouPre").innerHTML + thoughts[key][j].content + document.getElementById("thouSuf").innerHTML + "\n\n"
+					res += Config["thouPre"] + thoughts[key][j].content + Config["thouSuf"] + "\n\n"
 				}
 			}
 			//处理书本无想法的请况
@@ -326,8 +278,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			imgsArr = message.RimgsArr
 			break
 		case "bookId":
-			message.bid == "wrepub" ? document.getElementById('bookId').value = document.getElementById("tempbookId").value
-			: document.getElementById('bookId').value = message.bid
+			message.bid == "wrepub" ? background_bookId = background_tempbookId
+			: background_bookId = message.bid
 			break
 		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf',name: 'wr_vid'}, function (cookie) {
@@ -354,10 +306,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
 			//如果需要获取目录，则设置，如果不需要获取目录，直接复制
-			(document.getElementById("Bookcontents").innerHTML == "getBookContents") ? 
-			(document.getElementById("Bookcontents").innerHTML = res) : copy(res)
+			(background_bookcontents == background_bookcontents_default) ? 
+			(background_bookcontents = res) : copy(res)
 			//设置当前所在目录
-			document.getElementById("currentContent").innerHTML = message.currentContent
+			background_currentContent = message.currentContent
 			break
 		case "aler"://用于调试
 			aler(message.message)
@@ -399,11 +351,11 @@ function setPopupAndBid(tab){
 		isBookPage = true;
 	}
 	if (!isBookPage) {//如果当前页面为其他页面
-		document.getElementById('bookId').value = "null"
+		background_bookId = "null"
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
 		//获取目录到background-page
-		document.getElementById("Bookcontents").innerHTML = "getBookContents";
+		background_bookcontents = background_bookcontents_default
 		//注入脚本获取全部目录数据和当前目录
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
 			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
