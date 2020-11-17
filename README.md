@@ -44,11 +44,11 @@
 
 右击扩展点击 `选项` 进入扩展设置设置页面：
 
-![img](README pic/options.png)
+![img](res/options.png)
 
 在微信读书中，标注分三类，分别是波浪线、马克笔和直线：
 
-![mark](README pic/mark.png)
+![mark](res/mark.png)
 
 其中直线就是设置页面中所谓 `一级标注`，马克笔是 `二级标注`，波浪线是 `三级标注`，你可以在输入框中设置标注前后缀。
 
