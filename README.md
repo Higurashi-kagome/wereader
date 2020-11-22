@@ -64,6 +64,18 @@
 
 更多细节可在插件提供的设置页中查看。
 
+## 贡献
+
+如果你有兴趣为此项目贡献代码，那么你可以：
+
+- 完善帮助页——帮助页的HTML文档位于`\wereader-chrome\options\help.html`，CSS文件位于`\wereader-chrome\options\help.css`。
+- 完善设置页——设置页的HTML文档位于`\wereader-chrome\options\options.html`，CSS文件位于`\wereader-chrome\options\options.css`。
+- 做任何你认为有助于完善此项目的事。
+
+不用在意贡献的大小，任何有帮助内容都可能被接受。
+
+如果你尝试阅读源码，有不懂的地方可以直接联系我。
+
 ## 致谢
 
 - [wereader](https://github.com/arry-lee/wereader)
