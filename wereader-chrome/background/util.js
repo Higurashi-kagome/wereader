@@ -55,7 +55,7 @@ function aler(text){
 //存储 / 初始化设置
 function settingInitialize() {
 	chrome.storage.sync.get(function (setting) {
-		/* 检查默认选项 */
+		/* 初始化选项 */
 		for(let key in Config){
 			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
@@ -306,7 +306,7 @@ chrome.contextMenus.create({
     "title":"反馈",
     "contexts":["browser_action"],
     "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues"})
+        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues/4"})
     }
 })
 
