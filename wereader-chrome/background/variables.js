@@ -17,7 +17,53 @@ var Config = {
     addThoughts: false,
     escape: false,
     backupName: "默认设置",
-    re: []
+    re: [],
+    flag: 0
+}
+
+const syncConfigTemplate = {
+    s1Pre: "",
+    s1Suf: "",
+    s2Pre: "**",
+    s2Suf: "**",
+    s3Pre: "",
+    s3Suf: "",
+    lev1: "## ",
+    lev2: "### ",
+    lev3: "#### ",
+    thouPre: "```\n",
+    thouSuf: "\n```",
+    checkedRe: [],
+    codePre: "```",
+    codeSuf: "```",
+    displayN: false,
+    addThoughts: false,
+    escape: false,
+    backupName: "默认设置",
+    re: [],
+    flag: 0
+}
+
+const backupTemplate = {
+    s1Pre: "",
+    s1Suf: "",
+    s2Pre: "**",
+    s2Suf: "**",
+    s3Pre: "",
+    s3Suf: "",
+    lev1: "## ",
+    lev2: "### ",
+    lev3: "#### ",
+    thouPre: "```\n",
+    thouSuf: "\n```",
+    checkedRe: [],
+    codePre: "```",
+    codeSuf: "```",
+    displayN: false,
+    addThoughts: false,
+    escape: false,
+    re: [],
+    flag: 0
 }
 
 var background_bookId = "null"

@@ -21,7 +21,6 @@ function catchErr(sender) {
 //更新sync和local——处理设置页onchange不生效的问题
 function updateStorageArea(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	const backupName = "backupName"
 	if(configMsg.key && configMsg.value){
         let config = {}
         let key = configMsg.key
@@ -31,7 +30,7 @@ function updateStorageArea(configMsg={},callback=function(){}){
             if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
             chrome.storage.local.get(function(settings){
                 const currentProfile = configMsg.currentProfile
-                settings[background_backupKey][currentProfile][key] = (key == backupName) ? undefined : value
+                settings[background_backupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
                     if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
                     callback()
@@ -44,6 +43,15 @@ function updateStorageArea(configMsg={},callback=function(){}){
 //获取当前背景页配置——用于测试
 function getConfig(){
 	return Config
+}
+
+//获取当前存储设置——用于测试
+function getStorage(area="sync",callback=function(setting){}){
+	if(["sync","local"].indexOf(area) > -1){
+		chrome.storage[area].get(function(setting){
+			callback(setting)
+		})
+	}else callback("请传入sync或local")
 }
 
 //alert()——用于测试
@@ -313,16 +321,33 @@ chrome.contextMenus.create({
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if(namespace == "sync"){
-		var keys = []
-		for (let key in Config) {
-			keys.push(key)
-		}
-		chrome.storage.sync.get(keys,function(setting){
+		chrome.storage.sync.get(function(setting){
+			let uselessKeys = []
 			for(let key in setting){
-				if(keys.indexOf(key) > -1){
-					Config[key] = setting[key]
+				//删除本不该存在的键
+				if(syncConfigTemplate[key] == undefined){
+					uselessKeys.push(key)
+					continue
+				}
+				Config[key] = setting[key]
+			}
+			chrome.storage.sync.remove(uselessKeys,function(){
+				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
+			})
+		})
+
+		chrome.storage.local.get(function(settings){
+			for(let name in settings[background_backupKey]){
+				//删除本不该存在的键
+				for(let key in settings[background_backupKey][name]){
+					if(backupTemplate[key] == undefined){
+						delete settings[background_backupKey][name][key]
+					}
 				}
 			}
+			chrome.storage.local.set(settings,function(){
+				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
+			})
 		})
 	}
 })
