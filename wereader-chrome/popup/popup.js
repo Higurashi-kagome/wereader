@@ -59,7 +59,9 @@ window.onload = function () {
                         })
                         break
                     case "testBtn":
-                        //bg.sendAlertMsg({title:"Oops...", text:"这是测试...", confirmButtonText: '确定'})
+                        /* bg.getStorage("sync",function(setting){
+                            bg.aler(JSON.stringify(setting))
+                        }) */
                         break
                     default:
                         break
