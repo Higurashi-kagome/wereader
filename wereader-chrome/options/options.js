@@ -40,7 +40,6 @@ function addProfile(){
                 //在local中新建设置（以sync中的数据为值）
                 chrome.storage.sync.get(function(setting) {
                     settings[BACKUPKEY][profileName] = setting
-                    settings[BACKUPKEY][profileName][BACKUPNAME] = undefined
                     setting[BACKUPNAME] = profileName
                     updateStorageArea({setting:setting,settings:settings},function(){
                         promptContainer.style.display = "none"
@@ -137,7 +136,7 @@ function updateStorageArea(configMsg={},callback=function(){}){
             if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
             chrome.storage.local.get(function(settings){
                 const currentProfile = document.getElementById("profileNamesInput").value
-                settings[BACKUPKEY][currentProfile][key] = (key == BACKUPNAME) ? undefined : value
+                settings[BACKUPKEY][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
                     if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
                     callback()
@@ -244,7 +243,6 @@ function initialize(){
             let currentProfile = setting[BACKUPNAME]
             if(settings[BACKUPKEY][currentProfile] == undefined){//处理当前配置在local中不存在的情况
                 settings[BACKUPKEY][currentProfile] = setting
-                settings[BACKUPKEY][currentProfile][BACKUPNAME] = undefined
                 chrome.storage.local.set(settings,function(){
                     if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
                 })
