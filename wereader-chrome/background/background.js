@@ -291,9 +291,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			break
 		case "injectCss":
 			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
-				if(chrome.runtime.lastError){
-					catchErr("chrome.tabs.insertCSS()")
-				}
+				catchErr("chrome.tabs.insertCSS()")
 			})
 			break
 		case "getContents":
@@ -325,20 +323,18 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 //页面监测：是否在已打开页面之间切换
 chrome.tabs.onActivated.addListener(function (moveInfo) {
 	chrome.tabs.get(moveInfo.tabId, function (tab) {
-		if(chrome.runtime.lastError){
-			catchErr("chrome.tabs.onActivated.addListener()")
+		if(!catchErr("chrome.tabs.onActivated.addListener()")){
+			setPopupAndBid(tab)
 		}
-		setPopupAndBid(tab)
 	})
 })
 
 //页面监控：是否发生更新
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	if (changeInfo.status == "loading") {
-		if(chrome.runtime.lastError){
-			catchErr("chrome.tabs.onUpdated.addListener()")
+		if(!catchErr("chrome.tabs.onUpdated.addListener()")){
+			setPopupAndBid(tab)
 		}
-		setPopupAndBid(tab)
 	}
 })
 
