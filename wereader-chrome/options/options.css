@@ -178,21 +178,34 @@ h3 a {
     margin: 2px;
 }
 
-/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+/* 显示进度条 */
+
 ::-webkit-scrollbar {
-    display: block;
-    background-color: #f5f5f5e8;
+    width: 5px;
+    height: 5px;
+    background: #dddddd00;
 }
 
-::-webkit-scrollbar:vertical {
-    width: 11px;
+::-webkit-scrollbar-button {
+    width: 5px;
+    height: 5px;
+    background: #dddddd00;
 }
 
-/*定义滑块*/
+::-webkit-scrollbar-button:hover {
+    background: #d1d1d188;
+}
+
 ::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    border: 2px solid white; /* should match background, can't be transparent */
-    background-color: rgba(29, 27, 27, 0.5);
+    background: #cccccc88;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #88888888;
+}
+
+::-webkit-scrollbar-track {
+    background: #dddddd00;
 }
 
 .profiles button {
