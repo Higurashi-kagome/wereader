@@ -1,6 +1,6 @@
-![wereader](res/README/wereader.png)
+## 说明
 
-一个 Chrome / Firefox 插件：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者尤其有帮助。
+这是一个 Chrome / Firefox 插件：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者尤其有帮助。
 
 ## 安装
 
