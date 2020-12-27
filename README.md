@@ -1,8 +1,8 @@
-## 说明
+<h2 align="center"><img src="res/README/icon128.png" height="128"><br>Wereader</h2>
 
-这是一个 Chrome / Firefox 插件：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者尤其有帮助。
+<p align="center"><strong>一个 Chrome / Firefox 插件：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者尤其有帮助。</strong></p>
 
-## 安装
+## 💾 安装
 
 [![](https://img.shields.io/badge/Chrome%20web%20store-v2.6.6-brightgreen)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![Mozilla add\-on: v1\.7\.2](https://img.shields.io/badge/Mozilla%20add--on-v1.7.2-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
 
@@ -14,7 +14,7 @@
 
 3. 进入页面后，先打开 `开发者模式`，再点击 `加载已解压的扩展程序`，找到前面解压得到的文件夹 `wereader`，双击进入该文件夹，进入后**单击**里面的 `wereader-chrome` 文件夹，这时候文件夹被选中，点击 `选择文件夹` 即可。
 
-## 功能
+## 🚚 功能
 
 - 导出书评（纯文本 / HTML）
 
@@ -32,7 +32,7 @@
 
 - 书架分类展示
 
-## 设置
+## ⚙️ 设置
 
 在设置页面，你可以自定义导出效果。
 
@@ -58,7 +58,7 @@
 
 更多细节可在插件设置页中查看。
 
-## 贡献
+## 👋 贡献
 
 如果你有兴趣为此项目贡献代码，那么你可以：
 
@@ -71,13 +71,14 @@
 
 如果你尝试阅读源码，有不懂的地方也可以直接联系我。
 
-## 致谢
+## ❤️ 致谢
 
-| items                                                        | reason                                                       |
+| item                                                        | reason                                                       |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [wereader](https://github.com/arry-lee/wereader)             | 此项目为插件的起源，我先是在 [pythontools/wereader](https://github.com/liuhao326/pythontools/tree/master/wereader) 中完善了该项目，然后才基于 pythontools/wereader 实现了该插件 |
 | [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers) | 编写 pythontools/wereader 的过程中参考了该项目中的[一键导出微信读书的书籍和笔记](https://github.com/shengqiangzhang/examples-of-web-crawlers/tree/master/12.%E4%B8%80%E9%94%AE%E5%AF%BC%E5%87%BA%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%9A%84%E4%B9%A6%E7%B1%8D%E5%92%8C%E7%AC%94%E8%AE%B0) |
-| [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo) | 这是一个 Chrome 扩展开发教程，是编写扩展时的主要参考资料     |
+| [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo) | Chrome 扩展开发教程     |
+| [Extensions - Chrome Developers](https://developer.chrome.com/docs/extensions/) | Chrome 扩展官方文档 |
 | [clipboard.js](https://github.com/zenorocha/clipboard.js)    | 插件借助该项目实现复制文本                                   |
 | [sweetalert2](https://github.com/sweetalert2/sweetalert2)    | 插件借助该项目实现弹窗                                       |
 | [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont\-阿里巴巴矢量图标库](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者 |
