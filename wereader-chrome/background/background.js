@@ -136,7 +136,7 @@ function copyBookMarks(bookId, all, setting) {
 				}
 			}
 			//不排除 imgArr 获取失败，故保险起见将其设置为 []
-			imgsArr = []
+			imgsAndNotes = []
 		})
 	})
 }
@@ -274,8 +274,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "copyImg":
 			copy(message.picText)
 			break
-		case "imgsArr":
-			imgsArr = message.RimgsArr
+		case "imgsAndNotes":
+			imgsAndNotes = message.imgsAndNotes
 			break
 		case "bookId":
 			message.bid == "wrepub" ? background_bookId = background_tempbookId
