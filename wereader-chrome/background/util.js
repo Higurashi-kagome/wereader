@@ -285,14 +285,22 @@ function getContents(bookId,callback){
 //获取章内标注
 function traverseMarks(marks,setting,all){
 	var res = ""
-	var imgsArrIndext = 0
+	var imgsArrIndex = 0
 	for (var j = 0, len = marks.length; j < len; j++) {//遍历章内标注
 		var abstract = marks[j].abstract
 		var markText = abstract ? abstract : marks[j].markText
-		if(!all && markText == "[插图]"){//指定为只获取本章时需要获取图片
-			markText = "![" + imgsArr[imgsArrIndext][0] + "](" + imgsArr[imgsArrIndext][1] + ")"
-			imgsArrIndext = imgsArrIndext + 1
-			res += markText + "\n\n"
+		if(!all){//只获取本章时"[插图]"转图片
+			while(/\[插图\]/.test(markText)){
+				let replacement = ''
+				if(imgsArr[imgsArrIndex].src){
+					replacement = `![${imgsArr[imgsArrIndex].alt}](${imgsArr[imgsArrIndex].src})`
+				}else{
+					replacement = `[^${imgsArr[imgsArrIndex].name}]`
+				}
+				markText = markText.replace(/\[插图\]/, replacement)
+				imgsArrIndex = imgsArrIndex + 1
+			}
+			res += `${markText}\n\n`
 			continue
 		}
 		//转义特殊字符
@@ -300,10 +308,14 @@ function traverseMarks(marks,setting,all){
 		//var markTextEscaped = markText
 		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
 		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
-		var style = marks[j].style
-		res += addPreAndSuf(markText,style) + "\n\n"
+		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){
-			res += Config["thouPre"] + marks[j].content + Config["thouSuf"] + "\n\n"
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n"`
+		}
+	}
+	for(let i=0,len=imgsArr.length;i<len;i++){
+		if(imgsArr[i].footnote){
+			res += `[^${imgsArr[i].name}]:${imgsArr[i].footnote}\n\n`
 		}
 	}
 	return res

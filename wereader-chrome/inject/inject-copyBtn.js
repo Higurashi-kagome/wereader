@@ -89,7 +89,7 @@ function addCopyBtn3(){
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
         for(var i=0,len=pre.length;i<len;i++){
-            let _code = pre[i].innerHTML
+            let _code = pre[i].textContent
             let top = pre[i].style.top
             let btn =  document.createElement("b" + i);
             setAttributes(btn,{id:"codeCopy" + i,textContent:"📋",className:"wr_absolute",style:{cssText:"right:0px;width:16px;height:32px;cursor:pointer;z-index:4;"}})
