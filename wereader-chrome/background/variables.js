@@ -74,4 +74,4 @@ const background_storageErrorMsg = "存储出错"
 const background_bookcontents_default = "getBookContents"
 const background_backupKey = "backup"
 //保存图片Markdown文本的数组
-var imgsArr = []
+var imgsAndNotes = []
