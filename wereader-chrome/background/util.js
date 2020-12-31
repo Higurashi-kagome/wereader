@@ -123,8 +123,8 @@ function copy(text) {
 	var clipboard = new ClipboardJS('.btn');
 	clipboard.on('success', function (e) {
 		if(count == 0){//进行检查而确保一次复制成功只调用一次sendAlertMsg()
-			sendAlertMsg({icon: 'success',title: 'Copied successfully'})
-			count = count + 1
+			sendAlertMsg({icon: 'success',title: 'Copied successfully'});
+			count = count + 1;
 		}
 	});
 	clipboard.on('error', function (e) {
@@ -285,26 +285,34 @@ function getContents(bookId,callback){
 //获取章内标注
 function traverseMarks(marks,setting,all){
 	var res = ""
-	var imgsArrIndex = 0
-	for (var j = 0, len = marks.length; j < len; j++) {//遍历章内标注
-		var abstract = marks[j].abstract
-		var markText = abstract ? abstract : marks[j].markText
+	var index = 0
+	for (let j = 0, len = marks.length; j < len; j++) {//遍历章内标注
+		let abstract = marks[j].abstract
+		let markText = abstract ? abstract : marks[j].markText
 		if(!all){//只获取本章时"[插图]"转图片
 			while(/\[插图\]/.test(markText)){
+				if(!imgsAndNotes[index]){//数组越界
+					console.error(imgsAndNotes)
+					console.error(markText)
+					sendAlertMsg({title: "图片获取出错，建议反馈", text: imgsAndNotes, confirmButtonText: '确定',icon: "error"})
+					return ''
+				}
 				let replacement = ''
-				if(imgsArr[imgsArrIndex].src){
-					replacement = `![${imgsArr[imgsArrIndex].alt}](${imgsArr[imgsArrIndex].src})`
-				}else{
-					replacement = `[^${imgsArr[imgsArrIndex].name}]`
+				if(imgsAndNotes[index].src){//图片
+					//非行内图片单独占行
+					let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
+					replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
+				}else{//注释
+					replacement = `[^${imgsAndNotes[index].name}]`
 				}
 				markText = markText.replace(/\[插图\]/, replacement)
-				imgsArrIndex = imgsArrIndex + 1
+				index = index + 1
 			}
 			res += `${markText}\n\n`
 			continue
 		}
 		//转义特殊字符
-		var markTextEscaped = setting.escape ? escapeText(markText) : markText
+		let markTextEscaped = setting.escape ? escapeText(markText) : markText
 		//var markTextEscaped = markText
 		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
 		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
@@ -313,9 +321,9 @@ function traverseMarks(marks,setting,all){
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n"`
 		}
 	}
-	for(let i=0,len=imgsArr.length;i<len;i++){
-		if(imgsArr[i].footnote){
-			res += `[^${imgsArr[i].name}]:${imgsArr[i].footnote}\n\n`
+	for(let i=0,len=imgsAndNotes.length;i<len;i++){
+		if(imgsAndNotes[i].footnote){
+			res += `[^${imgsAndNotes[i].name}]:${imgsAndNotes[i].footnote}\n\n`
 		}
 	}
 	return res
@@ -326,7 +334,7 @@ chrome.contextMenus.create({
     "title":"反馈",
     "contexts":["browser_action"],
     "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
     }
 })
 
@@ -382,6 +390,6 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 //安装事件
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-        chrome.tabs.create({url: "https://github.com/liuhao326/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
     }
 })
