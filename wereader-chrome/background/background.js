@@ -79,8 +79,8 @@ function getBookMarks(bookId, add, contents, callback) {
 				chapters[i].marks = marksInAChapter
 			}
 			if(add){
-				addThoughts(chapters,bookId,contents,function(chapters){
-					callback(chapters)
+				addThoughts(chapters,bookId,contents,function(chaptersAndMarks){
+					callback(chaptersAndMarks)
 				})
 			}else{
 				callback(chapters)
@@ -97,7 +97,7 @@ function copyBookMarks(bookId, all, setting) {
 		catchErr("copyBookMarks() => chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' })")
 	})
 	getContents(bookId,function(contents){
-		getBookMarks(bookId, add,contents, function (chaptersAndMarks) {
+		getBookMarks(bookId, add, contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
 			if (all) {	//获取全书标注
@@ -123,12 +123,10 @@ function copyBookMarks(bookId, all, setting) {
 				}
 				//遍历标注
 				for (var i = 0, len1 = chaptersAndMarks.length; i < len1; i++) {
-					//寻找目标章节
-					if (chaptersAndMarks[i].chapterUid == chapterUid) {
-						if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
-							res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
-							copy(res)
-						}
+					//寻找目标章节并检查章内是否有标注
+					if (chaptersAndMarks[i].chapterUid == chapterUid && chaptersAndMarks[i].marks.length > 0) {
+						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						copy(res)
 						break
 					}
 					//处理该章节无标注的情况
