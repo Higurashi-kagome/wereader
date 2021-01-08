@@ -289,36 +289,33 @@ function traverseMarks(marks,setting,all){
 	for (let j = 0, len = marks.length; j < len; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
-		if(!all){//只获取本章时"[插图]"转图片
-			while(/\[插图\]/.test(markText)){
-				if(!imgsAndNotes[index]){//数组越界
-					console.error(imgsAndNotes)
-					console.error(markText)
-					sendAlertMsg({title: "图片获取出错，建议反馈", text: imgsAndNotes, confirmButtonText: '确定',icon: "error"})
-					return ''
-				}
-				let replacement = ''
-				if(imgsAndNotes[index].src){//图片
-					//非行内图片单独占行
-					let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
-					replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
-				}else{//注释
-					replacement = `[^${imgsAndNotes[index].name}]`
-				}
-				markText = markText.replace(/\[插图\]/, replacement)
-				index = index + 1
+		//只获取本章标注且当前标注不为想法时"[插图]"转图片
+		while(!all && !abstract && /\[插图\]/.test(markText)){
+			if(!imgsAndNotes[index]){//数组越界
+				console.error(imgsAndNotes)
+				console.error(markText)
+				sendAlertMsg({title: "图片获取出错，建议反馈", text: imgsAndNotes, confirmButtonText: '确定',icon: "error"})
+				return ''
 			}
-			res += `${markText}\n\n`
-			continue
+			let replacement = ''
+			if(imgsAndNotes[index].src){//图片
+				//非行内图片单独占行
+				let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
+				replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
+			}else{//注释
+				replacement = `[^${imgsAndNotes[index].name}]`
+			}
+			markText = markText.replace(/\[插图\]/, replacement)
+			index = index + 1
 		}
 		//转义特殊字符
-		let markTextEscaped = setting.escape ? escapeText(markText) : markText
-		//var markTextEscaped = markText
+		//let markTextEscaped = setting.escape ? escapeText(markText) : markText
+		var markTextEscaped = markText//不转义
 		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
 		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n"`
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
 		}
 	}
 	for(let i=0,len=imgsAndNotes.length;i<len;i++){
