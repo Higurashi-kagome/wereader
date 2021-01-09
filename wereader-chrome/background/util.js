@@ -169,45 +169,6 @@ function getTitleAddedPre(title, level) {
 		: (("###".length <= level ? "###" : chars) + lev3 + title)
 }
 
-//转义特殊字符
-function escapeText(markText){
-	var exceptRegexp = /!\[[\S| ]*\]\([\S| ]*\)/g//匹配图片
-	if(exceptRegexp.test(markText) == true){//不对图片进行转义
-		var list = markText.split(exceptRegexp)
-		var urls = markText.match(exceptRegexp)
-		var count = 0
-		try{
-			for(var i=0,len=list.length;i<len;i++){
-				if(!list[i] || (list[i] == urls[count])){
-					list[i] = urls[count]
-					count = count + 1
-				}else{
-					list[i] = escapeElem(list[i])
-				}
-			}
-		}catch{
-			return escapeElem(markText)
-		}
-		return list.join("")
-	}else{
-		return escapeElem(markText)
-	}
-	
-	function escapeElem(text){
-		var patterns1 = ["\\\\","\\*","\\{","\\}","\\[","\\]","\\(","\\)","\\+"]//因为转义英文句号会影响链接显示，故暂时不包含"\\."
-		var patterns2 = ["<",">","_","`","!"]//因为#和-只会在出现在段落开头的时候才会生效，通常不用转义故暂不添加
-		var patterns = patterns1.concat(patterns2)
-		for(var n=0,len=patterns.length;n<len;n++){
-			let pattern = patterns[n]
-			let re = new RegExp(pattern,"g")
-			if(re.test(text) == true){
-				text = patterns1.indexOf(pattern) > -1 ? text.replace(re,pattern) : text.replace(re,"\\"+pattern)
-			}
-		}
-		return text
-	}
-}
-
 //根据标注类型获取前后缀
 function addPreAndSuf(markText,style){
 
@@ -225,18 +186,16 @@ function addPreAndSuf(markText,style){
 }
 
 //给 markText 进行正则匹配
-function getRegExpMarkText(markText,markTextEscaped,regexpCollection){
-	var markTextRegexped = ""
-	for(var n=0,len=regexpCollection.length;n<len;n++){
+function getRegExpMarkText(markText,regexpCollection){
+	for(let n=0,len=regexpCollection.length;n<len;n++){
 		let pattern = regexpCollection[n][1]
 		let re = new RegExp(pattern)
-		if(re.test(markText) == true){
-			markTextRegexped = regexpCollection[n][2] + markTextEscaped + regexpCollection[n][3]
+		if(re.test(markText)){
+			markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
 			break
 		}
 	}
-	//如果没有正则匹配到，则返回转义后的marktext，否则返回被正则匹配后的内容
-	return markTextRegexped == "" ? markTextEscaped : markTextRegexped
+	return markText
 }
 
 function addThoughts(chaptersAndMarks,bookId,contents,callback){
@@ -308,11 +267,8 @@ function traverseMarks(marks,setting,all){
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
 		}
-		//转义特殊字符
-		//let markTextEscaped = setting.escape ? escapeText(markText) : markText
-		var markTextEscaped = markText//不转义
-		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
-		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
+		//正则匹配
+		markText = getRegExpMarkText(markText,setting.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
@@ -331,7 +287,7 @@ chrome.contextMenus.create({
     "title":"反馈",
     "contexts":["browser_action"],
     "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"})
     }
 })
 
@@ -387,6 +343,6 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 //安装事件
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"})
     }
 })
