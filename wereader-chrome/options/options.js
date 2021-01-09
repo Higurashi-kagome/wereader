@@ -283,8 +283,8 @@ function initialize(){
 
         //"标注、标题、想法、代码块" input 事件
         const inputIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","codePre","codeSuf"]
-        //"是否显示热门标注人数"、"标注添加想法"、"开启转义" CheckBox 点击事件
-        const CheckBoxIds = ["displayN","addThoughts","escape"]
+        //"是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
+        const CheckBoxIds = ["displayN","addThoughts"]
         const ids = inputIds.concat(CheckBoxIds)
         for(let i=0,len=ids.length;i<len;i++){
             let id = ids[i]

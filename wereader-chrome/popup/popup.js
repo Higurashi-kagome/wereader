@@ -27,10 +27,10 @@ window.onload = function () {
                         choose.style.display = (choose.style.display != "block") ? "block" : "none"
                         return
                     case "getComment_text":
-                        bg.getComment(userVid, bookId, false,setting)
+                        bg.getComment(userVid, bookId, false)
                         break
                     case "getComment_html":
-                        bg.getComment(userVid, bookId, true,setting)
+                        bg.getComment(userVid, bookId, true)
                         break
                     case "getBookMarks":
                         let chooseMark = document.getElementById("choose_mark")
