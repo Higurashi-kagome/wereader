@@ -153,7 +153,7 @@ function getRegexpSet(){
     let checkedRegexpValue = []
     let regexpValue = []
     let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-    for(let i = 0,len = checkBoxCollection.length;i < len;i++){
+    for(let i = 0;i < checkBoxCollection.length;i++){
         let parent = checkBoxCollection[i].parentNode.parentNode
         let id = checkBoxCollection[i].id
         let re = parent.getElementsByClassName("regexp")[0].value
@@ -181,7 +181,7 @@ function initializeBasic(){
     /* 帮助按钮点击事件 */
     let helpIcons = document.getElementsByClassName("help-icon")
     let helpContents = document.getElementsByClassName("help-content")
-    for (let index = 0,len = helpIcons.length;index < len; index++) {
+    for (let index = 0; index < helpIcons.length; index++) {
         helpIcons[index].onclick = function(){
             helpContents[index].hidden = !helpContents[index].hidden
             return false
@@ -283,10 +283,10 @@ function initialize(){
 
         //"标注、标题、想法、代码块" input 事件
         const inputIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","codePre","codeSuf"]
-        //"是否显示热门标注人数"、"标注添加想法"、"开启转义" CheckBox 点击事件
-        const CheckBoxIds = ["displayN","addThoughts","escape"]
+        //"是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
+        const CheckBoxIds = ["displayN","addThoughts"]
         const ids = inputIds.concat(CheckBoxIds)
-        for(let i=0,len=ids.length;i<len;i++){
+        for(let i=0;i<ids.length;i++){
             let id = ids[i]
             let element = document.getElementById(id)
             let isInput = inputIds.indexOf(id) > -1
@@ -308,15 +308,15 @@ function initialize(){
         //正则表达式 input、textarea 内容初始化
         let regexpContainers = document.getElementsByClassName("regexpContainer")
         const reCollection = setting.re
-        for(let i = 0,len1 = reCollection.length;i<len1;i++){
+        for(let i = 0;i<reCollection.length;i++){
             setRegexpValue(regexpContainers[i],reCollection[i])
         }
         const checkedReCollection = setting.checkedRe
         let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
         //已开启正则初始化
-        for(let i = 0,len1 = checkBoxCollection.length;i < len1;i++){
+        for(let i = 0;i < checkBoxCollection.length;i++){
             checkBoxCollection[i].checked = false//先确保取消选中
-            for(let j = 0,len2 = checkedReCollection.length;j < len2;j++){
+            for(let j = 0;j < checkedReCollection.length;j++){
                 let checkedId = checkedReCollection[j][0]
                 let checkboxId = checkBoxCollection[i].id
                 if(checkedId.substr(checkedId.length-1,1) == checkboxId.substr(checkboxId.length-1,1)){//因为需要更改id而这样写
@@ -328,7 +328,7 @@ function initialize(){
             }
         }
         //正则表达式 checkbox 点击事件
-        for(let i = 0,len = checkBoxCollection.length;i < len;i++){
+        for(let i = 0;i < checkBoxCollection.length;i++){
             checkBoxCollection[i].onclick = function(){
                 let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
                 updateRegexp()//不检查regexpInput.value是否为空，将其留在updateRegexp中检查
@@ -340,9 +340,9 @@ function initialize(){
         }
         //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
         const classNameArray = ["regexp","regexp_pre","regexp_suf"]
-        for(let i=0,len1=classNameArray.length;i<len1;i++){
+        for(let i=0;i<classNameArray.length;i++){
             let collection = document.getElementsByClassName(classNameArray[i])
-            for(let j=0,len2=collection.length;j<len2;j++){
+            for(let j=0;j<collection.length;j++){
                 collection[j].onchange = function(){
                     updateRegexp()
                 }

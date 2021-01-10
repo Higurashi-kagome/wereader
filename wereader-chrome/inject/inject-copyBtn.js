@@ -18,7 +18,7 @@ function setAttributes(element,attributes){
 //给图片添加复制按钮
 function addCopyBtn1(){
     let imgs = document.getElementById("renderTargetContent").getElementsByTagName("img");
-    for(var i=0,len=imgs.length;i<len;i++){
+    for(var i=0;i<imgs.length;i++){
         var src = imgs[i].getAttribute("data-src")
         if(!src){
             Swal.fire({title: "Oops...",html: "图片链接获取失败。",icon: "error",confirmButtonText: '确定'})
@@ -53,7 +53,7 @@ function addCopyBtn1(){
 function addCopyBtn2(){
     var footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
     //遍历注释控件
-    for(var i=0,len=footerNotes.length;i<len;i++){
+    for(var i=0;i<footerNotes.length;i++){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
@@ -88,7 +88,7 @@ function addCopyBtn2(){
 function addCopyBtn3(){
     var pre = document.getElementsByTagName("pre")
     if(pre.length > 0){
-        for(var i=0,len=pre.length;i<len;i++){
+        for(var i=0;i<pre.length;i++){
             let _code = pre[i].textContent
             let top = pre[i].style.top
             let btn =  document.createElement("b" + i);

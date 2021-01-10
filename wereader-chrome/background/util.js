@@ -8,6 +8,7 @@ var colId = "range"
 var rank = function (x, y) {
 	return (x[colId] > y[colId]) ? 1 : -1
 }
+
 //报错捕捉函数
 function catchErr(sender) {
 	if (chrome.runtime.lastError) {
@@ -38,26 +39,6 @@ function updateStorageArea(configMsg={},callback=function(){}){
             })
         })
     }
-}
-
-//获取当前背景页配置——用于测试
-function getConfig(){
-	return Config
-}
-
-//获取当前存储设置——用于测试
-function getStorage(area="sync",callback=function(setting){}){
-	if(["sync","local"].indexOf(area) > -1){
-		chrome.storage[area].get(function(setting){
-			callback(setting)
-		})
-	}else callback("请传入sync或local")
-}
-
-//alert()——用于测试
-function aler(text){
-	//alert(text)
-	console.log(text)
 }
 
 //存储 / 初始化设置
@@ -169,45 +150,6 @@ function getTitleAddedPre(title, level) {
 		: (("###".length <= level ? "###" : chars) + lev3 + title)
 }
 
-//转义特殊字符
-function escapeText(markText){
-	var exceptRegexp = /!\[[\S| ]*\]\([\S| ]*\)/g//匹配图片
-	if(exceptRegexp.test(markText) == true){//不对图片进行转义
-		var list = markText.split(exceptRegexp)
-		var urls = markText.match(exceptRegexp)
-		var count = 0
-		try{
-			for(var i=0,len=list.length;i<len;i++){
-				if(!list[i] || (list[i] == urls[count])){
-					list[i] = urls[count]
-					count = count + 1
-				}else{
-					list[i] = escapeElem(list[i])
-				}
-			}
-		}catch{
-			return escapeElem(markText)
-		}
-		return list.join("")
-	}else{
-		return escapeElem(markText)
-	}
-	
-	function escapeElem(text){
-		var patterns1 = ["\\\\","\\*","\\{","\\}","\\[","\\]","\\(","\\)","\\+"]//因为转义英文句号会影响链接显示，故暂时不包含"\\."
-		var patterns2 = ["<",">","_","`","!"]//因为#和-只会在出现在段落开头的时候才会生效，通常不用转义故暂不添加
-		var patterns = patterns1.concat(patterns2)
-		for(var n=0,len=patterns.length;n<len;n++){
-			let pattern = patterns[n]
-			let re = new RegExp(pattern,"g")
-			if(re.test(text) == true){
-				text = patterns1.indexOf(pattern) > -1 ? text.replace(re,pattern) : text.replace(re,"\\"+pattern)
-			}
-		}
-		return text
-	}
-}
-
 //根据标注类型获取前后缀
 function addPreAndSuf(markText,style){
 
@@ -225,18 +167,16 @@ function addPreAndSuf(markText,style){
 }
 
 //给 markText 进行正则匹配
-function getRegExpMarkText(markText,markTextEscaped,regexpCollection){
-	var markTextRegexped = ""
-	for(var n=0,len=regexpCollection.length;n<len;n++){
+function getRegExpMarkText(markText,regexpCollection){
+	for(let n=0;n<regexpCollection.length;n++){
 		let pattern = regexpCollection[n][1]
 		let re = new RegExp(pattern)
-		if(re.test(markText) == true){
-			markTextRegexped = regexpCollection[n][2] + markTextEscaped + regexpCollection[n][3]
+		if(re.test(markText)){
+			markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
 			break
 		}
 	}
-	//如果没有正则匹配到，则返回转义后的marktext，否则返回被正则匹配后的内容
-	return markTextRegexped == "" ? markTextEscaped : markTextRegexped
+	return markText
 }
 
 function addThoughts(chaptersAndMarks,bookId,contents,callback){
@@ -245,7 +185,7 @@ function addThoughts(chaptersAndMarks,bookId,contents,callback){
 		for(var key in thoughts){
 			//遍历章节将想法添加进marks
 			let has = 0
-			for(var i=0,len=chaptersAndMarks.length;i<len;i++){
+			for(var i=0;i<chaptersAndMarks.length;i++){
 				if(chaptersAndMarks[i].chapterUid == parseInt(key)){
 					colId = "range"
 					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[key]).sort(rank)
@@ -275,7 +215,7 @@ function getContents(bookId,callback){
 		//得到目录
 		var contentData = JSON.parse(data).data[0].updated
 		var contents = {}
-		for (var i = 0, len = contentData.length; i < len; i++) {
+		for (var i = 0; i < contentData.length; i++) {
 			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: parseInt(contentData[i].level) }
 		}
 		callback(contents)
@@ -286,7 +226,7 @@ function getContents(bookId,callback){
 function traverseMarks(marks,setting,all){
 	var res = ""
 	var index = 0
-	for (let j = 0, len = marks.length; j < len; j++) {//遍历章内标注
+	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
 		//只获取本章标注且当前标注不为想法时"[插图]"转图片
@@ -299,7 +239,7 @@ function traverseMarks(marks,setting,all){
 			}
 			let replacement = ''
 			if(imgsAndNotes[index].src){//图片
-				//非行内图片单独占行
+				//非行内图片单独占行（即使它与文字一起标注）
 				let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
 				replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
 			}else{//注释
@@ -308,17 +248,14 @@ function traverseMarks(marks,setting,all){
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
 		}
-		//转义特殊字符
-		//let markTextEscaped = setting.escape ? escapeText(markText) : markText
-		var markTextEscaped = markText//不转义
-		//正则匹配，传入markTextEscaped使得匹配不受转义的影响
-		markText = getRegExpMarkText(markText,markTextEscaped,setting.checkedRe)
+		//正则匹配
+		markText = getRegExpMarkText(markText,setting.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
-		if(abstract){
+		if(abstract){//需要添加想法时，添加想法
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
 		}
 	}
-	for(let i=0,len=imgsAndNotes.length;i<len;i++){
+	for(let i=0;i<imgsAndNotes.length;i++){
 		if(imgsAndNotes[i].footnote){
 			res += `[^${imgsAndNotes[i].name}]:${imgsAndNotes[i].footnote}\n\n`
 		}
@@ -331,7 +268,7 @@ chrome.contextMenus.create({
     "title":"反馈",
     "contexts":["browser_action"],
     "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/new/choose"})
     }
 })
 
@@ -387,6 +324,6 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 //安装事件
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/4"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"})
     }
 })

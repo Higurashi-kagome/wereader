@@ -19,7 +19,7 @@ function getShelfData(data){
 	var bookId_bookObj = {}
 	var shelf = {}
 	//bookDic = {'bookId':bookObj}
-	for(let i=0,len=booksData.length;i<len;i++){
+	for(let i=0;i<booksData.length;i++){
 		bookId_bookObj[booksData[i].bookId] = booksData[i]
 	}
 	//得到 shelf = {'类别1': [bookObj1,bookObj2,...], '类别2': [bookObj1,bookObj2,...]}
@@ -28,7 +28,7 @@ function getShelfData(data){
 		let allBookId = categoryData[j].bookIds
 		shelf[categoryName] = []
 		//遍历某类别内的书本id
-		for(let k=0,len2=allBookId.length;k<len2;k++){
+		for(let k=0;k<allBookId.length;k++){
 			let id = allBookId[k]
 			let bookObj = bookId_bookObj[id]
 			shelf[categoryName].push(bookObj)
@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener(function(data){
 		//获取创建目录所需书本url
 		let books_bookId_href = {}
 		let booksElement = document.getElementsByClassName("shelf_list")[0].childNodes
-		for(let i=0,len=booksElement.length;i<len-1;i++){
+		for(let i=0;i<booksElement.length-1;i++){
 			let child = booksElement[i].childNodes[0]
 			if(child && child.getElementsByClassName("wr_bookCover_img")[0]){
 				let splitedCover = child.getElementsByClassName("wr_bookCover_img")[0].src.split("/")
@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(function(data){
 		var shelfElement = document.createElement("div")
 		shelfElement.id = "shelfDIV"
 		//遍历categorySorter
-		for(let i=0,len1=categorySorter.length;i<len1;i++){
+		for(let i=0;i<categorySorter.length;i++){
 			let key = categorySorter[i]["categoryName"]
 			let categoryElement = document.createElement('ol')//书架类别
 			setAttributes(categoryElement,{textContent:key,className:"category"})
@@ -91,7 +91,7 @@ chrome.runtime.onMessage.addListener(function(data){
 			//遍历书本
 			let booksContainer = document.createElement("ul")//章内书本容器
 			setAttributes(booksContainer,{style:{display:"none",marginLeft:"15px"}})
-			for(let j=0,len2=categoryObjList.length;j<len2;j++){
+			for(let j=0;j<categoryObjList.length;j++){
 				let splitedCover = categoryObjList[j].cover.split("/")
 				let bookId = splitedCover[5] ? splitedCover[5] : splitedCover[4]
 				if(books_bookId_href[bookId]){

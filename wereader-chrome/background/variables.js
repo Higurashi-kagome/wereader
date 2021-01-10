@@ -15,7 +15,6 @@ var Config = {
     codeSuf: "```",
     displayN: false,
     addThoughts: false,
-    escape: false,
     backupName: "默认设置",
     re: [],
     flag: 0
@@ -38,7 +37,6 @@ const syncConfigTemplate = {
     codeSuf: "```",
     displayN: false,
     addThoughts: false,
-    escape: false,
     backupName: "默认设置",
     re: [],
     flag: 0
@@ -61,7 +59,6 @@ const backupTemplate = {
     codeSuf: "```",
     displayN: false,
     addThoughts: false,
-    escape: false,
     re: [],
     flag: 0
 }
