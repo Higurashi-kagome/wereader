@@ -8,6 +8,7 @@ var colId = "range"
 var rank = function (x, y) {
 	return (x[colId] > y[colId]) ? 1 : -1
 }
+
 //报错捕捉函数
 function catchErr(sender) {
 	if (chrome.runtime.lastError) {
@@ -38,26 +39,6 @@ function updateStorageArea(configMsg={},callback=function(){}){
             })
         })
     }
-}
-
-//获取当前背景页配置——用于测试
-function getConfig(){
-	return Config
-}
-
-//获取当前存储设置——用于测试
-function getStorage(area="sync",callback=function(setting){}){
-	if(["sync","local"].indexOf(area) > -1){
-		chrome.storage[area].get(function(setting){
-			callback(setting)
-		})
-	}else callback("请传入sync或local")
-}
-
-//alert()——用于测试
-function aler(text){
-	//alert(text)
-	console.log(text)
 }
 
 //存储 / 初始化设置
@@ -187,7 +168,7 @@ function addPreAndSuf(markText,style){
 
 //给 markText 进行正则匹配
 function getRegExpMarkText(markText,regexpCollection){
-	for(let n=0,len=regexpCollection.length;n<len;n++){
+	for(let n=0;n<regexpCollection.length;n++){
 		let pattern = regexpCollection[n][1]
 		let re = new RegExp(pattern)
 		if(re.test(markText)){
@@ -204,7 +185,7 @@ function addThoughts(chaptersAndMarks,bookId,contents,callback){
 		for(var key in thoughts){
 			//遍历章节将想法添加进marks
 			let has = 0
-			for(var i=0,len=chaptersAndMarks.length;i<len;i++){
+			for(var i=0;i<chaptersAndMarks.length;i++){
 				if(chaptersAndMarks[i].chapterUid == parseInt(key)){
 					colId = "range"
 					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[key]).sort(rank)
@@ -234,7 +215,7 @@ function getContents(bookId,callback){
 		//得到目录
 		var contentData = JSON.parse(data).data[0].updated
 		var contents = {}
-		for (var i = 0, len = contentData.length; i < len; i++) {
+		for (var i = 0; i < contentData.length; i++) {
 			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: parseInt(contentData[i].level) }
 		}
 		callback(contents)
@@ -245,7 +226,7 @@ function getContents(bookId,callback){
 function traverseMarks(marks,setting,all){
 	var res = ""
 	var index = 0
-	for (let j = 0, len = marks.length; j < len; j++) {//遍历章内标注
+	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
 		//只获取本章标注且当前标注不为想法时"[插图]"转图片
@@ -258,7 +239,7 @@ function traverseMarks(marks,setting,all){
 			}
 			let replacement = ''
 			if(imgsAndNotes[index].src){//图片
-				//非行内图片单独占行
+				//非行内图片单独占行（即使它与文字一起标注）
 				let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
 				replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
 			}else{//注释
@@ -270,11 +251,11 @@ function traverseMarks(marks,setting,all){
 		//正则匹配
 		markText = getRegExpMarkText(markText,setting.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
-		if(abstract){
+		if(abstract){//需要添加想法时，添加想法
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
 		}
 	}
-	for(let i=0,len=imgsAndNotes.length;i<len;i++){
+	for(let i=0;i<imgsAndNotes.length;i++){
 		if(imgsAndNotes[i].footnote){
 			res += `[^${imgsAndNotes[i].name}]:${imgsAndNotes[i].footnote}\n\n`
 		}
@@ -287,7 +268,7 @@ chrome.contextMenus.create({
     "title":"反馈",
     "contexts":["browser_action"],
     "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"})
+        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/new/choose"})
     }
 })
 

@@ -5,7 +5,7 @@ var contentElement = document.getElementsByClassName("readerCatalog_list")[0];
 try{
     let childs = contentElement.childNodes
     let texts = []
-    for (let i = 0,len = childs.length; i < len; i++){
+    for (let i = 0; i < childs.length; i++){
         let classname = childs[i].childNodes[0].className
         let level = classname.charAt(classname.length - 1)
         let textContent = childs[i].childNodes[0].childNodes[0].textContent

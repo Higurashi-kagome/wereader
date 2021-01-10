@@ -20,7 +20,7 @@ function requestImgNotes(imgAndnoteTags,s0,s1,s2){
     }
     //遍历标注元素更新 imgsAndNotes，根据标注元素与图片/注释在网站中的位置来判断图片/注释是否被标注
     function ergodic(markMask){
-        for(let j=0,len2=markMask.length;j<len2;j++){
+        for(let j=0;j<markMask.length;j++){
             let divTop = parseFloat(markMask[j].style.top.replace('px', ''))
             let divHeight = parseFloat(markMask[j].style.height.replace('px', ''))
             console.log(top + height - divTop - divHeight)
@@ -36,7 +36,7 @@ function requestImgNotes(imgAndnoteTags,s0,s1,s2){
         }
         return 0
     }
-    for(let i=0,len=imgAndnoteTags.length;i<len;i++){
+    for(let i=0;i<imgAndnoteTags.length;i++){
         imgSrc = imgAndnoteTags[i].getAttribute("data-src")
         footnote = imgAndnoteTags[i].getAttribute("data-wr-footernote")
         height = parseFloat(imgAndnoteTags[i].style.height.replace('px', ''))
