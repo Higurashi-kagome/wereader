@@ -243,7 +243,7 @@ function copyThought(bookId) {
 				let title = getTitleAddedPre(contents[key].title, contents[key].level)
 				res += title + "\n\n"
 				//遍历章内想法
-				for (var j = 0,; j < thoughts[key].length; j++) {
+				for (var j = 0; j < thoughts[key].length; j++) {
 					res += thoughts[key][j].abstract + "\n\n"
 					res += Config["thouPre"] + thoughts[key][j].content + Config["thouSuf"] + "\n\n"
 				}
