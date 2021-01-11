@@ -232,8 +232,8 @@ function traverseMarks(marks,setting,all){
 		//只获取本章标注且当前标注不为想法时"[插图]"转图片
 		while(!all && !abstract && /\[插图\]/.test(markText)){
 			if(!imgsAndNotes[index]){//数组越界
-				console.error(imgsAndNotes)
-				console.error(markText)
+				console.log(JSON.stringify(imgsAndNotes))
+				console.log(markText)
 				sendAlertMsg({title: "图片获取出错，建议反馈", text: imgsAndNotes, confirmButtonText: '确定',icon: "error"})
 				return ''
 			}
@@ -242,8 +242,11 @@ function traverseMarks(marks,setting,all){
 				//非行内图片单独占行（即使它与文字一起标注）
 				let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
 				replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
-			}else{//注释
+			}else if(imgsAndNotes[index].footnote){//注释
 				replacement = `[^${imgsAndNotes[index].name}]`
+			}else if(imgsAndNotes[index].code){
+				let inser = markText == '[插图]' ? '' : '\n\n'
+				replacement = `${inser}${setting.codePre}\n${imgsAndNotes[index].code}${setting.codeSuf}${inser}`
 			}
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
