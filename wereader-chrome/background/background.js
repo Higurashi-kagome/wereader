@@ -120,8 +120,9 @@ function copyBookMarks(bookId, all, setting) {
 				for (let i = 0, len = chaptersAndMarks.length; i < len; i++) {
 					//寻找目标章节并检查章内是否有标注
 					if (chaptersAndMarks[i].chapterUid == chapterUid && chaptersAndMarks[i].marks.length > 0) {
-						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
-						copy(res)
+						let str = traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						res += str
+						if(str)copy(res)//当str不为空（正确返回）时才复制
 						break
 					}
 					//处理该章节无标注的情况
@@ -129,7 +130,7 @@ function copyBookMarks(bookId, all, setting) {
 				}
 			}
 			//不排除 imgArr 获取失败，故保险起见将其设置为 []
-			imgsAndNotes = []
+			markedData = []
 		})
 	})
 }
@@ -217,7 +218,6 @@ function getMyThought(bookId, callback) {
 				}
 				if (json.reviews[j].review.chapterUid.toString() == chapterUid) {
 					var abstract = json.reviews[j].review.abstract
-					abstract = abstract == "[插图]" ? "{插图}" : abstract
 					var content = json.reviews[j].review.content
 					var range = json.reviews[j].review.range.replace(/-[0-9]*?"/, "").replace("\"", "")
 					thoughtsInAChapter.push({ abstract: abstract, content: content, range: parseInt(range) })
@@ -267,8 +267,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "copyImg":
 			copy(message.picText)
 			break
-		case "imgsAndNotes":
-			imgsAndNotes = message.imgsAndNotes
+		case "markedData":
+			markedData = message.markedData
 			break
 		case "bookId":
 			message.bid == "wrepub" ? background_bookId = background_tempbookId

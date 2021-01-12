@@ -229,24 +229,36 @@ function traverseMarks(marks,setting,all){
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
-		//只获取本章标注且当前标注不为想法时"[插图]"转图片
+		//只获取本章标注且不为想法时"[插图]"转图片、注释或代码块
 		while(!all && !abstract && /\[插图\]/.test(markText)){
-			if(!imgsAndNotes[index]){//数组越界
-				console.log(JSON.stringify(imgsAndNotes))
+			if(!markedData[index]){//数组越界
+				console.log(JSON.stringify(markedData))
 				console.log(markText)
-				sendAlertMsg({title: "图片获取出错，建议反馈", text: imgsAndNotes, confirmButtonText: '确定',icon: "error"})
+				sendAlertMsg({title: "图片获取出错，建议反馈", text: JSON.stringify(markedData), confirmButtonText: '确定',icon: "error"})
 				return ''
 			}
 			let replacement = ''
-			if(imgsAndNotes[index].src){//图片
+			if(markedData[index].src){//图片
 				//非行内图片单独占行（即使它与文字一起标注）
-				let inser = imgsAndNotes[index].isInlineImg || markText == '[插图]' ? '' : '\n\n'
-				replacement = `${inser}![${imgsAndNotes[index].alt}](${imgsAndNotes[index].src})${inser}`
-			}else if(imgsAndNotes[index].footnote){//注释
-				replacement = `[^${imgsAndNotes[index].name}]`
-			}else if(imgsAndNotes[index].code){
-				let inser = markText == '[插图]' ? '' : '\n\n'
-				replacement = `${inser}${setting.codePre}\n${imgsAndNotes[index].code}${setting.codeSuf}${inser}`
+				let inser1 = '', inser2 = ''
+				//不为行内图片且'[插图]'前有内容
+				if(!markedData[index].isInlineImg && markText.indexOf('[插图]') > 0)
+					inser1 = '\n\n'
+				//不为行内图片且'[插图]'后有内容
+				if(!markedData[index].isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
+					inser2 = '\n\n'
+				replacement = `${inser1}![${markedData[index].alt}](${markedData[index].src})${inser2}`
+			}else if(markedData[index].footnote){//注释
+				replacement = `[^${markedData[index].name}]`
+			}else if(markedData[index].code){//代码块
+				let inser1 = '', inser2 = ''
+				//'[插图]'前有内容
+				if(markText.indexOf('[插图]') > 0)
+					inser1 = '\n\n'
+				//'[插图]'后有内容
+				if(markText.indexOf('[插图]') != (markText.length - 4))
+					inser2 = '\n\n'
+				replacement = `${inser1}${setting.codePre}\n${markedData[index].code}${setting.codeSuf}${inser2}`
 			}
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
@@ -255,12 +267,12 @@ function traverseMarks(marks,setting,all){
 		markText = getRegExpMarkText(markText,setting.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
+			res += `${setting.thouPre}${marks[j].content}${setting.thouSuf}\n\n`
 		}
 	}
-	for(let i=0;i<imgsAndNotes.length;i++){
-		if(imgsAndNotes[i].footnote){
-			res += `[^${imgsAndNotes[i].name}]:${imgsAndNotes[i].footnote}\n\n`
+	for(let i=0;i<markedData.length;i++){
+		if(markedData[i].footnote){
+			res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
 		}
 	}
 	return res
