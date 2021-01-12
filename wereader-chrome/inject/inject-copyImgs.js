@@ -43,6 +43,7 @@ function concatElement(imgAndNoteElems, preElems){
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent
     }
+    //处理图片和注释
     for (let i = 0; i < imgAndNoteElems.length; i++) {
         const element = imgAndNoteElems[i];
         let imgSrc = element.getAttribute("data-src");
@@ -59,7 +60,7 @@ function concatElement(imgAndNoteElems, preElems){
             objArr.push(new FootNote(`${currentContent}-${notesCounter}`,footnote,height,top));
         }
     }
-
+    //处理代码块
     for (let i = 0; i < preElems.length; i++) {
         const element = preElems[i];
         let code = element.textContent;
@@ -72,9 +73,16 @@ function concatElement(imgAndNoteElems, preElems){
 
     objArr.sort(function (x, y) {
         //需要排序的实际上只有代码块，加 5 可防止同行图片被错误排序
-        return ((x.top+x.height) > (y.top+y.height+5)) ? 1 : -1
+        let sub = (x.top+x.height) - (y.top+y.height);
+        if (sub<-5) {//y比x明显偏下
+            return -1;
+        }
+        if (sub>5) {//x比y明显偏下
+            return 1;
+        }
+        return 0;
     })
-    //console.log(JSON.stringify(objArr))
+    console.log(JSON.stringify(objArr))
     return objArr;
 }
 

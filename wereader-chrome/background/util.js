@@ -230,7 +230,7 @@ function traverseMarks(marks,setting,all){
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
 		//只获取本章标注且不为想法时"[插图]"转图片、注释或代码块
-		while(!all && !abstract && /\[插图\]/.test(markText))){
+		while(!all && !abstract && /\[插图\]/.test(markText)){
 			if(!markedData[index]){//数组越界
 				console.log(JSON.stringify(markedData))
 				console.log(markText)

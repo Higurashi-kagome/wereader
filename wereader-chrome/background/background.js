@@ -120,8 +120,9 @@ function copyBookMarks(bookId, all, setting) {
 				for (let i = 0, len = chaptersAndMarks.length; i < len; i++) {
 					//寻找目标章节并检查章内是否有标注
 					if (chaptersAndMarks[i].chapterUid == chapterUid && chaptersAndMarks[i].marks.length > 0) {
-						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
-						copy(res)
+						let str = traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						res += str
+						if(str)copy(res)//当str不为空（正确返回）时才复制
 						break
 					}
 					//处理该章节无标注的情况
