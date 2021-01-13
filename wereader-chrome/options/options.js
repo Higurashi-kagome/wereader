@@ -127,7 +127,7 @@ function updateStorageArea(configMsg={},callback=function(){}){
                 callback()
             })  
         })
-    }else if(configMsg.key && configMsg.value){
+    }else if(configMsg.key != undefined){//不排除特殊键值，所以判断是否为 undefined
         let config = {}
         let key = configMsg.key
         let value = configMsg.value
