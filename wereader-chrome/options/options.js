@@ -1,9 +1,9 @@
 /* 设置页 */
 
-main(initialize)
+main()
 
 //入口
-function main(callback){
+function main(){
     chrome.storage.sync.get(function(setting) {
         console.log("chrome.storage.sync.get(function(setting){\nconsole.log(setting)\n})")
         console.log(setting)
@@ -11,7 +11,7 @@ function main(callback){
             console.log("chrome.storage.local.get(function(settings){\nconsole.log(settings)\n})")
             console.log(settings)
             console.log("********************************************")
-            callback(setting,settings)
+            initialize(setting,settings)
         })
     })
 }
@@ -58,7 +58,7 @@ function addProfile(){
                     updateStorageArea({setting:setting,settings:settings},function(){
                         promptContainer.style.display = "none"
                         setAttributes(input,{value:"",placeholder:""})
-                        main(initialize)
+                        main()
                     })
                 })
             }
@@ -85,7 +85,7 @@ function deleteProfile(){
             updateStorageArea({setting:setting,settings:settings},function(){
                 confirmLabel.textContent = ""
                 confirmContainer.style.display = "none"
-                main(initialize)
+                main()
             })
         })
     }
@@ -121,7 +121,7 @@ function renameProfile(){
                 updateStorageArea({setting:setting,settings:settings},function(){
                     promptContainer.style.display = "none"
                     setAttributes(input,{value:"",placeholder:""})
-                    main(initialize)
+                    main()
                 })
             }
         })
@@ -272,7 +272,7 @@ function initialConfigSelect(setting,settings){
             setting[BACKUPNAME] = profileName
             chrome.storage.sync.set(setting,function(){
                 if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
-                main(initialize)
+                main()
             })
         })
     }
