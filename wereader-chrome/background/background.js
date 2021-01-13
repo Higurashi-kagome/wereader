@@ -34,7 +34,7 @@ function getComment(userVid, bookId, isHtml) {
 function copyContents(){
 	isCopyContent = true;
 	chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
-		catchErr("copyContents => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+		catchErr("copyContents")
 	})
 }
 
@@ -93,14 +93,11 @@ function getBookMarks(bookId, add, contents, callback) {
 }
 
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(bookId, all, setting) {
-	var add = setting.addThoughts
+function copyBookMarks(bookId, all) {
 	//请求需要追加到文本中的图片 Markdown 文本
-	chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' }, function (result) {
-		catchErr("copyBookMarks() => chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' })")
-	})
+	sendMessageToContentScript({isGetMarkedData:true})
 	getContents(bookId,function(contents){
-		getBookMarks(bookId, add, contents, function (chaptersAndMarks) {
+		getBookMarks(bookId, Config.addThoughts, contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
 			if (all) {	//获取全书标注
@@ -110,7 +107,7 @@ function copyBookMarks(bookId, all, setting) {
 					let level = contents[chapterUid].level
 					if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
 						res += getTitleAddedPre(title, level) + "\n\n"
-						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						res += traverseMarks(chaptersAndMarks[i].marks,all)
 					}
 				}
 				copy(res)
@@ -128,7 +125,7 @@ function copyBookMarks(bookId, all, setting) {
 				for (let i = 0, len = chaptersAndMarks.length; i < len; i++) {
 					//寻找目标章节并检查章内是否有标注
 					if (chaptersAndMarks[i].chapterUid == chapterUid && chaptersAndMarks[i].marks.length > 0) {
-						let str = traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						let str = traverseMarks(chaptersAndMarks[i].marks,all)
 						res += str
 						if(str)copy(res)//当str不为空（正确返回）时才复制
 						break
@@ -179,8 +176,7 @@ function getBestBookMarks(bookId, callback) {
 }
 
 //处理数据，复制热门标注
-function copyBestBookMarks(bookId,setting) {
-	let add = setting.displayN
+function copyBestBookMarks(bookId) {
 	getContents(bookId,function(contents){
 		getBestBookMarks(bookId, function (bestMarks) {
 			//得到res
@@ -194,7 +190,7 @@ function copyBestBookMarks(bookId,setting) {
 				for (let j = 0; j < item.length; j++) {
 					let markText = item[j].markText
 					let totalCount = item[j].totalCount
-					res += markText + (add ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
+					res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
 				}
 			}
 			copy(res)
@@ -361,10 +357,10 @@ function setPopupAndBid(tab){
 		background_bookcontents = background_bookcontents_default
 		//注入脚本获取全部目录数据和当前目录
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
-			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+			catchErr("setPopupAndBid(tab)")
 		})
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-bid.js' })")
+			catchErr("setPopupAndBid(tab)")
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}

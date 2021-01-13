@@ -49,6 +49,8 @@ function settingInitialize() {
 			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
 				setting[key] = Config[key]
+			}else{
+				Config[key] = setting[key]
 			}
 		}
 		//存储到 sync
@@ -223,7 +225,7 @@ function getContents(bookId,callback){
 }
 
 //获取章内标注
-function traverseMarks(marks,setting,all){
+function traverseMarks(marks,all){
 	var res = ""
 	var index = 0
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
@@ -258,16 +260,16 @@ function traverseMarks(marks,setting,all){
 				//'[插图]'后有内容
 				if(markText.indexOf('[插图]') != (markText.length - 4))
 					inser2 = '\n\n'
-				replacement = `${inser1}${setting.codePre}\n${markedData[index].code}${setting.codeSuf}${inser2}`
+				replacement = `${inser1}${Config.codePre}\n${markedData[index].code}${Config.codeSuf}${inser2}`
 			}
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
 		}
 		//正则匹配
-		markText = getRegExpMarkText(markText,setting.checkedRe)
+		markText = getRegExpMarkText(markText,Config.checkedRe)
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
-			res += `${setting.thouPre}${marks[j].content}${setting.thouSuf}\n\n`
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
 		}
 	}
 	for(let i=0;i<markedData.length;i++){
@@ -298,6 +300,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 					uselessKeys.push(key)
 					continue
 				}
+				//更新 Config
 				Config[key] = setting[key]
 			}
 			chrome.storage.sync.remove(uselessKeys,function(){
