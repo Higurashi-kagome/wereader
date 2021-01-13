@@ -43,9 +43,7 @@ window.onload = function () {
                         bg.copyBookMarks(bookId, true, setting)
                         break
                     case "getBookContents":
-                        chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
-                            bg.catchErr("popup.js => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
-                        })
+                        bg.copyContents()
                         break
                     case "getBestBookMarks":
                         bg.copyBestBookMarks(bookId,setting)

@@ -72,3 +72,5 @@ const background_bookcontents_default = "getBookContents"
 const background_backupKey = "backup"
 //保存图片Markdown文本的数组
 var markedData = []
+//用于记录 popup 是否请求复制目录
+var isCopyContent = false;

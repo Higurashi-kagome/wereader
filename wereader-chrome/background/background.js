@@ -30,6 +30,14 @@ function getComment(userVid, bookId, isHtml) {
 	});
 }
 
+//获取目录:pupup
+function copyContents(){
+	isCopyContent = true;
+	chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
+		catchErr("copyContents => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+	})
+}
+
 //获取标注数据
 function getBookMarks(bookId, add, contents, callback) {
 	const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`
@@ -291,14 +299,20 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			let contents = message.contents
 			let res = ''
 			//生成目录res
-			for (var i = 0; i < contents.length; i++) {
-				var level = contents[i].charAt(0)
-				var chapterInfo = contents[i].substr(1)
+			for (let i = 0; i < contents.length; i++) {
+				let level = contents[i].charAt(0)
+				let chapterInfo = contents[i].substr(1)
 				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
-			//如果需要获取目录，则设置，如果不需要获取目录，直接复制
-			(background_bookcontents == background_bookcontents_default) ? 
-			(background_bookcontents = res) : copy(res)
+			//如果需要获取目录，则设置
+			if(background_bookcontents == background_bookcontents_default){
+				background_bookcontents = res
+			}
+			//如果为popup请求复制目录，则复制内容
+			if(isCopyContent){
+				copy(res)
+				isCopyContent = false
+			}
 			//设置当前所在目录
 			background_currentContent = message.currentContent
 			break
