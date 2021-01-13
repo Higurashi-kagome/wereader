@@ -53,7 +53,9 @@
             "*://weread.qq.com/web/reader/*"
          ],
          "js": [
-            "content/content-notice.js","content/content-scrollNote.js"
+            "content/content-notice.js",
+            "content/content-scrollNote.js",
+            "content/content-markedData.js"
          ],
          "run_at": "document_end"
       },
