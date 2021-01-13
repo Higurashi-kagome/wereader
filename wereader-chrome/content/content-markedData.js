@@ -138,40 +138,16 @@ function main(setting){
     var wr_myNote = []
     if(setting.addThoughts){
         //TODO
-        /* let marks = []
-        let item_title = document.getElementsByClassName('sectionListItem_title');
-        for (let i = 0; i < item_title.length; i++) {
-            const element = item_title[i];
-            if(element.textContent == currentContent){
-                var parentNode = element.parentNode
-            }
-        }
-        while(true){
-            //获取被标注内容（包括添加了想法的内容）
-            let markText = parentNode.getElementsByClassName('text')[0].textContent;
-            marks.push(markText);
-            parentNode = parentNode.nextElementSibling;
-            //不存在标注或抵达下一章则结束
-            if(parentNode == null || parentNode.getElementsByClassName('sectionListItem_title')[0])break;
-            // let abstract = parentNode.getElementsByClassName('abstract')[0]
-            // let abstractText = abstract?abstract.textContent:undefined
-        }
-        //获取'[插图]'个数
-        let count = 0
-        for (let i = 0; i < marks.length; i++) {
-            const text = marks[i];
-            if(text.indexOf('[插图]')>-1)count++;
-        } */
-        //获取想法标注元素
-        //wr_myNote = document.getElementsByClassName("wr_myNote");
-        //如果想法标注个数小于'[插图]'个数
-        /* if(wr_myNote.length<count){} */
     }
     let markedData = getMarkedData(objArr,s0,s1,s2,wr_myNote);
     setMesToBg(markedData)
 }
 
-//console.log("inject-copyImgs.js：被注入")
-chrome.storage.sync.get(function(setting){
-    main(setting)
+//console.log("content-markedData.js：被注入")
+chrome.runtime.onMessage.addListener(function(msg){
+    if(msg.isGetMarkedData){
+        chrome.storage.sync.get(function(setting){
+            main(setting)
+        })
+    }
 })
