@@ -20,9 +20,9 @@ function catchErr(sender) {
 }
 
 //更新sync和local——处理设置页onchange不生效的问题
-function updateStorageArea(configMsg={},callback=function(){}){
+function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	if(configMsg.key && configMsg.value){
+	if(configMsg.key != undefined){
         let config = {}
         let key = configMsg.key
         let value = configMsg.value
@@ -33,7 +33,9 @@ function updateStorageArea(configMsg={},callback=function(){}){
                 const currentProfile = configMsg.currentProfile
                 settings[background_backupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+					if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+					else console.log("updateStorageAreainBg updated local：")
+					console.log(settings)
                     callback()
                 })
             })
@@ -69,6 +71,8 @@ function settingInitialize() {
 			}
 			chrome.storage.local.set(localSetting,function(){
 				if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
+				else console.log("settingInitialize updated local：")
+				console.log(localSetting)
 			})
 		})
 	})
@@ -300,6 +304,7 @@ chrome.contextMenus.create({
 
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
+	console.log(changes)
 	if(namespace == "sync"){
 		chrome.storage.sync.get(function(setting){
 			let uselessKeys = []
@@ -326,9 +331,12 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 					}
 				}
 			}
-			chrome.storage.local.set(settings,function(){
+			//todo
+			/* chrome.storage.local.set(settings,function(){
 				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
-			})
+				else console.log("onChanged.addListener updated local：")
+				console.log(settings)
+			}) */
 		})
 	}
 })
