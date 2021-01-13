@@ -20,9 +20,9 @@ function catchErr(sender) {
 }
 
 //更新sync和local——处理设置页onchange不生效的问题
-function updateStorageArea(configMsg={},callback=function(){}){
+function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	if(configMsg.key && configMsg.value){
+	if(configMsg.key != undefined){
         let config = {}
         let key = configMsg.key
         let value = configMsg.value
@@ -33,7 +33,9 @@ function updateStorageArea(configMsg={},callback=function(){}){
                 const currentProfile = configMsg.currentProfile
                 settings[background_backupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+					if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+					else console.log("updateStorageAreainBg updated local：")
+					console.log(settings)
                     callback()
                 })
             })
@@ -49,6 +51,8 @@ function settingInitialize() {
 			//这里必须判断是否为 undefined，因为 false 属于正常值
 			if(setting[key] == undefined){
 				setting[key] = Config[key]
+			}else{
+				Config[key] = setting[key]
 			}
 		}
 		//存储到 sync
@@ -67,6 +71,8 @@ function settingInitialize() {
 			}
 			chrome.storage.local.set(localSetting,function(){
 				if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
+				else console.log("settingInitialize updated local：")
+				console.log(localSetting)
 			})
 		})
 	})
@@ -223,7 +229,7 @@ function getContents(bookId,callback){
 }
 
 //获取章内标注
-function traverseMarks(marks,setting,all){
+function traverseMarks(marks,all){
 	var res = ""
 	var index = 0
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
@@ -258,25 +264,34 @@ function traverseMarks(marks,setting,all){
 				//'[插图]'后有内容
 				if(markText.indexOf('[插图]') != (markText.length - 4))
 					inser2 = '\n\n'
-				replacement = `${inser1}${setting.codePre}\n${markedData[index].code}${setting.codeSuf}${inser2}`
+				replacement = `${inser1}${Config.codePre}\n${markedData[index].code}${Config.codeSuf}${inser2}`
 			}
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
 		}
-		//正则匹配
-		markText = getRegExpMarkText(markText,setting.checkedRe)
+		
+		if(abstract){//如果为想法，则添加前后缀
+			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`
+		}else{//不是想法（为标注）则进行正则匹配
+			markText = getRegExpMarkText(markText,Config.checkedRe)
+		}
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
-			res += `${setting.thouPre}${marks[j].content}${setting.thouSuf}\n\n`
+			//替换掉想法前后空字符
+			let content = marks[j].content.replace(/(^\s*|\s*$)/mg,'')
+			res += `${Config.thouPre}${content}${Config.thouSuf}\n\n`
 		}
 	}
-	for(let i=0;i<markedData.length;i++){
-		if(markedData[i].footnote){
-			res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
+	if(!all){//只在获取本章时添加注脚
+		for(let i=0;i<markedData.length;i++){
+			if(markedData[i].footnote){
+				res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
+			}
 		}
 	}
 	return res
 }
+
 //右键反馈
 chrome.contextMenus.create({
     "type":"normal",
@@ -289,6 +304,7 @@ chrome.contextMenus.create({
 
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
+	console.log(changes)
 	if(namespace == "sync"){
 		chrome.storage.sync.get(function(setting){
 			let uselessKeys = []
@@ -298,6 +314,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 					uselessKeys.push(key)
 					continue
 				}
+				//更新 Config
 				Config[key] = setting[key]
 			}
 			chrome.storage.sync.remove(uselessKeys,function(){
@@ -314,9 +331,12 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 					}
 				}
 			}
-			chrome.storage.local.set(settings,function(){
+			//todo
+			/* chrome.storage.local.set(settings,function(){
 				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
-			})
+				else console.log("onChanged.addListener updated local：")
+				console.log(settings)
+			}) */
 		})
 	}
 })

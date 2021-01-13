@@ -12,6 +12,8 @@
             "lev3":"",
             "thouPre":"",
             "thouSuf":"",
+            "thouMarkPre": "```\n",
+            "thouMarkSuf": "\n```",
             "codePre":"",
             "codeSuf":"",
             "checkedRe":"",

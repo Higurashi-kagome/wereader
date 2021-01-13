@@ -30,6 +30,14 @@ function getComment(userVid, bookId, isHtml) {
 	});
 }
 
+//获取目录:pupup
+function copyContents(){
+	isCopyContent = true;
+	chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
+		catchErr("copyContents")
+	})
+}
+
 //获取标注数据
 function getBookMarks(bookId, add, contents, callback) {
 	const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`
@@ -85,14 +93,11 @@ function getBookMarks(bookId, add, contents, callback) {
 }
 
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(bookId, all, setting) {
-	var add = setting.addThoughts
+function copyBookMarks(bookId, all) {
 	//请求需要追加到文本中的图片 Markdown 文本
-	chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' }, function (result) {
-		catchErr("copyBookMarks() => chrome.tabs.executeScript({ file: 'inject/inject-copyImgs.js' })")
-	})
+	sendMessageToContentScript({isGetMarkedData:true})
 	getContents(bookId,function(contents){
-		getBookMarks(bookId, add, contents, function (chaptersAndMarks) {
+		getBookMarks(bookId, Config.addThoughts, contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
 			if (all) {	//获取全书标注
@@ -102,7 +107,7 @@ function copyBookMarks(bookId, all, setting) {
 					let level = contents[chapterUid].level
 					if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
 						res += getTitleAddedPre(title, level) + "\n\n"
-						res += traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						res += traverseMarks(chaptersAndMarks[i].marks,all)
 					}
 				}
 				copy(res)
@@ -120,7 +125,7 @@ function copyBookMarks(bookId, all, setting) {
 				for (let i = 0, len = chaptersAndMarks.length; i < len; i++) {
 					//寻找目标章节并检查章内是否有标注
 					if (chaptersAndMarks[i].chapterUid == chapterUid && chaptersAndMarks[i].marks.length > 0) {
-						let str = traverseMarks(chaptersAndMarks[i].marks,setting,all)
+						let str = traverseMarks(chaptersAndMarks[i].marks,all)
 						res += str
 						if(str)copy(res)//当str不为空（正确返回）时才复制
 						break
@@ -171,8 +176,7 @@ function getBestBookMarks(bookId, callback) {
 }
 
 //处理数据，复制热门标注
-function copyBestBookMarks(bookId,setting) {
-	let add = setting.displayN
+function copyBestBookMarks(bookId) {
 	getContents(bookId,function(contents){
 		getBestBookMarks(bookId, function (bestMarks) {
 			//得到res
@@ -186,7 +190,7 @@ function copyBestBookMarks(bookId,setting) {
 				for (let j = 0; j < item.length; j++) {
 					let markText = item[j].markText
 					let totalCount = item[j].totalCount
-					res += markText + (add ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
+					res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
 				}
 			}
 			copy(res)
@@ -244,8 +248,8 @@ function copyThought(bookId) {
 				res += title + "\n\n"
 				//遍历章内想法
 				for (var j = 0; j < thoughts[key].length; j++) {
-					res += thoughts[key][j].abstract + "\n\n"
-					res += Config["thouPre"] + thoughts[key][j].content + Config["thouSuf"] + "\n\n"
+					res += `${Config.thouMarkPre}${thoughts[key][j].abstract}${Config.thouMarkSuf}\n\n`
+					res += `${Config.thouPre}${thoughts[key][j].content}${Config.thouSuf}\n\n`
 				}
 			}
 			//处理书本无想法的请况
@@ -291,14 +295,20 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			let contents = message.contents
 			let res = ''
 			//生成目录res
-			for (var i = 0; i < contents.length; i++) {
-				var level = contents[i].charAt(0)
-				var chapterInfo = contents[i].substr(1)
+			for (let i = 0; i < contents.length; i++) {
+				let level = contents[i].charAt(0)
+				let chapterInfo = contents[i].substr(1)
 				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
-			//如果需要获取目录，则设置，如果不需要获取目录，直接复制
-			(background_bookcontents == background_bookcontents_default) ? 
-			(background_bookcontents = res) : copy(res)
+			//如果需要获取目录，则设置
+			if(background_bookcontents == background_bookcontents_default){
+				background_bookcontents = res
+			}
+			//如果为popup请求复制目录，则复制内容
+			if(isCopyContent){
+				copy(res)
+				isCopyContent = false
+			}
 			//设置当前所在目录
 			background_currentContent = message.currentContent
 			break
@@ -306,8 +316,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			aler(message.message)
 			break
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
-			updateStorageArea(message.regexpSet.allRegexp,function(){//更新全部正则
-				updateStorageArea(message.regexpSet.checkedRegexp)//更新已启用正则
+			updateStorageAreainBg(message.regexpSet.allRegexp,function(){//更新全部正则
+				updateStorageAreainBg(message.regexpSet.checkedRegexp)//更新已启用正则
 			})
 			break
 	}
@@ -347,10 +357,10 @@ function setPopupAndBid(tab){
 		background_bookcontents = background_bookcontents_default
 		//注入脚本获取全部目录数据和当前目录
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
-			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' })")
+			catchErr("setPopupAndBid(tab)")
 		})
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("setPopupAndBid(tab) => chrome.tabs.executeScript({ file: 'inject/inject-bid.js' })")
+			catchErr("setPopupAndBid(tab)")
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}

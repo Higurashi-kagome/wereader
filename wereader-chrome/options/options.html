@@ -177,7 +177,25 @@
 				<textarea type="text" maxlength="150" id="thouSuf"></textarea>
 			</div>
 			<div hidden="" class="help-content">
-				<p>想法也就是你平时读书的时候在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>
+				<p>想法也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>
+			</div>
+			<!--  -->
+			<!-- 想法标注前缀 -->
+			<div class="option vertical">
+				<label for="thouMarkPre" id="thouMarkPreLabel">想法标注前缀<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0">
+					</span>
+				</label>
+				<textarea type="text" maxlength="150" id="thouMarkPre"></textarea>
+			</div>
+			<!-- 想法标注后缀 -->
+			<div class="option vertical">
+				<label for="thouMarkSuf" id="thouMarkSufLabel">想法标注后缀</label>
+				<textarea type="text" maxlength="150" id="thouMarkSuf"></textarea>
+			</div>
+			<div hidden="" class="help-content">
+				<p>想法标注即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>
 			</div>
 		</details>
 		<!-- 代码块 -->
@@ -207,7 +225,7 @@
 			<!--  -->
 			<div class="regexpContainer">
 				<div class="option">
-					<label for="thouSuf" id="thouSufLabel">正则表达式1<span class="help-icon"><img
+					<label for="re1" id="re1Label">正则表达式1<span class="help-icon"><img
 								src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
 								tabindex="0">
 						</span>
@@ -255,7 +273,7 @@
 			<!--  -->
 			<div class="regexpContainer">
 				<div class="option">
-					<label for="thouSuf" id="thouSufLabel">正则表达式2</label>
+					<label for="re2" id="re2Label">正则表达式2</label>
 					<input type="checkbox" class="contextMenuEnabledInput" id="re2">
 				</div>
 				<div class="option vertical">
@@ -269,7 +287,7 @@
 			<!--  -->
 			<div class="regexpContainer">
 				<div class="option">
-					<label for="thouSuf" id="thouSufLabel">正则表达式3</label>
+					<label for="re3" id="re3Label">正则表达式3</label>
 					<input type="checkbox" class="contextMenuEnabledInput" id="re3">
 				</div>
 				<div class="option vertical">
@@ -283,7 +301,7 @@
 			<!--  -->
 			<div class="regexpContainer">
 				<div class="option">
-					<label for="thouSuf" id="thouSufLabel">正则表达式4</label>
+					<label for="re4" id="re4Label">正则表达式4</label>
 					<input type="checkbox" class="contextMenuEnabledInput" id="re4">
 				</div>
 				<div class="option vertical">
@@ -297,7 +315,7 @@
 			<!--  -->
 			<div class="regexpContainer">
 				<div class="option">
-					<label for="thouSuf" id="thouSufLabel">正则表达式5</label>
+					<label for="re5" id="re5Label">正则表达式5</label>
 					<input type="checkbox" class="contextMenuEnabledInput" id="re5">
 				</div>
 				<div class="option vertical">
