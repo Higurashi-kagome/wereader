@@ -265,20 +265,29 @@ function traverseMarks(marks,all){
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
 		}
-		//正则匹配
-		markText = getRegExpMarkText(markText,Config.checkedRe)
+		
+		if(abstract){//如果为想法，则添加前后缀
+			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`
+		}else{//不是想法（为标注）则进行正则匹配
+			markText = getRegExpMarkText(markText,Config.checkedRe)
+		}
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
+			//替换掉想法前后空字符
+			let content = marks[j].content.replace(/(^\s*|\s*$)/mg,'')
+			res += `${Config.thouPre}${content}${Config.thouSuf}\n\n`
 		}
 	}
-	for(let i=0;i<markedData.length;i++){
-		if(markedData[i].footnote){
-			res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
+	if(!all){//只在获取本章时添加注脚
+		for(let i=0;i<markedData.length;i++){
+			if(markedData[i].footnote){
+				res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
+			}
 		}
 	}
 	return res
 }
+
 //右键反馈
 chrome.contextMenus.create({
     "type":"normal",
