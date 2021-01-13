@@ -248,8 +248,8 @@ function copyThought(bookId) {
 				res += title + "\n\n"
 				//遍历章内想法
 				for (var j = 0; j < thoughts[key].length; j++) {
-					res += thoughts[key][j].abstract + "\n\n"
-					res += Config["thouPre"] + thoughts[key][j].content + Config["thouSuf"] + "\n\n"
+					res += `${Config.thouMarkPre}${thoughts[key][j].abstract}${Config.thouMarkSuf}\n\n`
+					res += `${Config.thouPre}${thoughts[key][j].content}${Config.thouSuf}\n\n`
 				}
 			}
 			//处理书本无想法的请况

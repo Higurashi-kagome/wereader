@@ -1,6 +1,20 @@
 /* 设置页 */
-//初始化设置页
-initialize()
+
+main(initialize)
+
+//入口
+function main(callback){
+    chrome.storage.sync.get(function(setting) {
+        console.log("chrome.storage.sync.get(function(setting){\nconsole.log(setting)\n})")
+        console.log(setting)
+        chrome.storage.local.get(function(settings){
+            console.log("chrome.storage.local.get(function(settings){\nconsole.log(settings)\n})")
+            console.log(settings)
+            console.log("********************************************")
+            callback(setting,settings)
+        })
+    })
+}
 
 //报错捕捉函数
 function catchErr(sender) {
@@ -44,7 +58,7 @@ function addProfile(){
                     updateStorageArea({setting:setting,settings:settings},function(){
                         promptContainer.style.display = "none"
                         setAttributes(input,{value:"",placeholder:""})
-                        initialize()
+                        main(initialize)
                     })
                 })
             }
@@ -71,7 +85,7 @@ function deleteProfile(){
             updateStorageArea({setting:setting,settings:settings},function(){
                 confirmLabel.textContent = ""
                 confirmContainer.style.display = "none"
-                initialize()
+                main(initialize)
             })
         })
     }
@@ -107,7 +121,7 @@ function renameProfile(){
                 updateStorageArea({setting:setting,settings:settings},function(){
                     promptContainer.style.display = "none"
                     setAttributes(input,{value:"",placeholder:""})
-                    initialize()
+                    main(initialize)
                 })
             }
         })
@@ -213,142 +227,134 @@ function initializeBasic(){
     }
 }
 
-//初始化
-function initialize(){
-    initializeBasic()
-    /************************************************************************************/
-    chrome.storage.sync.get(function(setting) {
-        console.log("chrome.storage.sync.get(function(setting){\nconsole.log(setting)\n})")
-        console.log(setting)
-        /************************************************************************************/
-        /* 配置选项初始化 */
-        chrome.storage.local.get(function(settings){
-            console.log("chrome.storage.local.get(function(settings){\nconsole.log(settings)\n})")
-            console.log(settings)
-            console.log("********************************************")
-            let profileNamesInput = document.getElementById("profileNamesInput")
-            //先清空select列表
-            profileNamesInput.options.length = 0
-            //各配置添加到select列表
-            for(let key in settings[BACKUPKEY]){
-                let option = document.createElement("option")
-                option.text = key
-                if(key == DEFAULT_BACKUPNAME){
-                    profileNamesInput.add(option,profileNamesInput.options[0])//默认设置放第一位
-                }else{
-                    profileNamesInput.add(option,null)
-                }
-            }
-            //选中当前配置
-            let currentProfile = setting[BACKUPNAME]
-            if(settings[BACKUPKEY][currentProfile] == undefined){//处理当前配置在local中不存在的情况
-                settings[BACKUPKEY][currentProfile] = setting
-                chrome.storage.local.set(settings,function(){
-                    if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
-                })
-            }
-            let options = profileNamesInput.options
-            for (let i=0; i<options.length; i++){
-                if(options[i].text == currentProfile){
-                    options[i].selected = true
-                    //设置重命名按钮和删除配置按钮的disabled属性
-                    let isDisabled = (currentProfile == DEFAULT_BACKUPNAME)
-                    document.getElementById("deleteProfileButton").disabled = isDisabled
-                    document.getElementById("renameProfileButton").disabled = isDisabled
-                    break
-                }
-            }
-            //当只存在默认设置时select控件的disabled属性设置为true
-            profileNamesInput.disabled = (options.length == 1 && profileNamesInput.value == DEFAULT_BACKUPNAME)
-            //选项改变则重载
-            profileNamesInput.onchange = function(){
-                let profileName = this.value
-                chrome.storage.local.get(function(settings){
-                    let setting = settings[BACKUPKEY][profileName]
-                    if(setting == undefined)return
-                    setting[BACKUPNAME] = profileName
-                    chrome.storage.sync.set(setting,function(){
-                        if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
-                        initialize()
-                    })
-                })
-            }
+//配置 select 初始化
+function initialConfigSelect(setting,settings){
+    let profileNamesInput = document.getElementById("profileNamesInput")
+    //先清空select列表
+    profileNamesInput.options.length = 0
+    //各配置添加到select列表
+    for(let key in settings[BACKUPKEY]){
+        let option = document.createElement("option")
+        option.text = key
+        if(key == DEFAULT_BACKUPNAME){
+            profileNamesInput.add(option,profileNamesInput.options[0])//默认设置放第一位
+        }else{
+            profileNamesInput.add(option,null)
+        }
+    }
+    //选中当前配置
+    let currentProfile = setting[BACKUPNAME]
+    if(settings[BACKUPKEY][currentProfile] == undefined){//处理当前配置在local中不存在的情况
+        settings[BACKUPKEY][currentProfile] = setting
+        chrome.storage.local.set(settings,function(){
+            if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
         })
-        //新建配置
-        document.getElementById("addProfileButton").onclick = addProfile
-        //删除设置
-        document.getElementById("deleteProfileButton").onclick = deleteProfile
-        //重命名设置
-        document.getElementById("renameProfileButton").onclick = renameProfile
+    }
+    let options = profileNamesInput.options
+    for (let i=0; i<options.length; i++){
+        if(options[i].text == currentProfile){
+            options[i].selected = true
+            //设置重命名按钮和删除配置按钮的disabled属性
+            let isDisabled = (currentProfile == DEFAULT_BACKUPNAME)
+            document.getElementById("deleteProfileButton").disabled = isDisabled
+            document.getElementById("renameProfileButton").disabled = isDisabled
+            break
+        }
+    }
+    //当只存在默认设置时select控件的disabled属性设置为true
+    profileNamesInput.disabled = (options.length == 1 && profileNamesInput.value == DEFAULT_BACKUPNAME)
+    //选项改变则重载
+    profileNamesInput.onchange = function(){
+        let profileName = this.value
+        chrome.storage.local.get(function(settings){
+            let setting = settings[BACKUPKEY][profileName]
+            if(setting == undefined)return
+            setting[BACKUPNAME] = profileName
+            chrome.storage.sync.set(setting,function(){
+                if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
+                main(initialize)
+            })
+        })
+    }
+    //新建配置
+    document.getElementById("addProfileButton").onclick = addProfile
+    //删除设置
+    document.getElementById("deleteProfileButton").onclick = deleteProfile
+    //重命名设置
+    document.getElementById("renameProfileButton").onclick = renameProfile
+}
 
-        //"标注、标题、想法、代码块" input 事件
-        const inputIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3","thouPre","thouSuf","codePre","codeSuf"]
-        //"是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
-        const CheckBoxIds = ["displayN","addThoughts"]
-        const ids = inputIds.concat(CheckBoxIds)
-        for(let i=0;i<ids.length;i++){
-            let id = ids[i]
-            let element = document.getElementById(id)
-            let isInput = inputIds.indexOf(id) > -1
-            isInput ? element.value = setting[id] : element.checked = setting[id]
-            element.onchange = function(){
-                let key = this.id
-                let value = isInput ? this.value : this.checked
-                updateStorageArea({key:key,value:value})
+//初始化
+function initialize(setting,settings){
+    initializeBasic()
+    initialConfigSelect(setting,settings)
+
+    /* 当前设置初始化 */
+    //"标注、标题、想法、代码块" input 事件
+    //"是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
+    const ids = inputIds.concat(CheckBoxIds)
+    for(let i=0;i<ids.length;i++){
+        let id = ids[i]
+        let element = document.getElementById(id)
+        let isInput = inputIds.indexOf(id) > -1
+        isInput ? element.value = setting[id] : element.checked = setting[id]
+        element.onchange = function(){
+            let key = this.id
+            let value = isInput ? this.value : this.checked
+            updateStorageArea({key:key,value:value})
+        }
+    }
+    /************************************************************************************/
+    /* 正则匹配初始化 */
+    function setRegexpValue(parent,reMsg){
+        let regexpInput = parent.getElementsByClassName("regexp")[0]
+        setAttributes(regexpInput,{placeholder:"",value:reMsg[1]})
+        parent.getElementsByClassName("regexp_pre")[0].value = reMsg[2]
+        parent.getElementsByClassName("regexp_suf")[0].value = reMsg[3]
+    }
+    //正则表达式 input、textarea 内容初始化
+    let regexpContainers = document.getElementsByClassName("regexpContainer")
+    const reCollection = setting.re
+    for(let i = 0;i<reCollection.length;i++){
+        setRegexpValue(regexpContainers[i],reCollection[i])
+    }
+    const checkedReCollection = setting.checkedRe
+    let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
+    //已开启正则初始化
+    for(let i = 0;i < checkBoxCollection.length;i++){
+        checkBoxCollection[i].checked = false//先确保取消选中
+        for(let j = 0;j < checkedReCollection.length;j++){
+            let checkedId = checkedReCollection[j][0]
+            let checkboxId = checkBoxCollection[i].id
+            if(checkedId.substr(checkedId.length-1,1) == checkboxId.substr(checkboxId.length-1,1)){//因为需要更改id而这样写
+                checkBoxCollection[i].checked = true
+                let parent = checkBoxCollection[i].parentNode.parentNode
+                setRegexpValue(parent,checkedReCollection[j])
+                break
             }
         }
-        /************************************************************************************/
-        /* 正则匹配初始化 */
-        function setRegexpValue(parent,reMsg){
-            let regexpInput = parent.getElementsByClassName("regexp")[0]
-            setAttributes(regexpInput,{placeholder:"",value:reMsg[1]})
-            parent.getElementsByClassName("regexp_pre")[0].value = reMsg[2]
-            parent.getElementsByClassName("regexp_suf")[0].value = reMsg[3]
-        }
-        //正则表达式 input、textarea 内容初始化
-        let regexpContainers = document.getElementsByClassName("regexpContainer")
-        const reCollection = setting.re
-        for(let i = 0;i<reCollection.length;i++){
-            setRegexpValue(regexpContainers[i],reCollection[i])
-        }
-        const checkedReCollection = setting.checkedRe
-        let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-        //已开启正则初始化
-        for(let i = 0;i < checkBoxCollection.length;i++){
-            checkBoxCollection[i].checked = false//先确保取消选中
-            for(let j = 0;j < checkedReCollection.length;j++){
-                let checkedId = checkedReCollection[j][0]
-                let checkboxId = checkBoxCollection[i].id
-                if(checkedId.substr(checkedId.length-1,1) == checkboxId.substr(checkboxId.length-1,1)){//因为需要更改id而这样写
-                    checkBoxCollection[i].checked = true
-                    let parent = checkBoxCollection[i].parentNode.parentNode
-                    setRegexpValue(parent,checkedReCollection[j])
-                    break
-                }
+    }
+    //正则表达式 checkbox 点击事件
+    for(let i = 0;i < checkBoxCollection.length;i++){
+        checkBoxCollection[i].onclick = function(){
+            let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
+            updateRegexp()//不检查regexpInput.value是否为空，将其留在updateRegexp中检查
+            if(regexpInput.value == "" && this.checked){//检查this.checked使得取消选中的动作中不会触发
+                regexpInput.placeholder = "请输入正则表达式"
+                this.checked = false
             }
         }
-        //正则表达式 checkbox 点击事件
-        for(let i = 0;i < checkBoxCollection.length;i++){
-            checkBoxCollection[i].onclick = function(){
-                let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
-                updateRegexp()//不检查regexpInput.value是否为空，将其留在updateRegexp中检查
-                if(regexpInput.value == "" && this.checked){//检查this.checked使得取消选中的动作中不会触发
-                    regexpInput.placeholder = "请输入正则表达式"
-                    this.checked = false
-                }
+    }
+    //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
+    const classNameArray = ["regexp","regexp_pre","regexp_suf"]
+    for(let i=0;i<classNameArray.length;i++){
+        let collection = document.getElementsByClassName(classNameArray[i])
+        for(let j=0;j<collection.length;j++){
+            collection[j].onchange = function(){
+                updateRegexp()
             }
         }
-        //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
-        const classNameArray = ["regexp","regexp_pre","regexp_suf"]
-        for(let i=0;i<classNameArray.length;i++){
-            let collection = document.getElementsByClassName(classNameArray[i])
-            for(let j=0;j<collection.length;j++){
-                collection[j].onchange = function(){
-                    updateRegexp()
-                }
-            }
-        }
-    })
+    }
 }
 
 window.onbeforeunload = function(){//处理直接关闭设置页时onchange不生效的情况
