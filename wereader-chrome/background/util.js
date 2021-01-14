@@ -80,7 +80,7 @@ function settingInitialize() {
 
 //获取bid，popup.js调用
 function getbookId() {
-	return background_bookId
+	return bookId
 }
 
 //发送消息到content.js
@@ -185,13 +185,13 @@ function getRegExpMarkText(markText,regexpCollection){
 	return markText
 }
 
-function addThoughts(chaptersAndMarks,bookId,contents,callback){
-	getMyThought(bookId, function (thoughts) {
+function addThoughts(chaptersAndMarks,contents,callback){
+	getMyThought(function (thoughts) {
 		//遍历想法
-		for(var key in thoughts){
+		for(let key in thoughts){
 			//遍历章节将想法添加进marks
 			let has = 0
-			for(var i=0;i<chaptersAndMarks.length;i++){
+			for(let i=0;i<chaptersAndMarks.length;i++){
 				if(chaptersAndMarks[i].chapterUid == parseInt(key)){
 					colId = "range"
 					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[key]).sort(rank)
@@ -215,8 +215,8 @@ function addThoughts(chaptersAndMarks,bookId,contents,callback){
 }
 
 //获取目录
-function getContents(bookId,callback){
-	var url = "https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0"
+function getContents(callback){
+	var url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
 	getData(url, function (data) {
 		//得到目录
 		var contentData = JSON.parse(data).data[0].updated
@@ -345,9 +345,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.webRequest.onBeforeRequest.addListener(details => {
 	let url = details.url
 	if(url.indexOf("bookmarklist?bookId=") > -1) {
-		let bookId = url.replace(/(^[\S| ]*bookId=|&type=1)/g,"")
+		let bookId = url.replace(/(^[\S\s]*bookId=|&type=1)/g,"")
 		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
-			background_tempbookId = bookId
+			importBookId = bookId
 			//在内部重新注入脚本以重新获取bid
 			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
 				catchErr("chrome.webRequest.onBeforeRequest.addListener()")

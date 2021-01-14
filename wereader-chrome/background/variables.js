@@ -70,8 +70,8 @@ const backupTemplate = {
     flag: 0
 }
 
-var background_bookId = "null"
-var background_tempbookId = "null"
+var bookId = "null"
+var importBookId = "null"
 var background_bookcontents = ""
 var background_currentContent = ""
 const background_storageErrorMsg = "存储出错"

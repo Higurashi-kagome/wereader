@@ -3,7 +3,7 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
 */
 //获取书评：popup
-function getComment(userVid, bookId, isHtml) {
+function getComment(userVid, isHtml) {
 	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
 	getData(url, function (data) {
 		var reviews = JSON.parse(data).reviews
@@ -39,7 +39,8 @@ function copyContents(){
 }
 
 //获取标注数据
-function getBookMarks(bookId, add, contents, callback) {
+function getBookMarks(contents, callback) {
+	let indexArr = []
 	const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`
 	getData(bookmarklistUrl, function (data) {
 		var json = JSON.parse(data)
@@ -61,43 +62,57 @@ function getBookMarks(bookId, add, contents, callback) {
 		}
 		organizingData(chapters)
 		//章节排序
-		function organizingData(chapters){
+		function organizingData(chaptersAndMarks){
 			colId = "chapterUid";
-			chapters.sort(rank);
+			chaptersAndMarks.sort(rank);
 			/* 生成标注数据 */
 			//遍历章节
-			for (let i = 0; i < chapters.length; i++) {
-				let chapterUid = chapters[i].chapterUid.toString()
+			for (let i = 0; i < chaptersAndMarks.length; i++) {
+				let chapterUid = chaptersAndMarks[i].chapterUid.toString()
 				let marksInAChapter = []
 				//遍历标注获得章内标注
 				for (let j = 0; j < updated.length; j++) {
-					if (updated[j].chapterUid.toString() == chapterUid) {
-						updated[j].range = parseInt(updated[j].range.replace("-[0-9]*?\"", "").replace("\"", ""))
-						marksInAChapter.push(updated[j])
+					if (updated[j].chapterUid.toString() != chapterUid) {
+						continue
 					}
+					updated[j].range = parseInt(updated[j].range.replace("[\s\S]*([\d]*)-[\s\S]*", "$1"))
+					//如果标注中存在"[插图]"
+					/* if(/\[插图\]/.test(updated[j])){
+						let arr = updated[j].split('[插图]')
+						let lenCount = 0
+						for (const item of arr) {
+							if(item!='[插图]'){
+								lenCount += item.length
+							}else{
+								indexArr.push(parseInt(updated[j].range+lenCount))
+								lenCount += 4
+							}
+						}
+					} */
+					marksInAChapter.push(updated[j])
 				}
 				//排序章内标注并加入到章节内
 				colId = "range"
 				marksInAChapter.sort(rank)
-				chapters[i].marks = marksInAChapter
+				chaptersAndMarks[i].marks = marksInAChapter
 			}
-			if(add){
-				addThoughts(chapters,bookId,contents,function(chaptersAndMarks){
+			if(Config.addThoughts){
+				addThoughts(chaptersAndMarks,contents,function(chaptersAndMarks){
 					callback(chaptersAndMarks)
 				})
 			}else{
-				callback(chapters)
+				callback(chaptersAndMarks)
 			}
 		}
 	});
 }
 
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(bookId, all) {
+function copyBookMarks(all) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	sendMessageToContentScript({isGetMarkedData:true})
-	getContents(bookId,function(contents){
-		getBookMarks(bookId, Config.addThoughts, contents, function (chaptersAndMarks) {
+	getContents(function(contents){
+		getBookMarks(contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
 			if (all) {	//获取全书标注
@@ -141,7 +156,7 @@ function copyBookMarks(bookId, all) {
 }
 
 //获取热门标注
-function getBestBookMarks(bookId, callback) {
+function getBestBookMarks(callback) {
 	const url = `https://i.weread.qq.com/book/bestbookmarks?bookId=${bookId}`
 	getData(url, function (data) {
 		var json = JSON.parse(data)
@@ -176,9 +191,9 @@ function getBestBookMarks(bookId, callback) {
 }
 
 //处理数据，复制热门标注
-function copyBestBookMarks(bookId) {
-	getContents(bookId,function(contents){
-		getBestBookMarks(bookId, function (bestMarks) {
+function copyBestBookMarks() {
+	getContents(function(contents){
+		getBestBookMarks(function (bestMarks) {
 			//得到res
 			let res = ""
 			//遍历bestMark
@@ -199,7 +214,7 @@ function copyBestBookMarks(bookId) {
 }
 
 //获取想法
-function getMyThought(bookId, callback) {
+function getMyThought(callback) {
 	const url = `https://i.weread.qq.com/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`
 	getData(url, function (data) {
 		let json = JSON.parse(data)
@@ -236,9 +251,9 @@ function getMyThought(bookId, callback) {
 }
 
 //处理数据，复制想法
-function copyThought(bookId) {
-	getContents(bookId,function(contents){
-		getMyThought(bookId, function (thoughts) {
+function copyThought() {
+	getContents(function(contents){
+		getMyThought(function (thoughts) {
 			//得到res
 			let res = ""
 			//遍历thoughts——{chapterUid:[{abstract,content}]}
@@ -275,8 +290,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			markedData = message.markedData
 			break
 		case "bookId":
-			message.bid == "wrepub" ? background_bookId = background_tempbookId
-			: background_bookId = message.bid
+			message.bid == "wrepub" ? bookId = importBookId
+			: bookId = message.bid
 			break
 		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, function (cookie) {
@@ -350,7 +365,7 @@ function setPopupAndBid(tab){
 		isBookPage = true;
 	}
 	if (!isBookPage) {//如果当前页面为其他页面
-		background_bookId = "null"
+		bookId = "null"
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
 		//获取目录到background-page

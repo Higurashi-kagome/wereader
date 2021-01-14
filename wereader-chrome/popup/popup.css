@@ -1,12 +1,9 @@
-#bookId,#userVid {
-    display: none;
-}
 .provided {
     cursor: pointer;
     color: black;
 }
 #testBtn {
-    display: none;
+    display: block;
     cursor: pointer;
     color: black;
 }
