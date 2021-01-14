@@ -78,11 +78,6 @@ function settingInitialize() {
 	})
 }
 
-//获取bid，popup.js调用
-function getbookId() {
-	return background_bookId
-}
-
 //发送消息到content.js
 function sendMessageToContentScript(message,id) {
 	if(id != undefined){
