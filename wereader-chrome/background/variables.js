@@ -70,8 +70,8 @@ const backupTemplate = {
     flag: 0
 }
 
-var bookId = "null"
-var importBookId = "null"
+var bookId = "null"//用于记录当前读书页的 bookId
+var importBookId = "null"//用于记录导入书籍的 bookId
 var background_bookcontents = ""
 var background_currentContent = ""
 const background_storageErrorMsg = "存储出错"

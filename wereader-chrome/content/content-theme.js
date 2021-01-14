@@ -5,7 +5,7 @@ function clickDarkOrWhite(classN){
     try{
         document.getElementsByClassName(classN)[0].click();
     }catch(err){
-        console.log("clickDarkOrWhite(classN) => " + err.message);
+        console.warn("clickDarkOrWhite(classN) => " + err.message);
     }
 }
 
@@ -112,7 +112,7 @@ const timeId = setInterval(() => {
                 }
             })
         }catch(err){
-            console.log("content-theme.js => setInterval() => " + err.message)
+            console.warn("content-theme.js => setInterval() => " + err.message)
         }
         //结束定时器
         clearInterval(this.timeId)

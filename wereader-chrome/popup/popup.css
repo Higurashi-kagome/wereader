@@ -3,7 +3,7 @@
     color: black;
 }
 #testBtn {
-    display: block;
+    display: none;
     cursor: pointer;
     color: black;
 }

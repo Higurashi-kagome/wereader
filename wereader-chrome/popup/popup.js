@@ -54,7 +54,8 @@ window.onload = function () {
                     break
                 case "testBtn":
                     //bg.logStorage("sync")
-                    bg.callgetBookMarks()
+                    //bg.callgetBookMarks()
+                    //bg.callgetMyThought()
                     break
                 default:
                     break

@@ -27,3 +27,9 @@ function callgetBookMarks(){
 		})
 	})
 }
+
+function callgetMyThought(){
+	getMyThought(function(thoughts) {
+		console.log(JSON.stringify(thoughts))
+	})
+}
