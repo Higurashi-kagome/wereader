@@ -23,5 +23,5 @@ try{
     //传消息给后台
     chrome.runtime.sendMessage({type: "getContents", contents: texts, currentContent: currentContent})
 }catch{
-    console.log("inject-getContents.js：获取目录失败")
+    console.warn("inject-getContents.js：获取目录失败")
 }

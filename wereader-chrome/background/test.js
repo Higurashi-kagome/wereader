@@ -19,3 +19,17 @@ function logStorage(area="sync"){
 function aler(text){
 	console.log(text)
 }
+
+function callgetBookMarks(){
+	getContents(function(contents){
+		getBookMarks(contents, function(data){
+			console.log(JSON.stringify(data))
+		})
+	})
+}
+
+function callgetMyThought(){
+	getMyThought(function(thoughts) {
+		console.log(JSON.stringify(thoughts))
+	})
+}
