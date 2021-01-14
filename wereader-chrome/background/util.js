@@ -19,6 +19,23 @@ function catchErr(sender) {
 	}
 }
 
+function getRangeArrFrom(strRange, str){
+	let rangeArr = []
+	if(/\[插图\]/.test(str)){
+		let arr = str.split(/(?=\[插图\])|(?<=\[插图\])/)
+		let lenCount = 0
+		for (const item of arr) {
+			if(item!='[插图]'){
+				lenCount += item.length
+			}else{
+				rangeArr.push(parseInt(strRange+lenCount))
+				lenCount += 4
+			}
+		}
+	}
+	return rangeArr
+}
+
 //更新sync和local——处理设置页onchange不生效的问题
 function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
@@ -34,8 +51,6 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
                 settings[background_backupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
 					if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
-					else console.log("updateStorageAreainBg updated local：")
-					console.log(settings)
                     callback()
                 })
             })
@@ -71,8 +86,6 @@ function settingInitialize() {
 			}
 			chrome.storage.local.set(localSetting,function(){
 				if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
-				else console.log("settingInitialize updated local：")
-				console.log(localSetting)
 			})
 		})
 	})
@@ -180,29 +193,38 @@ function getRegExpMarkText(markText,regexpCollection){
 	return markText
 }
 
-function addThoughts(chaptersAndMarks,bookId,contents,callback){
-	getMyThought(bookId, function (thoughts) {
-		//遍历想法
-		for(var key in thoughts){
-			//遍历章节将想法添加进marks
-			let has = 0
-			for(var i=0;i<chaptersAndMarks.length;i++){
-				if(chaptersAndMarks[i].chapterUid == parseInt(key)){
+function addThoughts(chaptersAndMarks,contents,callback){
+	getMyThought(function(thoughts) {
+		//遍历章节
+		for(let chapterUid in thoughts){
+			//遍历章节依次将各章节章内想法添加进 marks
+			let addedToMarks = false
+			for(let i=0;i<chaptersAndMarks.length;i++){
+				//找到目标章节
+				if(chaptersAndMarks[i].chapterUid == parseInt(chapterUid)){
+					//想法与标注合并后按 range 排序
 					colId = "range"
-					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[key]).sort(rank)
-					has = 1
+					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank)
+					addedToMarks = true
+					//遍历章内想法获取'[插图]'索引
+					let rangeArr = chaptersAndMarks[i].rangeArr
+					for (const thought of thoughts[chapterUid]) {
+						rangeArr = rangeArr.concat(getRangeArrFrom(thought.range, thought.abstract))
+					}
+					chaptersAndMarks[i].rangeArr = rangeArr
 					break
 				}
 			}
-			//如果标注中不包含想法所在章节
-			if(!has){
+			//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
+			if(!addedToMarks){
 				let chapter = {}
-				chapter["chapterUid"] = parseInt(key)
-				chapter["title"] = contents[parseInt(key)].title
-				chapter["marks"] = thoughts[key]
+				chapter.chapterUid = parseInt(chapterUid)
+				chapter.title = contents[parseInt(chapterUid)].title
+				chapter.marks = thoughts[chapterUid]
 				chaptersAndMarks.push(chapter)
 			}
 		}
+		//按章节排序
 		colId = "chapterUid"
 		chaptersAndMarks.sort(rank)
 		callback(chaptersAndMarks)
@@ -210,8 +232,8 @@ function addThoughts(chaptersAndMarks,bookId,contents,callback){
 }
 
 //获取目录
-function getContents(bookId,callback){
-	var url = "https://i.weread.qq.com/book/chapterInfos?" + "bookIds=" + bookId + "&synckeys=0"
+function getContents(callback){
+	var url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
 	getData(url, function (data) {
 		//得到目录
 		var contentData = JSON.parse(data).data[0].updated
@@ -224,34 +246,35 @@ function getContents(bookId,callback){
 }
 
 //获取章内标注
-function traverseMarks(marks,all){
+function traverseMarks(marks,all,indexArr){
 	var res = ""
 	var index = 0
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
-		//只获取本章标注且不为想法时"[插图]"转图片、注释或代码块
-		while(!all && !abstract && /\[插图\]/.test(markText)){
-			if(!markedData[index]){//数组越界
+		//只获取本章时"[插图]"转图片、注释或代码块
+		while(!all && /\[插图\]/.test(markText)){
+			let amarkedData = markedData[indexArr[index]]
+			if(!amarkedData){//数组越界
 				console.log(JSON.stringify(markedData))
 				console.log(markText)
 				sendAlertMsg({title: "图片获取出错，建议反馈", text: JSON.stringify(markedData), confirmButtonText: '确定',icon: "error"})
 				return ''
 			}
 			let replacement = ''
-			if(markedData[index].src){//图片
+			if(amarkedData.src){//图片
 				//非行内图片单独占行（即使它与文字一起标注）
 				let inser1 = '', inser2 = ''
 				//不为行内图片且'[插图]'前有内容
-				if(!markedData[index].isInlineImg && markText.indexOf('[插图]') > 0)
+				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') > 0)
 					inser1 = '\n\n'
 				//不为行内图片且'[插图]'后有内容
-				if(!markedData[index].isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
+				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
 					inser2 = '\n\n'
-				replacement = `${inser1}![${markedData[index].alt}](${markedData[index].src})${inser2}`
-			}else if(markedData[index].footnote){//注释
-				replacement = `[^${markedData[index].name}]`
-			}else if(markedData[index].code){//代码块
+				replacement = `${inser1}![${amarkedData.alt}](${amarkedData.src})${inser2}`
+			}else if(amarkedData.footnote){//注释
+				replacement = `[^${amarkedData.name}]`
+			}else if(amarkedData.code){//代码块
 				let inser1 = '', inser2 = ''
 				//'[插图]'前有内容
 				if(markText.indexOf('[插图]') > 0)
@@ -259,7 +282,7 @@ function traverseMarks(marks,all){
 				//'[插图]'后有内容
 				if(markText.indexOf('[插图]') != (markText.length - 4))
 					inser2 = '\n\n'
-				replacement = `${inser1}${Config.codePre}\n${markedData[index].code}${Config.codeSuf}${inser2}`
+				replacement = `${inser1}${Config.codePre}\n${amarkedData.code}${Config.codeSuf}${inser2}`
 			}
 			markText = markText.replace(/\[插图\]/, replacement)
 			index = index + 1
@@ -272,8 +295,7 @@ function traverseMarks(marks,all){
 		}
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
-			//替换掉想法前后空字符
-			let content = marks[j].content.replace(/(^\s*|\s*$)/mg,'')
+			let content = marks[j].content
 			res += `${Config.thouPre}${content}${Config.thouSuf}\n\n`
 		}
 	}
@@ -299,6 +321,7 @@ chrome.contextMenus.create({
 
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
+	console.log('new changes：')
 	console.log(changes)
 	if(namespace == "sync"){
 		chrome.storage.sync.get(function(setting){
@@ -340,9 +363,9 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.webRequest.onBeforeRequest.addListener(details => {
 	let url = details.url
 	if(url.indexOf("bookmarklist?bookId=") > -1) {
-		let bookId = url.replace(/(^[\S| ]*bookId=|&type=1)/g,"")
+		let bookId = url.replace(/(^[\S\s]*bookId=|&type=1)/g,"")
 		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
-			background_tempbookId = bookId
+			importBookId = bookId
 			//在内部重新注入脚本以重新获取bid
 			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
 				catchErr("chrome.webRequest.onBeforeRequest.addListener()")

@@ -82,7 +82,6 @@ function concatElement(imgAndNoteElems, preElems){
         }
         return 0;
     })
-    console.log(JSON.stringify(objArr))
     return objArr;
 }
 
@@ -137,7 +136,8 @@ function main(setting){
     var s2 = document.getElementsByClassName("wr_underline s2");
     var wr_myNote = []
     if(setting.addThoughts){
-        //TODO
+        //获取想法标注元素
+        wr_myNote = document.getElementsByClassName("wr_myNote");
     }
     let markedData = getMarkedData(objArr,s0,s1,s2,wr_myNote);
     setMesToBg(markedData)
