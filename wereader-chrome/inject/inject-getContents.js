@@ -1,9 +1,8 @@
 /* 主要用于获取书本目录 */
 
 //console.log("inject-getContents.js：被注入，开始获取目录");
-var contentElement = document.getElementsByClassName("readerCatalog_list")[0];
 try{
-    let childs = contentElement.childNodes
+    let childs = document.getElementsByClassName("readerCatalog_list")[0].childNodes
     let texts = []
     for (let i = 0; i < childs.length; i++){
         let classname = childs[i].childNodes[0].className

@@ -45,12 +45,12 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+            if(catchErr("bg.updateSyncAndLocal"))alert(StorageErrorMsg)
             chrome.storage.local.get(function(settings){
                 const currentProfile = configMsg.currentProfile
-                settings[background_backupKey][currentProfile][key] = value
+                settings[BackupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
-					if(catchErr("bg.updateSyncAndLocal"))alert(background_storageErrorMsg)
+					if(catchErr("bg.updateSyncAndLocal"))alert(StorageErrorMsg)
                     callback()
                 })
             })
@@ -72,20 +72,20 @@ function settingInitialize() {
 		}
 		//存储到 sync
 		chrome.storage.sync.set(setting,function(){
-			if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
+			if(catchErr("settingInitialize"))alert(StorageErrorMsg)
 		})
 		/* 检查本地 storage */
-		chrome.storage.local.get([background_backupKey], function(localSetting) {
+		chrome.storage.local.get([BackupKey], function(localSetting) {
 			const defaultBackupName = "默认设置"
 			setting.backupName = undefined
-			if(localSetting[background_backupKey] == undefined){//无备份
-				localSetting[background_backupKey] = {}
-				localSetting[background_backupKey][defaultBackupName] = setting
-			}else if(localSetting[background_backupKey][defaultBackupName] == undefined){//无默认备份
-				localSetting[background_backupKey][defaultBackupName] = setting
+			if(localSetting[BackupKey] == undefined){//无备份
+				localSetting[BackupKey] = {}
+				localSetting[BackupKey][defaultBackupName] = setting
+			}else if(localSetting[BackupKey][defaultBackupName] == undefined){//无默认备份
+				localSetting[BackupKey][defaultBackupName] = setting
 			}
 			chrome.storage.local.set(localSetting,function(){
-				if(catchErr("settingInitialize"))alert(background_storageErrorMsg)
+				if(catchErr("settingInitialize"))alert(StorageErrorMsg)
 			})
 		})
 	})
@@ -233,12 +233,12 @@ function addThoughts(chaptersAndMarks,contents,callback){
 
 //获取目录
 function getContents(callback){
-	var url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
+	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
 	getData(url, function (data) {
 		//得到目录
-		var contentData = JSON.parse(data).data[0].updated
-		var contents = {}
-		for (var i = 0; i < contentData.length; i++) {
+		let contentData = JSON.parse(data).data[0].updated
+		let contents = {}
+		for (let i = 0; i < contentData.length; i++) {
 			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: parseInt(contentData[i].level) }
 		}
 		callback(contents)
@@ -336,16 +336,16 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 				Config[key] = setting[key]
 			}
 			chrome.storage.sync.remove(uselessKeys,function(){
-				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
+				if(catchErr("storage.onChanged"))alert(StorageErrorMsg)
 			})
 		})
 
 		chrome.storage.local.get(function(settings){
-			for(let name in settings[background_backupKey]){
+			for(let name in settings[BackupKey]){
 				//删除本不该存在的键
-				for(let key in settings[background_backupKey][name]){
+				for(let key in settings[BackupKey][name]){
 					if(backupTemplate[key] == undefined){
-						delete settings[background_backupKey][name][key]
+						delete settings[BackupKey][name][key]
 					}
 				}
 			}

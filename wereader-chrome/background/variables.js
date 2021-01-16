@@ -72,11 +72,9 @@ const backupTemplate = {
 
 var bookId = "null"//用于记录当前读书页的 bookId
 var importBookId = "null"//用于记录导入书籍的 bookId
-var background_bookcontents = ""
-var background_currentContent = ""
-const background_storageErrorMsg = "存储出错"
-const background_bookcontents_default = "getBookContents"
-const background_backupKey = "backup"
+var CurrentContent = ""
+const StorageErrorMsg = "存储出错"
+const BackupKey = "backup"
 //保存图片Markdown文本的数组
 var markedData = []
 //用于记录 popup 是否请求复制目录
