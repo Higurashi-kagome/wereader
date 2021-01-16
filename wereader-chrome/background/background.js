@@ -120,7 +120,7 @@ function copyBookMarks(all) {
 				//遍历目录
 				for (let key in contents) {
 					//寻找目标章节
-					if (contents[key].title == background_currentContent.substring(1)) {
+					if (contents[key].title == CurrentContent.substring(1)) {
 						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
 						var chapterUid = key
 						break
@@ -133,14 +133,13 @@ function copyBookMarks(all) {
 					if (chapterAndMark.chapterUid == chapterUid && chapterAndMark.marks.length > 0) {
 						//由 rangeArr 生成索引数组 indexArr
 						let rangeArr = chapterAndMark.rangeArr
-						rangeArr.sort()
-						let index = 0
+						rangeArr.sort(function(a, b){return a - b;})
 						let indexArr = []
-						for (let j = 0; j < rangeArr.length; j++) {
-							if(rangeArr[j] != rangeArr[j-1]){
-								indexArr[j] = index
+						for (let j = 0, index = -1; j < rangeArr.length; j++) {
+							if(rangeArr[j] != rangeArr[j-1]){//与前一个range不同
 								index++
-							}else{
+								indexArr[j] = index
+							}else{//与前一个range相同
 								indexArr[j] = indexArr[j-1]
 							}
 						}
@@ -326,17 +325,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				let chapterInfo = contents[i].substr(1)
 				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
-			//如果需要获取目录，则设置
-			if(background_bookcontents == background_bookcontents_default){
-				background_bookcontents = res
-			}
 			//如果为popup请求复制目录，则复制内容
 			if(isCopyContent){
 				copy(res)
 				isCopyContent = false
 			}
 			//设置当前所在目录
-			background_currentContent = message.currentContent
+			CurrentContent = message.currentContent
 			break
 		case "aler"://用于调试
 			aler(message.message)
@@ -379,8 +374,6 @@ function setPopupAndBid(tab){
 		bookId = "null"
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
-		//获取目录到background-page
-		background_bookcontents = background_bookcontents_default
 		//注入脚本获取全部目录数据和当前目录
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
 			catchErr("setPopupAndBid(tab)")
