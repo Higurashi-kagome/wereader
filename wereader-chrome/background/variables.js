@@ -18,6 +18,7 @@ var Config = {
     displayN: false,
     addThoughts: false,
     backupName: "默认设置",
+    autoMark: "",
     re: [],
     flag: 0
 }
@@ -43,6 +44,7 @@ const syncConfigTemplate = {
     displayN: false,
     addThoughts: false,
     backupName: "默认设置",
+    autoMark: "",
     re: [],
     flag: 0
 }
@@ -66,6 +68,7 @@ const backupTemplate = {
     codeSuf: "```",
     displayN: false,
     addThoughts: false,
+    autoMark: "",
     re: [],
     flag: 0
 }
