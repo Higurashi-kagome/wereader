@@ -135,9 +135,9 @@ function updateStorageArea(configMsg={},callback=function(){}){
     //存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
     if(configMsg.setting && configMsg.settings){
         chrome.storage.sync.set(configMsg.setting,function(){
-            if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
+            if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
             chrome.storage.local.set(configMsg.settings,function(){
-                if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
+                if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
                 callback()
             })  
         })
@@ -147,12 +147,12 @@ function updateStorageArea(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
+            if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
             chrome.storage.local.get(function(settings){
                 const currentProfile = document.getElementById("profileNamesInput").value
                 settings[BACKUPKEY][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
-                    if(catchErr("updateSyncAndLocal"))alert(STORAGE_ERRORMSG)
+                    if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
                     callback()
                 })
             })
@@ -247,7 +247,7 @@ function initialConfigSelect(setting,settings){
     if(settings[BACKUPKEY][currentProfile] == undefined){//处理当前配置在local中不存在的情况
         settings[BACKUPKEY][currentProfile] = setting
         chrome.storage.local.set(settings,function(){
-            if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
+            if(catchErr("initialize"))console.warn(STORAGE_ERRORMSG)
         })
     }
     let options = profileNamesInput.options
@@ -271,7 +271,7 @@ function initialConfigSelect(setting,settings){
             if(setting == undefined)return
             setting[BACKUPNAME] = profileName
             chrome.storage.sync.set(setting,function(){
-                if(catchErr("initialize"))alert(STORAGE_ERRORMSG)
+                if(catchErr("initialize"))console.warn(STORAGE_ERRORMSG)
                 main()
             })
         })
@@ -302,6 +302,18 @@ function initialize(setting,settings){
             let key = this.id
             let value = isInput ? this.value : this.checked
             updateStorageArea({key:key,value:value})
+        }
+    }
+    //自动标注选项
+    if(setting.autoMark){
+        document.getElementById(setting.autoMark).selected =true;
+    }
+    document.getElementById("autoMarkSelect").onchange = function(){
+        let options = this.options
+        for (i=0; i<options.length; i++){
+            if(options[i].selected == true){
+                updateStorageArea({key:"autoMark",value:options[i].id})
+            }
         }
     }
     /************************************************************************************/
