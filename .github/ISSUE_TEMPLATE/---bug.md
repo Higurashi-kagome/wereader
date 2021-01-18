@@ -1,7 +1,7 @@
 ---
 name: 反馈 Bug
 about: 微信读书笔记助手出现不正确行为。
-title: ''
+title: "[Bug] "
 labels: ''
 assignees: ''
 
