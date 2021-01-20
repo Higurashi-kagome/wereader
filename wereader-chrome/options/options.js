@@ -16,27 +16,6 @@ function main(){
     })
 }
 
-//报错捕捉函数
-function catchErr(sender) {
-	if (chrome.runtime.lastError) {
-        console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
-        return true
-	}else{
-        return false
-    }
-}
-
-//设置属性
-function setAttributes(element,attributes){
-	for(let key in attributes){
-		if(Object.prototype.toString.call(attributes[key]) === '[object Object]'){
-			setAttributes(element[key],attributes[key])
-		}else{
-			element[key] = attributes[key]
-		}
-	}
-}
-
 // 新建设置
 function addProfile(){
     chrome.storage.local.get(function(settings){
@@ -130,64 +109,21 @@ function renameProfile(){
     input.focus()
 }
 
-//更新sync和local
-function updateStorageArea(configMsg={},callback=function(){}){
-    //存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-    if(configMsg.setting && configMsg.settings){
-        chrome.storage.sync.set(configMsg.setting,function(){
-            if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
-            chrome.storage.local.set(configMsg.settings,function(){
-                if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
-                callback()
-            })  
-        })
-    }else if(configMsg.key != undefined){//不排除特殊键值，所以判断是否为 undefined
-        let config = {}
-        let key = configMsg.key
-        let value = configMsg.value
-        config[key] = value
-        chrome.storage.sync.set(config,function(){
-            if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
-            chrome.storage.local.get(function(settings){
-                const currentProfile = document.getElementById("profileNamesInput").value
-                settings[BACKUPKEY][currentProfile][key] = value
-                chrome.storage.local.set(settings,function(){
-                    if(catchErr("updateSyncAndLocal"))console.warn(STORAGE_ERRORMSG)
-                    callback()
-                })
-            })
-        })
-    }
-}
-
 //从页面获取正则设置
 function getRegexpSet(){
-    const checkedRexpKey = "checkedRe"
     const regexpKey = "re"
-    let checkedRegexpValue = []
-    let regexpValue = []
+    let config = {} //{'re':{"re1": {replacePattern:"pattern/replacement/flag", checked: false}}}
+    config[regexpKey] = {}
     let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
     for(let i = 0;i < checkBoxCollection.length;i++){
-        let parent = checkBoxCollection[i].parentNode.parentNode
-        let id = checkBoxCollection[i].id
-        let re = parent.getElementsByClassName("regexp")[0].value
-        let pre = parent.getElementsByClassName("regexp_pre")[0].value
-        let suf = parent.getElementsByClassName("regexp_suf")[0].value
-        let regexpData = [id,re,pre,suf]
-        regexpValue.push(regexpData)
-        if(checkBoxCollection[i].checked && re != ""){//获取已启用正则数据
-            checkedRegexpValue.push(regexpData)
-        }
+        let regexInputContainer = checkBoxCollection[i].parentNode.parentNode
+        let checkBoxId = checkBoxCollection[i].id
+        let regexpInputValue = regexInputContainer.getElementsByClassName(RegexpInputClassName)[0].value
+        //需要检查匹配模式是否为空
+        let isChecked = regexpInputValue != ''?checkBoxCollection[i].checked:false
+        config[regexpKey][checkBoxId] = {replacePattern: regexpInputValue, checked: isChecked}
     }
-    return {allRegexp:{key:regexpKey,value:regexpValue},checkedRegexp:{key:checkedRexpKey,value:checkedRegexpValue}}
-}
-
-//更新正则
-function updateRegexp(){
-    const regexpSet = getRegexpSet()
-    updateStorageArea(regexpSet.allRegexp,function(){//更新全部正则
-        updateStorageArea(regexpSet.checkedRegexp)//更新已启用正则
-    })
+    return {key: regexpKey, value: config[regexpKey]}
 }
 
 //初始化一般选项
@@ -213,12 +149,12 @@ function initializeBasic(){
     }
     /* prompt 弹窗初始化 */
     let input = document.getElementById("promptInput")
-    //prompt 取消
+        //prompt 取消
     document.getElementById("promptCancelButton").onclick = function(){
         setAttributes(input,{value:"",placeholder:""})
         document.getElementById("promptContainer").style.display = "none"
     }
-    //prompt 回车确定
+        //prompt 回车确定
     input.onkeyup = event => {
         if (event.code == "Enter") {
             document.getElementById("promptConfirmButton").click()
@@ -292,11 +228,11 @@ function initialize(setting,settings){
     /* 当前设置初始化 */
     //"标注、标题、想法、代码块" input 事件
     //"是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
-    const ids = inputIds.concat(CheckBoxIds)
-    for(let i=0;i<ids.length;i++){
-        let id = ids[i]
+    const inputAndCheckBoxIds = InputIds.concat(CheckBoxIds)
+    for(let i=0;i<inputAndCheckBoxIds.length;i++){
+        let id = inputAndCheckBoxIds[i]
         let element = document.getElementById(id)
-        let isInput = inputIds.indexOf(id) > -1
+        let isInput = InputIds.indexOf(id) > -1
         isInput ? element.value = setting[id] : element.checked = setting[id]
         element.onchange = function(){
             let key = this.id
@@ -304,7 +240,7 @@ function initialize(setting,settings){
             updateStorageArea({key:key,value:value})
         }
     }
-    //自动标注选项
+    //"自动标注"选项
     if(setting.autoMark){
         document.getElementById(setting.autoMark).selected =true;
     }
@@ -318,64 +254,40 @@ function initialize(setting,settings){
     }
     /************************************************************************************/
     /* 正则匹配初始化 */
-    function setRegexpValue(parent,reMsg){
-        let regexpInput = parent.getElementsByClassName("regexp")[0]
-        setAttributes(regexpInput,{placeholder:"",value:reMsg[1]})
-        parent.getElementsByClassName("regexp_pre")[0].value = reMsg[2]
-        parent.getElementsByClassName("regexp_suf")[0].value = reMsg[3]
-    }
-    //正则表达式 input、textarea 内容初始化
-    let regexpContainers = document.getElementsByClassName("regexpContainer")
-    const reCollection = setting.re
-    for(let i = 0;i<reCollection.length;i++){
-        setRegexpValue(regexpContainers[i],reCollection[i])
-    }
-    const checkedReCollection = setting.checkedRe
-    let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput")
-    //已开启正则初始化
-    for(let i = 0;i < checkBoxCollection.length;i++){
-        checkBoxCollection[i].checked = false//先确保取消选中
-        for(let j = 0;j < checkedReCollection.length;j++){
-            let checkedId = checkedReCollection[j][0]
-            let checkboxId = checkBoxCollection[i].id
-            if(checkedId.substr(checkedId.length-1,1) == checkboxId.substr(checkboxId.length-1,1)){//因为需要更改id而这样写
-                checkBoxCollection[i].checked = true
-                let parent = checkBoxCollection[i].parentNode.parentNode
-                setRegexpValue(parent,checkedReCollection[j])
-                break
-            }
-        }
-    }
-    //正则表达式 checkbox 点击事件
-    for(let i = 0;i < checkBoxCollection.length;i++){
-        checkBoxCollection[i].onclick = function(){
-            let regexpInput = this.parentNode.parentNode.getElementsByClassName("regexp")[0]
-            updateRegexp()//不检查regexpInput.value是否为空，将其留在updateRegexp中检查
-            if(regexpInput.value == "" && this.checked){//检查this.checked使得取消选中的动作中不会触发
-                regexpInput.placeholder = "请输入正则表达式"
+    //正则表达式 input、checkBox 初始化
+    const replacePatterns = setting.re //{"re1": {re:"pattern/replacement/flag", checked: false}}
+    for(let reId in replacePatterns){
+        //设置 checkBox 是否 checked
+        let checkBox = document.getElementById(reId)
+        checkBox.checked = replacePatterns[reId].checked
+        //设置正则表达式输入框内容
+        let regexpInput = checkBox.parentNode.parentNode.getElementsByClassName(RegexpInputClassName)[0]
+        let replacePattern = replacePatterns[reId].replacePattern
+        setAttributes(regexpInput,{placeholder:"",value:replacePattern})
+        //因为 Config 中设置了默认正则匹配，replacePatterns 不可能为空，故可在此处绑定 onclick、onchange 事件
+        checkBox.onclick = function(){
+            let regexpInput = this.parentNode.parentNode.getElementsByClassName(RegexpInputClassName)[0]
+            if(regexpInput.value == "" && this.checked){//检查 this.checked 使得取消选中时不会触发
+                regexpInput.placeholder = "请输入匹配模式"
                 this.checked = false
+                return
             }
+            //todo：需要确保设置正常更新（始终与设置页状况保持一致）
+            //将设置页正则表达式设置同步至 storage
+            updateStorageArea(getRegexpSet())
         }
-    }
-    //正则表达式 input、textarea input事件（事件绑定不能够放进上方对reCollection的遍历中，因为reCollection可能为空）
-    const classNameArray = ["regexp","regexp_pre","regexp_suf"]
-    for(let i=0;i<classNameArray.length;i++){
-        let collection = document.getElementsByClassName(classNameArray[i])
-        for(let j=0;j<collection.length;j++){
-            collection[j].onchange = function(){
-                updateRegexp()
-            }
-        }
+        //正则表达式 input 内容改变事件（将设置页正则表达式设置同步至 storage）
+        regexpInput.onchange = function(){updateStorageArea(getRegexpSet())}
     }
 }
 
-window.onbeforeunload = function(){//处理直接关闭设置页时onchange不生效的情况
+//处理直接关闭设置页时 onchange 事件不触发的情况
+window.onbeforeunload = function(){
     let activeElement = document.activeElement
     if(activeElement.nodeName == "INPUT" || activeElement.nodeName == "TEXTAREA"){
         const regexpSet = getRegexpSet()
         const currentProfile = document.getElementById("profileNamesInput").value
-        regexpSet.allRegexp.currentProfile = currentProfile
-        regexpSet.checkedRegexp.currentProfile = currentProfile
+        regexpSet.currentProfile = currentProfile
         chrome.runtime.sendMessage({type:"saveRegexpOptions",regexpSet:regexpSet})
     }
 }
