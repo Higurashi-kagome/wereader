@@ -1,6 +1,16 @@
 body {
     background-color: #eee;
     font-size: 12pt;
+    margin: 0%;
+}
+
+a{
+    color: #3d5bb6;
+}
+
+img{
+    border-radius: 0.6875em;
+    width: 40%;
 }
 
 /*设置链接点击后不变色*/

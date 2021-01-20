@@ -115,6 +115,10 @@ h3 a {
     margin-left: 3px;
 }
 
+img{
+    border-radius: 0.4em;
+}
+
 /* <element class="help-icon">
   <img> */
 .help-icon>img {
@@ -288,6 +292,12 @@ a {
     width: calc(100% - 6px);
     margin-bottom: 2px;
     padding: 2px;
+}
+
+.option.horizon{/* 完善正则表达式 CheckBox 与标签的水平对齐 */
+    padding-bottom: 0px!important;
+    padding-top: 0px!important;
+    padding-left: 0px;
 }
 
 .option:last-of-type {
