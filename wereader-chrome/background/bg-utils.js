@@ -45,12 +45,12 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
         let value = configMsg.value
         config[key] = value
         chrome.storage.sync.set(config,function(){
-            if(catchErr("bg.updateSyncAndLocal"))alert(StorageErrorMsg)
+            if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
             chrome.storage.local.get(function(settings){
                 const currentProfile = configMsg.currentProfile
                 settings[BackupKey][currentProfile][key] = value
                 chrome.storage.local.set(settings,function(){
-					if(catchErr("bg.updateSyncAndLocal"))alert(StorageErrorMsg)
+					if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
                     callback()
                 })
             })
@@ -60,32 +60,66 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
 
 //存储 / 初始化设置
 function settingInitialize() {
-	chrome.storage.sync.get(function (setting) {
-		/* 初始化选项 */
-		for(let key in Config){
-			//这里必须判断是否为 undefined，因为 false 属于正常值
-			if(setting[key] == undefined){
-				setting[key] = Config[key]
-			}else{
-				Config[key] = setting[key]
+	//获取 syncSetting
+	chrome.storage.sync.get(function (configInSync) {
+		let unuserdKeysInSync = []
+		for(let key in configInSync){
+			if(Config[key] == undefined){//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
+				delete configInSync[key]
+				unuserdKeysInSync.push(key)
 			}
 		}
-		//存储到 sync
-		chrome.storage.sync.set(setting,function(){
-			if(catchErr("settingInitialize"))alert(StorageErrorMsg)
-		})
-		/* 检查本地 storage */
-		chrome.storage.local.get([BackupKey], function(localSetting) {
-			const defaultBackupName = "默认设置"
-			setting.backupName = undefined
-			if(localSetting[BackupKey] == undefined){//无备份
-				localSetting[BackupKey] = {}
-				localSetting[BackupKey][defaultBackupName] = setting
-			}else if(localSetting[BackupKey][defaultBackupName] == undefined){//无默认备份
-				localSetting[BackupKey][defaultBackupName] = setting
+		for(let key in Config){
+			//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
+			if(configInSync[key] == undefined || configInSync[key].constructor != Config[key].constructor){
+				configInSync[key] = Config[key]
+			}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
+				Config[key] = configInSync[key]
 			}
-			chrome.storage.local.set(localSetting,function(){
-				if(catchErr("settingInitialize"))alert(StorageErrorMsg)
+		}
+		//将 syncSetting 存储到 sync
+		chrome.storage.sync.set(configInSync,function(){
+			if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
+			//必须用 remove 来删除元素
+			chrome.storage.sync.remove(unuserdKeysInSync,function(){
+				if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
+			})
+		})
+		//获取 localSetting
+		chrome.storage.local.get([BackupKey], function(result) {
+			let configsInLocal = result[BackupKey]
+			let configNameInSyncStorage = configInSync.backupName
+			delete configInSync.backupName
+			if(configsInLocal == undefined){//如果本地无设置
+				configsInLocal = {}
+				configsInLocal[DefaultBackupName] = configInSync
+			}
+			if(configsInLocal[DefaultBackupName] == undefined){//如果本地无默认设置
+				configsInLocal[DefaultBackupName] = configInSync
+			}
+			//将 syncSetting 更新至 localSetting
+			configsInLocal[configNameInSyncStorage] = configInSync
+			//遍历 localSetting 检查格式
+			let formatOfConfigInLocal = Config
+			delete formatOfConfigInLocal.backupName
+			for(let configName in configsInLocal){
+				let localConfig = configsInLocal[configName]
+				for(let keyOfLocalConfig in localConfig){//遍历单个配置
+					//如果配置中的某个键在 formatOfConfigInLocal 中不存在，则删除该键
+					if(formatOfConfigInLocal[keyOfLocalConfig] == undefined){
+						delete configsInLocal[configName][keyOfLocalConfig]
+					}
+					//如果 formatOfConfigInLocal 中的某个键在配置中不存在（或者类型不同），则使用 formatOfConfigInLocal 初始化配置
+					for(let keyOfFormat in formatOfConfigInLocal){
+						if(localConfig[keyOfFormat]==undefined||formatOfConfigInLocal[keyOfFormat].constructor!=localConfig[keyOfFormat].constructor){
+							configsInLocal[configName][keyOfFormat] = formatOfConfigInLocal[keyOfFormat]
+						}
+					}
+				}
+			}
+			result[BackupKey] = configsInLocal
+			chrome.storage.local.set(result,function(){
+				if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
 			})
 		})
 	})
@@ -180,13 +214,21 @@ function addPreAndSuf(markText,style){
 	return pre + markText + suf
 }
 
-//给 markText 进行正则匹配
-function getRegExpMarkText(markText,regexpCollection){
-	for(let n=0;n<regexpCollection.length;n++){
-		let pattern = regexpCollection[n][1]
-		let re = new RegExp(pattern)
-		if(re.test(markText)){
-			markText = regexpCollection[n][2] + markText + regexpCollection[n][3]
+//给 markText 进行正则替换
+function regexpReplace(markText){
+	let regexpConfig = Config.re
+	for(let reId in regexpConfig){
+		let replaceMsg = regexpConfig[reId].replacePattern.match(/^s\/(.+?)\/(.*?)\/(\w*)$/)
+		if(!regexpConfig[reId].checked || replaceMsg == null || replaceMsg.length < 4){//检查是否选中以及是否满足格式
+			continue
+		}
+        let pattern = replaceMsg[1]
+        let replacement = replaceMsg[2]
+		let flag = replaceMsg[3]
+		let regexpObj = new RegExp(pattern, flag)
+		if(regexpObj.test(markText)){
+			markText = markText.replace(regexpObj, replacement)
+			//匹配一次后结束匹配
 			break
 		}
 	}
@@ -291,7 +333,7 @@ function traverseMarks(marks,all,indexArr){
 		if(abstract){//如果为想法，则添加前后缀
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`
 		}else{//不是想法（为标注）则进行正则匹配
-			markText = getRegExpMarkText(markText,Config.checkedRe)
+			markText = regexpReplace(markText)
 		}
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
 		if(abstract){//需要添加想法时，添加想法
@@ -321,42 +363,8 @@ chrome.contextMenus.create({
 
 //监听背景页所需storage键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-	console.log('new changes：')
+	console.log(`new ${namespace} changes：`)
 	console.log(changes)
-	if(namespace == "sync"){
-		chrome.storage.sync.get(function(setting){
-			let uselessKeys = []
-			for(let key in setting){
-				//删除本不该存在的键
-				if(syncConfigTemplate[key] == undefined){
-					uselessKeys.push(key)
-					continue
-				}
-				//更新 Config
-				Config[key] = setting[key]
-			}
-			chrome.storage.sync.remove(uselessKeys,function(){
-				if(catchErr("storage.onChanged"))alert(StorageErrorMsg)
-			})
-		})
-
-		chrome.storage.local.get(function(settings){
-			for(let name in settings[BackupKey]){
-				//删除本不该存在的键
-				for(let key in settings[BackupKey][name]){
-					if(backupTemplate[key] == undefined){
-						delete settings[BackupKey][name][key]
-					}
-				}
-			}
-			//todo
-			/* chrome.storage.local.set(settings,function(){
-				if(catchErr("storage.onChanged"))alert(background_storageErrorMsg)
-				else console.log("onChanged.addListener updated local：")
-				console.log(settings)
-			}) */
-		})
-	}
 })
 
 //监听请求用于获取导入书籍的bookId
