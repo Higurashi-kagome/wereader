@@ -259,7 +259,7 @@
 					<p><em>注意：</em></p>
 					<ul>
 						<li>选中正则匹配右方的选中框该正则表达式才会生效。</li>
-						<li>单个标注最多匹配一次，也就是说，一条标注在匹配到某个正则表达式并替换完毕后，将不再继续与其他正则表达式进行匹配。</li>
+						<li>单个标注最多匹配一次，也就是说，一条标注在匹配到某个正则表达式并替换完毕后，将不再继续与其他正则表达式进行匹配。所以在添加正则匹配的时候，最好不要让一个标注能够被多个正则表达式匹配到。</li>
 						<li>因为正则匹配很容易影响导出效果，所以最好在对正则表达式进行充分测试后再使用正则替换。这是一个可供学习正则表达式的教程：<a href="https://github.com/cdoco/learn-regex-zh" target="_blank">learn-regex-zh</a>。</li>
 					</ul>
 				</div>
@@ -317,6 +317,15 @@
 			</div>
 			<div hidden="" class="help-content">
 				<p>选中该选项之后，导出的热门标注中将包含每条热门标注的标记人数。</p>
+			</div>
+			<div class="option">
+				<label for="enableRightClick" id="enableRightClickLabel">开启右键<span class="help-icon"><img
+							src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg=="
+							tabindex="0"></span></label>
+				<input type="checkbox" id="enableRightClick">
+			</div>
+			<div hidden="" class="help-content">
+				<p>选中该选项之后，可在读书页开启右键菜单。在需要复制或另存读书页图片的时候很有帮助。</p>
 			</div>
 			<div class="option">
 				<label for="selectActionOptions" id="selectActionOptionsLabel">选中后动作<span class="help-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg==" tabindex="0"></span></label>

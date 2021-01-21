@@ -346,7 +346,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 chrome.tabs.onActivated.addListener(function (moveInfo) {
 	chrome.tabs.get(moveInfo.tabId, function (tab) {
 		if(!catchErr("chrome.tabs.onActivated.addListener()")){
-			setPopupAndBid(tab)
+			switchTabActions(tab)
 		}
 	})
 })
@@ -355,16 +355,16 @@ chrome.tabs.onActivated.addListener(function (moveInfo) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	if (changeInfo.status == "loading") {
 		if(!catchErr("chrome.tabs.onUpdated.addListener()")){
-			setPopupAndBid(tab)
+			switchTabActions(tab)
 		}
 	}
 })
 
 //根据当前tab设置popup并判断是否需要注入inject-bid.js
-function setPopupAndBid(tab){
-	var currentUrl = tab.url
-	var list = currentUrl.split('/')
-	var isBookPage = false
+function switchTabActions(tab){
+	let currentUrl = tab.url
+	let list = currentUrl.split('/')
+	let isBookPage = false
 	if (list.length > 5 && list[2] == "weread.qq.com" && list[3] == "web" && list[4] == "reader" && list[5] != "") {
 		isBookPage = true;
 	}
@@ -374,10 +374,20 @@ function setPopupAndBid(tab){
 	} else {
 		//注入脚本获取全部目录数据和当前目录
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
-			catchErr("setPopupAndBid(tab)")
+			catchErr("switchTabActions(tab)：inject-getContents")
 		})
+		//注入脚本获取 bookId
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("setPopupAndBid(tab)")
+			catchErr("switchTabActions(tab)：inject-bid")
+		})
+		//注入脚本开启 right click
+		chrome.storage.sync.get(['enableRightClick'],function(result){
+			catchErr("switchTabActions(tab)：inject-enableRightClick")
+			if(result.enableRightClick){
+				chrome.tabs.executeScript(tab.id, { file: 'inject/inject-enableRightClick.js' }, function (result) {
+					catchErr("switchTabActions(tab)：inject-enableRightClick")
+				})
+			}
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}
