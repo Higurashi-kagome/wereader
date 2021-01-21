@@ -7,14 +7,14 @@ function onReaderToolbarContainerObserve(mutationsList, observer){
             if(window.getComputedStyle(readerToolbarContainer).display=='block' && document.getElementsByClassName('wr_selection')[0]){
                 //结束监听以方式监听面板消失时触发自动标注
                 observer.disconnect();
-                const storageKey = 'autoMark'
+                const storageKey = 'selectAction'
                 chrome.storage.sync.get([storageKey], function(setting){
                     let targetUnderlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0]
                     if(setting[storageKey] != "underlinNone" && targetUnderlineBtn){
                         targetUnderlineBtn.click()
-                        //重新监听
-                        addObserverForReaderToolbarContainer();
                     }
+                    //重新监听
+                    addObserverForReaderToolbarContainer();
                 })
             }
         }
@@ -23,13 +23,11 @@ function onReaderToolbarContainerObserve(mutationsList, observer){
 
 //标注面板的父元素的监听函数
 function onRenderTargetContainerObserve(mutationsList, observer){
-    console.log('父元素监听函数：调用')
     for(let mutation of mutationsList) {
         if (mutation.type === 'childList') {
             let readerToolbarContainer = document.getElementsByClassName('reader_toolbar_container')[0];
             //如果标注面板出现
             if(readerToolbarContainer){
-                console.log('面板出现')
                 //开始监听标注面板
                 addObserverForReaderToolbarContainer();
                 //在监听到标注面板出现后结束监听
@@ -37,7 +35,7 @@ function onRenderTargetContainerObserve(mutationsList, observer){
             }
             //如果选中了文字
             if(window.getComputedStyle(readerToolbarContainer).display=='block' && document.getElementsByClassName('wr_selection')[0]){
-                const storageKey = 'autoMark'
+                const storageKey = 'selectAction'
                 chrome.storage.sync.get([storageKey], function(setting){
                     let targetUnderlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0]
                     if(setting[storageKey] != "underlinNone" && targetUnderlineBtn){
@@ -68,9 +66,8 @@ function addObserverForRenderTargetContainer(){
         window.setTimeout(addObserverForRenderTargetContainer,500);
         return;
     }
-    console.log('父元素添加监听')
     observer.observe(renderTargetContainer, {'childList':true});
 }
 
-//console.log('content-autoMark.js：注入');
+//console.log('content-selectAction.js：注入');
 addObserverForRenderTargetContainer();
