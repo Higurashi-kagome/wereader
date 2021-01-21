@@ -30,7 +30,7 @@ var Config = {
     displayN: false,
     addThoughts: false,
     backupName: DefaultBackupName,
-    autoMark: "underlinNone",
+    selectAction: "underlinNone",
     //如果不设置默认值，则在设置页初始化时需要考虑到 
     re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
     flag: 0

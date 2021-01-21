@@ -64,3 +64,7 @@
 - 将 backup 改为 config
 - 简化复制操作，参考[剪贴板操作 Clipboard API 教程 - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2021/01/clipboard-api.html)
 - 删除设置页中的"模式 \d"？
+- 使用保存按钮？
+- 支持直接复制图片、支持图片另存为
+- 编写 Firefox addon 版本更新及打包脚本
+- 使用页面中的 toast 窗口作为通知面板？
