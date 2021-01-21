@@ -241,14 +241,14 @@ function initialize(setting,settings){
         }
     }
     //"自动标注"选项
-    if(setting.autoMark){
-        document.getElementById(setting.autoMark).selected =true;
+    if(setting.selectAction){
+        document.getElementById(setting.selectAction).selected =true;
     }
-    document.getElementById("autoMarkSelect").onchange = function(){
+    document.getElementById("selectActionOptions").onchange = function(){
         let options = this.options
         for (i=0; i<options.length; i++){
             if(options[i].selected == true){
-                updateStorageArea({key:"autoMark",value:options[i].id})
+                updateStorageArea({key:"selectAction",value:options[i].id})
             }
         }
     }
