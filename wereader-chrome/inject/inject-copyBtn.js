@@ -51,13 +51,17 @@ function addCopyBtn1(){
 
 //给注释添加复制按钮
 function addCopyBtn2(){
-    var footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
-    //遍历注释控件
+    //写入 css 使复制按钮只在 hover 时显示
+    const style = document.createElement("style");
+    style.innerHTML = ".reader_footerNote_bubble:hover a0{display:block!important;}";
+    document.head.appendChild(style);
+    //获取并遍历注释控件
+    const footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
     for(var i=0;i<footerNotes.length;i++){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("a0")
-        setAttributes(btn,{id:"noteCopy" + i,textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:block;font-size:19px;z-index:4;"}})
+        setAttributes(btn,{id:"noteCopy" + i,textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:none;font-size:19px;z-index:4;"}})
         btn.addEventListener('click', function(){
             sendMsgToBg(footernote)
             this.textContent = "✔"
@@ -68,7 +72,7 @@ function addCopyBtn2(){
                     element.textContent = "📋"
                 }
             }, 1500);
-         }, false);
+        }, false);
         //给注释按钮注册点击事件
         footerNotes[i].addEventListener('click', function(){
             var interval = setInterval(() => {
