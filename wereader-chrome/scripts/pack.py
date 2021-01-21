@@ -2,7 +2,7 @@ import os
 import shutil
 import zipfile
 
-def main():
+def pack():
 
     #复制 Chrome 扩展文件夹至桌面
     extension_repo_path = r'C:\Users\liuhao\Documents\GitHub\wereader\wereader-chrome'
@@ -17,8 +17,10 @@ def main():
     #删除发布所不需要的文件和文件夹
         #data 文件夹
     shutil.rmtree(desktop_extension_path + r'\data', ignore_errors=True)
+        #scripts 文件夹
+    shutil.rmtree(desktop_extension_path + r'\scripts', ignore_errors=True)
         #其他文件
-    files_need_remove = [r'\wereader-test.js',r'\.gitignore',r'\update_version.py',r'\pack.py',r'\tempCodeRunnerFile.py']
+    files_need_remove = [r'\.gitignore']
     for file_name in files_need_remove:
         try:
             os.remove(desktop_extension_path + file_name)
@@ -41,4 +43,4 @@ def main():
     z.close()
 
 if __name__ == "__main__":
-    main()
+    pack()
