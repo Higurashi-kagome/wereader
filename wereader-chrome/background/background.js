@@ -300,8 +300,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			markedData = message.markedData
 			break
 		case "bookId":
-			message.bid == "wrepub" ? bookId = importBookId
-			: bookId = message.bid
+			if(message.bid == "wrepub")bookId = importBookId;
+			else bookId = message.bid;
 			break
 		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, function (cookie) {
@@ -369,7 +369,6 @@ function switchTabActions(tab){
 		isBookPage = true;
 	}
 	if (!isBookPage) {//如果当前页面为其他页面
-		bookId = "null"
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
 		//注入脚本获取全部目录数据和当前目录
