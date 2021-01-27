@@ -168,19 +168,23 @@ function getData(url, callback) {
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open('GET', url, true);
 	httpRequest.withCredentials = true;
-	try{
-		httpRequest.send();
-	}catch(err){
-		sendAlertMsg({text: "似乎没有联网", icon: "warning"})
-	}
+	//似乎需要在调用 send() 之前初始化才会触发
 	httpRequest.onreadystatechange = function () {
-		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-			var data = httpRequest.responseText;//获取到json字符串，还需解析
-			callback(data);
-		}else if(httpRequest.readyState == 4 && (httpRequest.status == 400 || httpRequest.status == 401 || httpRequest.status == 403 || httpRequest.status == 404 || httpRequest.status == 500)){
-			sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest.responseText), icon: "error",confirmButtonText: '确定'})
+		if (httpRequest.readyState === 4){
+			if(httpRequest.status === 200){
+				let data = httpRequest.responseText;//获取到json字符串，还需解析
+				callback(data);
+			} else if(httpRequest.status === 0){
+				sendAlertMsg({text: "似乎没有联网", icon: "warning"});
+			} else {
+				let msg = {};
+				msg.status = httpRequest.status;
+				msg.responseText = httpRequest.responseText;
+				sendAlertMsg({title: "获取失败:", text: JSON.stringify(msg), icon: "error",confirmButtonText: '确定'});
+			}
 		}
 	};
+	httpRequest.send();
 }
 
 //获取添加级别的标题
@@ -374,7 +378,8 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 		let bookId = url.replace(/(^[\S\s]*bookId=|&type=1)/g,"")
 		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
 			importBookId = bookId
-			//在内部重新注入脚本以重新获取bid
+			//之所以需要注入脚本以重新获取 bid，是因为 bookId 只在收到来自 inject-bid.js 的消息后才更新，
+			//来自 inject-bid.js 的消息将是是否需要将 importBookId 复制给 bookId 的依据
 			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
 				catchErr("chrome.webRequest.onBeforeRequest.addListener()")
 			})
