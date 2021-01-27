@@ -28,6 +28,7 @@ def update_version():
     readme_file = open(readme_file_path,mode='w',encoding='utf-8')
     readme_file.write(replaced_lines)
     readme_file.close()
+    print('版本更新完毕')
 
 if __name__ == "__main__":
     update_version()

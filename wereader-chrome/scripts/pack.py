@@ -17,13 +17,16 @@ def pack():
     #删除发布所不需要的文件和文件夹
         #data 文件夹
     shutil.rmtree(desktop_extension_path + r'\data', ignore_errors=True)
+    print('删除：\\data')
         #scripts 文件夹
     shutil.rmtree(desktop_extension_path + r'\scripts', ignore_errors=True)
+    print('删除：\\scripts')
         #其他文件
-    files_need_remove = [r'\.gitignore']
+    files_need_remove = [r'.gitignore']
     for file_name in files_need_remove:
         try:
-            os.remove(desktop_extension_path + file_name)
+            os.remove(desktop_extension_path + '\\' + file_name)
+            print('删除：' + file_name)
         except Exception as e:
             print('文件删除失败：')
             print(e)
@@ -39,7 +42,10 @@ def pack():
         fpath = fpath and fpath + os.sep or ''#实现当前文件夹以及包含的所有文件的压缩
         for filename in filenames:
             z.write(os.path.join(dirpath, filename),fpath+filename)
-    print ('压缩成功')
+            print('压缩：' + filename)
+    shutil.rmtree(desktop_extension_path, ignore_errors=True)
+    print('删除：' + desktop_extension_path)
+    print ('压缩完毕')
     z.close()
 
 if __name__ == "__main__":
