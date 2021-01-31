@@ -60,7 +60,7 @@
 - 完善帮助页（美化页面、使句子更通顺等）——帮助页的 HTML 文档位于 [`./wereader-chrome/options/help.html`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/help.html)，CSS 文件位于[ `./wereader-chrome/options/help.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/help.css)。
 - 完善设置页——设置页的 HTML 文档位于 [`./wereader-chrome/options/options.html`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.html)，CSS 文件位于 [`./wereader-chrome/options/options.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.css)。
 - 完善阅读页滚动条——相关 CSS 文件位于[ `./wereader-chrome/inject/showScroll.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/inject/showScroll.css)。
-- 可通过更改扩展注入页面的主题 CSS 文件来完善主题，你能够从[`./wereader-chrome/theme/`](https://github.com/Higurashi-kagome/wereader/tree/master/wereader-chrome/theme)找到这些 CSS 文件。
+- 可通过更改扩展注入页面的主题 CSS 文件来完善主题，你能够从 [`./wereader-chrome/theme/`](https://github.com/Higurashi-kagome/wereader/tree/master/wereader-chrome/theme) 找到这些 CSS 文件。
 - 我暂时还不会写 Promise，所以在 background.js 及 bg-util.js 中有许多的回调函数，或许你能够帮忙让代码变得更简洁。
 - Firefox 扩展已经很久没有更新了，感兴趣的话可以尝试将其更新至与 Chrome 扩展相同的版本。
 - 做任何你认为有助于完善此项目的事。
