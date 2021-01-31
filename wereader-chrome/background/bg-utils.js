@@ -189,10 +189,10 @@ function getData(url, callback) {
 
 //获取添加级别的标题
 function getTitleAddedPre(title, level) {
-	//添加4 5 6级是为了处理特别的书（如导入的书籍）获取数据
-	var lev3 = Config["lev3"]
-	var leave = 6 - (lev3.split("#").length - 1)
-	var chars = new Array(leave).join("#")
+	//添加 4 5 6 级是为了处理特别的书（如导入的书籍）获取数据
+	let lev3 = Config["lev3"]
+	let leave = 6 - (lev3.split("#").length - 1)
+	let chars = new Array(leave).join("#")
 	return (level == 1) ? (Config["lev1"] + title)
 		: (level == 2) ? (Config["lev2"] + title)
 		: (level == 3) ? (lev3 + title)
@@ -283,9 +283,17 @@ function getContents(callback){
 	getData(url, function (data) {
 		//得到目录
 		let contentData = JSON.parse(data).data[0].updated
+		//console.log(contentData)
 		let contents = {}
 		for (let i = 0; i < contentData.length; i++) {
-			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: parseInt(contentData[i].level) }
+			//某些书没有目录级别
+			let level = ''
+			if(contentData[i].level){
+				level = parseInt(contentData[i].level)
+			}else{
+				level = 1
+			}
+			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: level }
 		}
 		callback(contents)
 	})

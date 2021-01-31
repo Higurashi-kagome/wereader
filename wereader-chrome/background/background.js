@@ -119,8 +119,10 @@ function copyBookMarks(all) {
 			} else {	//获取本章标注
 				//遍历目录
 				for (let key in contents) {
-					//寻找目标章节
-					if (contents[key].title == CurrentContent.substring(1)) {
+					/* 寻找目标章节 */
+					//某些书籍的 CurrentContent 比获取到的目录数据要多出章节信息（"第一章 CurrentContent"）
+					//故添加 CurrentContent.indexOf(contents[key].title) > -1 进行判断
+					if (contents[key].title == CurrentContent||CurrentContent.indexOf(contents[key].title) > -1) {
 						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
 						var chapterUid = key
 						break
@@ -319,13 +321,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "getContents":
 			let contents = message.contents
 			let res = ''
-			//生成目录res
+			//生成目录 res
 			for (let i = 0; i < contents.length; i++) {
 				let level = contents[i].charAt(0)
 				let chapterInfo = contents[i].substr(1)
 				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
 			}
-			//如果为popup请求复制目录，则复制内容
+			//如果为 popup 请求复制目录，则复制内容
 			if(isCopyContent){
 				copy(res)
 				isCopyContent = false

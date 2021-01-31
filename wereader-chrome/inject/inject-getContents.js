@@ -16,7 +16,8 @@
         }
         let currentContent = ""
         if(document.getElementsByClassName("readerTopBar_title_chapter")[0]){
-            currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].textContent
+            //网页端为排版而可能添加空格以满足排版，所以添加 replace(/^\s*/, '') 以替换开头的空格
+            currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].textContent.replace(/^\s*/, '')
         }else{
             currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent
         }
