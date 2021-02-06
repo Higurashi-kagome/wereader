@@ -32,9 +32,12 @@ function getComment(userVid, isHtml) {
 
 //获取目录:pupup
 function copyContents(){
-	isCopyContent = true;
-	chrome.tabs.executeScript({ file: 'inject/inject-getContents.js' }, function (result) {
-		catchErr("copyContents")
+	sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
+		let text = response.chapters.reduce((text, item)=>{
+			text += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`
+			return text;
+		},'')
+		copy(text);
 	})
 }
 
@@ -100,7 +103,7 @@ function getBookMarks(contents, callback) {
 //获取标注并复制标注到剪切板：popup
 function copyBookMarks(all) {
 	//请求需要追加到文本中的图片 Markdown 文本
-	sendMessageToContentScript({isGetMarkedData:true})
+	sendMessageToContentScript({message: {isGetMarkedData:true}})
 	getContents(function(contents){
 		getBookMarks(contents, function (chaptersAndMarks) {
 			//得到res
@@ -120,9 +123,7 @@ function copyBookMarks(all) {
 				//遍历目录
 				for (let key in contents) {
 					/* 寻找目标章节 */
-					//某些书籍的 CurrentContent 比获取到的目录数据要多出章节信息（"第一章 CurrentContent"）
-					//故添加 CurrentContent.indexOf(contents[key].title) > -1 进行判断
-					if (contents[key].title == CurrentContent||CurrentContent.indexOf(contents[key].title) > -1) {
+					if (contents[key].isCurrent) {
 						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
 						var chapterUid = key
 						break
@@ -309,7 +310,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, function (cookie) {
 				if(!cookie)return
 				getData(`https://i.weread.qq.com/shelf/sync?userVid=${cookie.value.toString()}&synckey=0&lectureSynckey=0`, function(data){
-					sendMessageToContentScript(data,tabId)
+					sendMessageToContentScript({tabId: tabId, message: data})
 				})
 			})
 			break
@@ -317,23 +318,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
 				catchErr("chrome.tabs.insertCSS()")
 			})
-			break
-		case "getContents":
-			let contents = message.contents
-			let res = ''
-			//生成目录 res
-			for (let i = 0; i < contents.length; i++) {
-				let level = contents[i].charAt(0)
-				let chapterInfo = contents[i].substr(1)
-				res += getTitleAddedPre(chapterInfo, parseInt(level)) + "\n\n"
-			}
-			//如果为 popup 请求复制目录，则复制内容
-			if(isCopyContent){
-				copy(res)
-				isCopyContent = false
-			}
-			//设置当前所在目录
-			CurrentContent = message.currentContent
 			break
 		case "aler"://用于调试
 			aler(message.message)
@@ -373,10 +357,6 @@ function switchTabActions(tab){
 	if (!isBookPage) {//如果当前页面为其他页面
 		chrome.browserAction.setPopup({ popup: '' })
 	} else {
-		//注入脚本获取全部目录数据和当前目录
-		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-getContents.js' }, function (result) {
-			catchErr("switchTabActions(tab)：inject-getContents")
-		})
 		//注入脚本获取 bookId
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
 			catchErr("switchTabActions(tab)：inject-bid")

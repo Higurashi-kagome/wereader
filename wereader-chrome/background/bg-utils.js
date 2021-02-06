@@ -125,22 +125,27 @@ function settingInitialize() {
 	})
 }
 
-//发送消息到content.js
-function sendMessageToContentScript(message,id) {
-	if(id != undefined){
-		chrome.tabs.sendMessage(id, message)
-	}else{
-		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-			if(tabs[0].id != undefined){
-				chrome.tabs.sendMessage(tabs[0].id, message)
-			}
-		})
+function sendMessageToContentScript(sendMsg, callback){
+
+	let callbackHandler = function(response){
+		if(callback) callback(response);
 	}
+
+	if(sendMsg.tabId != undefined){
+		chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callbackHandler);
+		return;
+	}
+
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
+	{
+		if(!tabs[0]) return;
+		chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callbackHandler);
+	});
 }
 
 //通知函数
 function sendAlertMsg(msg) {
-	sendMessageToContentScript({isAlertMsg: true, alertMsg: msg})
+	sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}})
 }
 
 //复制内容
@@ -281,21 +286,33 @@ function addThoughts(chaptersAndMarks,contents,callback){
 function getContents(callback){
 	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
 	getData(url, function (data) {
-		//得到目录
-		let contentData = JSON.parse(data).data[0].updated
-		//console.log(contentData)
-		let contents = {}
-		for (let i = 0; i < contentData.length; i++) {
-			//某些书没有目录级别
-			let level = ''
-			if(contentData[i].level){
-				level = parseInt(contentData[i].level)
-			}else{
-				level = 1
-			}
-			contents[contentData[i].chapterUid] = { title: contentData[i].title, level: level }
-		}
-		callback(contents)
+		sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
+			if(!response) return;
+			console.log("response 为空");
+			let contents = JSON.parse(data).data[0].updated.map(item=>{
+				let chapters = response.chapters
+				//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
+				if(!chapters.filter(chapter=>chapter.title===item.title).length){
+					if(chapters[item.chapterIdx-1]) item.title = chapters[item.chapterIdx-1].title
+				}
+				//某些书没有目录级别
+				if(!item.level){
+					let target = chapters.filter(chapter=>chapter.title===item.title)
+					if(target.length) item.level = target[0].level
+					else  item.level = 1
+				}else{
+					item.level = parseInt(item.level)
+				}
+				item.isCurrent = 
+					item.title === response.currentContent || response.currentContent.indexOf(item.title)>-1
+				return item;
+			}).reduce((acc, item)=>{
+				//整理格式
+				acc[item.chapterUid] = { title: item.title, level: item.level, isCurrent: item.isCurrent}
+				return acc
+			},{})
+			callback(contents)
+		})
 	})
 }
 
@@ -383,7 +400,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.webRequest.onBeforeRequest.addListener(details => {
 	let url = details.url
 	if(url.indexOf("bookmarklist?bookId=") > -1) {
-		let bookId = url.replace(/(^[\S\s]*bookId=|&type=1)/g,"")
+		let bookId = url.replace(/(^.*bookId=|&type=1)/g,"")
 		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
 			importBookId = bookId
 			//之所以需要注入脚本以重新获取 bid，是因为 bookId 只在收到来自 inject-bid.js 的消息后才更新，
