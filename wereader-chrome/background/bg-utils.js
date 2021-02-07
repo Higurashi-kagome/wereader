@@ -11,29 +11,24 @@ var rank = function (x, y) {
 
 //报错捕捉函数
 function catchErr(sender) {
-	if (chrome.runtime.lastError) {
-		console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
-		return true
-	}else{
-		return false
-	}
+	if(!chrome.runtime.lastError)return false;
+	console.log(`${sender}=>chrome.runtime.lastError：\n${chrome.runtime.lastError.message}`);
+	return true;
 }
 
 function getRangeArrFrom(strRange, str){
-	let rangeArr = []
-	if(/\[插图\]/.test(str)){
-		let arr = str.split(/(?=\[插图\])|(?<=\[插图\])/)
-		let lenCount = 0
-		for (const item of arr) {
-			if(item!='[插图]'){
-				lenCount += item.length
-			}else{
-				rangeArr.push(parseInt(strRange+lenCount))
-				lenCount += 4
-			}
+	let lenCount = 0;
+	strRange = parseInt(strRange);
+	let rangeArr = str.split(/(?=\[插图\])|(?<=\[插图\])/).reduce((accArr, curItem)=>{
+		if(curItem != '[插图]'){
+			lenCount += curItem.length;
+		}else{
+			accArr.push(strRange + lenCount);
+			lenCount += 4;
 		}
-	}
-	return rangeArr
+		return accArr;
+	},[]);
+	return rangeArr;
 }
 
 //更新sync和local——处理设置页onchange不生效的问题
@@ -64,10 +59,10 @@ function settingInitialize() {
 	chrome.storage.sync.get(function (configInSync) {
 		let unuserdKeysInSync = []
 		for(let key in configInSync){
-			if(Config[key] == undefined){//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
-				delete configInSync[key]
-				unuserdKeysInSync.push(key)
-			}
+			if(Config[key] != undefined) continue
+			//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
+			delete configInSync[key]
+			unuserdKeysInSync.push(key)
 		}
 		for(let key in Config){
 			//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
@@ -128,18 +123,17 @@ function settingInitialize() {
 function sendMessageToContentScript(sendMsg, callback){
 
 	let callbackHandler = function(response){
-		if(callback) callback(response);
+		callback(response);
 	}
 
 	if(sendMsg.tabId != undefined){
-		chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callbackHandler);
+		chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callback?callbackHandler:undefined);
 		return;
 	}
 
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
-	{
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
 		if(!tabs[0]) return;
-		chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callbackHandler);
+		chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callback?callbackHandler:undefined);
 	});
 }
 
@@ -287,28 +281,32 @@ function getContents(callback){
 	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
 	getData(url, function (data) {
 		sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
-			if(!response) return;
-			console.log("response 为空");
-			let contents = JSON.parse(data).data[0].updated.map(item=>{
+			if(!response) {
+				console.log("response 为空");
+				return;
+			}
+			let updated = JSON.parse(data).data[0].updated
+			let firstChapterUid = updated[0].chapterUid
+			let contents = updated.map(aChap=>{
 				let chapters = response.chapters
 				//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-				if(!chapters.filter(chapter=>chapter.title===item.title).length){
-					if(chapters[item.chapterIdx-1]) item.title = chapters[item.chapterIdx-1].title
+				if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
+					if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
 				}
 				//某些书没有目录级别
-				if(!item.level){
-					let target = chapters.filter(chapter=>chapter.title===item.title)
-					if(target.length) item.level = target[0].level
-					else  item.level = 1
+				if(!aChap.level){
+					let target = chapters.filter(chapter=>chapter.title===aChap.title)
+					if(target.length) aChap.level = target[0].level
+					else  aChap.level = 1
 				}else{
-					item.level = parseInt(item.level)
+					aChap.level = parseInt(aChap.level)
 				}
-				item.isCurrent = 
-					item.title === response.currentContent || response.currentContent.indexOf(item.title)>-1
-				return item;
-			}).reduce((acc, item)=>{
+				aChap.isCurrent = 
+					aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
+				return aChap;
+			}).reduce((acc, aChap)=>{
 				//整理格式
-				acc[item.chapterUid] = { title: item.title, level: item.level, isCurrent: item.isCurrent}
+				acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent}
 				return acc
 			},{})
 			callback(contents)
@@ -317,7 +315,7 @@ function getContents(callback){
 }
 
 //获取章内标注
-function traverseMarks(marks,all,indexArr){
+function traverseMarks(marks,all,indexArr=[]){
 	var res = ""
 	var index = 0
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
@@ -327,9 +325,8 @@ function traverseMarks(marks,all,indexArr){
 		while(!all && /\[插图\]/.test(markText)){
 			let amarkedData = markedData[indexArr[index]]
 			if(!amarkedData){//数组越界
-				console.log(JSON.stringify(markedData))
-				console.log(markText)
-				sendAlertMsg({title: "图片获取出错，建议反馈", text: JSON.stringify(markedData), confirmButtonText: '确定',icon: "error"})
+				console.error(markedData, JSON.stringify(markedData))
+				console.error('markText', markText)
 				return ''
 			}
 			let replacement = ''

@@ -6,23 +6,21 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 function getComment(userVid, isHtml) {
 	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
 	getData(url, function (data) {
-		var reviews = JSON.parse(data).reviews
 		var htmlContent = "", content = "", title = ""
 		//遍历书评
-		for (let i = 0; i < reviews.length; i++) {
-			let bid = reviews[i].review.bookId
-			if (bid == bookId.toString()) {//找到对应书
-				htmlContent = reviews[i].review.htmlContent
-				content = reviews[i].review.content.replace("\n", "\n\n")
-				title = reviews[i].review.title
+		for (const item of JSON.parse(data).reviews) {
+			if (item.review.bookId == bookId.toString()) {//找到对应书
+				htmlContent = item.review.htmlContent
+				content = item.review.content.replace("\n", "\n\n")
+				title = item.review.title
 				break
 			}
 		}
-		if (htmlContent != "" || content != "" || title != "") {//有书评
+		if (htmlContent || content || title) {//有书评
 			if (isHtml) {
-				(title != "") ? copy(`# ${title}\n\n${htmlContent}`) : copy(htmlContent)
+				title ? copy(`# ${title}\n\n${htmlContent}`) : copy(htmlContent)
 			} else {
-				(title != "") ? copy(`### ${title}\n\n${content}`) : copy(content)
+				title ? copy(`### ${title}\n\n${content}`) : copy(content)
 			}
 		} else {
 			sendAlertMsg({text: "该书无书评",icon:'warning'})
@@ -33,9 +31,9 @@ function getComment(userVid, isHtml) {
 //获取目录:pupup
 function copyContents(){
 	sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
-		let text = response.chapters.reduce((text, item)=>{
-			text += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`
-			return text;
+		let text = response.chapters.reduce((tempText, item)=>{
+			tempText += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`;
+			return tempText;
 		},'')
 		copy(text);
 	})
@@ -45,9 +43,7 @@ function copyContents(){
 function getBookMarks(contents, callback) {
 	const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`
 	getData(bookmarklistUrl, function (data) {
-		var json = JSON.parse(data)
-		var marks = json.updated
-		var chapters = json.chapters
+		var {updated: marks, chapters} = JSON.parse(data)
 		//检查书本是否有标注
 		if(marks.length == 0){
 			sendAlertMsg({text: "该书无标注",icon:'warning'})
@@ -69,26 +65,24 @@ function getBookMarks(contents, callback) {
 			chaptersWithMark.sort(rank);
 			/* 生成标注数据 */
 			//遍历章节
-			for (let i = 0; i < chaptersWithMark.length; i++) {
-				let chapterUid = chaptersWithMark[i].chapterUid.toString()
-				let marksInAChapter = []
-				let rangeArr = []
+			chaptersWithMark = chaptersWithMark.map(chapter=>{
 				//遍历标注获得章内标注
-				for (let j = 0; j < marks.length; j++) {
-					if (marks[j].chapterUid.toString() != chapterUid) {
-						continue
-					}
-					marks[j].range = parseInt(marks[j].range.replace(/"(\d*)-\d*"/, "$1"))
+				let [marksInAChapter, rangeArr] = marks.reduce((acc, curMark)=>{
+					if (curMark.chapterUid.toString() != chapter.chapterUid.toString()) 
+						return acc
+					curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"))
+					acc[0].push(curMark)
 					//获取"[插图]"索引
-					rangeArr = rangeArr.concat(getRangeArrFrom(marks[j].range, marks[j].markText))
-					marksInAChapter.push(marks[j])
-				}
+					acc[1] = acc[1].concat(getRangeArrFrom(curMark.range, curMark.markText))
+					return acc
+				},[[],[]])
 				//排序章内标注并加入到章节内
 				colId = "range"
 				marksInAChapter.sort(rank)
-				chaptersWithMark[i].marks = marksInAChapter
-				chaptersWithMark[i].rangeArr = rangeArr
-			}
+				chapter.marks = marksInAChapter
+				chapter.rangeArr = rangeArr
+				return chapter
+			})
 			if(Config.addThoughts){
 				addThoughts(chaptersWithMark,contents,function(chaptersWithMark){
 					callback(chaptersWithMark)
@@ -101,59 +95,55 @@ function getBookMarks(contents, callback) {
 }
 
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(all) {
+function copyBookMarks(isAll) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	sendMessageToContentScript({message: {isGetMarkedData:true}})
 	getContents(function(contents){
 		getBookMarks(contents, function (chaptersAndMarks) {
 			//得到res
 			var res = ""
-			if (all) {	//获取全书标注
-				for (let i = 0; i < chaptersAndMarks.length; i++) {//遍历章节
-					let chapterUid = chaptersAndMarks[i].chapterUid
-					let title = contents[chapterUid].title
-					let level = contents[chapterUid].level
-					if(chaptersAndMarks[i].marks.length > 0){//检查章内是否有标注
-						res += getTitleAddedPre(title, level) + "\n\n"
-						res += traverseMarks(chaptersAndMarks[i].marks,all)
+			if (isAll) {	//获取全书标注
+				let res = chaptersAndMarks.reduce((tempRes, cur)=>{
+					let {title, level} = contents[cur.chapterUid]
+					if(cur.marks.length > 0){//检查章内是否有标注
+						tempRes += `${getTitleAddedPre(title, level)}\n\n${traverseMarks(cur.marks, isAll)}`
 					}
-				}
+					return tempRes
+				},'')
 				copy(res)
 			} else {	//获取本章标注
 				//遍历目录
-				for (let key in contents) {
-					/* 寻找目标章节 */
-					if (contents[key].isCurrent) {
-						res += getTitleAddedPre(contents[key].title, contents[key].level) + "\n\n"
-						var chapterUid = key
+				/* let chapterUid =  */
+				for (let uid in contents) {
+					if (contents[uid].isCurrent) {
+						res += `${getTitleAddedPre(contents[uid].title, contents[uid].level)}\n\n`
+						var chapterUid = uid
 						break
 					}
 				}
 				//遍历标注
-				for (let i = 0, len = chaptersAndMarks.length; i < len; i++) {
+				let str = ''
+				for (const chapterAndMark of chaptersAndMarks) {
 					//寻找目标章节并检查章内是否有标注
-					let chapterAndMark = chaptersAndMarks[i]
-					if (chapterAndMark.chapterUid == chapterUid && chapterAndMark.marks.length > 0) {
+					if (chapterAndMark.chapterUid == chapterUid && chapterAndMark.marks.length) {
 						//由 rangeArr 生成索引数组 indexArr
 						let rangeArr = chapterAndMark.rangeArr
 						rangeArr.sort(function(a, b){return a - b;})
 						let indexArr = []
 						for (let j = 0, index = -1; j < rangeArr.length; j++) {
 							if(rangeArr[j] != rangeArr[j-1]){//与前一个range不同
-								index++
-								indexArr[j] = index
+								indexArr[j] = ++index
 							}else{//与前一个range相同
 								indexArr[j] = indexArr[j-1]
 							}
 						}
-						let str = traverseMarks(chapterAndMark.marks,all,indexArr)
+						str = traverseMarks(chapterAndMark.marks,isAll,indexArr)
 						res += str
-						if(str)copy(res)//当str不为空（正确返回）时才复制
 						break
 					}
-					//处理该章节无标注的情况
-					if(i == len - 1) sendAlertMsg({text: "该章节无标注",icon:'warning'});
 				}
+				if(str) copy(res);
+				else sendAlertMsg({text: "该章节无标注",icon:'warning'});
 			}
 			//不排除 imgArr 获取失败，故保险起见将其设置为 []
 			markedData = []
@@ -165,33 +155,29 @@ function copyBookMarks(all) {
 function getBestBookMarks(callback) {
 	const url = `https://i.weread.qq.com/book/bestbookmarks?bookId=${bookId}`
 	getData(url, function (data) {
-		var json = JSON.parse(data)
-		var chapters = json.chapters
-		var items = json.items
+		let {chapters, items} = JSON.parse(data)
 		//处理书本无热门标注的情况
 		if(chapters == undefined){
 			sendAlertMsg({text: "该书无热门标注",icon:'warning'})
 			return
 		}
 		//查找每章节热门标注
-		var bestMarks = {}
-		//遍历章节
-		for (let i = 0; i < chapters.length; i++) {
-			let chapterUid = chapters[i].chapterUid
-			let bestMarksInAChapter = []
+		let bestMarks = chapters.reduce((tempBestMarks, cur)=>{
+			let chapterUid = cur.chapterUid
 			//遍历所有热门标注
-			for (let j = 0; j < items.length; j++) {
-				if (items[j].chapterUid == chapterUid) {
-					var markText = items[j].markText
-					var totalCount = items[j].totalCount
-					var range = items[j].range.replace(/"(\d*)-\d*"/, "$1")
-					bestMarksInAChapter.push({ markText: markText, totalCount: totalCount, range: parseInt(range) })
+			let bestMarksInAChapter = items.reduce((tempBestMarksInAChap, curItem)=>{
+				if (curItem.chapterUid == chapterUid) {
+					let {markText, totalCount} = curItem
+					let range = parseInt(curItem.range.replace(/"(\d*)-\d*"/, "$1"))
+					tempBestMarksInAChap.push({ markText: markText, totalCount: totalCount, range: range })
 				}
-			}
+				return tempBestMarksInAChap
+			},[])
 			colId = "range"
 			bestMarksInAChapter.sort(rank)
-			bestMarks[chapterUid.toString()] = bestMarksInAChapter
-		}
+			tempBestMarks[chapterUid.toString()] = bestMarksInAChapter
+			return tempBestMarks
+		})
 		callback(bestMarks)
 	})
 }
@@ -200,19 +186,17 @@ function getBestBookMarks(callback) {
 function copyBestBookMarks() {
 	getContents(function(contents){
 		getBestBookMarks(function (bestMarks) {
-			//得到res
 			let res = ""
-			//遍历bestMark
+			//遍历 bestMark
 			for (let key in bestMarks) {
-				let title = getTitleAddedPre(contents[key].title, contents[key].level)
-				let item = bestMarks[key]
-				res += `${title}\n\n`
-				//遍历章内标注
-				for (let j = 0; j < item.length; j++) {
-					let markText = item[j].markText
-					let totalCount = item[j].totalCount
-					res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
-				}
+				try {
+					let title = getTitleAddedPre(contents[key].title, contents[key].level)
+					res += `${title}\n\n`
+					bestMarks[key].forEach(item => {
+						let {markText, totalCount} = item
+						res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
+					});
+				} catch (error) { /* bestMarks 中含有多余的键值，比如 bookId */ }
 			}
 			copy(res)
 		})
@@ -223,42 +207,34 @@ function copyBestBookMarks() {
 function getMyThought(callback) {
 	const url = `https://i.weread.qq.com/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`
 	getData(url, function (data) {
-		let json = JSON.parse(data)
-		//获取章节并排序
-		let chapterList = Array.from(new Set(data.match(/"chapterUid":[0-9]*/g)))
-		colId = "chapterUid"
-		chapterList.sort(rank)
+		//获取 chapterUid 并去重、排序
+		let chapterUidArr = Array.from(new Set(data.match(/(?<="chapterUid":\s*)(\d*)(?=,)/g)))
+		chapterUidArr.sort()
 		//查找每章节标注并总结好
 		let thoughts = {}
 		//遍历章节
-		for (let i = 0; i < chapterList.length; i++) {
-			let index = chapterList[i].indexOf(":")
-			let chapterUid = chapterList[i].substring(index + 1)
+		chapterUidArr.forEach(chapterUid=>{
 			let thoughtsInAChapter = []
 			//遍历所有想法，将章内想法放入一个数组
-			for (const item of json.reviews) {
+			for (const item of JSON.parse(data).reviews) {
 				//处理有书评的情况
-				if (item.review.chapterUid == undefined) {
-					continue
-				}
+				if (item.review.chapterUid == undefined || item.review.chapterUid.toString() != chapterUid) continue
 				//找到指定章节的想法
-				if (item.review.chapterUid.toString() == chapterUid) {
-					let abstract = item.review.abstract
-					//替换想法前后空字符
-					let content = item.review.content.replace(/(^\s*|\s*$)/g,'')
-					let range = item.review.range.replace(/"(\d*)-\d*"/, "$1")
-					//如果没有发生替换（为章末想法时发生）
-					if(item.review.range.indexOf('-') < 0){
-						abstract = "章末想法";
-						range = item.review.createTime;
-					}
-					thoughtsInAChapter.push({ abstract: abstract, content: content, range: parseInt(range) })
+				let abstract = item.review.abstract
+				//替换想法前后空字符
+				let content = item.review.content.replace(/(^\s*|\s*$)/g,'')
+				let range = parseInt(item.review.range.replace(/"(\d*)-\d*"/, "$1"))
+				//如果没有发生替换（为章末想法时发生）
+				if(item.review.range.indexOf('-') < 0){
+					abstract = "章末想法";
+					range = item.review.createTime;
 				}
+				thoughtsInAChapter.push({ abstract: abstract, content: content, range: range })
 			}
 			colId = "range"
 			thoughtsInAChapter.sort(rank)
 			thoughts[chapterUid] = thoughtsInAChapter
-		}
+		});
 		callback(thoughts)
 	});
 }
@@ -267,25 +243,17 @@ function getMyThought(callback) {
 function copyThought() {
 	getContents(function(contents){
 		getMyThought(function (thoughts) {
-			//得到res
 			let res = ""
-			//遍历thoughts——{chapterUid:[{abstract,content}]}
+			//thoughts——{chapterUid:[{abstract,content}]}
 			for (let key in thoughts) {
-				//遍历章节
-				let title = getTitleAddedPre(contents[key].title, contents[key].level)
-				res += title + "\n\n"
-				//遍历章内想法
-				for (var j = 0; j < thoughts[key].length; j++) {
-					res += `${Config.thouMarkPre}${thoughts[key][j].abstract}${Config.thouMarkSuf}\n\n`
-					res += `${Config.thouPre}${thoughts[key][j].content}${Config.thouSuf}\n\n`
-				}
+				res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`
+				thoughts[key].forEach(thou=>{
+					res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`
+					res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`
+				})
 			}
-			//处理书本无想法的请况
-			if(!res){
-				sendAlertMsg({text: "该书无想法",icon:'warning'})
-				return
-			}
-			copy(res)
+			if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'})
+			else copy(res)
 		})
 	})
 }

@@ -27,11 +27,6 @@ class Pre{
     }
 }
 
-//发送消息给后台
-function setMesToBg(markedData){
-    chrome.runtime.sendMessage({type: "markedData", markedData: markedData});
-}
-
 //将所有图片、脚注、代码块放到一个数组中
 function concatElement(imgAndNoteElems, preElems){
     let objArr = []
@@ -140,7 +135,7 @@ function main(setting){
         wr_myNote = document.getElementsByClassName("wr_myNote");
     }
     let markedData = getMarkedData(objArr,s0,s1,s2,wr_myNote);
-    setMesToBg(markedData)
+    chrome.runtime.sendMessage({type: "markedData", markedData: markedData})
 }
 
 //console.log("content-markedData.js：被注入")
