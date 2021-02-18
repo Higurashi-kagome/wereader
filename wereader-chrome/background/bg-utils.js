@@ -36,8 +36,7 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
 	if(configMsg.key != undefined){
         let config = {}
-        let key = configMsg.key
-        let value = configMsg.value
+		let {key, value} = configMsg
         config[key] = value
         chrome.storage.sync.set(config,function(){
             if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
@@ -145,13 +144,13 @@ function sendAlertMsg(msg) {
 //复制内容
 function copy(text) {
 	//添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
-	var count = 0;
-	var inputText = document.getElementById("formatted_text");
-	var copyBtn = document.getElementById("btn_copy");
-	var clipboard = new ClipboardJS('.btn');
+	let count = 0;
+	let inputText = document.getElementById("formatted_text");
+	let copyBtn = document.getElementById("btn_copy");
+	let clipboard = new ClipboardJS('.btn');
 	clipboard.on('success', function (e) {
 		if(count == 0){//进行检查而确保一次复制成功只调用一次sendAlertMsg()
-			sendAlertMsg({icon: 'success',title: 'Copied successfully'});
+			sendAlertMsg({icon: 'success',title: '复制成功'});
 			count = count + 1;
 		}
 	});
@@ -162,28 +161,14 @@ function copy(text) {
 	copyBtn.click();
 }
 
-//获取数据
-function getData(url, callback) {
-	var httpRequest = new XMLHttpRequest();
-	httpRequest.open('GET', url, true);
-	httpRequest.withCredentials = true;
-	//似乎需要在调用 send() 之前初始化才会触发
-	httpRequest.onreadystatechange = function () {
-		if (httpRequest.readyState === 4){
-			if(httpRequest.status === 200){
-				let data = httpRequest.responseText;//获取到json字符串，还需解析
-				callback(data);
-			} else if(httpRequest.status === 0){
-				sendAlertMsg({text: "似乎没有联网", icon: "warning"});
-			} else {
-				let msg = {};
-				msg.status = httpRequest.status;
-				msg.responseText = httpRequest.responseText;
-				sendAlertMsg({title: "获取失败:", text: JSON.stringify(msg), icon: "error",confirmButtonText: '确定'});
-			}
-		}
-	};
-	httpRequest.send();
+async function _getData(url){
+	try {
+		let response = await fetch(url);
+		let data = await response.json();
+		return data;
+	} catch (error) {
+		sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest), icon: "error",confirmButtonText: '确定'});
+	}
 }
 
 //获取添加级别的标题
@@ -238,79 +223,74 @@ function regexpReplace(markText){
 	return markText
 }
 
-function addThoughts(chaptersAndMarks,contents,callback){
-	getMyThought(function(thoughts) {
-		//遍历章节
-		for(let chapterUid in thoughts){
-			//遍历章节依次将各章节章内想法添加进 marks
-			let addedToMarks = false
-			for(let i=0;i<chaptersAndMarks.length;i++){
-				//找到目标章节
-				if(chaptersAndMarks[i].chapterUid == parseInt(chapterUid)){
-					//想法与标注合并后按 range 排序
-					colId = "range"
-					chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank)
-					addedToMarks = true
-					//遍历章内想法获取'[插图]'索引
-					let rangeArr = chaptersAndMarks[i].rangeArr
-					for (const thought of thoughts[chapterUid]) {
-						rangeArr = rangeArr.concat(getRangeArrFrom(thought.range, thought.abstract))
-					}
-					chaptersAndMarks[i].rangeArr = rangeArr
-					break
-				}
+async function addThoughts(chaptersAndMarks,contents){
+	let thoughts = await getMyThought();
+	//遍历章节
+	for(let chapterUid in thoughts){
+		//遍历章节依次将各章节章内想法添加进 marks
+		let addedToMarks = false
+		for(let i=0;i<chaptersAndMarks.length;i++){
+			//直到找到目标章节
+			if(chaptersAndMarks[i].chapterUid !== parseInt(chapterUid)) continue;
+			//想法与标注合并后按 range 排序
+			colId = "range"
+			chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank)
+			addedToMarks = true
+			//遍历章内想法获取'[插图]'索引
+			let rangeArr = chaptersAndMarks[i].rangeArr
+			for (const thought of thoughts[chapterUid]) {
+				rangeArr = rangeArr.concat(getRangeArrFrom(thought.range, thought.abstract))
 			}
-			//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
-			if(!addedToMarks){
-				let chapter = {}
-				chapter.chapterUid = parseInt(chapterUid)
-				chapter.title = contents[parseInt(chapterUid)].title
-				chapter.marks = thoughts[chapterUid]
-				chaptersAndMarks.push(chapter)
-			}
+			chaptersAndMarks[i].rangeArr = rangeArr
+			break
 		}
-		//按章节排序
-		colId = "chapterUid"
-		chaptersAndMarks.sort(rank)
-		callback(chaptersAndMarks)
-	})
+		//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
+		if(addedToMarks) continue;
+		chaptersAndMarks.push({
+			chapterUid: parseInt(chapterUid),
+			title: contents[parseInt(chapterUid)].title,
+			marks: thoughts[chapterUid]
+		})
+	}
+	//按章节排序
+	colId = "chapterUid"
+	chaptersAndMarks.sort(rank)
+	return chaptersAndMarks;
 }
 
 //获取目录
-function getContents(callback){
+async function getContents(callback){
 	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-	getData(url, function (data) {
-		sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
-			if(!response) {
-				console.log("response 为空");
-				return;
+	let data = await _getData(url);
+	sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
+		if(!response) {
+			console.log("response 为空");
+			return;
+		}
+		let updated = data.data[0].updated
+		let contents = updated.map(aChap=>{
+			let chapters = response.chapters
+			//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
+			if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
+				if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
 			}
-			let updated = JSON.parse(data).data[0].updated
-			let firstChapterUid = updated[0].chapterUid
-			let contents = updated.map(aChap=>{
-				let chapters = response.chapters
-				//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-				if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
-					if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
-				}
-				//某些书没有目录级别
-				if(!aChap.level){
-					let target = chapters.filter(chapter=>chapter.title===aChap.title)
-					if(target.length) aChap.level = target[0].level
-					else  aChap.level = 1
-				}else{
-					aChap.level = parseInt(aChap.level)
-				}
-				aChap.isCurrent = 
-					aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
-				return aChap;
-			}).reduce((acc, aChap)=>{
-				//整理格式
-				acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent}
-				return acc
-			},{})
-			callback(contents)
-		})
+			//某些书没有目录级别
+			if(!aChap.level){
+				let target = chapters.filter(chapter=>chapter.title===aChap.title)
+				if(target.length) aChap.level = target[0].level
+				else  aChap.level = 1
+			}else{
+				aChap.level = parseInt(aChap.level)
+			}
+			aChap.isCurrent = 
+				aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
+			return aChap;
+		}).reduce((acc, aChap)=>{
+			//整理格式
+			acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent}
+			return acc
+		},{})
+		callback(contents)
 	})
 }
 
@@ -362,17 +342,17 @@ function traverseMarks(marks,all,indexArr=[]){
 			markText = regexpReplace(markText)
 		}
 		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
-		if(abstract){//需要添加想法时，添加想法
-			let content = marks[j].content
-			res += `${Config.thouPre}${content}${Config.thouSuf}\n\n`
+		//需要添加想法时，添加想法
+		if(abstract) {
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
 		}
 	}
 	if(!all){//只在获取本章时添加注脚
-		for(let i=0;i<markedData.length;i++){
-			if(markedData[i].footnote){
-				res += `[^${markedData[i].name}]:${markedData[i].footnote}\n\n`
+		markedData.forEach(element => {
+			if(element.footnote){
+				res += `[^${element.name}]:${element.footnote}\n\n`
 			}
-		}
+		});
 	}
 	return res
 }
