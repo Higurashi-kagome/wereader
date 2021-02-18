@@ -9,7 +9,7 @@ window.onload = function () {
             window.close()
         }
         //遍历按钮绑定点击事件
-        const ids = ["getComment","getComment_text","getComment_html","getBookMarks","getThisChapter","getAll","getBookContents","getBestBookMarks","getMyThoughts","inject","testBtn"]
+        const ids = ["getComment","getComment_text","getComment_html","getBookMarks","getThisChapter","getAll","getBookContents","getBestBookMarks","getMyThoughts","inject-copyBtn","inject-deleteMarks","testBtn"]
         ids.forEach(id=>{
             document.getElementById(id).addEventListener('click', function(){
                 listener(this.id)
@@ -47,9 +47,14 @@ window.onload = function () {
                 case "getMyThoughts":
                     bg.copyThought()
                     break
-                case "inject":
+                case "inject-copyBtn":
                     chrome.tabs.executeScript({ file: 'inject/inject-copyBtn.js' }, function (result) {
-                        bg.catchErr("popup.js")
+                        bg.catchErr("popup.js=>copyBtn")
+                    })
+                    break
+                case "inject-deleteMarks":
+                    chrome.tabs.executeScript({ file: 'inject/inject-deleteMarks.js' }, function (result) {
+                        bg.catchErr("popup.js=>deleteMarks")
                     })
                     break
                 case "testBtn":
