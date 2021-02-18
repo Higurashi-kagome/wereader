@@ -3,11 +3,12 @@ import shutil
 import zipfile
 
 def pack():
-
     #复制 Chrome 扩展文件夹至桌面
-    extension_repo_path = r'C:\Users\liuhao\Documents\GitHub\wereader\wereader-chrome'
-    desktop_extension_path = r'C:\Users\liuhao\Desktop\wereader-chrome'
+    home = os.path.expanduser("~")
+    extension_repo_path = r'{}\Documents\GitHub\wereader\wereader-chrome'.format(home)
+    desktop_extension_path = r'{}\Desktop\wereader-chrome'.format(home)
     try:
+        print('复制：{}=>{}'.format(extension_repo_path, desktop_extension_path))
         shutil.copytree(extension_repo_path, desktop_extension_path)
     except Exception as e:
         print('文件移动失败：')
@@ -45,7 +46,7 @@ def pack():
             print('压缩：' + filename)
     shutil.rmtree(desktop_extension_path, ignore_errors=True)
     print('删除：' + desktop_extension_path)
-    print ('压缩完毕')
+    print ('打包完毕')
     z.close()
 
 if __name__ == "__main__":
