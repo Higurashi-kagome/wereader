@@ -2,12 +2,10 @@
     cursor: pointer;
     color: black;
 }
-#testBtn {
-    display: none;
-    cursor: pointer;
-    color: black;
+.provided:hover {
+    background-color: rgb(227,227,227);
 }
-#choose,#choose_mark {
+#testBtn {
     display: none;
 }
 p {
@@ -28,13 +26,8 @@ div {
     border-radius: 4px;
     user-select:none;
 }
-.provided:hover {
-    background-color: rgb(227,227,227);
-}
-#testBtn:hover {
-    background-color: rgb(139, 181, 245);
-}
-#choose,#choose_mark {
+.suboptions {
+    display: none;
     padding: 0px 0px;
     margin: 2px;
     white-space: nowrap;

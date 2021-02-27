@@ -29,6 +29,7 @@ var Config = {
     displayN: false,
     addThoughts: false,
     enableRightClick: true,
+    enableDevelop: false,
     backupName: DefaultBackupName,
     selectAction: "underlinNone",
     //如果不设置默认值，则在设置页初始化时需要考虑到 
