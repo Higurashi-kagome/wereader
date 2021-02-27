@@ -6,14 +6,12 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 async function getComment(userVid, isHtml) {
 	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
 	let data = await _getData(url);
-	let htmlContent = "", content = "", title = ""
 	//遍历书评
 	for (const item of data.reviews) {
 		if (item.review.bookId !== bookId.toString()) continue;
-		htmlContent = item.review.htmlContent
-		content = item.review.content.replace("\n", "\n\n")
-		title = item.review.title
-		break
+		var {title, content, htmlContent} = item.review;
+		content = content.replace("\n", "\n\n");
+		break;
 	}
 	if (htmlContent || content || title) {//有书评
 		if (isHtml) {
@@ -50,8 +48,8 @@ async function getBookMarks(contents) {
 	//处理包含标注但没有章节记录的情况（一般发生在导入书籍中）
 	if(chapters.length == 0){
 		const chapterInfoUrl = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-		let chapterResponse = await fetch(chapterInfoUrl);
-		let chapData = await chapterResponse.json();
+		let chapResponse = await fetch(chapterInfoUrl);
+		let chapData = await chapResponse.json();
 		//得到目录
 		chapters = chapData.data[0].updated
 	}
@@ -85,7 +83,7 @@ async function getBookMarks(contents) {
 //获取标注并复制标注到剪切板：popup
 function copyBookMarks(isAll) {
 	//请求需要追加到文本中的图片 Markdown 文本
-	sendMessageToContentScript({message: {isGetMarkedData: true}})
+	sendMessageToContentScript({message: {isGetMarkedData: true}});
 	getContents(async function(contents){
 		let chaptersAndMarks = await getBookMarks(contents);
 		//得到res
@@ -265,9 +263,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 				catchErr("chrome.tabs.insertCSS()")
 			})
 			break
-		case "aler"://用于调试
-			aler(message.message)
-			break
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
 			updateStorageAreainBg(message.regexpSet)
 			break
@@ -300,15 +295,6 @@ function switchTabActions(tab){
 		//注入脚本获取 bookId
 		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
 			catchErr("switchTabActions(tab)：inject-bid")
-		})
-		//注入脚本开启 right click
-		chrome.storage.sync.get(['enableRightClick'],function(result){
-			catchErr("switchTabActions(tab)：inject-enableRightClick")
-			if(result.enableRightClick){
-				chrome.tabs.executeScript(tab.id, { file: 'inject/inject-enableRightClick.js' }, function (result) {
-					catchErr("switchTabActions(tab)：inject-enableRightClick")
-				})
-			}
 		})
 		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
 	}
