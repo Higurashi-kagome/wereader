@@ -371,6 +371,11 @@ chrome.contextMenus.create({
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	console.log(`new ${namespace} changes：`)
 	console.log(changes)
+	// 更新 Config
+	if(namespace !== 'sync') return;
+	for(const key in changes){
+		Config[key] = changes[key]['newValue'];
+	}
 })
 
 //监听请求用于获取导入书籍的bookId
