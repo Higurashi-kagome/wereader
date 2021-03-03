@@ -25,14 +25,13 @@ async function getComment(userVid, isHtml) {
 }
 
 //获取目录:pupup
-function copyContents(){
-	sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
-		let text = response.chapters.reduce((tempText, item)=>{
-			tempText += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`;
-			return tempText;
-		},'')
-		copy(text);
-	})
+async function copyContents(){
+	const response = await sendMessageToContentScript({message: {isGetContents: true}});
+	let chapText = response.chapters.reduce((tempText, item)=>{
+		tempText += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`;
+		return tempText;
+	},'');
+	copy(chapText);
 }
 
 async function getBookMarks(contents) {
@@ -81,55 +80,54 @@ async function getBookMarks(contents) {
 }
 
 //获取标注并复制标注到剪切板：popup
-function copyBookMarks(isAll) {
+async function copyBookMarks(isAll) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	sendMessageToContentScript({message: {isGetMarkedData: true}});
-	getContents(async function(contents){
-		let chaptersAndMarks = await getBookMarks(contents);
-		//得到res
-		var res = ""
-		if (isAll) {	//获取全书标注
-			let res = chaptersAndMarks.reduce((tempRes, cur)=>{
-				let {title, level} = contents[cur.chapterUid]
-				if(cur.marks.length > 0){//检查章内是否有标注
-					tempRes += `${getTitleAddedPre(title, level)}\n\n${traverseMarks(cur.marks, isAll)}`
-				}
-				return tempRes
-			},'')
-			copy(res)
-		} else {	//获取本章标注
-			//遍历目录
-			/* let chapterUid =  */
-			for (let uid in contents) {
-				if (!contents[uid].isCurrent) continue;
-				res += `${getTitleAddedPre(contents[uid].title, contents[uid].level)}\n\n`;
-				var chapterUid = uid;
-				break;
+	const contents = await getContents();
+	const chaptersAndMarks = await getBookMarks(contents);
+	//得到res
+	var res = ""
+	if (isAll) {	//获取全书标注
+		let res = chaptersAndMarks.reduce((tempRes, cur)=>{
+			let {title, level} = contents[cur.chapterUid]
+			if(cur.marks.length > 0){//检查章内是否有标注
+				tempRes += `${getTitleAddedPre(title, level)}\n\n${traverseMarks(cur.marks, isAll)}`
 			}
-			//遍历标注
-			let str = ''
-			for (const chapterAndMark of chaptersAndMarks) {
-				//寻找目标章节并检查章内是否有标注
-				if (chapterAndMark.chapterUid != chapterUid) continue;
-				if (!chapterAndMark.marks.length) break;
-				//由 rangeArr 生成索引数组 indexArr
-				let rangeArr = chapterAndMark.rangeArr
-				rangeArr.sort(function(a, b){return a - b;})
-				let indexArr = []
-				for (let j = 0, index = -1; j < rangeArr.length; j++) {
-					if(rangeArr[j] != rangeArr[j-1]) indexArr[j] = ++index; //与前一个range不同
-					else indexArr[j] = indexArr[j-1]; //与前一个range相同
-				}
-				str = traverseMarks(chapterAndMark.marks,isAll,indexArr)
-				res += str
-				break
-			}
-			if(str) copy(res);
-			else sendAlertMsg({text: "该章节无标注",icon:'warning'});
+			return tempRes
+		},'')
+		copy(res)
+	} else {	//获取本章标注
+		//遍历目录
+		/* let chapterUid =  */
+		for (let uid in contents) {
+			if (!contents[uid].isCurrent) continue;
+			res += `${getTitleAddedPre(contents[uid].title, contents[uid].level)}\n\n`;
+			var chapterUid = uid;
+			break;
 		}
-		//不排除 imgArr 获取失败，故保险起见将其设置为 []
-		markedData = []
-	})
+		//遍历标注
+		let str = '';
+		for (const chapterAndMark of chaptersAndMarks) {
+			//寻找目标章节并检查章内是否有标注
+			if (chapterAndMark.chapterUid != chapterUid) continue;
+			if (!chapterAndMark.marks.length) break;
+			//由 rangeArr 生成索引数组 indexArr
+			let rangeArr = chapterAndMark.rangeArr;
+			rangeArr.sort((a, b)=>{return a - b;});
+			let indexArr = [];
+			for (let j = 0, index = -1; j < rangeArr.length; j++) {
+				if(rangeArr[j] != rangeArr[j-1]) indexArr[j] = ++index; //与前一个range不同
+				else indexArr[j] = indexArr[j-1]; //与前一个range相同
+			}
+			str = traverseMarks(chapterAndMark.marks,isAll,indexArr);
+			res += str;
+			break;
+		}
+		if(str) copy(res);
+		else sendAlertMsg({text: "该章节无标注",icon:'warning'});
+	}
+	//不排除 imgArr 获取失败，故保险起见将其设置为 []
+	markedData = []
 }
 
 //获取热门标注
@@ -163,22 +161,21 @@ async function getBestBookMarks() {
 }
 
 //处理数据，复制热门标注
-function copyBestBookMarks() {
-	getContents(async function(contents){
-		let bestMarks = await getBestBookMarks();
-		let res = ""
-		//遍历 bestMark
-		for (let key in bestMarks) {
-			try {
-				res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`
-				bestMarks[key].forEach(item => {
-					let {markText, totalCount} = item
-					res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
-				});
-			} catch (error) { /* bestMarks 中含有多余的键值，比如 bookId */ }
-		}
-		copy(res)
-	})
+async function copyBestBookMarks() {
+	const contents = await getContents();
+	let bestMarks = await getBestBookMarks();
+	let res = ""
+	//遍历 bestMark
+	for (let key in bestMarks) {
+		try {
+			res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`
+			bestMarks[key].forEach(item => {
+				let {markText, totalCount} = item
+				res += markText + (Config.displayN ? (`  <u>${totalCount}</u>`) : "") + "\n\n"
+			});
+		} catch (error) { /* bestMarks 中含有多余的键值，比如 bookId */ }
+	}
+	copy(res)
 }
 
 //获取想法
@@ -218,20 +215,19 @@ async function getMyThought() {
 
 //处理数据，复制想法
 async function copyThought() {
-	getContents(async function(contents){
-		let thoughts = await getMyThought();
-		let res = ""
-		//thoughts——{chapterUid:[{abstract,content}]}
-		for (let key in thoughts) {
-			res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`
-			thoughts[key].forEach(thou=>{
-				res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`
-				res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`
-			})
-		}
-		if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'})
-		else copy(res)
-	})
+	const contents = await getContents();
+	let thoughts = await getMyThought();
+	let res = ""
+	//thoughts——{chapterUid:[{abstract,content}]}
+	for (let key in thoughts) {
+		res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`
+		thoughts[key].forEach(thou=>{
+			res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`
+			res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`
+		})
+	}
+	if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'})
+	else copy(res)
 }
 
 settingInitialize()
@@ -241,15 +237,15 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	let tabId = sender.tab.id
 	switch(message.type){
 		case "copyImg":
-			copy(message.picText)
-			break
+			copy(message.picText);
+			break;
 		case "markedData":
-			markedData = message.markedData
-			break
+			markedData = message.markedData;
+			break;
 		case "bookId":
 			if(message.bid == "wrepub")bookId = importBookId;
 			else bookId = message.bid;
-			break
+			break;
 		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, async function (cookie) {
 				if(!cookie) return;
@@ -270,9 +266,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 })
 
 //页面监测：是否在已打开页面之间切换
-chrome.tabs.onActivated.addListener(function (moveInfo) {
-	chrome.tabs.get(moveInfo.tabId, function (tab) {
-		if(!catchErr("chrome.tabs.onActivated.addListener()")){
+chrome.tabs.onActivated.addListener((moveInfo) => {
+	chrome.tabs.get(moveInfo.tabId, (tab) => {
+		if(!catchErr("onActivated.addListener()")){
 			switchTabActions(tab)
 		}
 	})

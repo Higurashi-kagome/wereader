@@ -58,7 +58,7 @@ function settingInitialize() {
 	chrome.storage.sync.get(function (configInSync) {
 		let unuserdKeysInSync = []
 		for(let key in configInSync){
-			if(Config[key] != undefined) continue
+			if(Config[key] !== undefined) continue
 			//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
 			delete configInSync[key]
 			unuserdKeysInSync.push(key)
@@ -119,20 +119,21 @@ function settingInitialize() {
 	})
 }
 
-function sendMessageToContentScript(sendMsg, callback){
-
-	let callbackHandler = function(response){
-		callback(response);
-	}
-
-	if(sendMsg.tabId != undefined){
-		chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callback?callbackHandler:undefined);
-		return;
-	}
-
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-		if(!tabs[0]) return;
-		chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callback?callbackHandler:undefined);
+function sendMessageToContentScript(sendMsg){
+	return new Promise((res, rej)=>{
+		let callbackHandler = (response)=>{
+			if(chrome.runtime.lastError) return rej();
+			if(response) return res(response);
+		}
+	
+		if(sendMsg.tabId != undefined){
+			chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callbackHandler);
+		}else{
+			chrome.tabs.query({active: true, currentWindow: true}, (tabs)=>{
+				if(!tabs[0]) return rej();
+				chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callbackHandler);
+			});
+		}
 	});
 }
 
@@ -259,39 +260,35 @@ async function addThoughts(chaptersAndMarks,contents){
 }
 
 //获取目录
-async function getContents(callback){
-	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-	let data = await _getData(url);
-	sendMessageToContentScript({message: {isGetContents: true}},(response)=>{
-		if(!response) {
-			console.log("response 为空");
-			return;
+async function getContents(){
+	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
+	const data = await _getData(url);
+	const response = await sendMessageToContentScript({message: {isGetContents: true}});
+	if(!response) return console.log("response 为空");
+	let updated = data.data[0].updated;
+	let contents = updated.map(aChap=>{
+		let chapters = response.chapters
+		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
+		if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
+			if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
 		}
-		let updated = data.data[0].updated
-		let contents = updated.map(aChap=>{
-			let chapters = response.chapters
-			//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-			if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
-				if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
-			}
-			//某些书没有目录级别
-			if(!aChap.level){
-				let target = chapters.filter(chapter=>chapter.title===aChap.title)
-				if(target.length) aChap.level = target[0].level
-				else  aChap.level = 1
-			}else{
-				aChap.level = parseInt(aChap.level)
-			}
-			aChap.isCurrent = 
-				aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
-			return aChap;
-		}).reduce((acc, aChap)=>{
-			//整理格式
-			acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent}
-			return acc
-		},{})
-		callback(contents)
-	})
+		//某些书没有目录级别
+		if(!aChap.level){
+			let target = chapters.filter(chapter=>chapter.title===aChap.title);
+			if(target.length) aChap.level = target[0].level;
+			else  aChap.level = 1;
+		}else{
+			aChap.level = parseInt(aChap.level);
+		}
+		aChap.isCurrent = 
+			aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
+		return aChap;
+	}).reduce((acc, aChap)=>{
+		//整理格式
+		acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent};
+		return acc;
+	},{})
+	return contents;
 }
 
 //获取章内标注
@@ -349,9 +346,7 @@ function traverseMarks(marks,all,indexArr=[]){
 	}
 	if(!all){//只在获取本章时添加注脚
 		markedData.forEach(element => {
-			if(element.footnote){
-				res += `[^${element.name}]:${element.footnote}\n\n`
-			}
+			if(element.footnote) res += `[^${element.name}]:${element.footnote}\n\n`;
 		});
 	}
 	return res
