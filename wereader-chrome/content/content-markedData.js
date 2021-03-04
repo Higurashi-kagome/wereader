@@ -81,7 +81,21 @@ function concatElement(imgAndNoteElems, preElems){
 }
 
 //获取图片和注释
-function getMarkedData(objArr,s0,s1,s2,wr_myNote){
+function getMarkedData(setting){
+    //获取正文所有图片和注释 Element
+    var imgAndNoteTags = document.querySelectorAll(".wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute");
+    var preElems = document.getElementsByTagName('pre');
+    var objArr = concatElement(imgAndNoteTags, preElems)
+    //获取三种标注 Element
+    var s0 = document.getElementsByClassName("wr_underline s0");
+    var s1 = document.getElementsByClassName("wr_underline s1");
+    var s2 = document.getElementsByClassName("wr_underline s2");
+    var wr_myNote = []
+    if(setting.addThoughts){
+        //获取想法标注元素
+        wr_myNote = document.getElementsByClassName("wr_myNote");
+    }
+    
     var markedData = []
     var top = 0, height = 0
     var isInlineImg = false
@@ -119,30 +133,11 @@ function getMarkedData(objArr,s0,s1,s2,wr_myNote){
     return markedData
 }
 
-//入口
-function main(setting){
-    //获取正文所有图片和注释 Element
-    var imgAndNoteTags = document.querySelectorAll(".wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute");
-    var preElems = document.getElementsByTagName('pre');
-    var objArr = concatElement(imgAndNoteTags, preElems)
-    //获取三种标注 Element
-    var s0 = document.getElementsByClassName("wr_underline s0");
-    var s1 = document.getElementsByClassName("wr_underline s1");
-    var s2 = document.getElementsByClassName("wr_underline s2");
-    var wr_myNote = []
-    if(setting.addThoughts){
-        //获取想法标注元素
-        wr_myNote = document.getElementsByClassName("wr_myNote");
-    }
-    let markedData = getMarkedData(objArr,s0,s1,s2,wr_myNote);
-    chrome.runtime.sendMessage({type: "markedData", markedData: markedData})
-}
-
-//console.log("content-markedData.js：被注入")
-chrome.runtime.onMessage.addListener(function(msg){
-    if(msg.isGetMarkedData){
-        chrome.storage.sync.get(function(setting){
-            main(setting)
-        })
-    }
+// console.log("content-markedData.js：被注入")
+chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
+    if(!request.isGetMarkedData) return;
+    chrome.storage.sync.get((setting)=>{
+        const markedData = getMarkedData(setting);
+        chrome.runtime.sendMessage({type: 'markedData', markedData: markedData})
+    })
 })
