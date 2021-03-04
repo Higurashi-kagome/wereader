@@ -126,8 +126,6 @@ async function copyBookMarks(isAll) {
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});
 	}
-	//不排除 imgArr 获取失败，故保险起见将其设置为 []
-	markedData = []
 }
 
 //获取热门标注
@@ -242,10 +240,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 		case "markedData":
 			markedData = message.markedData;
 			break;
-		case "bookId":
-			if(message.bid == "wrepub")bookId = importBookId;
-			else bookId = message.bid;
-			break;
 		case "getShelf":	//content-shelf.js 获取书架数据
 			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, async function (cookie) {
 				if(!cookie) return;
@@ -256,7 +250,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			break
 		case "injectCss":
 			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
-				catchErr("chrome.tabs.insertCSS()")
+				catchErr("onMessage.addListener", "insertCSS()");
 			})
 			break
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
@@ -264,34 +258,3 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 			break
 	}
 })
-
-//页面监测：是否在已打开页面之间切换
-chrome.tabs.onActivated.addListener((moveInfo) => {
-	chrome.tabs.get(moveInfo.tabId, (tab) => {
-		if(!catchErr("onActivated.addListener()")){
-			switchTabActions(tab)
-		}
-	})
-})
-
-//页面监控：是否发生更新
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	if (changeInfo.status == "loading") {
-		if(!catchErr("onUpdated.addListener()")) switchTabActions(tab)
-	}
-})
-
-//根据当前tab设置popup并判断是否需要注入inject-bid.js
-function switchTabActions(tab){
-	let isBookPage = false;
-	if (tab.url.match(/weread\.qq\.com\/web\/reader\/\S{1,}/)) isBookPage = true;
-	if (!isBookPage) {//如果当前页面为其他页面
-		chrome.browserAction.setPopup({ popup: '' })
-	} else {
-		//注入脚本获取 bookId
-		chrome.tabs.executeScript(tab.id, { file: 'inject/inject-bid.js' }, function (result) {
-			catchErr("switchTabActions(tab)：inject-bid")
-		})
-		chrome.browserAction.setPopup({ popup: 'popup/popup.html' })
-	}
-}

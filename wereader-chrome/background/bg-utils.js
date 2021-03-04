@@ -9,10 +9,15 @@ var rank = function (x, y) {
 	return (x[colId] > y[colId]) ? 1 : -1
 }
 
+async function setBookId(){
+	bookId = await sendMessageToContentScript({message: {getBookId: true}});
+	if(bookId == "wrepub")bookId = importBookId;
+}
+
 //报错捕捉函数
-function catchErr(sender) {
+function catchErr(...sender) {
 	if(!chrome.runtime.lastError)return false;
-	console.log(`${sender}=>chrome.runtime.lastError：\n${chrome.runtime.lastError.message}`);
+	console.log(`${sender.join('=>')}=>chrome.runtime.lastError：\n${chrome.runtime.lastError.message}`);
 	return true;
 }
 
@@ -34,22 +39,21 @@ function getRangeArrFrom(strRange, str){
 //更新sync和local——处理设置页onchange不生效的问题
 function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	if(configMsg.key != undefined){
-        let config = {}
-		let {key, value} = configMsg
-        config[key] = value
-        chrome.storage.sync.set(config,function(){
-            if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
-            chrome.storage.local.get(function(settings){
-                const currentProfile = configMsg.currentProfile
-                settings[BackupKey][currentProfile][key] = value
-                chrome.storage.local.set(settings,function(){
-					if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
-                    callback()
-                })
-            })
-        })
-    }
+	if(configMsg.key === undefined) return;
+	let config = {}
+	let {key, value} = configMsg
+	config[key] = value
+	chrome.storage.sync.set(config, function(){
+		if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
+		chrome.storage.local.get(function(settings){
+			const currentProfile = configMsg.currentProfile
+			settings[BackupKey][currentProfile][key] = value
+			chrome.storage.local.set(settings,function(){
+				if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
+				callback()
+			})
+		})
+	})
 }
 
 //存储 / 初始化设置
@@ -119,7 +123,7 @@ function settingInitialize() {
 	})
 }
 
-function sendMessageToContentScript(sendMsg){
+async function sendMessageToContentScript(sendMsg){
 	return new Promise((res, rej)=>{
 		let callbackHandler = (response)=>{
 			if(chrome.runtime.lastError) return rej();
@@ -134,10 +138,9 @@ function sendMessageToContentScript(sendMsg){
 				chrome.tabs.sendMessage(tabs[0].id, sendMsg.message, callbackHandler);
 			});
 		}
-	});
+	}).catch((error)=>{});
 }
 
-//通知函数
 function sendAlertMsg(msg) {
 	sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}})
 }
@@ -362,7 +365,7 @@ chrome.contextMenus.create({
     }
 })
 
-//监听背景页所需storage键值是否有改变
+//监听背景页所需 storage 键值是否有改变
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	console.log(`new ${namespace} changes：`)
 	console.log(changes)
@@ -383,7 +386,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 			//之所以需要注入脚本以重新获取 bid，是因为 bookId 只在收到来自 inject-bid.js 的消息后才更新，
 			//来自 inject-bid.js 的消息将是是否需要将 importBookId 复制给 bookId 的依据
 			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
-				catchErr("chrome.webRequest.onBeforeRequest.addListener()")
+				catchErr("onBeforeRequest.addListener()")
 			})
 		}
 	}
@@ -394,4 +397,15 @@ chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
         chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"})
     }
+	// page_action
+	chrome.declarativeContent.onPageChanged.removeRules(undefined, function(){
+		chrome.declarativeContent.onPageChanged.addRules([
+			{
+				conditions: [
+					new chrome.declarativeContent.PageStateMatcher({pageUrl: {urlContains: '://weread.qq.com/web/reader/'}})
+				],
+				actions: [new chrome.declarativeContent.ShowPageAction()]
+			}
+		]);
+	});
 })
