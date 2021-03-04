@@ -12,13 +12,13 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
    },
-   "browser_action": {
+   "page_action": {
       "default_icon": {
          "16": "icons/icon16.png",
          "24": "icons/icon24.png",
          "32": "icons/icon32.png"
       },
-      "default_popup": "",
+      "default_popup": "popup/popup.html",
       "default_title": "wereader"
    },
    "content_scripts": [
@@ -57,7 +57,8 @@
             "content/content-getContents.js",
             "content/content-scrollNote.js",
             "content/content-markedData.js",
-            "content/content-rightClick.js"
+            "content/content-rightClick.js",
+            "content/content-bookId.js"
          ],
          "run_at": "document_end"
       },
@@ -90,6 +91,7 @@
       "*://weread.qq.com/web/reader/*",
       "*://weread.qq.com/*",
       "*://i.weread.qq.com/*",
-      "webRequest"
+      "webRequest",
+      "declarativeContent"
    ]
 }

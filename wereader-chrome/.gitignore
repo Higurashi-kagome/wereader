@@ -1,4 +1,5 @@
 data/
+test-*.*
 test.*
 tempCodeRunnerFile.py
 __pycache__

@@ -8,7 +8,7 @@
 
 不能访问 Chrome 网上应用店时按如下操作在 Chrome 上手动安装（注意：手动安装的扩展不会自动更新）：
 
-1. 首先，在上面给出的 GitHub 地址上依次点击 `Clone`——`Download ZIP` 下载压缩包。下载好后解压。
+1. 首先，在上面给出的 GitHub 地址上依次点击 `Clone` => `Download ZIP` 下载压缩包。下载好后解压。
 
 2. 接下来，进入 Chrome，在地址栏输入 `chrome://extensions/` 后回车，进入扩展管理页面。
 
@@ -36,7 +36,7 @@
 - 完善设置页——设置页的 HTML 文档位于 [`./wereader-chrome/options/options.html`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.html)，CSS 文件位于 [`./wereader-chrome/options/options.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.css)。
 - 完善阅读页滚动条——相关 CSS 文件位于[ `./wereader-chrome/inject/showScroll.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/inject/showScroll.css)。
 - 可通过更改扩展注入页面的主题 CSS 文件来完善主题，你能够从 [`./wereader-chrome/theme/`](https://github.com/Higurashi-kagome/wereader/tree/master/wereader-chrome/theme) 找到这些 CSS 文件。
-- Firefox 扩展已经很久没有更新了，感兴趣的话可以尝试将其更新至与 Chrome 扩展相同的版本，或者，你可以尝试提升扩展的兼容性，使单个扩展能够在多个平台运行。
+- 将 Firefox 扩展更新至与 Chrome 扩展相同的版本，或者，你可以尝试提升扩展的兼容性，使单个扩展能够在多个平台运行。
 - 简化代码，比如帮助添加 import 语句。
 - 做任何你认为有助于完善此项目的事。
 

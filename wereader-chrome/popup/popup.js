@@ -3,6 +3,7 @@ window.onload = async ()=>{
     //获取 vid
     const userVid = await getuserVid();
     const bg = chrome.extension.getBackgroundPage();
+    bg.setBookId();
     //获取 vid 失败则提醒
     if (!userVid) {
         bg.getTest()['aler']('似乎出了一点问题...请确保正常登陆后刷新重试~');
@@ -46,12 +47,12 @@ window.onload = async ()=>{
                 break
             case "inject-copyBtn":
                 chrome.tabs.executeScript({ file: 'inject/inject-copyBtn.js' }, function (result) {
-                    bg.catchErr("popup.js=>copyBtn")
+                    bg.catchErr("popup.js", "copyBtn")
                 })
                 break
             case "inject-deleteMarks":
                 chrome.tabs.executeScript({ file: 'inject/inject-deleteMarks.js' }, function (result) {
-                    bg.catchErr("popup.js=>deleteMarks")
+                    bg.catchErr("popup.js", "deleteMarks")
                 })
                 break
             default:
@@ -67,7 +68,7 @@ function getuserVid(){
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             chrome.cookies.get({url: tabs[0].url, name: 'wr_vid'}, (cookie) => {
                 if(chrome.runtime.lastError){
-                    chrome.extension.getBackgroundPage().catchErr("popup.js => chrome.cookies.get()");
+                    chrome.extension.getBackgroundPage().catchErr("popup.js", "chrome.cookies.get()");
                     return rej();
                 }else{
                     return cookie == null ? res(null) : res(cookie.value.toString());
