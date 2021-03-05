@@ -58,22 +58,17 @@ async function getBookMarks(contents) {
 	/* 生成标注数据 */
 	//遍历章节
 	chapters = chapters.map(chapter=>{
-		//遍历标注获得章内标注
-		let [marksInAChapter, rangeArr] = marks.reduce((acc, curMark)=>{
-			if (curMark.chapterUid.toString() != chapter.chapterUid.toString()) 
-				return acc
-			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"))
-			acc[0].push(curMark)
-			//获取"[插图]"索引
-			acc[1] = acc[1].concat(getRangeArrFrom(curMark.range, curMark.markText))
-			return acc
-		},[[],[]])
+		//取得章内标注并初始化 range
+		let marksInAChapter = marks.filter(mark=>mark.chapterUid == chapter.chapterUid).reduce((acc, curMark)=>{
+			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
+			acc.push(curMark);
+			return acc;
+		},[]);
 		//排序章内标注并加入到章节内
-		colId = "range"
-		marksInAChapter.sort(rank)
-		chapter.marks = marksInAChapter
-		chapter.rangeArr = rangeArr
-		return chapter
+		colId = "range";
+		marksInAChapter.sort(rank);
+		chapter.marks = marksInAChapter;
+		return chapter;
 	})
 	if(Config.addThoughts) chapters = await addThoughts(chapters,contents);
 	return chapters;
@@ -111,13 +106,19 @@ async function copyBookMarks(isAll) {
 			//寻找目标章节并检查章内是否有标注
 			if (chapterAndMark.chapterUid != chapterUid) continue;
 			if (!chapterAndMark.marks.length) break;
+			//生成"[插图]"索引
+			let rangeArr = chapterAndMark.marks.reduce((tempArr, curMark)=>{
+				let content = curMark.markText||curMark.abstract;
+				tempArr = tempArr.concat(getRangeArrFrom(curMark.range, content));
+				return tempArr;
+			},[]);
 			//由 rangeArr 生成索引数组 indexArr
-			let rangeArr = chapterAndMark.rangeArr;
-			rangeArr.sort((a, b)=>{return a - b;});
-			let indexArr = [];
+			let indexArr = [], generatedArr = [];
 			for (let j = 0, index = -1; j < rangeArr.length; j++) {
-				if(rangeArr[j] != rangeArr[j-1]) indexArr[j] = ++index; //与前一个range不同
-				else indexArr[j] = indexArr[j-1]; //与前一个range相同
+				let targetIndex = generatedArr.indexOf(rangeArr[j]);
+				if(targetIndex < 0) indexArr[j] = ++index;
+				else indexArr[j] = indexArr[targetIndex];
+				generatedArr.push(rangeArr[j]);
 			}
 			str = traverseMarks(chapterAndMark.marks,isAll,indexArr);
 			res += str;

@@ -240,12 +240,6 @@ async function addThoughts(chaptersAndMarks,contents){
 			colId = "range"
 			chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank)
 			addedToMarks = true
-			//遍历章内想法获取'[插图]'索引
-			let rangeArr = chaptersAndMarks[i].rangeArr
-			for (const thought of thoughts[chapterUid]) {
-				rangeArr = rangeArr.concat(getRangeArrFrom(thought.range, thought.abstract))
-			}
-			chaptersAndMarks[i].rangeArr = rangeArr
 			break
 		}
 		//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
@@ -257,8 +251,8 @@ async function addThoughts(chaptersAndMarks,contents){
 		})
 	}
 	//按章节排序
-	colId = "chapterUid"
-	chaptersAndMarks.sort(rank)
+	colId = "chapterUid";
+	chaptersAndMarks.sort(rank);
 	return chaptersAndMarks;
 }
 
@@ -296,8 +290,7 @@ async function getContents(){
 
 //获取章内标注
 function traverseMarks(marks,all,indexArr=[]){
-	var res = ""
-	var index = 0
+	let res = "", index = 0;
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
 		let markText = abstract ? abstract : marks[j].markText
@@ -305,9 +298,9 @@ function traverseMarks(marks,all,indexArr=[]){
 		while(!all && /\[插图\]/.test(markText)){
 			let amarkedData = markedData[indexArr[index]]
 			if(!amarkedData){//数组越界
-				console.error(markedData, JSON.stringify(markedData))
-				console.error('markText', markText)
-				return ''
+				console.error('markedData', markedData);
+				console.error('markText', markText);
+				return '';
 			}
 			let replacement = ''
 			if(amarkedData.src){//图片
@@ -352,7 +345,7 @@ function traverseMarks(marks,all,indexArr=[]){
 			if(element.footnote) res += `[^${element.name}]:${element.footnote}\n\n`;
 		});
 	}
-	return res
+	return res;
 }
 
 //右键反馈
