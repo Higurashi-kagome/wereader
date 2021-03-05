@@ -10,6 +10,17 @@ function getElObj(){
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent
     }
+    const choosedFontSize = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active')[0];
+    const fontSizeIndex = [...choosedFontSize.parentElement.children].indexOf(choosedFontSize);
+    const pxFix = {
+        0: 1,
+        1: 2.8,
+        2: 3.4,
+        3: 5,
+        4: 5.8,
+        5: 6.6,
+        6: 8.8,
+    };
     //处理图片和注释
     targetEls.forEach(el=>{
         let imgSrc = el.getAttribute("data-src");
@@ -22,8 +33,8 @@ function getElObj(){
             let alt = imgSrc.split("/").pop();
             elObjArr.push({alt: alt, imgSrc: imgSrc, height: height, top: top, isInlineImg: isInlineImg});
         }else if(footnote){
-            //注释图标需要用 2.8 修正
-            top = top + 2.8;
+            //注释图标需要修正（不同字体大小有不同的修正值）
+            top = top + pxFix[fontSizeIndex];
             let footnoteName = `${currentContent}-${notesCounter}`;
             elObjArr.push({footnoteName: footnoteName, footnote: footnote, height: height, top: top});
         }else{//代码块
