@@ -1,8 +1,13 @@
-/*用于给页面中的图片和注释添加复制按钮，并为复制按钮绑定点击事件，与background.js配合实现点击后复制图片Markdown*/
+/*用于给页面中的图片和注释添加复制按钮，并为复制按钮绑定点击事件，与 background.js 配合实现点击后复制图片Markdown*/
 
 //发送消息给后台复制内容
-function sendMsgToBg(picStr){
-    chrome.runtime.sendMessage({type: "copyImg", picText: picStr});
+async function copy(targetText){
+    try {
+        await navigator.clipboard.writeText(targetText);
+        console.log('Copied to clipboard');
+    } catch (err) {
+        alert('Failed to copy: ', JSON.stringify(err));
+    }
 }
 //设置属性
 function setAttributes(element,attributes){
@@ -39,7 +44,7 @@ function addCopyBtn1(){
         var parent = imgs[i].parentNode
         var inser = parent.insertBefore(btn,imgs[i]);
         inser.addEventListener('click', function(){
-            sendMsgToBg(picStr)
+            copy(picStr)
             this.textContent = "✔"
             var id = this.id
             setTimeout(function () {
@@ -63,7 +68,7 @@ function addCopyBtn2(){
         let btn =  document.createElement("a0")
         setAttributes(btn,{id:"noteCopy" + i,textContent:"📋",style:{cssText:"width:19px;height:19px;cursor:pointer;display:none;font-size:19px;z-index:4;"}})
         btn.addEventListener('click', function(){
-            sendMsgToBg(footernote)
+            copy(footernote)
             this.textContent = "✔"
             var id = this.id
             setTimeout(function () {
@@ -105,7 +110,7 @@ function addCopyBtn3(){
                 //每次点击复制按钮都获取一次代码块设置
                 chrome.storage.sync.get(["codePre","codeSuf"], function(setting) {
                     let code =  setting.codePre + "\n" + _code + setting.codeSuf
-                    sendMsgToBg(code)
+                    copy(code)
                 })
                 setTimeout(function () {
                     document.getElementById(id).textContent = "📋"
