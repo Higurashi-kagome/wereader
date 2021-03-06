@@ -3,7 +3,7 @@ window.onload = async ()=>{
     //获取 vid
     const userVid = await getuserVid();
     const bg = chrome.extension.getBackgroundPage();
-    bg.setBookId();
+    if(!await bg.setBookId()) return window.close();
     //获取 vid 失败则提醒
     if (!userVid) {
         bg.getTest()['aler']('似乎出了一点问题...请确保正常登陆后刷新重试~');
