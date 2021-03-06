@@ -1,5 +1,5 @@
-var bookId = "null"//用于记录当前读书页的 bookId
-var importBookId = "null"//用于记录导入书籍的 bookId
+var bookId = undefined;
+var bookIds = {};
 const DefaultBackupName = "默认设置"
 const StorageErrorMsg = "存储出错"
 const BackupKey = "backup"

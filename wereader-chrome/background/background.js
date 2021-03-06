@@ -8,7 +8,8 @@ async function getComment(userVid, isHtml) {
 	let data = await _getData(url);
 	//遍历书评
 	for (const item of data.reviews) {
-		if (item.review.bookId !== bookId.toString()) continue;
+		// TODO：测试
+		if (item.review.bookId != bookId) continue;
 		var {title, content, htmlContent} = item.review;
 		content = content.replace("\n", "\n\n");
 		break;
@@ -235,27 +236,24 @@ settingInitialize()
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	let tabId = sender.tab.id
 	switch(message.type){
-		case "copyImg":
-			copy(message.picText);
-			break;
 		case "markedData":
 			markedData = message.markedData;
 			break;
 		case "getShelf":	//content-shelf.js 获取书架数据
-			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, async function (cookie) {
+			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, async (cookie)=>{
 				if(!cookie) return;
 				let url = 
 					`https://i.weread.qq.com/shelf/sync?userVid=${cookie.value.toString()}&synckey=0&lectureSynckey=0`;
 				sendMessageToContentScript({tabId: tabId, message: await _getData(url)});
 			})
-			break
+			break;
 		case "injectCss":
 			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
 				catchErr("onMessage.addListener", "insertCSS()");
 			})
-			break
+			break;
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
 			updateStorageAreainBg(message.regexpSet)
-			break
+			break;
 	}
 })

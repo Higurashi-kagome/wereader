@@ -9,9 +9,23 @@ var rank = function (x, y) {
 	return (x[colId] > y[colId]) ? 1 : -1
 }
 
+// 获取当前读书页的 bookId
 async function setBookId(){
-	bookId = await sendMessageToContentScript({message: {getBookId: true}});
-	if(bookId == "wrepub")bookId = importBookId;
+	return new Promise((res, rej)=>{
+		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+			if(catchErr('setBookId')) {
+				alert("bookId 获取出错，请刷新后重试。");
+				return rej(false);
+			}
+			const tab = tabs[0];
+			if(tab.url.indexOf('//weread.qq.com/web/reader/') < 0) return;
+			if(!bookIds[tab.id]) {
+				alert("信息缺失，请先刷新。");
+				return rej(false);
+			} else bookId = bookIds[tab.id];
+			return res(true);
+		})
+	}).catch(err=>{});
 }
 
 //报错捕捉函数
@@ -369,21 +383,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 	}
 })
 
-//监听请求用于获取导入书籍的bookId
+// 监听读书页请求，由请求得到 bookId
 chrome.webRequest.onBeforeRequest.addListener(details => {
-	let url = details.url
-	if(url.indexOf("bookmarklist?bookId=") > -1) {
-		let bookId = url.replace(/(^.*bookId=|&type=1)/g,"")
-		if(!/^\d+$/.test(bookId)){//如果bookId不为整数（说明该书为导入书籍）
-			importBookId = bookId
-			//之所以需要注入脚本以重新获取 bid，是因为 bookId 只在收到来自 inject-bid.js 的消息后才更新，
-			//来自 inject-bid.js 的消息将是是否需要将 importBookId 复制给 bookId 的依据
-			chrome.tabs.executeScript({ file: 'inject/inject-bid.js' }, function (result) {
-				catchErr("onBeforeRequest.addListener()")
-			})
-		}
-	}
-}, {urls: ["*://weread.qq.com/web/book/*"]})
+	const tabId = details.tabId;
+	const url = details.url;
+	if(url.indexOf("bookmarklist?bookId=") < 0) return;
+	const bookId = url.replace(/(^.*bookId=|&type=1)/g,"");
+	bookIds[tabId] = bookId;
+}, {urls: ["*://weread.qq.com/web/book/*"]});
 
 //安装事件
 chrome.runtime.onInstalled.addListener(function(details){
@@ -402,3 +409,4 @@ chrome.runtime.onInstalled.addListener(function(details){
 		]);
 	});
 })
+
