@@ -5,7 +5,7 @@ function clickDarkOrWhite(classN){
     try{
         document.getElementsByClassName(classN)[0].click();
     }catch(err){
-        console.warn("clickDarkOrWhite(classN) => " + err.message);
+        console.warn(`clickDarkOrWhite(classN)=>${err.message}`);
     }
 }
 
@@ -24,7 +24,7 @@ function addThemeBtn(){
     var span1=document.createElement("span")
     span1.textContent = "主题"
     //如果网页一开始为夜色模式，则需要将span文字颜色设置为灰色，否则保持默认
-    if(document.getElementsByClassName("readerControls_item white").length != 0){
+    if(document.getElementsByClassName("readerControls_item white").length){
         span1.style.color = "rgb(190,190,190)"
     }else{
         span1.style.color = "rgb(0,0,0)"
@@ -34,7 +34,7 @@ function addThemeBtn(){
     //改变主题
     function changeTheme(){
         //如果当前主题为夜色模式
-        if(document.getElementsByClassName("readerControls_item white").length != 0){
+        if(document.getElementsByClassName("readerControls_item white").length){
             //设置白色主题
             Flag=-1
             chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
@@ -47,13 +47,13 @@ function addThemeBtn(){
             }
         }else if(Flag == 0){
             //设置绿色主题
-            if(document.getElementsByClassName("readerControls_item white").length != 0){
+            if(document.getElementsByClassName("readerControls_item white").length){
                 clickDarkOrWhite("readerControls_item white")
             }
             chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
         }else if(Flag == 1){
             //设置橙色主题
-            if(document.getElementsByClassName("readerControls_item white").length != 0){
+            if(document.getElementsByClassName("readerControls_item white").length){
                 clickDarkOrWhite("readerControls_item white")
             }
             chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
@@ -119,23 +119,9 @@ const timeId = setInterval(() => {
     }
 },10)
 
-window.onload = function(){
-    //分别尝试获取日间模式/夜间模式切换按钮
-    var white = document.getElementsByClassName("readerControls_item white")[0]
-    //如果切换到白色主题按钮存在且显示
-    if(white != undefined && white.style.display != "none"){
-        addThemeBtn()
-    }
-    dark = document.getElementsByClassName("readerControls_item dark")[0]
-    //如果切换到黑色主题按钮存在且显示
-    if(dark != undefined && dark.style.display != "none"){
-        addThemeBtn()
-    }
-    /* 从一同被注入的 content-scroll.js 脚本中调用函数实现进度切换按钮 */
-    //尝试获取app下载按钮
-    var appDownload = document.getElementsByClassName("readerControls_item download")[0]
-    //如果按钮存在且显示
-    if(appDownload != undefined && appDownload.style.display != "none"){
-        addProgressBtn()
-    }
-}
+
+window.addEventListener('load', ()=>{
+    // 主题切换按钮
+    const themeSwitch = document.querySelectorAll(".readerControls_item.white,.readerControls_item.dark")[0];
+    if(themeSwitch != undefined && themeSwitch.style.display != "none") addThemeBtn();
+});
