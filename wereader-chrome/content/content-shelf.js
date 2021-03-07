@@ -14,8 +14,8 @@ function setAttributes(element,attributes){
 }
 //处理书架数据
 function getShelfData(data){
-	var booksData = JSON.parse(data).books
-	var categoryData = JSON.parse(data).archive
+	var booksData = data.books
+	var categoryData = data.archive
 	var bookId_bookObj = {}
 	var shelf = {}
 	//bookDic = {'bookId':bookObj}
