@@ -27,6 +27,7 @@ var Config = {
     codePre: "```",
     codeSuf: "```",
     displayN: false,
+    allTitles: false,
     addThoughts: false,
     enableRightClick: true,
     enableDevelop: false,

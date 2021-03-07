@@ -16,12 +16,12 @@ async function getComment(userVid, isHtml) {
 	}
 	if (htmlContent || content || title) {//有书评
 		if (isHtml) {
-			title ? copy(`# ${title}\n\n${htmlContent}`) : copy(htmlContent)
+			title ? copy(`# ${title}\n\n${htmlContent}`) : copy(htmlContent);
 		} else {
-			title ? copy(`### ${title}\n\n${content}`) : copy(content)
+			title ? copy(`### ${title}\n\n${content}`) : copy(content);
 		}
 	} else {
-		sendAlertMsg({text: "该书无书评",icon:'warning'})
+		sendAlertMsg({text: "该书无书评",icon:'warning'});
 	}
 }
 
@@ -36,23 +36,14 @@ async function copyContents(){
 }
 
 async function getBookMarks(contents) {
-	const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-	let response = await fetch(bookmarklistUrl);
-	let data = await response.json();
-	var {updated: marks, chapters} = data;
-	//检查书本是否有标注
-	if(marks.length == 0){
-		sendAlertMsg({text: "该书无标注",icon:'warning'})
-		return
-	}
-	//处理包含标注但没有章节记录的情况（一般发生在导入书籍中）
-	if(chapters.length == 0){
-		const chapterInfoUrl = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-		let chapResponse = await fetch(chapterInfoUrl);
-		let chapData = await chapResponse.json();
-		//得到目录
-		chapters = chapData.data[0].updated
-	}
+	const bookmarklist = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
+	const {updated: marks} = await _getData(bookmarklist);
+	if(!marks.length) return sendAlertMsg({text: "该书无标注",icon:'warning'});
+	/* 请求得到 chapters 方便导出不含标注的章节的标题，
+	另外，某些书包含标注但标注数据（marks）中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
+	const chapterInfos = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
+	let chapInfo = await _getData(chapterInfos);
+	let chapters = chapInfo.data[0].updated;
 	//章节排序
 	colId = "chapterUid";
 	chapters.sort(rank);
@@ -70,7 +61,7 @@ async function getBookMarks(contents) {
 		marksInAChapter.sort(rank);
 		chapter.marks = marksInAChapter;
 		return chapter;
-	})
+	});
 	if(Config.addThoughts) chapters = await addThoughts(chapters,contents);
 	return chapters;
 }
@@ -79,17 +70,19 @@ async function getBookMarks(contents) {
 async function copyBookMarks(isAll) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	sendMessageToContentScript({message: {isGetMarkedData: true}});
-	const contents = await getContents();
+	let contents = await getContents();
 	const chaptersAndMarks = await getBookMarks(contents);
 	//得到res
 	var res = ""
 	if (isAll) {	//获取全书标注
-		let res = chaptersAndMarks.reduce((tempRes, cur)=>{
-			let {title, level} = contents[cur.chapterUid]
-			if(cur.marks.length > 0){//检查章内是否有标注
-				tempRes += `${getTitleAddedPre(title, level)}\n\n${traverseMarks(cur.marks, isAll)}`
+		res = chaptersAndMarks.reduce((tempRes, cur)=>{
+			let {title, level} = contents[cur.chapterUid];
+			if(cur.marks.length){// 不需要导出全部标题章内有标注
+				tempRes += `${getTitleAddedPre(title, level)}\n\n${traverseMarks(cur.marks, isAll)}`;
+			}else if(Config.allTitles){// 需要导出所有标题
+				tempRes += `${getTitleAddedPre(title, level)}\n\n`;
 			}
-			return tempRes
+			return tempRes;
 		},'')
 		copy(res)
 	} else {	//获取本章标注

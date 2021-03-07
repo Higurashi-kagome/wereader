@@ -6,5 +6,5 @@ const STORAGE_ERRORMSG = "存储出错"
 const InputIds = ["s1Pre","s1Suf","s2Pre","s2Suf","s3Pre","s3Suf","lev1","lev2","lev3",
 "thouPre","thouSuf","thouMarkPre","thouMarkSuf","codePre","codeSuf"]
 //"其他" CheckBox id
-const CheckBoxIds = ["displayN","addThoughts","enableRightClick", "enableDevelop"]
+const CheckBoxIds = ["displayN","addThoughts","enableRightClick", "enableDevelop", "allTitles"]
 const RegexpInputClassName = 'regexpInput'
