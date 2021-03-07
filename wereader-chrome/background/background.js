@@ -40,16 +40,12 @@ async function getBookMarks(contents) {
 	const {updated: marks} = await _getData(bookmarklist);
 	if(!marks.length) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 	/* 请求得到 chapters 方便导出不含标注的章节的标题，
-	另外，某些书包含标注但标注数据（marks）中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
-	const chapterInfos = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
+	另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
+	const chapterInfos = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
 	let chapInfo = await _getData(chapterInfos);
 	let chapters = chapInfo.data[0].updated;
-	//章节排序
-	colId = "chapterUid";
-	chapters.sort(rank);
 	/* 生成标注数据 */
-	//遍历章节
-	chapters = chapters.map(chapter=>{
+	let chaptersAndMarks = chapters.map(chapter=>{
 		//取得章内标注并初始化 range
 		let marksInAChapter = marks.filter(mark=>mark.chapterUid == chapter.chapterUid).reduce((acc, curMark)=>{
 			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
@@ -62,8 +58,11 @@ async function getBookMarks(contents) {
 		chapter.marks = marksInAChapter;
 		return chapter;
 	});
-	if(Config.addThoughts) chapters = await addThoughts(chapters,contents);
-	return chapters;
+	if(Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks,contents);
+	//章节排序
+	colId = "chapterUid";
+	chaptersAndMarks.sort(rank);
+	return chaptersAndMarks;
 }
 
 //获取标注并复制标注到剪切板：popup
@@ -73,7 +72,7 @@ async function copyBookMarks(isAll) {
 	let contents = await getContents();
 	const chaptersAndMarks = await getBookMarks(contents);
 	//得到res
-	var res = ""
+	var res = "";
 	if (isAll) {	//获取全书标注
 		res = chaptersAndMarks.reduce((tempRes, cur)=>{
 			let {title, level} = contents[cur.chapterUid];
@@ -83,8 +82,8 @@ async function copyBookMarks(isAll) {
 				tempRes += `${getTitleAddedPre(title, level)}\n\n`;
 			}
 			return tempRes;
-		},'')
-		copy(res)
+		},'');
+		copy(res);
 	} else {	//获取本章标注
 		//遍历目录
 		/* let chapterUid =  */

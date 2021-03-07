@@ -4,9 +4,9 @@ util.js 是从 background.js 分离出来的，这里的所有函数最初都放
 */
 
 //排序
-var colId = "range"
+var colId = "range";
 var rank = function (x, y) {
-	return (x[colId] > y[colId]) ? 1 : -1
+	return (x[colId] > y[colId]) ? 1 : -1;
 }
 
 // 获取当前读书页的 bookId
@@ -76,63 +76,63 @@ function settingInitialize() {
 	chrome.storage.sync.get(function (configInSync) {
 		let unuserdKeysInSync = []
 		for(let key in configInSync){
-			if(Config[key] !== undefined) continue
+			if(Config[key] !== undefined) continue;
 			//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
-			delete configInSync[key]
-			unuserdKeysInSync.push(key)
+			delete configInSync[key];
+			unuserdKeysInSync.push(key);
 		}
 		for(let key in Config){
 			//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
 			if(configInSync[key] == undefined || configInSync[key].constructor != Config[key].constructor){
-				configInSync[key] = Config[key]
+				configInSync[key] = Config[key];
 			}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
-				Config[key] = configInSync[key]
+				Config[key] = configInSync[key];
 			}
 		}
 		//将 syncSetting 存储到 sync
 		chrome.storage.sync.set(configInSync,function(){
-			if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
+			if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
 			//必须用 remove 来删除元素
 			chrome.storage.sync.remove(unuserdKeysInSync,function(){
-				if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
-			})
+				if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
+			});
 		})
 		//获取 localSetting
 		chrome.storage.local.get([BackupKey], function(result) {
-			let configsInLocal = result[BackupKey]
-			let configNameInSyncStorage = configInSync.backupName
+			let configsInLocal = result[BackupKey];
+			let configNameInSyncStorage = configInSync.backupName;
 			delete configInSync.backupName
-			if(configsInLocal == undefined){//如果本地无设置
-				configsInLocal = {}
-				configsInLocal[DefaultBackupName] = configInSync
+			if(configsInLocal === undefined){//如果本地无设置
+				configsInLocal = {};
+				configsInLocal[DefaultBackupName] = configInSync;
 			}
-			if(configsInLocal[DefaultBackupName] == undefined){//如果本地无默认设置
-				configsInLocal[DefaultBackupName] = configInSync
+			if(configsInLocal[DefaultBackupName] === undefined){//如果本地无默认设置
+				configsInLocal[DefaultBackupName] = configInSync;
 			}
 			//将 syncSetting 更新至 localSetting
-			configsInLocal[configNameInSyncStorage] = configInSync
+			configsInLocal[configNameInSyncStorage] = configInSync;
 			//遍历 localSetting 检查格式
-			let formatOfConfigInLocal = Config
-			delete formatOfConfigInLocal.backupName
+			let formatOfConfigInLocal = Config;
+			delete formatOfConfigInLocal.backupName;
 			for(let configName in configsInLocal){
-				let localConfig = configsInLocal[configName]
+				let localConfig = configsInLocal[configName];
 				for(let keyOfLocalConfig in localConfig){//遍历单个配置
 					//如果配置中的某个键在 formatOfConfigInLocal 中不存在，则删除该键
-					if(formatOfConfigInLocal[keyOfLocalConfig] == undefined){
-						delete configsInLocal[configName][keyOfLocalConfig]
+					if(formatOfConfigInLocal[keyOfLocalConfig] === undefined){
+						delete configsInLocal[configName][keyOfLocalConfig];
 					}
 					//如果 formatOfConfigInLocal 中的某个键在配置中不存在（或者类型不同），则使用 formatOfConfigInLocal 初始化配置
 					for(let keyOfFormat in formatOfConfigInLocal){
-						if(localConfig[keyOfFormat]==undefined||formatOfConfigInLocal[keyOfFormat].constructor!=localConfig[keyOfFormat].constructor){
-							configsInLocal[configName][keyOfFormat] = formatOfConfigInLocal[keyOfFormat]
+						if(localConfig[keyOfFormat]===undefined||formatOfConfigInLocal[keyOfFormat].constructor!=localConfig[keyOfFormat].constructor){
+							configsInLocal[configName][keyOfFormat] = formatOfConfigInLocal[keyOfFormat];
 						}
 					}
 				}
 			}
-			result[BackupKey] = configsInLocal
+			result[BackupKey] = configsInLocal;
 			chrome.storage.local.set(result,function(){
-				if(catchErr("settingInitialize"))console.error(StorageErrorMsg)
-			})
+				if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
+			});
 		})
 	})
 }
@@ -192,16 +192,22 @@ async function _getData(url){
 //获取添加级别的标题
 function getTitleAddedPre(title, level) {
 	//添加 4 5 6 级是为了处理特别的书（如导入的书籍）获取数据
-	let lev3 = Config["lev3"]
-	let leave = 6 - (lev3.split("#").length - 1)
-	let chars = new Array(leave).join("#")
-	return (level == 1) ? (Config["lev1"] + title)
-		: (level == 2) ? (Config["lev2"] + title)
-		: (level == 3) ? (lev3 + title)
-		: (level == 4) ? (("#".length <= level ? "#" : chars) + lev3 + title)
-		: (level == 5) ? (("##".length <= level ? "##" : chars) + lev3 + title)
-		: (level == 6) ? (("###".length <= level ? "###" : chars) + lev3 + title)
-		: (("###".length <= level ? "###" : chars) + lev3 + title)
+	const lev3 = Config["lev3"];
+	let titleAddedPre = '';
+	switch (level) {
+		case 1:
+		case 2:
+		case 3:
+			titleAddedPre = Config[`lev${level}`] + title;
+			break;
+		case 4:
+		case 5:
+		case 6:
+		default:
+			titleAddedPre = `${new Array(level - 2).join('#')}${lev3}${title}`;
+			break;
+	}
+	return titleAddedPre;
 }
 
 //根据标注类型获取前后缀
@@ -264,9 +270,6 @@ async function addThoughts(chaptersAndMarks,contents){
 			marks: thoughts[chapterUid]
 		})
 	}
-	//按章节排序
-	colId = "chapterUid";
-	chaptersAndMarks.sort(rank);
 	return chaptersAndMarks;
 }
 
@@ -281,7 +284,7 @@ async function getContents(){
 		let chapters = response.chapters
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
 		if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
-			if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title
+			if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title;
 		}
 		//某些书没有目录级别
 		if(!aChap.level){
