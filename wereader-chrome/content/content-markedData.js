@@ -10,7 +10,8 @@ function getElObj(){
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent
     }
-    const choosedFontSize = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active')[0];
+    const activeEls = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active');
+    const choosedFontSize = activeEls[activeEls.length - 1];
     const fontSizeIndex = [...choosedFontSize.parentElement.children].indexOf(choosedFontSize);
     const pxFix = {
         0: 1,
@@ -44,7 +45,7 @@ function getElObj(){
             height = height + padding;
             elObjArr.push({height: height, top: top, code: code});
         }
-    })
+    });
     return elObjArr;
 }
 
