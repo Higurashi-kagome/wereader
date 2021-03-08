@@ -1,7 +1,7 @@
 //页面加载完毕后开始执行
 window.onload = async ()=>{
     //获取 vid
-    const userVid = await getuserVid();
+    const userVid = await getUserVid();
     const bg = chrome.extension.getBackgroundPage();
     if(!await bg.setBookId()) return window.close();
     //获取 vid 失败则提醒
@@ -63,7 +63,7 @@ window.onload = async ()=>{
 }
 
 //从当前页面获取 userVid
-function getuserVid(){
+function getUserVid(){
     return new Promise((res, rej) => {
         chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
             chrome.cookies.get({url: tabs[0].url, name: 'wr_vid'}, (cookie) => {

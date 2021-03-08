@@ -247,7 +247,12 @@ function regexpReplace(markText){
 	return markText
 }
 
-async function addThoughts(chaptersAndMarks,contents){
+async function addThoughts(chaptersAndMarks, chapters){
+	chapters = chapters.reduce((tempChaps, aChap)=>{
+		//整理格式
+		tempChaps[aChap.chapterUid] = { title: aChap.title, level: aChap.level};
+		return tempChaps;
+	},{});
 	let thoughts = await getMyThought();
 	//遍历章节
 	for(let chapterUid in thoughts){
@@ -255,10 +260,11 @@ async function addThoughts(chaptersAndMarks,contents){
 		let addedToMarks = false
 		for(let i=0;i<chaptersAndMarks.length;i++){
 			//直到找到目标章节
-			if(chaptersAndMarks[i].chapterUid !== parseInt(chapterUid)) continue;
+			if(chaptersAndMarks[i].chapterUid != chapterUid) continue;
 			//想法与标注合并后按 range 排序
 			colId = "range"
-			chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank)
+			// TODO：这里的 sort 似乎用错了？
+			chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank);
 			addedToMarks = true
 			break
 		}
@@ -266,30 +272,30 @@ async function addThoughts(chaptersAndMarks,contents){
 		if(addedToMarks) continue;
 		chaptersAndMarks.push({
 			chapterUid: parseInt(chapterUid),
-			title: contents[parseInt(chapterUid)].title,
+			title: chapters[chapterUid].title,
 			marks: thoughts[chapterUid]
 		})
 	}
 	return chaptersAndMarks;
 }
 
-//获取目录
-async function getContents(){
+async function getChapters(){
 	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-	const data = await _getData(url);
-	const response = await sendMessageToContentScript({message: {isGetContents: true}});
-	if(!response) return console.log("response 为空");
-	let updated = data.data[0].updated;
-	let contents = updated.map(aChap=>{
-		let chapters = response.chapters
+	const chapInfos = await _getData(url);
+	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
+	if(!response) return alert("获取目录出错。");
+	let chapsFromServer = chapInfos.data[0].updated;
+	let checkedChaps = chapsFromServer.map(aChap=>{
+		let chapsFromDom = response.chapters;
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-		if(!chapters.filter(chapter=>chapter.title===aChap.title).length){
-			if(chapters[aChap.chapterIdx-1]) aChap.title = chapters[aChap.chapterIdx-1].title;
+		if(!chapsFromDom.filter(chapter=>chapter.title===aChap.title).length){
+			// 将 chapsFromDom 中的信息赋值给 chapsFromServer
+			if(chapsFromDom[aChap.chapterIdx-1]) aChap.title = chapsFromDom[aChap.chapterIdx-1].title;
 		}
 		//某些书没有目录级别
 		if(!aChap.level){
-			let target = chapters.filter(chapter=>chapter.title===aChap.title);
-			if(target.length) aChap.level = target[0].level;
+			let targetChapFromDom = chapsFromDom.filter(chapter=>chapter.title===aChap.title);
+			if(targetChapFromDom.length) aChap.level = targetChapFromDom[0].level;
 			else  aChap.level = 1;
 		}else{
 			aChap.level = parseInt(aChap.level);
@@ -297,12 +303,8 @@ async function getContents(){
 		aChap.isCurrent = 
 			aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
 		return aChap;
-	}).reduce((acc, aChap)=>{
-		//整理格式
-		acc[aChap.chapterUid] = { title: aChap.title, level: aChap.level, isCurrent: aChap.isCurrent};
-		return acc;
-	},{})
-	return contents;
+	});
+	return checkedChaps;
 }
 
 //获取章内标注
@@ -315,7 +317,7 @@ function traverseMarks(marks,all,indexArr=[]){
 		while(!all && /\[插图\]/.test(markText)){
 			let amarkedData = markedData[indexArr[index]]
 			if(!amarkedData){//数组越界
-				console.error('markedData', markedData);
+				console.error('markedData', JSON.stringify(markedData));
 				console.error('markText', markText);
 				return '';
 			}

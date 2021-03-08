@@ -1,10 +1,10 @@
 /* 主要用于获取书本目录 */
 
-//console.log("contents-getContents.js：被注入，开始获取目录");
+//console.log("contents-getChapters.js：被注入，开始获取目录");
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
     let response = {chapters:[]}
-    if(!request.isGetContents) return;
+    if(!request.isGetChapters) return;
     try{
         let childs = document.getElementsByClassName("readerCatalog_list")[0].childNodes
         for (let i = 0; i < childs.length; i++){
@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
         }
         response.currentContent = currentContent
     }catch{
-        console.warn("contents-getContents.js：获取目录失败")
+        console.warn("contents-getChapters.js：获取目录失败")
     }
 	sendResponse(response);
 });
