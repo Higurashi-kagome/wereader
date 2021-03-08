@@ -257,11 +257,11 @@ details>summary {
     margin-top: 3px;
     padding-left: 6px;
     cursor: pointer;
+    outline: none;
 }
 
 details[open]>summary {
     cursor: pointer;
-    outline-width: 0px;
 }
 
 a {
