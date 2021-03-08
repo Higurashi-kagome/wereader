@@ -1,21 +1,16 @@
 function getTest(){
 
 	let logMarksJson = async function(){
-		const bookmarklistUrl = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-		let response = await fetch(bookmarklistUrl);
-		let data = await response.json();
+		const url = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
+		let data = await _getData(url);
 		console.log(data);
 	}
 
 	let logStorage = function(area="sync"){
-		if(["sync","local"].indexOf(area) > -1){
-			chrome.storage[area].get(function(setting){
-				console.log("************setting************")
-				console.log(setting)
-				console.log("************Config************")
-				console.log(Config)
-			})
-		}else console.log("请传入sync或local");
+		if(["sync","local"].indexOf(area) < 0) return console.log("请传入sync或local");
+		chrome.storage[area].get(function(setting){
+			console.log('setting', setting);
+		})
 	}
 
 	let aler = function(msg){alert(msg)}
@@ -42,6 +37,22 @@ function getTest(){
 		sendMessageToContentScript({message: {isGetMarkedData: true}});
 	}
 
+	let logBestBookMarks = async ()=>{
+		const bestbookmarks = await getBestBookMarks();
+		console.log(bestbookmarks);
+	}
+
+	let logGetChapters = async ()=>{
+		const chapters = await getChapters();
+		console.log(chapters);
+	}
+
+	let logChapInServer = async ()=>{
+		const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
+		const chapInfos = await _getData(url);
+		console.log(chapInfos);
+	}
+
 	let functions = {
 		'logBookMarksJson': logMarksJson,
 		'logStorage': logStorage,
@@ -49,7 +60,10 @@ function getTest(){
 		'logChapterInfo': logChapterInfo,
 		'logContents': logContents,
 		'logGetBookMarks': logGetBookMarks,
-		'trigMarkedDatajs': trigMarkedDatajs
+		'trigMarkedDatajs': trigMarkedDatajs,
+		'logBestBookMarks': logBestBookMarks,
+		'logGetChapters': logGetChapters,
+		'logChapInServer': logChapInServer
 	}
 
 	return functions;

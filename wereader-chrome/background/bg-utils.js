@@ -285,24 +285,24 @@ async function getChapters(){
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
 	if(!response) return alert("获取目录出错。");
 	let chapsFromServer = chapInfos.data[0].updated;
-	let checkedChaps = chapsFromServer.map(aChap=>{
+	let checkedChaps = chapsFromServer.map(chapInServer=>{
 		let chapsFromDom = response.chapters;
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-		if(!chapsFromDom.filter(chapter=>chapter.title===aChap.title).length){
+		if(!chapsFromDom.filter(chap=>chap.title===chapInServer.title).length){
 			// 将 chapsFromDom 中的信息赋值给 chapsFromServer
-			if(chapsFromDom[aChap.chapterIdx-1]) aChap.title = chapsFromDom[aChap.chapterIdx-1].title;
+			if(chapsFromDom[chapInServer.chapterIdx-1]) chapInServer.title = chapsFromDom[chapInServer.chapterIdx-1].title;
 		}
 		//某些书没有目录级别
-		if(!aChap.level){
-			let targetChapFromDom = chapsFromDom.filter(chapter=>chapter.title===aChap.title);
-			if(targetChapFromDom.length) aChap.level = targetChapFromDom[0].level;
-			else  aChap.level = 1;
+		if(!chapInServer.level){
+			let targetChapFromDom = chapsFromDom.filter(chapter=>chapter.title===chapInServer.title);
+			if(targetChapFromDom.length) chapInServer.level = targetChapFromDom[0].level;
+			else  chapInServer.level = 1;
 		}else{
-			aChap.level = parseInt(aChap.level);
+			chapInServer.level = parseInt(chapInServer.level);
 		}
-		aChap.isCurrent = 
-			aChap.title === response.currentContent || response.currentContent.indexOf(aChap.title)>-1
-		return aChap;
+		chapInServer.isCurrent = 
+			chapInServer.title === response.currentContent || response.currentContent.indexOf(chapInServer.title)>-1
+		return chapInServer;
 	});
 	return checkedChaps;
 }
