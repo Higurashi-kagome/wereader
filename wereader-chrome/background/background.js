@@ -223,25 +223,33 @@ async function copyThought() {
 	else copy(res);
 }
 
-settingInitialize()
+function getShelfForPopup(){
+	return shelfForPopup;
+}
+
+async function setShelfForPopup(shelfData, shelfHtml){
+	if(shelfHtml) shelfForPopup.shelfHtml = shelfHtml;
+	else shelfForPopup.shelfHtml = await getShelfHtml();
+	if(shelfData) shelfForPopup.shelfData = shelfData;
+	else shelfForPopup.shelfData = await getShelfData();
+};
+
+settingInitialize();
+setShelfForPopup();
+
 
 //监听消息
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse)=>{
 	let tabId = sender.tab.id
 	switch(message.type){
 		case "markedData":
 			markedData = message.markedData;
 			break;
 		case "getShelf":	//content-shelf.js 获取书架数据
-			chrome.cookies.get({url: 'https://weread.qq.com/web/shelf', name: 'wr_vid'}, async (cookie)=>{
-				if(!cookie) return;
-				let url = 
-					`https://i.weread.qq.com/shelf/sync?userVid=${cookie.value.toString()}&synckey=0&lectureSynckey=0`;
-				sendMessageToContentScript({tabId: tabId, message: await _getData(url)});
-			})
+			sendMessageToContentScript({tabId: tabId, message: await getShelfData()});
 			break;
 		case "injectCss":
-			chrome.tabs.insertCSS(tabId,{ file: message.css },function(result){
+			chrome.tabs.insertCSS(tabId,{ file: message.css }, ()=>{
 				catchErr("onMessage.addListener", "insertCSS()");
 			})
 			break;

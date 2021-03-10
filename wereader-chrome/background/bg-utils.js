@@ -28,6 +28,38 @@ async function setBookId(){
 	}).catch(err=>{});
 }
 
+async function getUserVid(url){
+	return new Promise((res, rej) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+			if(!url) url = tabs[0].url; // 没有传入 url 则从当前 tab 获取 vid
+            chrome.cookies.get({url: url, name: 'wr_vid'}, (cookie) => {
+                if(catchErr('getUserVid') || !cookie) return rej(null);
+				return res(cookie.value.toString());
+            });
+        });
+    }).catch(err=>{});
+}
+
+async function getShelfData(){
+	return new Promise((res, rej)=>{
+		const url = 'https://weread.qq.com/web/shelf'
+		chrome.cookies.get({url: url, name: 'wr_vid'}, async (cookie)=>{
+			if(catchErr('getShelf')) return rej();
+			if(!cookie) return rej();
+			let cateUrl = `${url}/sync?userVid=${cookie.value.toString()}&synckey=0&lectureSynckey=0`;
+			const shelfData = await _getData(cateUrl);
+			if(shelfData.errMsg == '用户不存在') return rej(alert('请先登陆'));
+			return res(shelfData);
+		});
+	}).catch(err=>{});
+}
+
+async function getShelfHtml(){
+	let data = await fetch('https://weread.qq.com/web/shelf');
+	let text = await data.text();
+	return text;
+}
+
 //报错捕捉函数
 function catchErr(...sender) {
 	if(!chrome.runtime.lastError)return false;
@@ -399,19 +431,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 
 //安装事件
 chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"})
-    }
-	// page_action
-	chrome.declarativeContent.onPageChanged.removeRules(undefined, function(){
-		chrome.declarativeContent.onPageChanged.addRules([
-			{
-				conditions: [
-					new chrome.declarativeContent.PageStateMatcher({pageUrl: {urlContains: '://weread.qq.com/web/reader/'}})
-				],
-				actions: [new chrome.declarativeContent.ShowPageAction()]
-			}
-		]);
-	});
+	if(details.reason != 'install') return;
+	chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
 })
 

@@ -3,26 +3,38 @@
 <html>
     <head>
         <link rel="stylesheet" href="popup.css">
-        <p id = "title"><strong>wereader</strong></p>
     </head>
     <body>
-        <div id='getComment' class="provided">获取书评</div>
-        <div class='suboptions'>
-            <div id='getComment_text' class="provided">纯文本</div>
-            <div id='getComment_html' class="provided">HTML</div>
+        <!-- Tab links -->
+        <div class="tab">
+            <button class="tablinks" id="noteBtn">笔记</button>
+            <button class="tablinks" id="shelfBtn">书架<br><span id='reload' title="刷新"> &#x21bb;</span></button>
         </div>
-        <div id='getBookMarks' class="provided">获取标注</div>
-        <div class='suboptions'>
-            <div id='getThisChapter' class="provided">本章</div>
-            <div id='getAll' class="provided">全部</div>
+
+        <!-- Tab content -->
+        <div class="tabcontent vertical-menu">
+            <button class="dropdown-btn">获取书评</button>
+            <div class="dropdown-container">
+                <a id="getTextComment">纯文本</a>
+                <a id="getHtmlComment">HTML</a>
+            </div>
+            <button class="dropdown-btn">获取标注</button>
+            <div class="dropdown-container">
+                <a id="getMarksInCurChap">本章</a>
+                <a id="getAllMarks">全部</a>
+            </div>
+            <a id="getContents">获取目录</a>
+            <a id="getBestBookMarks">获取热门标注</a>
+            <a id="getMyThoughts">获取我的想法</a>
+            <a id="trigCopyBtn">开启复制按钮</a>
+            <a id="DeleteMarks">删除本章标注</a>
         </div>
-        <div id='getBookContents' class="provided">获取目录</div>
-        <div id='getBestBookMarks' class="provided">获取热门标注</div>
-        <div id='getMyThoughts' class="provided">获取我的想法</div>
-        <div id="inject-copyBtn" class="provided">开启复制按钮</div>
-        <div id="inject-deleteMarks" class="provided">删除本章标注</div>
-        <div id="testBtn" class="provided">开发者选项</div>
-        <div class='suboptions'></div>
+        <div class="tabcontent vertical-menu" id='shelf'><a>...</a></div>
     </body>
-    <script type="text/javascript" src="popup.js"></script>
+    <script type="text/javascript" src="popup-vars.js"></script>
+    <script type="text/javascript" src="popup-test.js"></script>
+    <script type="text/javascript" src="popup-note.js"></script>
+    <script type="text/javascript" src="popup-shelf.js"></script>
+    <script type="text/javascript" src="popup-dispose.js"></script>
+    <script type="text/javascript" src="popup-statistics.js"></script>
 </html>

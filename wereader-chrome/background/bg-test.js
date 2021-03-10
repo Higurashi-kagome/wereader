@@ -53,6 +53,15 @@ function getTest(){
 		console.log(chapInfos);
 	}
 
+	let logShelfData = async ()=>{
+		console.log(await getShelfData());
+	}
+
+	let logShelfHtml = async ()=>{
+		text = await getShelfHtml();
+		console.log(text);
+	}
+
 	let functions = {
 		'logBookMarksJson': logMarksJson,
 		'logStorage': logStorage,
@@ -63,7 +72,9 @@ function getTest(){
 		'trigMarkedDatajs': trigMarkedDatajs,
 		'logBestBookMarks': logBestBookMarks,
 		'logGetChapters': logGetChapters,
-		'logChapInServer': logChapInServer
+		'logChapInServer': logChapInServer,
+		'logShelfData': logShelfData,
+		'logShelfHtml': logShelfHtml
 	}
 
 	return functions;

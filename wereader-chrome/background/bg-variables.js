@@ -2,7 +2,8 @@ var bookId = undefined;
 var bookIds = {};
 const DefaultBackupName = "默认设置"
 const StorageErrorMsg = "存储出错"
-const BackupKey = "backup"
+const BackupKey = "backup";
+let shelfForPopup = {shelfData: undefined, shelfHtml: undefined};
 //保存图片Markdown文本的数组
 var markedData = []
 //用于记录 popup 是否请求复制目录

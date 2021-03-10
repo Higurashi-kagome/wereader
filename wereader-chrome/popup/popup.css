@@ -1,43 +1,97 @@
-.provided {
+body{
+    width: max-content;
+}
+
+/* reload */
+#reload {
+    font-family: Lucida Sans Unicode;
+}
+
+.tablinks:not(.active) #reload {
+    display: none;
+}
+
+.tablinks.active #reload{
+    display: block;
+}
+
+/* Style the tab */
+.tab {
+    display: flex;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
     cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+/* menu */
+
+/* Fixed sidenav, full height */
+.vertical-menu {
+    background-color: #eee;
+    color: black;
+    overflow-x: hidden;
+}
+  
+/* Style the sidenav links and the dropdown button */
+.vertical-menu a, .dropdown-btn {
+    padding: 6px 16px 6px 16px;
+    font-size: 16px;
+    color: #818181;
+    display: block;
+    border: none;
+    outline: none;
+    background: none;
+    width:100%;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* On mouse-over */
+.vertical-menu > a:hover, .dropdown-btn:hover {
+    background-color: #ccc;
+}
+
+.dropdown-container a:hover{
     color: black;
 }
-.provided:hover {
-    background-color: rgb(227,227,227);
+  
+/* Add an active class to the active dropdown button */
+.vertical-menu .active {
+    background-color: gray;
+    color: white;
 }
-#testBtn {
+  
+/* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
+.dropdown-container {
     display: none;
-}
-p {
-    padding: 2px 8px;
-    margin: 2px;
-    font-family: 'Arial';
-    font-size: small;
-    white-space: nowrap;
-    border-radius: 4px;
-    user-select:none;
-}
-div {
-    padding: 2px 8px;
-    margin: 2px;
-    font-family: 'Arial';
-    font-size: small;
-    white-space: nowrap;
-    border-radius: 4px;
-    user-select:none;
-}
-.suboptions {
-    display: none;
-    padding: 0px 0px;
-    margin: 2px;
-    white-space: nowrap;
-    border-radius: 0px;
-}
-#getComment_html,#getComment_text,#getThisChapter,#getAll {
-    padding: 2px 11px;
-    margin: 2px;
-    font-family: 'Arial';
-    font-size: small;
-    white-space: nowrap;
-    border-radius: 4px;
+    padding-left: 8px;
 }
