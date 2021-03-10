@@ -1,4 +1,4 @@
-#parentElement{
+#parentEl{
     position: fixed;
     top: 100px;
     left: -200px;
@@ -7,7 +7,7 @@
     font-size: 14px;
 }
 
-#shelfDIV {
+#shelf {
     border-radius: 6px 6px 6px 6px;
     display: inline-block;
     width: 200px;
@@ -36,7 +36,7 @@ li {
     background-color:rgb(227,227,227);
 }
 
-.bookLink {
+.bookLinkEl {
     width: 100%;
     height: 100%;
     margin: 2px;
@@ -45,11 +45,11 @@ li {
     user-select: none;
 }
 
-.bookLink:hover {
+.bookLinkEl:hover {
     background-color: rgb(227,227,227);
 }
 
-#hoverElement {
+#hoverEl {
     color: black;
     text-align: center;
     background:whitesmoke;

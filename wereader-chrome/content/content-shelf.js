@@ -1,7 +1,6 @@
 /* 用于生成书架目录 */
 
-//console.log("content-shelf.js：被注入")
-chrome.runtime.sendMessage({type: "getShelf"})
+//console.log("content-shelf.js：被注入");
 //设置属性
 function setAttributes(element,attributes){
 	for(let key in attributes){
@@ -13,116 +12,114 @@ function setAttributes(element,attributes){
 	}
 }
 //处理书架数据
-function getShelfData(data){
-	var booksData = data.books
-	var categoryData = data.archive
-	var bookId_bookObj = {}
-	var shelf = {}
-	//bookDic = {'bookId':bookObj}
-	for(let i=0;i<booksData.length;i++){
-		bookId_bookObj[booksData[i].bookId] = booksData[i]
-	}
-	//得到 shelf = {'类别1': [bookObj1,bookObj2,...], '类别2': [bookObj1,bookObj2,...]}
-	for(let j=categoryData.length-1;j>=0;j--){
-		let categoryName = categoryData[j].name
-		let allBookId = categoryData[j].bookIds
-		shelf[categoryName] = []
-		//遍历某类别内的书本id
-		for(let k=0;k<allBookId.length;k++){
-			let id = allBookId[k]
-			let bookObj = bookId_bookObj[id]
-			shelf[categoryName].push(bookObj)
-			delete bookId_bookObj[id]
-		}
-	}
+function getShelf(data){
+	let {books, archive: categoryObjs} = data;
+	// {bookId:bookObj}
+	var bookId_book = books.reduce((tempMap, curBook)=>{
+		tempMap[curBook.bookId] = curBook;
+		return tempMap;
+	},{});
+	// [{cateName: '', books: []}]
+	let shelf = categoryObjs.reduce((tempShelf, curCate)=>{
+		let cate = {};
+		cate.cateName = curCate.name;
+		cate.books = [];
+		curCate.bookIds.forEach(bookId=>{
+			cate.books.push(bookId_book[bookId]);
+			delete bookId_book[bookId];
+		});
+		tempShelf.push(cate);
+		return tempShelf;
+	},[]);
 	//将书架中未分类的书籍归为 "未分类书籍"
-	shelf["未分类书籍"] = []
-	for(let key in bookId_bookObj){
-		shelf["未分类书籍"].push(bookId_bookObj[key])
+	let extraCate = {cateName: '未分类书籍', books: []};
+	for(let bookId in bookId_book){
+		extraCate.books.push(bookId_book[bookId]);
 	}
-	const updateTime = "readUpdateTime"
-	var rank = function(x,y){
-		return (x[updateTime] > y[updateTime]) ? -1 : 1
-	}
-	//遍历分类给书本按readUpdateTime排序并初始化categorySorter方便给分类排序
-	var categorySorter = []
-	for(let categoryName in shelf){
-		shelf[categoryName].sort(rank)
-		//初始化categorySorter
-		let categoryNameAndUpdateTime = {}
-		if(shelf[categoryName].length == 0)continue
-		categoryNameAndUpdateTime[updateTime] = shelf[categoryName][0][updateTime]
-		categoryNameAndUpdateTime["categoryName"] = categoryName
-		categorySorter.push(categoryNameAndUpdateTime)
-	}
-	categorySorter.sort(rank)
-	let shelfData = {}
-	shelfData.categorySorter = categorySorter
-	shelfData.shelf = shelf
-	return shelfData
+	if(extraCate.books.length) shelf.push(extraCate);
+	// 书本排序
+	shelf.forEach(cate=>{
+		cate.books.sort((x,y)=>{
+			return (x.readUpdateTime > y.readUpdateTime) ? -1 : 1;
+		});
+	});
+	// 分类排序
+	shelf.sort((x,y)=>{
+		try { // 分类为空时会报错
+			return (x.books[0].readUpdateTime > y.books[0].readUpdateTime) ? -1 : 1;
+		} catch (error) {}
+	});
+	return shelf;
 }
 
+function createShelf(shelf){
+	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)/g;
+	//获取创建目录所需书本 url
+	let bookId_href = {};
+	document.querySelectorAll(".wr_bookCover_img").forEach(coverEl=>{
+		let bookId = coverEl.src.match(matchId)[0];
+		bookId_href[bookId] = coverEl.parentElement.parentElement.href;
+	});
+	/*创建目录*/
+	let shelfEl = document.createElement("div");
+	shelfEl.id = "shelf";
+	for (const cate of shelf) {
+		let {cateName, books} = cate;
+		// 某一分类元素
+		let cateEl = document.createElement('ol'); 
+		setAttributes(cateEl,{textContent:cateName,className:"category"});
+		shelfEl.appendChild(cateEl);
+		// 遍历某一分类下的书本
+		if(!books.length) continue;
+		let booksContainer = document.createElement("ul");//章内书本容器
+		setAttributes(booksContainer,{style:{display:"none",marginLeft:"15px"}});
+		for (const book of books) {
+			let bookId = undefined;
+			try {
+				bookId = book.cover.match(matchId)[0];
+			} catch (error) {
+				console.log(error);
+				continue;
+			}
+			if(!bookId_href[bookId]) continue;// 某些内容（比如公众号）在 books_bookId_href 中不存在数据
+			let bookLinkEl = document.createElement('a');
+			const attributes = {target:"_blanck",className:"bookLinkEl",
+			textContent:book.title,href:bookId_href[bookId]}
+			setAttributes(bookLinkEl, attributes);
+			let bookLiEl = document.createElement("li");
+			bookLiEl.appendChild(bookLinkEl);
+			booksContainer.appendChild(bookLiEl);
+		}
+		shelfEl.appendChild(booksContainer);
+		cateEl.onclick = ()=>{
+			if(window.getComputedStyle(booksContainer).display == 'none'){
+				booksContainer.style.display = 'block';
+			}else{
+				booksContainer.style.display = 'none';
+			}
+		}
+	}
+	// 侧边按钮
+	let hoverEl = document.createElement("div");
+	setAttributes(hoverEl,{id:"hoverEl",textContent:"书架"});
+	hoverEl.onclick = ()=>{
+		if(window.getComputedStyle(parentEl).left == '6px'){
+			parentEl.style.left = '-200px';
+		}else{
+			parentEl.style.left = '6px';
+		}
+	}
+	// 包容侧边按钮及书架内容的父容器
+	let parentEl = document.createElement("div");
+	parentEl.id = "parentEl";
+	//目录部分和侧边部分嵌入到父容器中
+	parentEl.appendChild(shelfEl);
+	parentEl.appendChild(hoverEl);
+	document.body.appendChild(parentEl);
+}
+
+chrome.runtime.sendMessage({type: "getShelf"});
 chrome.runtime.onMessage.addListener(function(data){
-		let shelfData = getShelfData(data)
-		let shelf = shelfData.shelf
-		let categorySorter = shelfData.categorySorter
-		//获取创建目录所需书本url
-		let books_bookId_href = {}
-		let booksElement = document.getElementsByClassName("shelf_list")[0].childNodes
-		for(let i=0;i<booksElement.length-1;i++){
-			let child = booksElement[i].childNodes[0]
-			if(child && child.getElementsByClassName("wr_bookCover_img")[0]){
-				let splitedCover = child.getElementsByClassName("wr_bookCover_img")[0].src.split("/")
-				let bookId = splitedCover[5] ? splitedCover[5] : splitedCover[4]//如果是导入书籍，则选择索引4的值作为标识
-				books_bookId_href[bookId] = booksElement[i].href
-			}
-		}
-		/*创建目录*/
-		//目录部分
-		var shelfElement = document.createElement("div")
-		shelfElement.id = "shelfDIV"
-		//遍历categorySorter
-		for(let i=0;i<categorySorter.length;i++){
-			let key = categorySorter[i]["categoryName"]
-			let categoryElement = document.createElement('ol')//书架类别
-			setAttributes(categoryElement,{textContent:key,className:"category"})
-			let categoryObjList = shelf[key]
-			if(categoryObjList.length == 0)continue
-			//遍历书本
-			let booksContainer = document.createElement("ul")//章内书本容器
-			setAttributes(booksContainer,{style:{display:"none",marginLeft:"15px"}})
-			for(let j=0;j<categoryObjList.length;j++){
-				let splitedCover = categoryObjList[j].cover.split("/")
-				let bookId = splitedCover[5] ? splitedCover[5] : splitedCover[4]
-				if(books_bookId_href[bookId]){
-					let bookLink = document.createElement('a')
-					let attributes = {target:"_blanck",className:"bookLink",
-					textContent:categoryObjList[j].title,href:books_bookId_href[bookId]}
-					setAttributes(bookLink,attributes)
-					let li = document.createElement("li")
-					li.appendChild(bookLink)
-					booksContainer.appendChild(li)
-				}
-			}
-			categoryElement.addEventListener("click",function(){
-				booksContainer.style.display = (booksContainer.style.display == "none") ? "block" : "none"
-			})
-			shelfElement.appendChild(categoryElement)
-			shelfElement.appendChild(booksContainer)
-		}
-		//侧边部分
-		var hoverElement = document.createElement("div")
-		setAttributes(hoverElement,{id:"hoverElement",textContent:"书架"})
-		var count = -1
-		hoverElement.onclick = function(){
-			parentElement.style.left = (count == 1) ? "-200px" : "6px"
-		  	count = count*(-1)
-		}
-		//父容器
-		var parentElement = document.createElement("div")
-		parentElement.id = "parentElement"
-		//目录部分和侧边部分嵌入到父容器中
-		parentElement.appendChild(shelfElement)
-		parentElement.appendChild(hoverElement)
-		document.body.appendChild(parentElement)
+	const shelf = getShelf(data);
+	createShelf(shelf);
 });
