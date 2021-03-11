@@ -4,7 +4,7 @@
 
 ## 安装
 <!-- (?<=store-v|Edge%20Add--ons-v)(\d{1,2}\.\d{1,2}\.\d{1,2}) for match version -->
-[![](https://img.shields.io/badge/Chrome%20Web%20Store-v2.15.1-brightgreen)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/Edge%20Add--ons-v2.15.1-brightgreen)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: v1\.7\.2](https://img.shields.io/badge/Mozilla%20Add--ons-v1.7.2-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
+[![](https://img.shields.io/badge/Chrome%20Web%20Store-v2.16.0-brightgreen)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/Edge%20Add--ons-v2.16.0-brightgreen)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: v1\.7\.2](https://img.shields.io/badge/Mozilla%20Add--ons-v1.7.2-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
 
 不能访问 Chrome 网上应用店时按如下操作在 Chrome 上手动安装（注意：手动安装的扩展不会自动更新）：
 
@@ -32,6 +32,7 @@
 
 如果你有兴趣为此项目贡献代码，那么你可以：
 
+- 完善 popup —— popup 的 CSS 文件位于 [`./wereader-chrome/popup/popup.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/popup/popup.css)。
 - 完善帮助页（美化页面、使句子更通顺等）——帮助页的 HTML 文档位于 [`./wereader-chrome/options/help.html`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/help.html)，CSS 文件位于[ `./wereader-chrome/options/help.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/help.css)。
 - 完善设置页——设置页的 HTML 文档位于 [`./wereader-chrome/options/options.html`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.html)，CSS 文件位于 [`./wereader-chrome/options/options.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.css)。
 - 完善阅读页滚动条——相关 CSS 文件位于[ `./wereader-chrome/inject/showScroll.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/inject/showScroll.css)。
@@ -46,19 +47,19 @@
 
 ## 致谢
 
-| Item                                                        | Reason           |
-| ------------------------------------------------------------ | ----------------- |
-| [wereader](https://github.com/arry-lee/wereader)             | 此项目为该扩展的起源，我先是在 [pythontools/wereader](https://github.com/liuhao326/pythontools/tree/master/wereader) 中完善了该项目，然后才基于 pythontools/wereader 实现了该扩展。 |
-| [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers) | 编写 pythontools/wereader 的过程中参考了该项目中的[一键导出微信读书的书籍和笔记](https://github.com/shengqiangzhang/examples-of-web-crawlers/tree/master/12.%E4%B8%80%E9%94%AE%E5%AF%BC%E5%87%BA%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%9A%84%E4%B9%A6%E7%B1%8D%E5%92%8C%E7%AC%94%E8%AE%B0)。 |
-| [clipboard.js](https://github.com/zenorocha/clipboard.js)    | 扩展借助该项目实现复制文本。  |
-| [sweetalert2](https://github.com/sweetalert2/sweetalert2)    | 扩展借助该项目实现弹窗。     |
-| [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者。 |
-| [SingleFile](https://github.com/gildas-lormeau/SingleFile) | 扩展设置页模仿自该扩展。 |
+| Item                                                         | Reason                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------ | -----------------                                                                                                                                                                                                                                                                                              |
+| [wereader](https://github.com/arry-lee/wereader)             | 此项目为该扩展的起源，我先是在 [pythontools/wereader](https://github.com/liuhao326/pythontools/tree/master/wereader) 中完善了该项目，然后才基于 pythontools/wereader 实现了该扩展。                                                                                                                                         |
+| [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers)  | 编写 pythontools/wereader 的过程中参考了该项目中的[一键导出微信读书的书籍和笔记](https://github.com/shengqiangzhang/examples-of-web-crawlers/tree/master/12.%E4%B8%80%E9%94%AE%E5%AF%BC%E5%87%BA%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%9A%84%E4%B9%A6%E7%B1%8D%E5%92%8C%E7%AC%94%E8%AE%B0)。 |
+| [clipboard.js](https://github.com/zenorocha/clipboard.js)    | 扩展借助该项目实现复制文本。   |
+| [sweetalert2](https://github.com/sweetalert2/sweetalert2)    | 扩展借助该项目实现弹窗。      |
+| [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者。                                                                                                                             |
+| [SingleFile](https://github.com/gildas-lormeau/SingleFile)   | 扩展设置页模仿自该扩展。      |
 
 ## 参考
 
-| Item                                                         | Description         |
-| ------------------------------------------------------------ | ------------------- |
-| [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo) | Chrome 扩展开发教程 |
-| [Extensions - Chrome Developers](https://developer.chrome.com/docs/extensions/) | Chrome 扩展官方文档 |
+| Item                                                                            | Description         |
+| ------------------------------------------------------------                    | ------------------- |
+| [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)                | Chrome 扩展开发教程   |
+| [Extensions - Chrome Developers](https://developer.chrome.com/docs/extensions/) | Chrome 扩展官方文档   |
 
