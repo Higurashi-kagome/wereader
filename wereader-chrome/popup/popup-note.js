@@ -16,10 +16,10 @@ window.addEventListener('load',async ()=>{
         let targetEl = event.target || event.srcElement;
         switch(targetEl.id){
             case "getTextComment":
-                bg.getComment(userVid, false)
+                bg.copyComment(userVid, false)
                 break;
             case "getHtmlComment":
-                bg.getComment(userVid, true)
+                bg.copyComment(userVid, true)
                 break;
             case "getMarksInCurChap":
                 bg.copyBookMarks(false)

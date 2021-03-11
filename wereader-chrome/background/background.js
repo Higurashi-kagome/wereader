@@ -3,29 +3,28 @@ background.js 相当于一个函数库。函数被调用的入口则是 popup.js
 其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
 */
 //获取书评：popup
-async function getComment(userVid, isHtml) {
+async function copyComment(userVid, isHtml) {
 	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
 	let data = await _getData(url);
 	//遍历书评
 	for (const item of data.reviews) {
-		// TODO：测试
 		if (item.review.bookId != bookId) continue;
 		var {title, content, htmlContent} = item.review;
 		content = content.replace("\n", "\n\n");
 		break;
 	}
 	if (htmlContent || content || title) {//有书评
-		if (isHtml) {
-			title ? copy(`# ${title}\n\n${htmlContent}`) : copy(htmlContent);
-		} else {
-			title ? copy(`### ${title}\n\n${content}`) : copy(content);
-		}
+		let copyTitle='', copyContent='';
+		if(title) copyTitle = `# ${title}\n\n`;
+		if(isHtml) copyContent = htmlContent;
+		else copyContent = content;
+		copy(`${copyTitle}${copyContent}`);
 	} else {
 		sendAlertMsg({text: "该书无书评",icon:'warning'});
 	}
 }
 
-//获取目录:pupup
+//获取目录：pupup
 async function copyContents(){
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
 	let chapText = response.chapters.reduce((tempText, item)=>{
@@ -38,7 +37,7 @@ async function copyContents(){
 async function getBookMarks() {
 	const bookmarklist = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
 	const {updated: marks} = await _getData(bookmarklist);
-	if(!marks.length) return sendAlertMsg({text: "该书无标注",icon:'warning'});
+	if(!marks.length) return;
 	/* 请求得到 chapters 方便导出不含标注的章节的标题，
 	另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
 	let chapters = await getChapters();
@@ -70,6 +69,7 @@ async function copyBookMarks(isAll) {
 	//请求需要追加到文本中的图片 Markdown 文本
 	sendMessageToContentScript({message: {isGetMarkedData: true}});
 	const chapsAndMarks = await getBookMarks();
+	if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 	//得到res
 	var res = "";
 	if (isAll) {	//获取全书标注
@@ -236,25 +236,3 @@ async function setShelfForPopup(shelfData, shelfHtml){
 
 settingInitialize();
 setShelfForPopup();
-
-
-//监听消息
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse)=>{
-	let tabId = sender.tab.id
-	switch(message.type){
-		case "markedData":
-			markedData = message.markedData;
-			break;
-		case "getShelf":	//content-shelf.js 获取书架数据
-			sendMessageToContentScript({tabId: tabId, message: await getShelfData()});
-			break;
-		case "injectCss":
-			chrome.tabs.insertCSS(tabId,{ file: message.css }, ()=>{
-				catchErr("onMessage.addListener", "insertCSS()");
-			})
-			break;
-		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
-			updateStorageAreainBg(message.regexpSet)
-			break;
-	}
-})

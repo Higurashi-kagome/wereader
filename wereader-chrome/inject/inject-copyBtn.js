@@ -6,7 +6,7 @@ async function copy(targetText){
         await navigator.clipboard.writeText(targetText);
         console.log('Copied to clipboard');
     } catch (err) {
-        alert('Failed to copy: ', JSON.stringify(err));
+        alert('Failed to copy: ', err);
     }
 }
 //设置属性
@@ -26,8 +26,7 @@ function addCopyBtn1(){
     for(var i=0;i<imgs.length;i++){
         var src = imgs[i].getAttribute("data-src")
         if(!src){
-            Swal.fire({title: "Oops...",html: "图片链接获取失败。",icon: "error",confirmButtonText: '确定'})
-            return
+            return Swal.fire({title: "Oops...",html: "图片链接获取失败。",icon: "error",confirmButtonText: '确定'});
         }
         let picStr = "![" + src.split("/").pop() + "](" + src + ")"
         var top = imgs[i].style.top

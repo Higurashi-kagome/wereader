@@ -41,17 +41,12 @@ async function getUserVid(url){
 }
 
 async function getShelfData(){
-	return new Promise((res, rej)=>{
-		const url = 'https://weread.qq.com/web/shelf'
-		chrome.cookies.get({url: url, name: 'wr_vid'}, async (cookie)=>{
-			if(catchErr('getShelf')) return rej();
-			if(!cookie) return rej();
-			let cateUrl = `${url}/sync?userVid=${cookie.value.toString()}&synckey=0&lectureSynckey=0`;
-			const shelfData = await _getData(cateUrl);
-			if(shelfData.errMsg == '用户不存在') return rej(alert('请先登陆'));
-			return res(shelfData);
-		});
-	}).catch(err=>{});
+	const url = 'https://weread.qq.com/web/shelf';
+	const userVid = await getUserVid(url);
+	const cateUrl = `${url}/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
+	const shelfData = await _getData(cateUrl);
+	if(!shelfData.errMsg) return shelfData;
+	else return alert('获取书架失败，请先登陆。');
 }
 
 async function getShelfHtml(){
@@ -172,7 +167,7 @@ function settingInitialize() {
 async function sendMessageToContentScript(sendMsg){
 	return new Promise((res, rej)=>{
 		let callbackHandler = (response)=>{
-			if(chrome.runtime.lastError) return rej();
+			if(catchErr('sendMessageToContentScript', 'callbackHandler')) return rej();
 			if(response) return res(response);
 		}
 	
@@ -199,10 +194,9 @@ function copy(text) {
 	let copyBtn = document.getElementById("btn_copy");
 	let clipboard = new ClipboardJS('.btn');
 	clipboard.on('success', function (e) {
-		if(count == 0){//进行检查而确保一次复制成功只调用一次sendAlertMsg()
-			sendAlertMsg({icon: 'success',title: '复制成功'});
-			count = count + 1;
-		}
+		if(count !== 0) return;//进行检查而确保一次复制成功只调用一次sendAlertMsg()
+		sendAlertMsg({icon: 'success',title: '复制成功'});
+		count = count + 1;
 	});
 	clipboard.on('error', function (e) {
 		sendAlertMsg({title: "复制出错", text: JSON.stringify(e), confirmButtonText: '确定',icon: "error"});
@@ -295,8 +289,9 @@ async function addThoughts(chaptersAndMarks, chapters){
 			if(chaptersAndMarks[i].chapterUid != chapterUid) continue;
 			//想法与标注合并后按 range 排序
 			colId = "range"
-			// TODO：这里的 sort 似乎用错了？
-			chaptersAndMarks[i].marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]).sort(rank);
+			let marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]);
+			marks.sort(rank);
+			chaptersAndMarks[i].marks = marks;
 			addedToMarks = true
 			break
 		}
@@ -306,7 +301,7 @@ async function addThoughts(chaptersAndMarks, chapters){
 			chapterUid: parseInt(chapterUid),
 			title: chapters[chapterUid].title,
 			marks: thoughts[chapterUid]
-		})
+		});
 	}
 	return chaptersAndMarks;
 }
@@ -398,40 +393,4 @@ function traverseMarks(marks,all,indexArr=[]){
 	}
 	return res;
 }
-
-//右键反馈
-chrome.contextMenus.create({
-    "type":"normal",
-    "title":"反馈",
-    "contexts":["browser_action"],
-    "onclick":function() {
-        chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/new/choose"})
-    }
-})
-
-//监听背景页所需 storage 键值是否有改变
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-	console.log(`new ${namespace} changes：`)
-	console.log(changes)
-	// 更新 Config
-	if(namespace !== 'sync') return;
-	for(const key in changes){
-		Config[key] = changes[key]['newValue'];
-	}
-})
-
-// 监听读书页请求，由请求得到 bookId
-chrome.webRequest.onBeforeRequest.addListener(details => {
-	const tabId = details.tabId;
-	const url = details.url;
-	if(url.indexOf("bookmarklist?bookId=") < 0) return;
-	const bookId = url.replace(/(^.*bookId=|&type=1)/g,"");
-	bookIds[tabId] = bookId;
-}, {urls: ["*://weread.qq.com/web/book/*"]});
-
-//安装事件
-chrome.runtime.onInstalled.addListener(function(details){
-	if(details.reason != 'install') return;
-	chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
-})
 

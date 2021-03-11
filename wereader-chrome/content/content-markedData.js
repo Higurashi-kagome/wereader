@@ -88,4 +88,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
         const markedData = getMarkedData(setting);
         chrome.runtime.sendMessage({type: 'markedData', markedData: markedData});
     })
-})
+});
