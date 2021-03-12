@@ -66,8 +66,6 @@ async function getBookMarks() {
 
 //获取标注并复制标注到剪切板：popup
 async function copyBookMarks(isAll) {
-	//请求需要追加到文本中的图片 Markdown 文本
-	sendMessageToContentScript({message: {isGetMarkedData: true}});
 	const chapsAndMarks = await getBookMarks();
 	if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 	//得到res
@@ -107,7 +105,11 @@ async function copyBookMarks(isAll) {
 			else indexArr[j] = indexArr[targetIndex];
 			generatedArr.push(rangeArr[j]);
 		}
-		let str = traverseMarks(targetChapAndMarks.marks,isAll,indexArr);
+		// 请求需要追加到文本中的图片 Markdown 文本
+		const markedData = await sendMessageToContentScript({
+			message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
+		});
+		let str = traverseMarks(targetChapAndMarks.marks,isAll, indexArr, markedData);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});

@@ -2,9 +2,6 @@
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse)=>{
 	let tabId = sender.tab.id
 	switch(message.type){
-		case "markedData":
-			markedData = message.markedData;
-			break;
 		case "getShelf":	//content-shelf.js 获取书架数据
 			sendMessageToContentScript({tabId: tabId, message: await getShelfData()});
 			break;

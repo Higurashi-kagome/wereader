@@ -50,12 +50,13 @@ function getElObj(){
 }
 
 //获取图片和注释
-function getMarkedData(setting){
+function getMarkedData(addThoughts){
+    console.log(addThoughts);
     const elObjArr = getElObj();
     //获取三种标注 Element
     let selector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2';
     //获取想法标注 Element
-    if(setting.addThoughts) selector = `${selector},.wr_myNote`;
+    if(addThoughts) selector = `${selector},.wr_myNote`;
     const markMasks = document.querySelectorAll(selector);
     
     let markedData = [];
@@ -84,8 +85,6 @@ function getMarkedData(setting){
 // console.log("content-markedData.js：被注入")
 chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
     if(!request.isGetMarkedData) return;
-    chrome.storage.sync.get((setting)=>{
-        const markedData = getMarkedData(setting);
-        chrome.runtime.sendMessage({type: 'markedData', markedData: markedData});
-    })
+    const markedData = getMarkedData(request.addThoughts);
+    sendResponse(markedData);
 });

@@ -335,7 +335,7 @@ async function getChapters(){
 }
 
 //获取章内标注
-function traverseMarks(marks,all,indexArr=[]){
+function traverseMarks(marks,all,indexArr=[],markedData){
 	let res = "", index = 0;
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract
