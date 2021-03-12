@@ -5,6 +5,10 @@ body{
 /* reload */
 #reload {
     font-family: Lucida Sans Unicode;
+    transition: transform 500ms;
+}
+#reload:hover{
+    transform: rotate(360deg);
 }
 
 .tablinks:not(.active) #reload {
