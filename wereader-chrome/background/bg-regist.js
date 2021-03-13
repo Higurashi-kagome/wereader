@@ -1,18 +1,20 @@
 // 监听消息
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse)=>{
+chrome.runtime.onMessage.addListener(async (msg, sender)=>{
 	let tabId = sender.tab.id
-	switch(message.type){
+	switch(msg.type){
 		case "getShelf":	//content-shelf.js 获取书架数据
 			sendMessageToContentScript({tabId: tabId, message: await getShelfData()});
 			break;
 		case "injectCss":
-			chrome.tabs.insertCSS(tabId,{ file: message.css }, ()=>{
+			chrome.tabs.insertCSS(tabId,{ file: msg.css }, ()=>{
 				catchErr("onMessage.addListener", "insertCSS()");
 			});
 			break;
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
-			updateStorageAreainBg(message.regexpSet);
+			updateStorageAreainBg(msg.regexpSet);
 			break;
+		case "deleteBookmarks":
+			if(msg.confirm) deleteBookmarks(msg.isAll);
 	}
 });
 

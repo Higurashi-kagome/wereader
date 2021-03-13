@@ -1,4 +1,4 @@
-/* 该文件中包含提供给 popup 调用的大部分函数 */
+/* 该文件中包含提供给 popup 调用或间接调用的大部分函数 */
 
 // 获取书评
 async function copyComment(userVid, isHtml) {
@@ -177,6 +177,38 @@ async function setShelfForPopup(shelfData, shelfHtml){
 	if(shelfData) shelfForPopup.shelfData = shelfData;
 	else shelfForPopup.shelfData = await getShelfData();
 };
+
+// 删除标注
+async function deleteBookmarks(isAll=false){
+    async function removeBookmark(bookmarkId){
+        const resp = await fetch('https://weread.qq.com/web/book/removeBookmark', {
+            method: 'POST',
+            body: JSON.stringify({bookmarkId: bookmarkId}),
+            headers: {'Content-Type': 'application/json'}
+        });
+        const respJson = await resp.json();
+        return respJson;
+    }
+    const chapsAndMarks = await getBookMarks(false);
+    let succ = 0, fail = 0;
+	for (const chap of chapsAndMarks) {
+		if(!isAll && !chap.isCurrent) continue;// 只删除当前章节而 chap 不是当前章节
+		for (const mark of chap.marks) {
+			let respJson = {};
+			try {
+				respJson = await removeBookmark(mark.bookmarkId);
+			} catch (error) {
+				fail++;
+				continue;
+			}
+			if(!respJson.succ) fail++;
+			else succ++;
+		}
+		if(!isAll) break;
+	}
+    alert(`删除结束，${succ} 成功，${fail} 失败。请重新加载读书页。`);
+	return {succ:succ,fail:fail}
+}
 
 // 在背景页初次加载时自动获取 popup 所需数据
 setShelfForPopup();

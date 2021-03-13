@@ -22,7 +22,7 @@ function getTitleAddedPre(title, level) {
 }
 
 // 获取标注数据
-async function getBookMarks() {
+async function getBookMarks(addThoughts) {
 	const bookmarklist = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
 	const {updated: marks} = await getJson(bookmarklist);
 	if(!marks.length) return;
@@ -45,7 +45,8 @@ async function getBookMarks() {
 		chap.marks = marksInAChap;
 		return chap;
 	});
-	if(Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
+	// addThoughts 参数用于显式指明不包含想法
+	if(addThoughts !== false && Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
 	//章节排序
 	colId = "chapterUid";
 	chaptersAndMarks.sort(rank);

@@ -39,7 +39,7 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
 async function sendMessageToContentScript(sendMsg){
 	return new Promise((res, rej)=>{
 		let callbackHandler = (response)=>{
-			if(catchErr('sendMessageToContentScript', 'callbackHandler')) return rej();
+			if(chrome.runtime.lastError) return rej();
 			if(response) return res(response);
 		}
 	
@@ -54,8 +54,9 @@ async function sendMessageToContentScript(sendMsg){
 	}).catch((error)=>{});
 }
 
-function sendAlertMsg(msg) {
-	sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}})
+async function sendAlertMsg(msg) {
+	const response = await sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}});
+	return response;
 }
 
 // 复制内容

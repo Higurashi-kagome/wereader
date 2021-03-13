@@ -7,7 +7,7 @@ window.addEventListener('load',async ()=>{
         return window.close();
     }
     //遍历按钮绑定点击事件
-    const ids = ["getTextComment","getHtmlComment","getMarksInCurChap","getAllMarks","getContents","getBestBookMarks","getMyThoughts","trigCopyBtn","DeleteMarks"];
+    const ids = ["getTextComment","getHtmlComment","getMarksInCurChap","getAllMarks","getContents","getBestBookMarks","getMyThoughts","trigCopyBtn","removeMarksInCurChap","removeAllMarks"];
     ids.forEach(id=>{
         document.getElementById(id).addEventListener('click', listener);
     });
@@ -41,10 +41,11 @@ window.addEventListener('load',async ()=>{
                     bg.catchErr("popup.js", "copyBtn");
                 });
                 break;
-            case "DeleteMarks":
-                chrome.tabs.executeScript({ file: 'inject/inject-deleteMarks.js' }, ()=>{
-                    bg.catchErr("popup.js", "deleteMarks");
-                });
+            case "removeMarksInCurChap":
+                bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: false}});
+                break;
+            case "removeAllMarks":
+                bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: true}});
                 break;
             default:
                 break;
