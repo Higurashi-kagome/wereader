@@ -1,3 +1,4 @@
+/* 声明全局变量 */
 var bookId = undefined;
 var bookIds = {};
 const DefaultBackupName = "默认设置"

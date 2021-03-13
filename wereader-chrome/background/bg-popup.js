@@ -1,11 +1,9 @@
-/* 说明：
-background.js 相当于一个函数库。函数被调用的入口则是 popup.js。
-其他大部分 js 文件（包括部分 content.js）都是为实现 background.js 中函数的功能而存在的。
-*/
-//获取书评：popup
+/* 该文件中包含提供给 popup 调用的大部分函数 */
+
+// 获取书评
 async function copyComment(userVid, isHtml) {
 	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
-	let data = await _getData(url);
+	let data = await getJson(url);
 	//遍历书评
 	for (const item of data.reviews) {
 		if (item.review.bookId != bookId) continue;
@@ -24,7 +22,7 @@ async function copyComment(userVid, isHtml) {
 	}
 }
 
-//获取目录：pupup
+// 获取目录
 async function copyContents(){
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
 	let chapText = response.chapters.reduce((tempText, item)=>{
@@ -34,37 +32,7 @@ async function copyContents(){
 	copy(chapText);
 }
 
-async function getBookMarks() {
-	const bookmarklist = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-	const {updated: marks} = await _getData(bookmarklist);
-	if(!marks.length) return;
-	/* 请求得到 chapters 方便导出不含标注的章节的标题，
-	另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
-	let chapters = await getChapters();
-	/* 生成标注数据 */
-	let chaptersAndMarks = chapters.map(chap=>{
-		//取得章内标注并初始化 range
-		let marksInAChap = 
-			marks.filter(mark=>mark.chapterUid == chap.chapterUid)
-			.reduce((tempMarksInAChap, curMark)=>{
-				curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
-				tempMarksInAChap.push(curMark);
-				return tempMarksInAChap;
-		},[]);
-		//排序章内标注并加入到章节内
-		colId = "range";
-		marksInAChap.sort(rank);
-		chap.marks = marksInAChap;
-		return chap;
-	});
-	if(Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
-	//章节排序
-	colId = "chapterUid";
-	chaptersAndMarks.sort(rank);
-	return chaptersAndMarks;
-}
-
-//获取标注并复制标注到剪切板：popup
+// 获取标注并复制标注到剪切板
 async function copyBookMarks(isAll) {
 	const chapsAndMarks = await getBookMarks();
 	if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
@@ -116,41 +84,13 @@ async function copyBookMarks(isAll) {
 	}
 }
 
-//获取热门标注
-async function getBestBookMarks() {
-	const bestbookmarks = `https://i.weread.qq.com/book/bestbookmarks?bookId=${bookId}`;
-	let {items: bestMarksData} = await _getData(bestbookmarks);
-	//处理书本无热门标注的情况
-	if(!bestMarksData.length){
-		return sendAlertMsg({text: "该书无热门标注",icon:'warning'});
-	}
-	//查找每章节热门标注
-	let chapters = await getChapters();
-	let bestMarks = chapters.map(chap=>{
-		//取得章内热门标注并初始化 range
-		let bestMarksInAChap = 
-			bestMarksData.filter(bestMark=>bestMark.chapterUid == chap.chapterUid)
-			.reduce((tempBestMarksInAChap, curBestMark)=>{
-				curBestMark.range = parseInt(curBestMark.range.replace(/"(\d*)-\d*"/, "$1"));
-				tempBestMarksInAChap.push(curBestMark);
-				return tempBestMarksInAChap;
-		},[]);
-		//排序章内标注并加入到章节内
-		colId = "range";
-		bestMarksInAChap.sort(rank);
-		chap.bestMarks = bestMarksInAChap;
-		return chap;
-	});
-	return bestMarks;
-}
-
-//处理数据，复制热门标注
+// 获取热门标注
 async function copyBestBookMarks() {
 	let bestMarks = await getBestBookMarks();
 	//遍历 bestMark
 	let res = bestMarks.reduce((tempRes, curChapAndBestMarks)=>{
 		let {title, level, bestMarks} = curChapAndBestMarks;
-		if(Config.allTitles||bestMarks.length){
+		if(Config.allTitles || bestMarks.length){
 			tempRes += `${getTitleAddedPre(title, level)}\n\n`;
 			if(curChapAndBestMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 				curChapAndBestMarks.anchors
@@ -168,42 +108,7 @@ async function copyBestBookMarks() {
 	copy(res);
 }
 
-//获取想法
-async function getMyThought() {
-	const url = `https://i.weread.qq.com/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`;
-	let data = await _getData(url);
-	//获取 chapterUid 并去重、排序
-	let chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g)))
-	chapterUidArr.sort()
-	//查找每章节标注并总结好
-	let thoughts = {}
-	//遍历章节
-	chapterUidArr.forEach(chapterUid=>{
-		let thoughtsInAChapter = []
-		//遍历所有想法，将章内想法放入一个数组
-		for (const item of data.reviews) {
-			//处理有书评的情况
-			if (item.review.chapterUid == undefined || item.review.chapterUid.toString() != chapterUid) continue
-			//找到指定章节的想法
-			let abstract = item.review.abstract
-			//替换想法前后空字符
-			let content = item.review.content.replace(/(^\s*|\s*$)/g,'')
-			let range = parseInt(item.review.range.replace(/"(\d*)-\d*"/, "$1"))
-			//如果没有发生替换（为章末想法时发生）
-			if(item.review.range.indexOf('-') < 0){
-				abstract = "章末想法";
-				range = item.review.createTime;
-			}
-			thoughtsInAChapter.push({ abstract: abstract, content: content, range: range })
-		}
-		colId = "range"
-		thoughtsInAChapter.sort(rank)
-		thoughts[chapterUid] = thoughtsInAChapter
-	});
-	return thoughts;
-}
-
-//处理数据，复制想法
+// 获取想法
 async function copyThought() {
 	let contents = await getChapters();
 	contents = contents.reduce((tempContents, aChap)=>{
@@ -229,6 +134,43 @@ function getShelfForPopup(){
 	return shelfForPopup;
 }
 
+// 获取当前读书页的 bookId
+async function setBookId(){
+	return new Promise((res, rej)=>{
+		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+			if(catchErr('setBookId')) {
+				alert("bookId 获取出错，请刷新后重试。");
+				return rej(false);
+			}
+			const tab = tabs[0];
+			if(tab.url.indexOf('//weread.qq.com/web/reader/') < 0) return;
+			if(!bookIds[tab.id]) {
+				alert("信息缺失，请先刷新。");
+				return rej(false);
+			} else bookId = bookIds[tab.id];
+			return res(true);
+		})
+	}).catch(err=>{});
+}
+
+// 获取书架 json 数据
+async function getShelfData(){
+	const url = 'https://weread.qq.com/web/shelf';
+	const userVid = await getUserVid(url);
+	const cateUrl = `${url}/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
+	const shelfData = await getJson(cateUrl);
+	if(!shelfData.errMsg) return shelfData;
+	else return alert('获取书架失败，请先登陆。');
+}
+
+// 获取书架页面 HTML
+async function getShelfHtml(){
+	let data = await fetch('https://weread.qq.com/web/shelf');
+	let text = await data.text();
+	return text;
+}
+
+// 设置供 popup 获取的书架数据
 async function setShelfForPopup(shelfData, shelfHtml){
 	if(shelfHtml) shelfForPopup.shelfHtml = shelfHtml;
 	else shelfForPopup.shelfHtml = await getShelfHtml();
@@ -236,5 +178,5 @@ async function setShelfForPopup(shelfData, shelfHtml){
 	else shelfForPopup.shelfData = await getShelfData();
 };
 
-settingInitialize();
+// 在背景页初次加载时自动获取 popup 所需数据
 setShelfForPopup();

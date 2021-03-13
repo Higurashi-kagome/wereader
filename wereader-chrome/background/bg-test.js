@@ -1,8 +1,9 @@
+/* 用于测试 */
 function getTest(){
 
 	let logMarksJson = async function(){
 		const url = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-		let data = await _getData(url);
+		let data = await getJson(url);
 		console.log(data);
 	}
 
@@ -19,7 +20,7 @@ function getTest(){
 
 	let logChapterInfo = async ()=>{
 		const chapterInfos = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-		let chapInfo = await _getData(chapterInfos);
+		let chapInfo = await getJson(chapterInfos);
 		console.log(chapInfo);
 	}
 
@@ -49,7 +50,7 @@ function getTest(){
 
 	let logChapInServer = async ()=>{
 		const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-		const chapInfos = await _getData(url);
+		const chapInfos = await getJson(url);
 		console.log(chapInfos);
 	}
 

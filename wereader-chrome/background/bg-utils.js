@@ -3,81 +3,20 @@ util.js 是从 background.js 分离出来的，这里的所有函数最初都放
 现在之所以单独放在这个文件中纯粹是为了缩减 background.js 的代码量，从而使结构清晰
 */
 
-//排序
+// 排序
 var colId = "range";
-var rank = function (x, y) {
+const rank = function (x, y) {
 	return (x[colId] > y[colId]) ? 1 : -1;
 }
 
-// 获取当前读书页的 bookId
-async function setBookId(){
-	return new Promise((res, rej)=>{
-		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-			if(catchErr('setBookId')) {
-				alert("bookId 获取出错，请刷新后重试。");
-				return rej(false);
-			}
-			const tab = tabs[0];
-			if(tab.url.indexOf('//weread.qq.com/web/reader/') < 0) return;
-			if(!bookIds[tab.id]) {
-				alert("信息缺失，请先刷新。");
-				return rej(false);
-			} else bookId = bookIds[tab.id];
-			return res(true);
-		})
-	}).catch(err=>{});
-}
-
-async function getUserVid(url){
-	return new Promise((res, rej) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-			if(!url) url = tabs[0].url; // 没有传入 url 则从当前 tab 获取 vid
-            chrome.cookies.get({url: url, name: 'wr_vid'}, (cookie) => {
-                if(catchErr('getUserVid') || !cookie) return rej(null);
-				return res(cookie.value.toString());
-            });
-        });
-    }).catch(err=>{});
-}
-
-async function getShelfData(){
-	const url = 'https://weread.qq.com/web/shelf';
-	const userVid = await getUserVid(url);
-	const cateUrl = `${url}/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
-	const shelfData = await _getData(cateUrl);
-	if(!shelfData.errMsg) return shelfData;
-	else return alert('获取书架失败，请先登陆。');
-}
-
-async function getShelfHtml(){
-	let data = await fetch('https://weread.qq.com/web/shelf');
-	let text = await data.text();
-	return text;
-}
-
-//报错捕捉函数
+// 报错捕捉函数
 function catchErr(...sender) {
 	if(!chrome.runtime.lastError)return false;
 	console.log(`${sender.join('=>')}=>chrome.runtime.lastError：\n${chrome.runtime.lastError.message}`);
 	return true;
 }
 
-function getRangeArrFrom(strRange, str){
-	let lenCount = 0;
-	strRange = parseInt(strRange);
-	let rangeArr = str.split(/(?=\[插图\])|(?<=\[插图\])/).reduce((accArr, curItem)=>{
-		if(curItem != '[插图]'){
-			lenCount += curItem.length;
-		}else{
-			accArr.push(strRange + lenCount);
-			lenCount += 4;
-		}
-		return accArr;
-	},[]);
-	return rangeArr;
-}
-
-//更新sync和local——处理设置页onchange不生效的问题
+// 更新 sync 和 local ——处理设置页 onchange 不生效的问题
 function updateStorageAreainBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
 	if(configMsg.key === undefined) return;
@@ -93,73 +32,6 @@ function updateStorageAreainBg(configMsg={},callback=function(){}){
 				if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
 				callback()
 			})
-		})
-	})
-}
-
-//存储 / 初始化设置
-function settingInitialize() {
-	//获取 syncSetting
-	chrome.storage.sync.get(function (configInSync) {
-		let unuserdKeysInSync = []
-		for(let key in configInSync){
-			if(Config[key] !== undefined) continue;
-			//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
-			delete configInSync[key];
-			unuserdKeysInSync.push(key);
-		}
-		for(let key in Config){
-			//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
-			if(configInSync[key] == undefined || configInSync[key].constructor != Config[key].constructor){
-				configInSync[key] = Config[key];
-			}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
-				Config[key] = configInSync[key];
-			}
-		}
-		//将 syncSetting 存储到 sync
-		chrome.storage.sync.set(configInSync,function(){
-			if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
-			//必须用 remove 来删除元素
-			chrome.storage.sync.remove(unuserdKeysInSync,function(){
-				if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
-			});
-		})
-		//获取 localSetting
-		chrome.storage.local.get([BackupKey], function(result) {
-			let configsInLocal = result[BackupKey];
-			let configNameInSyncStorage = configInSync.backupName;
-			delete configInSync.backupName
-			if(configsInLocal === undefined){//如果本地无设置
-				configsInLocal = {};
-				configsInLocal[DefaultBackupName] = configInSync;
-			}
-			if(configsInLocal[DefaultBackupName] === undefined){//如果本地无默认设置
-				configsInLocal[DefaultBackupName] = configInSync;
-			}
-			//将 syncSetting 更新至 localSetting
-			configsInLocal[configNameInSyncStorage] = configInSync;
-			//遍历 localSetting 检查格式
-			let formatOfConfigInLocal = Config;
-			delete formatOfConfigInLocal.backupName;
-			for(let configName in configsInLocal){
-				let localConfig = configsInLocal[configName];
-				for(let keyOfLocalConfig in localConfig){//遍历单个配置
-					//如果配置中的某个键在 formatOfConfigInLocal 中不存在，则删除该键
-					if(formatOfConfigInLocal[keyOfLocalConfig] === undefined){
-						delete configsInLocal[configName][keyOfLocalConfig];
-					}
-					//如果 formatOfConfigInLocal 中的某个键在配置中不存在（或者类型不同），则使用 formatOfConfigInLocal 初始化配置
-					for(let keyOfFormat in formatOfConfigInLocal){
-						if(localConfig[keyOfFormat]===undefined||formatOfConfigInLocal[keyOfFormat].constructor!=localConfig[keyOfFormat].constructor){
-							configsInLocal[configName][keyOfFormat] = formatOfConfigInLocal[keyOfFormat];
-						}
-					}
-				}
-			}
-			result[BackupKey] = configsInLocal;
-			chrome.storage.local.set(result,function(){
-				if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
-			});
 		})
 	})
 }
@@ -186,7 +58,7 @@ function sendAlertMsg(msg) {
 	sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}})
 }
 
-//复制内容
+// 复制内容
 function copy(text) {
 	//添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
 	let count = 0;
@@ -205,7 +77,7 @@ function copy(text) {
 	copyBtn.click();
 }
 
-async function _getData(url){
+async function getJson(url){
 	try {
 		let response = await fetch(url);
 		let data = await response.json();
@@ -214,183 +86,3 @@ async function _getData(url){
 		sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest), icon: "error",confirmButtonText: '确定'});
 	}
 }
-
-//获取添加级别的标题
-function getTitleAddedPre(title, level) {
-	//添加 4 5 6 级是为了处理特别的书（如导入的书籍）获取数据
-	const lev3 = Config["lev3"];
-	let titleAddedPre = '';
-	switch (level) {
-		case 1:
-		case 2:
-		case 3:
-			titleAddedPre = Config[`lev${level}`] + title;
-			break;
-		case 4:
-		case 5:
-		case 6:
-		default:
-			titleAddedPre = `${new Array(level - 2).join('#')}${lev3}${title}`;
-			break;
-	}
-	return titleAddedPre;
-}
-
-//根据标注类型获取前后缀
-function addPreAndSuf(markText,style){
-
-	pre = (style == 0) ? Config["s1Pre"]
-	: (style == 1) ? Config["s2Pre"]
-	: (style == 2) ? Config["s3Pre"]
-	: ""
-
-	suf = (style == 0) ? Config["s1Suf"]
-	: (style == 1) ? Config["s2Suf"]
-	: (style == 2) ? Config["s3Suf"]
-	: ""
-	
-	return pre + markText + suf
-}
-
-//给 markText 进行正则替换
-function regexpReplace(markText){
-	let regexpConfig = Config.re
-	for(let reId in regexpConfig){
-		let replaceMsg = regexpConfig[reId].replacePattern.match(/^s\/(.+?)\/(.*?)\/(\w*)$/)
-		if(!regexpConfig[reId].checked || replaceMsg == null || replaceMsg.length < 4){//检查是否选中以及是否满足格式
-			continue
-		}
-        let pattern = replaceMsg[1]
-        let replacement = replaceMsg[2]
-		let flag = replaceMsg[3]
-		let regexpObj = new RegExp(pattern, flag)
-		if(regexpObj.test(markText)){
-			markText = markText.replace(regexpObj, replacement)
-			//匹配一次后结束匹配
-			break
-		}
-	}
-	return markText
-}
-
-async function addThoughts(chaptersAndMarks, chapters){
-	chapters = chapters.reduce((tempChaps, aChap)=>{
-		//整理格式
-		tempChaps[aChap.chapterUid] = { title: aChap.title, level: aChap.level};
-		return tempChaps;
-	},{});
-	let thoughts = await getMyThought();
-	//遍历章节
-	for(let chapterUid in thoughts){
-		//遍历章节依次将各章节章内想法添加进 marks
-		let addedToMarks = false
-		for(let i=0;i<chaptersAndMarks.length;i++){
-			//直到找到目标章节
-			if(chaptersAndMarks[i].chapterUid != chapterUid) continue;
-			//想法与标注合并后按 range 排序
-			colId = "range"
-			let marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]);
-			marks.sort(rank);
-			chaptersAndMarks[i].marks = marks;
-			addedToMarks = true
-			break
-		}
-		//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
-		if(addedToMarks) continue;
-		chaptersAndMarks.push({
-			chapterUid: parseInt(chapterUid),
-			title: chapters[chapterUid].title,
-			marks: thoughts[chapterUid]
-		});
-	}
-	return chaptersAndMarks;
-}
-
-async function getChapters(){
-	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-	const chapInfos = await _getData(url);
-	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
-	if(!response) return alert("获取目录出错。");
-	let chapsFromServer = chapInfos.data[0].updated;
-	let checkedChaps = chapsFromServer.map(chapInServer=>{
-		let chapsFromDom = response.chapters;
-		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-		if(!chapsFromDom.filter(chap=>chap.title===chapInServer.title).length){
-			// 将 chapsFromDom 中的信息赋值给 chapsFromServer
-			if(chapsFromDom[chapInServer.chapterIdx-1]) chapInServer.title = chapsFromDom[chapInServer.chapterIdx-1].title;
-		}
-		//某些书没有目录级别
-		if(!chapInServer.level){
-			let targetChapFromDom = chapsFromDom.filter(chapter=>chapter.title===chapInServer.title);
-			if(targetChapFromDom.length) chapInServer.level = targetChapFromDom[0].level;
-			else  chapInServer.level = 1;
-		}else{
-			chapInServer.level = parseInt(chapInServer.level);
-		}
-		chapInServer.isCurrent = 
-			chapInServer.title === response.currentContent || response.currentContent.indexOf(chapInServer.title)>-1
-		return chapInServer;
-	});
-	return checkedChaps;
-}
-
-//获取章内标注
-function traverseMarks(marks,all,indexArr=[],markedData){
-	let res = "", index = 0;
-	for (let j = 0; j < marks.length; j++) {//遍历章内标注
-		let abstract = marks[j].abstract
-		let markText = abstract ? abstract : marks[j].markText
-		//只获取本章时"[插图]"转图片、注释或代码块
-		while(!all && /\[插图\]/.test(markText)){
-			let amarkedData = markedData[indexArr[index]]
-			if(!amarkedData){//数组越界
-				console.error('markedData', JSON.stringify(markedData));
-				console.error('markText', markText);
-				return '';
-			}
-			let replacement = ''
-			if(amarkedData.src){//图片
-				//非行内图片单独占行（即使它与文字一起标注）
-				let inser1 = '', inser2 = ''
-				//不为行内图片且'[插图]'前有内容
-				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') > 0)
-					inser1 = '\n\n'
-				//不为行内图片且'[插图]'后有内容
-				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
-					inser2 = '\n\n'
-				replacement = `${inser1}![${amarkedData.alt}](${amarkedData.src})${inser2}`
-			}else if(amarkedData.footnote){//注释
-				replacement = `[^${amarkedData.name}]`
-			}else if(amarkedData.code){//代码块
-				let inser1 = '', inser2 = ''
-				//'[插图]'前有内容
-				if(markText.indexOf('[插图]') > 0)
-					inser1 = '\n\n'
-				//'[插图]'后有内容
-				if(markText.indexOf('[插图]') != (markText.length - 4))
-					inser2 = '\n\n'
-				replacement = `${inser1}${Config.codePre}\n${amarkedData.code}${Config.codeSuf}${inser2}`
-			}
-			markText = markText.replace(/\[插图\]/, replacement)
-			index = index + 1
-		}
-		
-		if(abstract){//如果为想法，则添加前后缀
-			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`
-		}else{//不是想法（为标注）则进行正则匹配
-			markText = regexpReplace(markText)
-		}
-		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
-		//需要添加想法时，添加想法
-		if(abstract) {
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
-		}
-	}
-	if(!all){//只在获取本章时添加注脚
-		markedData.forEach(element => {
-			if(element.footnote) res += `[^${element.name}]:${element.footnote}\n\n`;
-		});
-	}
-	return res;
-}
-
