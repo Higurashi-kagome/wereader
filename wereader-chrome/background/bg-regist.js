@@ -14,7 +14,13 @@ chrome.runtime.onMessage.addListener(async (msg, sender)=>{
 			updateStorageAreainBg(msg.regexpSet);
 			break;
 		case "deleteBookmarks":
-			if(msg.confirm) deleteBookmarks(msg.isAll);
+			if(!msg.confirm) return;
+			const deleteResp = await deleteBookmarks(msg.isAll);
+			const deleteMsg = `删除结束，${deleteResp.succ} 成功，${deleteResp.fail} 失败。请重新加载读书页。`;
+			const alertResp = await sendAlertMsg({icon: 'info', text: deleteMsg}, tabId);
+			// 弹窗通知失败后使用 alert()
+			if(alertResp && !alertResp.succ) alert(deleteMsg);
+
 	}
 });
 

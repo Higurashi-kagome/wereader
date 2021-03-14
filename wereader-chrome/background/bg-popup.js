@@ -206,7 +206,6 @@ async function deleteBookmarks(isAll=false){
 		}
 		if(!isAll) break;
 	}
-    alert(`删除结束，${succ} 成功，${fail} 失败。请重新加载读书页。`);
 	return {succ:succ,fail:fail}
 }
 

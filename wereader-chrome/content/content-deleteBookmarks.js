@@ -23,7 +23,6 @@ chrome.runtime.onMessage.addListener((msg)=>{
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
-        })
-        Toast.fire({icon: 'info',title: '后台删除中'});
+        });
     });
 });

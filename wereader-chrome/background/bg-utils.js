@@ -54,8 +54,8 @@ async function sendMessageToContentScript(sendMsg){
 	}).catch((error)=>{});
 }
 
-async function sendAlertMsg(msg) {
-	const response = await sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: msg}});
+async function sendAlertMsg(msg, tabId=undefined) {
+	const response = await sendMessageToContentScript({tabId: tabId, message: {isAlertMsg: true, alertMsg: msg}});
 	return response;
 }
 
