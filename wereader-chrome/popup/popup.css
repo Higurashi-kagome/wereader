@@ -16,7 +16,7 @@ body{
 }
 
 .tablinks.active #reload{
-    display: block;
+    display: inline-block;
 }
 
 /* Style the tab */
