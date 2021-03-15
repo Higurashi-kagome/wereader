@@ -14,8 +14,6 @@ function getTest(){
 		})
 	}
 
-	let aler = function(msg){alert(msg)}
-
 	let logConfig = function (){console.log(Config);}
 
 	let logChapterInfo = async ()=>{

@@ -7,8 +7,17 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 		shelfData = shelfForPopup.shelfData;
 		shelfHtml = shelfForPopup.shelfHtml;
 	}
-	if(!shelfData) shelfData = await bg.getShelfData();
-	if(!shelfHtml) shelfHtml = await bg.getShelfHtml();
+	if(!shelfData || !shelfHtml){
+		const shelfDataResp = await bg.getShelfData();
+		if(shelfDataResp.errMsg){
+			bg.alert('获取书架出错，请先登陆。');
+			return window.close();
+		} else {
+			shelfData = shelfDataResp;
+		}
+		shelfHtml = await bg.getShelfHtml();;
+	}
+
 	const shelf = getShelf(shelfData);
 	createShelf(shelf, shelfHtml);
 	bg.setShelfForPopup(shelfData, shelfHtml);

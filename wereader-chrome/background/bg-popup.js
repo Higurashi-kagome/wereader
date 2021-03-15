@@ -159,8 +159,7 @@ async function getShelfData(){
 	const userVid = await getUserVid(url);
 	const cateUrl = `${url}/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
 	const shelfData = await getJson(cateUrl);
-	if(!shelfData.errMsg) return shelfData;
-	else return alert('获取书架失败，请先登陆。');
+	return shelfData;
 }
 
 // 获取书架页面 HTML

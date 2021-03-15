@@ -3,7 +3,7 @@ window.addEventListener('load',async ()=>{
     if(!await bg.setBookId()) return window.close();
     const userVid = await bg.getUserVid();
     if (!userVid) {
-        bg.getTest()['aler']('信息获取失败，请确保正常登陆后刷新重试。');
+        bg.alert('信息获取失败，请确保正常登陆后刷新重试。');
         return window.close();
     }
     //遍历按钮绑定点击事件
