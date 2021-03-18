@@ -165,7 +165,7 @@ async function getShelfData(){
 
 // 获取书架页面 HTML
 async function getShelfHtml(){
-	let data = await fetch('https://weread.qq.com/web/shelf');
+	let data = await fetch('https://weread.qq.com/web/shelf',{credentials: "same-origin"});
 	let text = await data.text();
 	return text;
 }
@@ -184,7 +184,8 @@ async function deleteBookmarks(isAll=false){
         const resp = await fetch('https://weread.qq.com/web/book/removeBookmark', {
             method: 'POST',
             body: JSON.stringify({bookmarkId: bookmarkId}),
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json'},
+			credentials: "same-origin"
         });
         const respJson = await resp.json();
         return respJson;
