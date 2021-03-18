@@ -9,9 +9,11 @@
         <div class="tab">
             <button class="tablinks" id="noteBtn">笔记</button>
             <button class="tablinks" id="shelfBtn">书架&nbsp;<span id='reload' title="刷新">&#x21bb;</span></button>
+            <button class="tablinks" id="statisticBtn">统计</button>
         </div>
 
         <!-- Tab content -->
+        <!-- 笔记 -->
         <div class="tabcontent vertical-menu">
             <button class="dropdown-btn">获取书评</button>
             <div class="dropdown-container">
@@ -33,12 +35,13 @@
                 <a id="removeAllMarks">全部</a>
             </div>
         </div>
+        <!-- 书架 -->
         <div class="tabcontent vertical-menu" id='shelf'><a>...</a></div>
+        <div class="tabcontent vertical-menu"><a>...</a></div>
     </body>
     <script type="text/javascript" src="popup-vars.js"></script>
     <script type="text/javascript" src="popup-test.js"></script>
     <script type="text/javascript" src="popup-note.js"></script>
     <script type="text/javascript" src="popup-shelf.js"></script>
     <script type="text/javascript" src="popup-dispose.js"></script>
-    <script type="text/javascript" src="popup-statistics.js"></script>
 </html>

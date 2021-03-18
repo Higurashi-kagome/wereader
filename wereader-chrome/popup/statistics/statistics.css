@@ -1,0 +1,13 @@
+a {
+    color: #818181;
+    border: none;
+    outline: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+a:hover{
+    color: black;
+}

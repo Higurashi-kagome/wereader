@@ -61,6 +61,12 @@ function getTest(){
 		console.log(text);
 	}
 
+	let logReadDetail = async ()=>{
+		console.log(await getReadDetail());
+		// console.log(await getReadDetail(1, 3, 1609430400));
+		console.log(await getReadDetail(0));
+	}
+
 	let functions = {
 		'logBookMarksJson': logMarksJson,
 		'logStorage': logStorage,
@@ -73,7 +79,8 @@ function getTest(){
 		'logGetChapters': logGetChapters,
 		'logChapInServer': logChapInServer,
 		'logShelfData': logShelfData,
-		'logShelfHtml': logShelfHtml
+		'logShelfHtml': logShelfHtml,
+		'logReadDetail': logReadDetail
 	}
 
 	return functions;
