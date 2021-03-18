@@ -11,7 +11,7 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 		const shelfDataResp = await bg.getShelfData();
 		if(shelfDataResp.errMsg){
 			bg.alert('获取书架出错，请先登陆');
-			console.log(shelfDataResp);
+			return console.log(shelfDataResp);
 		} else {
 			shelfData = shelfDataResp;
 		}
