@@ -10,8 +10,8 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 	if(!shelfData || !shelfHtml){
 		const shelfDataResp = await bg.getShelfData();
 		if(shelfDataResp.errMsg){
-			bg.alert('获取书架出错，请先登陆。');
-			return window.close();
+			bg.alert('获取书架出错，请先登陆');
+			console.log(shelfDataResp);
 		} else {
 			shelfData = shelfDataResp;
 		}
@@ -104,4 +104,3 @@ function createShelf(shelf, htmlText){
 		cateEl.addEventListener('click', dropdownClickEvent);
 	}
 }
-
