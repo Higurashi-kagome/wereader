@@ -1,3 +1,7 @@
+body{
+    margin: 20px 0px 10px 0px;
+}
+
 a {
     color: #818181;
     border: none;
@@ -10,4 +14,24 @@ a {
 
 a:hover{
     color: black;
+}
+
+#month-canvas,#week-canvas{
+    width: 70% !important;
+    height: auto !important;
+    margin: 0px auto;
+}
+
+#month-canvas{
+    border: 1px solid rgb(75, 192, 192);
+}
+
+#week-canvas{
+    border: 1px solid rgb(54, 162, 235);
+}
+
+.controlBox{
+    font-size: 15px;
+    text-align: center;
+    margin: 10px 0px 25px 0px;
 }

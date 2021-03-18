@@ -9,14 +9,17 @@ let monthConfig = {
             backgroundColor: "rgb(75, 192, 192)",
             borderColor: "rgb(75, 192, 192)",
             data: [],
-            fill: false
+            fill: false,
+            borderWidth: 5
         }]
     },
     options: {
         responsive: true,
         tooltips: {
             mode: 'index',
-            intersect: false,
+            intersect: true,
+            titleFontSize: 24,
+            bodyFontSize: 24
         },
         hover: {
             mode: 'nearest',
@@ -26,17 +29,30 @@ let monthConfig = {
             xAxes: [{
                 display: true,
                 scaleLabel: {
-                    display: true,
-                    labelString: '日期'
+                    display: false,
+                    labelString: '日期',
+                    fontSize: 24
+                },
+                ticks: {
+                    fontSize: 24
                 }
             }],
             yAxes: [{
                 display: true,
                 scaleLabel: {
-                    display: true,
-                    labelString: '时长'
+                    display: false,
+                    labelString: '时长',
+                    fontSize: 24
+                },
+                ticks: {
+                    fontSize: 24
                 }
             }]
+        },
+        legend: {
+            labels: {
+                fontSize: 24
+            }
         }
     }
 };
@@ -91,11 +107,17 @@ function updateMonthConfig(data){
  * @description: 创建月统计图
  */
 window.addEventListener('load', async ()=>{
-    let readDetail = await bg.getReadDetail();
-    updateMonthConfig(readDetail.datas[0]);
-    monthConfig.data.datasets[0].label = `${curYear}-${curMonth}`;
-    let ctx = document.getElementById('month-canvas').getContext('2d');
-    window.monthLine = new Chart(ctx, monthConfig);
+    let readDetail;
+    try {
+        readDetail = await bg.getReadDetail();
+        updateMonthConfig(readDetail.datas[0]);
+        monthConfig.data.datasets[0].label = `${curYear}-${curMonth}`;
+        let ctx = document.getElementById('month-canvas').getContext('2d');
+        window.monthLine = new Chart(ctx, monthConfig);
+    } catch (error) {
+        console.warn(readDetail);
+        return console.error(error);
+    }
 });
 
 /* 上月 */
@@ -105,8 +127,14 @@ document.getElementById('previousMonth').addEventListener('click', async ()=>{
     if(previousIndex<loadedMonthDatas.length) {
         updateMonthConfig(loadedMonthDatas[previousIndex]);
     }else{
-        let readDetail = await bg.getReadDetail(1, 3, curMonthBaseTimestamp);
-        updateMonthConfig(readDetail.datas[1]);
+        let readDetail;
+        try {
+            readDetail = await bg.getReadDetail(1, 3, curMonthBaseTimestamp);
+            updateMonthConfig(readDetail.datas[1]);
+        } catch (error) {
+            console.warn(readDetail);
+            return console.error(error);
+        }
     }
     curMonth--;
     if(curMonth == 0){
@@ -146,14 +174,17 @@ let weekConfig = {
             backgroundColor: "rgb(54, 162, 235)",
             borderColor: "rgb(54, 162, 235)",
             data: [],
-            fill: false
+            fill: false,
+            borderWidth: 5
         }]
     },
     options: {
         responsive: true,
         tooltips: {
             mode: 'index',
-            intersect: false,
+            intersect: true,
+            titleFontSize: 24,
+            bodyFontSize: 24
         },
         hover: {
             mode: 'nearest',
@@ -164,16 +195,29 @@ let weekConfig = {
                 display: true,
                 scaleLabel: {
                     display: false,
-                    labelString: ''
+                    labelString: '',
+                    fontSize: 24
+                },
+                ticks: {
+                    fontSize: 24
                 }
             }],
             yAxes: [{
                 display: true,
                 scaleLabel: {
-                    display: true,
-                    labelString: '时长'
+                    display: false,
+                    labelString: '时长',
+                    fontSize: 24
+                },
+                ticks: {
+                    fontSize: 24
                 }
             }]
+        },
+        legend: {
+            labels: {
+                fontSize: 24
+            }
         }
     }
 };
@@ -188,10 +232,16 @@ function updateWeekConfig(data){
 }
 
 window.addEventListener('load', async ()=>{
-    let readDetail = await bg.getReadDetail(0);
-    updateWeekConfig(readDetail.datas[0]);
-    let ctx = document.getElementById('week-canvas').getContext('2d');
-    window.weekLine = new Chart(ctx, weekConfig);
+    let readDetail;
+    try {
+        readDetail = await bg.getReadDetail(0);
+        updateWeekConfig(readDetail.datas[0]);
+        let ctx = document.getElementById('week-canvas').getContext('2d');
+        window.weekLine = new Chart(ctx, weekConfig);
+    } catch (error) {
+        console.warn(readDetail);
+        return console.error(error);
+    }
 });
 
 /* 上周 */
@@ -201,8 +251,14 @@ document.getElementById('previousWeek').addEventListener('click', async ()=>{
     if(previousIndex<loadedWeekDatas.length) {
         updateWeekConfig(loadedWeekDatas[previousIndex]);
     }else{
-        let readDetail = await bg.getReadDetail(0, 3, curWeekBaseTimestamp);
-        updateWeekConfig(readDetail.datas[1]);
+        let readDetail;
+        try {
+            readDetail = await bg.getReadDetail(0, 3, curWeekBaseTimestamp);
+            updateWeekConfig(readDetail.datas[1]);
+        } catch (error) {
+            console.warn(readDetail);
+            return console.error(error);
+        }
     }
     window.weekLine.update();
 });
