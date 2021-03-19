@@ -80,7 +80,7 @@ function copy(text) {
 
 async function getJson(url){
 	try {
-		let response = await fetch(url, {credentials: "same-origin"});
+		let response = await fetch(url, {credentials: "include"});
 		let data = await response.json();
 		return data;
 	} catch (error) {

@@ -15,7 +15,7 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 		} else {
 			shelfData = shelfDataResp;
 		}
-		shelfHtml = await bg.getShelfHtml();;
+		shelfHtml = await bg.getShelfHtml();
 	}
 
 	const shelf = getShelf(shelfData);
