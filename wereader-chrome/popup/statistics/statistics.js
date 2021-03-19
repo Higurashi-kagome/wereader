@@ -10,7 +10,9 @@ let monthConfig = {
             borderColor: "rgb(75, 192, 192)",
             data: [],
             fill: false,
-            borderWidth: 5
+            borderWidth: 5,
+            pointRadius: 3,
+            pointHoverRadius: 9
         }]
     },
     options: {
@@ -163,7 +165,10 @@ document.getElementById('nextMonth').addEventListener('click', async ()=>{
     }
 });
 
-/* ******************* */
+
+
+
+
 
 let weekConfig = {
     type: 'line',
@@ -175,7 +180,9 @@ let weekConfig = {
             borderColor: "rgb(54, 162, 235)",
             data: [],
             fill: false,
-            borderWidth: 5
+            borderWidth: 5,
+            pointRadius: 3,
+            pointHoverRadius: 9
         }]
     },
     options: {
