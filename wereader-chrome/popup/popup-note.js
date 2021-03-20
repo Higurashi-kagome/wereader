@@ -3,13 +3,12 @@ window.addEventListener('load',async ()=>{
     if(!await bg.setBookId()) return window.close();
     const userVid = await bg.getUserVid();
     if (!userVid) {
-        bg.alert('信息获取失败，请确保正常登陆后刷新重试。');
+        bg.alert('信息获取失败，请确保正常登陆后刷新重试');
         return window.close();
     }
     //遍历按钮绑定点击事件
-    const ids = ["getTextComment","getHtmlComment","getMarksInCurChap","getAllMarks","getContents","getBestBookMarks","getMyThoughts","trigCopyBtn","removeMarksInCurChap","removeAllMarks"];
-    ids.forEach(id=>{
-        document.getElementById(id).addEventListener('click', listener);
+    document.querySelectorAll('.caller').forEach(el=>{
+        el.addEventListener('click', listener);
     });
     //点击调用该函数
     function listener(event){
