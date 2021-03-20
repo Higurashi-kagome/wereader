@@ -232,3 +232,7 @@ async function isLogined(){
 	if(text.indexOf('wr_avatar_img')>-1) return true;
 	else return false;
 }
+
+setShelfForPopup().then(()=>{
+	console.log(new Date(), shelfForPopup);
+});
