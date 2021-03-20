@@ -10,8 +10,8 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 	if(!shelfData || shelfData.errMsg || !shelfHtml){
 		const shelfDataResp = await bg.getShelfData();
 		if(shelfDataResp.errMsg){
-			document.getElementById('shelf').innerHTML = 
-				'<p>获取书架出错，请<a href="https://weread.qq.com/" target="_blanck" style="text-decoration: none;">确保正常登陆</a></p>';
+			chrome.tabs.create({url: 'https://weread.qq.com/'});
+        	bg.alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后重新获取书架');
 			return console.log(shelfDataResp);
 		} else {
 			shelfData = shelfDataResp;

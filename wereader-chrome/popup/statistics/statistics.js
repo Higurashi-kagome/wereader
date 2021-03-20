@@ -117,8 +117,9 @@ window.addEventListener('load', async ()=>{
         let ctx = document.getElementById('month-canvas').getContext('2d');
         window.monthLine = new Chart(ctx, monthConfig);
     } catch (error) {
-        console.warn(readDetail);
-        return console.error(error);
+        chrome.tabs.create({url: 'https://weread.qq.com/'});
+        alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后刷新该页面重新获取统计');
+        return console.log(error, readDetail);
     }
 });
 
@@ -134,8 +135,7 @@ document.getElementById('previousMonth').addEventListener('click', async ()=>{
             readDetail = await bg.getReadDetail(1, 3, curMonthBaseTimestamp);
             updateMonthConfig(readDetail.datas[1]);
         } catch (error) {
-            console.warn(readDetail);
-            return console.error(error);
+            return console.log(error, readDetail);
         }
     }
     curMonth--;
@@ -246,8 +246,7 @@ window.addEventListener('load', async ()=>{
         let ctx = document.getElementById('week-canvas').getContext('2d');
         window.weekLine = new Chart(ctx, weekConfig);
     } catch (error) {
-        console.warn(readDetail);
-        return console.error(error);
+        return console.log(error, readDetail);
     }
 });
 
@@ -263,8 +262,7 @@ document.getElementById('previousWeek').addEventListener('click', async ()=>{
             readDetail = await bg.getReadDetail(0, 3, curWeekBaseTimestamp);
             updateWeekConfig(readDetail.datas[1]);
         } catch (error) {
-            console.warn(readDetail);
-            return console.error(error);
+            return console.log(error, readDetail);
         }
     }
     window.weekLine.update();
