@@ -7,10 +7,11 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 		shelfData = shelfForPopup.shelfData;
 		shelfHtml = shelfForPopup.shelfHtml;
 	}
-	if(!shelfData || !shelfHtml){
+	if(!shelfData || shelfData.errMsg || !shelfHtml){
 		const shelfDataResp = await bg.getShelfData();
 		if(shelfDataResp.errMsg){
-			bg.alert('获取书架出错，请先登陆');
+			document.getElementById('shelf').innerHTML = 
+				'<p>获取书架出错，请<a href="https://weread.qq.com/" target="_blanck" style="text-decoration: none;">确保正常登陆</a></p>';
 			return console.log(shelfDataResp);
 		} else {
 			shelfData = shelfDataResp;
