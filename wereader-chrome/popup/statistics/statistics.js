@@ -117,7 +117,7 @@ window.addEventListener('load', async ()=>{
         let ctx = document.getElementById('month-canvas').getContext('2d');
         window.monthLine = new Chart(ctx, monthConfig);
     } catch (error) {
-        chrome.tabs.create({url: 'https://weread.qq.com/'});
+        chrome.tabs.create({url: 'https://weread.qq.com/', active: false});
         alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后刷新该页面重新获取统计');
         return console.log(error, readDetail);
     }

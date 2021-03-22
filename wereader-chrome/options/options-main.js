@@ -5,11 +5,9 @@ main()
 //入口
 function main(){
     chrome.storage.sync.get(function(setting) {
-        console.log("chrome.storage.sync.get(function(setting){\nconsole.log(setting)\n})")
-        console.log(setting)
+        console.log("storage.sync", setting)
         chrome.storage.local.get(function(settings){
-            console.log("chrome.storage.local.get(function(settings){\nconsole.log(settings)\n})")
-            console.log(settings)
+            console.log("storage.local", settings)
             console.log("********************************************")
             initialize(setting,settings)
         })

@@ -10,7 +10,7 @@ document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 	if(!shelfData || shelfData.errMsg || !shelfHtml){
 		const shelfDataResp = await bg.getShelfData();
 		if(shelfDataResp.errMsg){
-			chrome.tabs.create({url: 'https://weread.qq.com/'});
+			chrome.tabs.create({url: 'https://weread.qq.com/', active: false});
         	bg.alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后重新获取书架');
 			return console.log(shelfDataResp);
 		} else {

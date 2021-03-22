@@ -165,7 +165,7 @@ async function getShelfData(){
 
 // 获取书架页面 HTML
 async function getShelfHtml(){
-	let data = await fetch('https://weread.qq.com/web/shelf',{credentials: "include"});
+	let data = await fetch('https://weread.qq.com/web/shelf',{credentials: "include", Cache: 'no-cache'});
 	let text = await data.text();
 	return text;
 }
@@ -185,7 +185,8 @@ async function deleteBookmarks(isAll=false){
             method: 'POST',
             body: JSON.stringify({bookmarkId: bookmarkId}),
             headers: {'Content-Type': 'application/json'},
-			credentials: "include"
+			credentials: "include",
+			Cache: 'no-cache'
         });
         const respJson = await resp.json();
         return respJson;
@@ -227,7 +228,7 @@ async function getReadDetail(type=1, count=3, monthTimestamp){
 
 // 是否登陆
 async function isLogined(){
-	let resp = await fetch('https://weread.qq.com/',{credentials:'include'});
+	let resp = await fetch('https://weread.qq.com/',{credentials:'include', Cache: 'no-cache'});
 	let text = await resp.text();
 	if(text.indexOf('wr_avatar_img')>-1) return true;
 	else return false;
