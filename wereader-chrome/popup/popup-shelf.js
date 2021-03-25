@@ -66,9 +66,14 @@ function getShelf(shelfData){
 
 function createShelf(shelf, htmlText){
 	let hrefs = htmlText.match(/(?<=href="\/web\/reader\/)([^"]*)/g);
-	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)/g;
+	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)|((?<=bookcover\/)[^\/\.]*(?=\.png))/g;
 	let bookIds = htmlText.match(matchId);
-	if(hrefs.length!==bookIds.length) return console.error('Length equal issue.');
+	if(hrefs.length!==bookIds.length) {
+		console.error('Length equal issue.');
+		console.log('hrefs', hrefs);
+		console.log('bookIds', bookIds);
+		console.log('htmlText', htmlText);
+	}
     let shelfContainer = document.getElementById('shelf');
 	shelfContainer.innerHTML = '';
 	//获取创建目录所需书本 url

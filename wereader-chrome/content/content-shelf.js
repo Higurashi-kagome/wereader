@@ -53,7 +53,8 @@ function getShelf(data){
 }
 
 function createShelf(shelf){
-	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)/g;
+	// https://weread-1258476243.file.myqcloud.com/app/assets/bookcover/book_cover_default_imported_06.png
+	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)|((?<=\/)[^\/\.]*(?=\.png))/g;
 	//获取创建目录所需书本 url
 	let bookId_href = {};
 	document.querySelectorAll(".wr_bookCover_img").forEach(coverEl=>{
