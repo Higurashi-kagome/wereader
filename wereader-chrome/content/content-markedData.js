@@ -3,20 +3,20 @@
 function getElObj(){
     let targetEls = 
         document.querySelectorAll(".wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre");
-    let elObjArr = [], currentContent = '', notesCounter = 0;
+    let elObjArr = [], currentContent = '', notesCounter = 1;
     //获取当前目录
     if(document.getElementsByClassName("readerTopBar_title_chapter")[0]){
-        currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].textContent
+        currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].textContent;
     }else{
-        currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent
+        currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent;
     }
     const activeEls = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active');
     const choosedFontSize = activeEls[activeEls.length - 1];
     const fontSizeIndex = [...choosedFontSize.parentElement.children].indexOf(choosedFontSize);
     const pxFix = {
-        0: 1,
+        0: 2,
         1: 2.8,
-        2: 3.4,
+        2: 4.4,
         3: 5,
         4: 5.8,
         5: 6.6,
@@ -36,7 +36,7 @@ function getElObj(){
         }else if(footnote){
             //注释图标需要修正（不同字体大小有不同的修正值）
             top = top + pxFix[fontSizeIndex];
-            let footnoteName = `${currentContent}-${notesCounter}`;
+            let footnoteName = `${currentContent.replace(/^\s*|\s*$/,'')} 注${notesCounter++}`;
             elObjArr.push({footnoteName: footnoteName, footnote: footnote, height: height, top: top});
         }else{//代码块
             let code = el.textContent;
@@ -51,7 +51,6 @@ function getElObj(){
 
 //获取图片和注释
 function getMarkedData(addThoughts){
-    console.log(addThoughts);
     const elObjArr = getElObj();
     //获取三种标注 Element
     let selector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2';
