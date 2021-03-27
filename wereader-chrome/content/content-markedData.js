@@ -3,13 +3,14 @@
 function getElObj(){
     let targetEls = 
         document.querySelectorAll(".wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre");
-    let elObjArr = [], currentContent = '', notesCounter = 1;
+    let elObjArr = [], currentContent = '';
     //获取当前目录
     if(document.getElementsByClassName("readerTopBar_title_chapter")[0]){
         currentContent = document.getElementsByClassName("readerTopBar_title_chapter")[0].textContent;
     }else{
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent;
     }
+    currentContent = currentContent.replace(/^\s*|\s*$/,'');
     const activeEls = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active');
     const choosedFontSize = activeEls[activeEls.length - 1];
     const fontSizeIndex = [...choosedFontSize.parentElement.children].indexOf(choosedFontSize);
@@ -36,8 +37,7 @@ function getElObj(){
         }else if(footnote){
             //注释图标需要修正（不同字体大小有不同的修正值）
             top = top + pxFix[fontSizeIndex];
-            let footnoteName = `${currentContent.replace(/^\s*|\s*$/,'')} 注${notesCounter++}`;
-            elObjArr.push({footnoteName: footnoteName, footnote: footnote, height: height, top: top});
+            elObjArr.push({currentContent: currentContent, footnote: footnote, height: height, top: top});
         }else{//代码块
             let code = el.textContent;
             let padding = parseFloat(window.getComputedStyle(el).paddingTop.replace('px', '')) + 
@@ -58,10 +58,10 @@ function getMarkedData(addThoughts){
     if(addThoughts) selector = `${selector},.wr_myNote`;
     const markMasks = document.querySelectorAll(selector);
     
-    let markedData = [];
+    let markedData = [], notesCounter = 1;
     //遍历 objArr 并逐个检查是否被标注
     elObjArr.forEach(obj=>{
-        let {imgSrc,alt,isInlineImg,footnote,footnoteName,code,height,top} = obj;
+        let {imgSrc,alt,isInlineImg,footnote,currentContent,code,height,top} = obj;
         //根据标注元素与图片/注释在网页中的相对位置来判断图片/注释是否被标注
         for (let i = 0; i < markMasks.length; i++) {
             const mask = markMasks[i];
@@ -71,7 +71,7 @@ function getMarkedData(addThoughts){
             if(imgSrc){
                 markedData.push({alt: alt, src: imgSrc, isInlineImg: isInlineImg})
             }else if(footnote){
-                markedData.push({name: footnoteName, footnote: footnote})
+                markedData.push({name: `${currentContent} 注${notesCounter++}`, footnote: footnote})
             }else if(code){
                 markedData.push({code: code})
             }
