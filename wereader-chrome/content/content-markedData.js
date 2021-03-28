@@ -11,18 +11,6 @@ function getElObj(){
         currentContent = document.getElementsByClassName("chapterItem chapterItem_current")[0].childNodes[0].childNodes[0].textContent;
     }
     currentContent = currentContent.replace(/^\s*|\s*$/,'');
-    const activeEls = document.getElementsByClassName('vue-slider-mark vue-slider-mark-active');
-    const choosedFontSize = activeEls[activeEls.length - 1];
-    const fontSizeIndex = [...choosedFontSize.parentElement.children].indexOf(choosedFontSize);
-    const pxFix = {
-        0: 2,
-        1: 2.8,
-        2: 4.4,
-        3: 5,
-        4: 5.8,
-        5: 6.6,
-        6: 8.8,
-    };
     //处理图片和注释
     targetEls.forEach(el=>{
         let imgSrc = el.getAttribute("data-src");
@@ -35,8 +23,6 @@ function getElObj(){
             let alt = imgSrc.split("/").pop();
             elObjArr.push({alt: alt, imgSrc: imgSrc, height: height, top: top, isInlineImg: isInlineImg});
         }else if(footnote){
-            //注释图标需要修正（不同字体大小有不同的修正值）
-            top = top + pxFix[fontSizeIndex];
             elObjArr.push({currentContent: currentContent, footnote: footnote, height: height, top: top});
         }else{//代码块
             let code = el.textContent;
@@ -67,7 +53,9 @@ function getMarkedData(addThoughts){
             const mask = markMasks[i];
             let maskTop = parseFloat(mask.style.top.replace('px', ''));
             let maskHeight = parseFloat(mask.style.height.replace('px', ''));
-            if(Math.abs(top + height - maskTop - maskHeight)>0.1) continue;
+            // 脚注需要另外判断是否被标注
+            if(!footnote && Math.abs(top + height - maskTop - maskHeight)>0.1) continue;
+            if(footnote && (top < maskTop || (maskTop + maskHeight) < (top + height))) continue;
             if(imgSrc){
                 markedData.push({alt: alt, src: imgSrc, isInlineImg: isInlineImg})
             }else if(footnote){
