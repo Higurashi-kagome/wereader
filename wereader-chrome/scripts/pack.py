@@ -49,28 +49,28 @@ def pack():
     copyfolder(extension_repo, desktop_extension)
     
     # 解析 .gitignore 并删除文件
-    print('解析 .gitignore 并删除文件')
+    print('\n解析 .gitignore 并删除文件')
     allfiles = getallfiles(desktop_extension)
     for file in allfiles:
         if isignored(file):
             removefile(file)
 
     # 删除文件夹
-    print('删除指定文件夹')
+    print('\n删除指定文件夹')
     folders_need_remove = ['data', 'scripts', '.vscode']
     for foldername in folders_need_remove:
         folder = os.path.join(desktop_extension, foldername)
         removefolder(folder)
     
     # 删除文件
-    print('删除指定文件')
+    print('\n删除指定文件')
     files_need_remove = [r'.gitignore']
     for filename in files_need_remove:
         file = os.path.join(desktop_extension, filename)
         removefile(file)
         
     # 压缩文件
-    print('压缩文件')
+    print('\n压缩文件')
     startdir = desktop_extension  # 要压缩的文件夹路径
     zip_name = startdir + '.zip' # 压缩后压缩包的名字
     z = zipfile.ZipFile(zip_name,'w',zipfile.ZIP_DEFLATED)
