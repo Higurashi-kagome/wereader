@@ -70,4 +70,4 @@ function addObserverForRenderTargetContainer(){
 }
 
 //console.log('content-selectAction.js：注入');
-addObserverForRenderTargetContainer();
+window.addEventListener('load', addObserverForRenderTargetContainer);
