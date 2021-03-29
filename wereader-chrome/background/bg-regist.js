@@ -57,3 +57,13 @@ chrome.runtime.onInstalled.addListener(function(details){
 	if(details.reason != 'install') return;
 	chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
 });
+
+// 页面更新
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+	if (changeInfo.status != "loading") return;
+	if(tab.url.indexOf('//weread.qq.com/web/reader/') > -1){
+		chrome.tabs.executeScript(tabId, { file: 'inject/inject-selectAction.js' }, ()=>{
+			catchErr("onUpdated.addListener", "selectAction");
+		});
+	}
+})
