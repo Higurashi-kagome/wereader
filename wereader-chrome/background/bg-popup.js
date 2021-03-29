@@ -38,14 +38,16 @@ async function copyBookMarks(isAll) {
 	if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 	//得到res
 	var res = "";
-	if (isAll) {	//获取全书标注
+	if (isAll) {	// 获取全书标注
 		res = chapsAndMarks.reduce((tempRes, curChapAndMarks)=>{
 			let {title, level, marks} = curChapAndMarks;
 			if(Config.allTitles||marks.length){
 				tempRes += `${getTitleAddedPre(title, level)}\n\n`;
 				if(curChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
-					curChapAndMarks.anchors
-					.forEach(anchor=>{tempRes += `${getTitleAddedPre(anchor.title, anchor.level)}\n\n`});}
+					curChapAndMarks.anchors.forEach(anchor=>{
+						tempRes += `${getTitleAddedPre(anchor.title, anchor.level)}\n\n`
+					});
+				}
 			}
 			if(!marks.length) return tempRes;
 			tempRes += traverseMarks(marks, isAll);

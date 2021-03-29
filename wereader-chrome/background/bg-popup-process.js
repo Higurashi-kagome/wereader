@@ -32,16 +32,11 @@ async function getBookMarks(isAddThou) {
 	/* 生成标注数据 */
 	let chaptersAndMarks = chapters.map(chap=>{
 		//取得章内标注并初始化 range
-		let marksInAChap = 
-			marks.filter(mark=>mark.chapterUid == chap.chapterUid)
-			.reduce((tempMarksInAChap, curMark)=>{
-				curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
-				tempMarksInAChap.push(curMark);
-				return tempMarksInAChap;
-		},[]);
-		//排序章内标注并加入到章节内
-		colId = "range";
-		marksInAChap.sort(rank);
+		let marksInAChap = marks.filter(mark=>mark.chapterUid == chap.chapterUid);
+		marksInAChap.map(curMark=>{
+			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
+			return curMark;
+		});
 		chap.marks = marksInAChap;
 		return chap;
 	});
@@ -240,8 +235,8 @@ async function addThoughts(chaptersAndMarks, chapters){
 			let marks = chaptersAndMarks[i].marks.concat(thoughts[chapterUid]);
 			marks.sort(rank);
 			chaptersAndMarks[i].marks = marks;
-			addedToMarks = true
-			break
+			addedToMarks = true;
+			break;
 		}
 		//如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
 		if(addedToMarks) continue;
@@ -254,7 +249,7 @@ async function addThoughts(chaptersAndMarks, chapters){
 	return chaptersAndMarks;
 }
 
-//给 markText 进行正则替换
+// 给 markText 进行正则替换
 function regexpReplace(markText){
 	let regexpConfig = Config.re
 	for(let reId in regexpConfig){
