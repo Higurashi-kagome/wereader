@@ -1,10 +1,10 @@
 //错误捕捉函数
 function catchErr(sender) {
 	if (chrome.runtime.lastError) {
-        console.log(sender + " => chrome.runtime.lastError：\n" + chrome.runtime.lastError.message)
-        return true
+        console.log(`${sender} => chrome.runtime.lastError`, chrome.runtime.lastError.message);
+        return true;
 	}else{
-        return false
+        return false;
     }
 }
 

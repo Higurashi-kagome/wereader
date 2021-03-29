@@ -2,8 +2,8 @@
 
 // 获取书评
 async function copyComment(userVid, isHtml) {
-	const url = `https://i.weread.qq.com/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
-	let data = await getJson(url);
+	const wereader = new Wereader(bookId, userVid);
+	let data = await wereader.getComments();
 	//遍历书评
 	for (const item of data.reviews) {
 		if (item.review.bookId != bookId) continue;
@@ -158,15 +158,14 @@ async function setBookId(){
 async function getShelfData(){
 	const url = 'https://weread.qq.com/web/shelf';
 	const userVid = await getUserVid(url);
-	const cateUrl = `${url}/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
-	const shelfData = await getJson(cateUrl);
+	const wereader = new Wereader(bookId, userVid);
+	const shelfData = await wereader.getShelfData();
 	return shelfData;
 }
 
 // 获取书架页面 HTML
 async function getShelfHtml(){
-	let data = await fetch('https://weread.qq.com/web/shelf',{credentials: "include", Cache: 'no-cache'});
-	let text = await data.text();
+	let text = await getText('https://weread.qq.com/web/shelf');
 	return text;
 }
 
@@ -180,60 +179,19 @@ async function setShelfForPopup(shelfData, shelfHtml){
 
 // 删除标注
 async function deleteBookmarks(isAll=false){
-    async function removeBookmark(bookmarkId){
-        const resp = await fetch('https://weread.qq.com/web/book/removeBookmark', {
-            method: 'POST',
-            body: JSON.stringify({bookmarkId: bookmarkId}),
-            headers: {'Content-Type': 'application/json'},
-			credentials: "include",
-			Cache: 'no-cache'
-        });
-        const respJson = await resp.json();
-        return respJson;
-    }
-    const chapsAndMarks = await getBookMarks(false);
-    let succ = 0, fail = 0;
-	for (const chap of chapsAndMarks) {
-		if(!isAll && !chap.isCurrent) continue;// 只删除当前章节而 chap 不是当前章节
-		for (const mark of chap.marks) {
-			let respJson = {};
-			try {
-				respJson = await removeBookmark(mark.bookmarkId);
-			} catch (error) {
-				fail++;
-				continue;
-			}
-			if(!respJson.succ) fail++;
-			else succ++;
-		}
-		if(!isAll) break;
-	}
-	return {succ:succ,fail:fail}
-}
-
-async function getReadDetail(type=1, count=3, monthTimestamp){
-	/**
-	 * 本年月数据及去年年总结：https://i.weread.qq.com/readdetail 
-	 * 指定月及该月之前指定数量的月数据：https://i.weread.qq.com/readdetail?baseTimestamp=1612108800&count=3&type=1
-	 * type=1：获取月数据
-	 * type=0：获取周数据
-	 */
-	let url = `https://i.weread.qq.com/readdetail?`;
-	if(monthTimestamp) url = `${url}&baseTimestamp=${monthTimestamp}`;
-	if(count) url = `${url}&count=${count}`;
-	if([0,1].indexOf(type)>-1) url = `${url}&type=${type}`;
-	const respJson = await getJson(url);
+    const wereader = new Wereader(bookId);
+    const chaps = await getChapters();
+	const curChap = chaps.filter(chap=>{return chap.isCurrent;})[0];
+    const respJson = await wereader.removeBookmarks(isAll ? undefined : curChap.chapterUid);
 	return respJson;
 }
 
-// 是否登陆
-async function isLogined(){
-	let resp = await fetch('https://weread.qq.com/',{credentials:'include', Cache: 'no-cache'});
-	let text = await resp.text();
-	if(text.indexOf('wr_avatar_img')>-1) return true;
-	else return false;
+async function getReadDetail(type=1, count=3, monthTimestamp){
+	const wereader = new Wereader(bookId);
+	const readdetail = await wereader.getReadDetail(type, count, monthTimestamp);
+	return readdetail;
 }
 
 setShelfForPopup().then(()=>{
-	console.log(new Date(), shelfForPopup);
+	console.log(new Date(), 'shelfForPopup', shelfForPopup);
 });

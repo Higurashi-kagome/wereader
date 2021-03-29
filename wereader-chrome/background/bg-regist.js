@@ -36,8 +36,7 @@ chrome.contextMenus.create({
 
 // 监听 storage 改变并相应更新 Config
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-	console.log(`new ${namespace} changes：`)
-	console.log(changes)
+	console.log(`new ${namespace} changes`, changes)
 	// 更新 Config
 	if(namespace !== 'sync') return;
 	for(const key in changes){

@@ -23,8 +23,8 @@ function getTitleAddedPre(title, level) {
 
 // 获取标注数据
 async function getBookMarks(isAddThou) {
-	const bookmarklist = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-	const {updated: marks} = await getJson(bookmarklist);
+	const wereader = new Wereader(bookId);
+	const {updated: marks} = await wereader.getBookmarks();
 	if(!marks.length) return;
 	/* 请求得到 chapters 方便导出不含标注的章节的标题，
 	另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
@@ -63,8 +63,8 @@ function traverseMarks(marks,all,indexArr=[],markedData){
 		while(!all && /\[插图\]/.test(markText)){
 			let amarkedData = markedData[indexArr[index]]
 			if(!amarkedData){//数组越界
-				console.error('markedData', JSON.stringify(markedData));
-				console.error('markText', markText);
+				console.log('markedData', markedData);
+				console.log('markText', markText);
 				return '';
 			}
 			let replacement = ''
@@ -99,7 +99,7 @@ function traverseMarks(marks,all,indexArr=[],markedData){
 		}else{//不是想法（为标注）则进行正则匹配
 			markText = regexpReplace(markText)
 		}
-		res += `${addPreAndSuf(markText,marks[j].style)}\n\n`
+		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`
 		//需要添加想法时，添加想法
 		if(abstract) {
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
@@ -130,8 +130,8 @@ function getRangeArrFrom(strRange, str){
 }
 
 async function getChapters(){
-	const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-	const chapInfos = await getJson(url);
+	const wereader = new Wereader(bookId);
+	const chapInfos = await wereader.getChapInfos();
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
 	if(!response) return alert("获取目录出错。");
 	let chapsFromServer = chapInfos.data[0].updated;
@@ -159,8 +159,8 @@ async function getChapters(){
 
 // 获取热门标注数据
 async function getBestBookMarks() {
-	const bestbookmarks = `https://i.weread.qq.com/book/bestbookmarks?bookId=${bookId}`;
-	let {items: bestMarksData} = await getJson(bestbookmarks);
+	const wereader = new Wereader(bookId);
+	let {items: bestMarksData} = await wereader.getBestBookmarks();
 	//处理书本无热门标注的情况
 	if(!bestMarksData.length){
 		return sendAlertMsg({text: "该书无热门标注",icon:'warning'});
@@ -187,8 +187,8 @@ async function getBestBookMarks() {
 
 // 获取想法
 async function getMyThought() {
-	const url = `https://i.weread.qq.com/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`;
-	let data = await getJson(url);
+	const wereader = new Wereader(bookId);
+	let data = await wereader.getThoughts();
 	//获取 chapterUid 并去重、排序
 	let chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g)))
 	chapterUidArr.sort()

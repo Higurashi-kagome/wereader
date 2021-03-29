@@ -32,7 +32,7 @@ function getShelf(data){
 		return tempShelf;
 	},[]);
 	//将书架中未分类的书籍归为 "未分类书籍"
-	let extraCate = {cateName: '未分类书籍', books: []};
+	let extraCate = {cateName: '未分类', books: []};
 	for(let bookId in bookId_book){
 		extraCate.books.push(bookId_book[bookId]);
 	}

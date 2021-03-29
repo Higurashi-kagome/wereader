@@ -12,7 +12,7 @@ const rank = function (x, y) {
 // 报错捕捉函数
 function catchErr(...sender) {
 	if(!chrome.runtime.lastError)return false;
-	console.log(`${sender.join('=>')}=>chrome.runtime.lastError：\n${chrome.runtime.lastError.message}`);
+	console.log(`${sender.join('=>')}=>chrome.runtime.lastError`, chrome.runtime.lastError.message);
 	return true;
 }
 
@@ -84,6 +84,16 @@ async function getJson(url){
 		let data = await response.json();
 		return data;
 	} catch (error) {
-		sendAlertMsg({title: "获取失败:", text: JSON.stringify(httpRequest), icon: "error",confirmButtonText: '确定'});
+		sendAlertMsg({title: "获取失败:", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
+	}
+}
+
+async function getText(url){
+	try {
+		let resp = await fetch(url, {credentials:'include', Cache: 'no-cache'});
+		let text = await resp.text();
+		return text;
+	} catch (error) {
+		sendAlertMsg({title: "获取失败:", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
 	}
 }

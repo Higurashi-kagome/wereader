@@ -1,35 +1,29 @@
 /* 用于测试 */
 function getTest(){
 
-	let logMarksJson = async function(){
-		const url = `https://i.weread.qq.com/book/bookmarklist?bookId=${bookId}`;
-		let data = await getJson(url);
-		console.log(data);
+	let wereader = new Wereader(bookId);
+
+	let logBookmarksJson = async ()=>{
+		const data = await wereader.getBookmarks();
+		console.log('bookmarksJson', data);
 	}
 
-	let logStorage = function(area="sync"){
-		if(["sync","local"].indexOf(area) < 0) return console.log("请传入sync或local");
-		chrome.storage[area].get(function(setting){
-			console.log('setting', setting);
-		})
+	let logStorage = ()=>{
+		chrome.storage.sync.get(function(sync){
+			console.log('storage.sync', sync);
+		});
+		chrome.storage.local.get(function(local){
+			console.log('storage.local', local);
+		});
 	}
 
-	let logConfig = function (){console.log(Config);}
-
-	let logChapterInfo = async ()=>{
-		const chapterInfos = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`
-		let chapInfo = await getJson(chapterInfos);
-		console.log(chapInfo);
-	}
-
-	let logContents = async ()=>{
-		const contents = await getChapters();
-		console.log(contents);
+	let logConfig = ()=>{
+		console.log('Config', Config);
 	}
 
 	let logGetBookMarks = async ()=>{
 		const chapsAndMarks = await getBookMarks();
-		console.log(chapsAndMarks);
+		console.log('chapsAndMarks', chapsAndMarks);
 	}
 
 	let trigMarkedDatajs = async ()=>{
@@ -38,18 +32,17 @@ function getTest(){
 
 	let logBestBookMarks = async ()=>{
 		const bestbookmarks = await getBestBookMarks();
-		console.log(bestbookmarks);
+		console.log('bestbookmarks', bestbookmarks);
 	}
 
 	let logGetChapters = async ()=>{
 		const chapters = await getChapters();
-		console.log(chapters);
+		console.log('chapters', chapters);
 	}
 
-	let logChapInServer = async ()=>{
-		const url = `https://i.weread.qq.com/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-		const chapInfos = await getJson(url);
-		console.log(chapInfos);
+	let logChapInfosInServer = async ()=>{
+		const data = await wereader.getChapInfos();
+		console.log('chapInfosInServer', data);
 	}
 
 	let logShelfData = async ()=>{
@@ -57,8 +50,7 @@ function getTest(){
 	}
 
 	let logShelfHtml = async ()=>{
-		text = await getShelfHtml();
-		console.log(text);
+		console.log(await getShelfHtml());
 	}
 
 	let logReadDetail = async ()=>{
@@ -68,16 +60,14 @@ function getTest(){
 	}
 
 	let functions = {
-		'logBookMarksJson': logMarksJson,
+		'logBookmarksJson': logBookmarksJson,
 		'logStorage': logStorage,
 		'logConfig': logConfig,
-		'logChapterInfo': logChapterInfo,
-		'logContents': logContents,
 		'logGetBookMarks': logGetBookMarks,
 		'trigMarkedDatajs': trigMarkedDatajs,
 		'logBestBookMarks': logBestBookMarks,
 		'logGetChapters': logGetChapters,
-		'logChapInServer': logChapInServer,
+		'logChapInfosInServer': logChapInfosInServer,
 		'logShelfData': logShelfData,
 		'logShelfHtml': logShelfHtml,
 		'logReadDetail': logReadDetail
