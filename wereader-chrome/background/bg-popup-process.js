@@ -37,14 +37,12 @@ async function getBookMarks(isAddThou) {
 			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
 			return curMark;
 		});
+		marksInAChap.reverse();
 		chap.marks = marksInAChap;
 		return chap;
 	});
 	// addThoughts 参数用于显式指明不包含想法
 	if(isAddThou !== false && Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
-	//章节排序
-	colId = "chapterUid";
-	chaptersAndMarks.sort(rank);
 	return chaptersAndMarks;
 }
 
@@ -218,7 +216,7 @@ async function getMyThought() {
 // 在标注中添加想法
 async function addThoughts(chaptersAndMarks, chapters){
 	chapters = chapters.reduce((tempChaps, aChap)=>{
-		//整理格式
+		// 整理格式
 		tempChaps[aChap.chapterUid] = { title: aChap.title, level: aChap.level};
 		return tempChaps;
 	},{});
@@ -246,6 +244,9 @@ async function addThoughts(chaptersAndMarks, chapters){
 			marks: thoughts[chapterUid]
 		});
 	}
+	// 章节排序
+	colId = "chapterUid";
+	chaptersAndMarks.sort(rank);
 	return chaptersAndMarks;
 }
 
