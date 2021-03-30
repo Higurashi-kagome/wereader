@@ -1,40 +1,23 @@
 /*正文外*/
 body{ background: #BEE5C5 !important; }
-/*正文*/
-.app_content {
-    background: #C7EDCC !important;
-}
-/*顶部*/
-.readerTopBar{
+
+.app_content, /*正文*/
+.wr_decoration.wr_readerBackground_opacity, /* 处理某些只包含 canvas 的页面上背景色不生效的问题 */
+.readerTopBar, /*顶部*/
+.readerCatalog, /*目录*/
+.readerControls_item, /*目录、标注等按钮*/
+.readerControls_fontSize, /*字体大小按钮*/
+.fontSizeButton_bg, /*字号选择展开后的背景*/
+.download_dialog_content, /*下载APP二维码*/
+.readerNotePanel /*标注*/
+{
     background: #C7EDCC !important;
 }
 /*下一章*/
 .readerFooter_button{
     background: #b6d8ba !important;
 }
-/*目录*/
-.readerCatalog{
-    background: #C7EDCC !important;
-}
-/*目录、标注等按钮*/
-.readerControls_item{
-    background: #C7EDCC !important;
-}
-/*字体大小按钮*/
-.readerControls_fontSize{
-    background: #C7EDCC !important;
-}
-/*字号选择展开后的背景*/
-.fontSizeButton_bg{
-    background: #C7EDCC !important;
-}
 /*搜索*/
 .readerCatalog_searchBar_left{
     background: #BCE4C3 !important;
 }
-/*标注*/
-.readerNotePanel{
-    background: #C7EDCC !important;
-}
-/*下载APP二维码*/
-.download_dialog_content{background: #C7EDCC !important;}
