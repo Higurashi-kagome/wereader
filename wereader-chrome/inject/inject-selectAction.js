@@ -1,8 +1,8 @@
 // console.log('inject-selectAction.js', '注入');
 // 为处理某些时候切换章节后动作不生效的问题而将该脚本设置为 inject.js（原先为 content.js）
-if(!addObserverForRenderTargetContainer){
+if(firstObserver === undefined){
     //标注面板的监听函数
-    let onReaderToolbarContainerObserve =  (mutationsList, observer)=>{
+    let onToolbarObserve =  (mutationsList, observer)=>{
         for(let mutation of mutationsList) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
                 let readerToolbarContainer = document.getElementsByClassName('reader_toolbar_container')[0];
@@ -17,21 +17,22 @@ if(!addObserverForRenderTargetContainer){
                             targetUnderlineBtn.click()
                         }
                         //重新监听
-                        addObserverForReaderToolbarContainer();
+                        observerToolbar();
                     })
                 }
             }
         }
     }
     //标注面板的父元素的监听函数
-    let onRenderTargetContainerObserve = (mutationsList, observer)=>{
+    var secondObserver;
+    let onContainerObserve = (mutationsList, observer)=>{
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList') {
                 let readerToolbarContainer = document.getElementsByClassName('reader_toolbar_container')[0];
                 //如果标注面板出现
                 if(readerToolbarContainer){
                     //开始监听标注面板
-                    addObserverForReaderToolbarContainer();
+                    observerToolbar();
                     //在监听到标注面板出现后结束监听
                     observer.disconnect();
                 }
@@ -49,24 +50,32 @@ if(!addObserverForRenderTargetContainer){
         }
     }
     //为标注面板（readerToolbarContainer）添加监听函数
-    let addObserverForReaderToolbarContainer = ()=>{
-        let observer = new MutationObserver(onReaderToolbarContainerObserve);
+    let observerToolbar = ()=>{
+        secondObserver = new MutationObserver(onToolbarObserve);
         let readerToolbarContainer = document.getElementsByClassName('reader_toolbar_container')[0];
         if(!readerToolbarContainer) {
-            window.setTimeout(addObserverForReaderToolbarContainer,500);
+            window.setTimeout(observerToolbar,500);
             return;
         }
-        observer.observe(readerToolbarContainer, {'attributes':true});
+        secondObserver.observe(readerToolbarContainer, {'attributes':true});
     }
-    //在不使用标注之前，页面中不存在 readerToolbarContainer，这导致第一次标注时不会触发自动标注，所以使用该函数设置对 readerToolbarContainer 的父元素（renderTargetContainer）的监听
-    var addObserverForRenderTargetContainer =  ()=>{
-        let observer = new MutationObserver(onRenderTargetContainerObserve);
+    // 在第一次使用标注之前，页面中不存在 readerToolbarContainer，这导致第一次标注时不会触发自动标注
+    // 所以使用该函数设置对 readerToolbarContainer 的父元素（renderTargetContainer）的监听
+    var firstObserver;
+    var observerContainer =  ()=>{
+        firstObserver = new MutationObserver(onContainerObserve);
         let renderTargetContainer = document.getElementsByClassName('renderTargetContainer')[0];
         if(!renderTargetContainer){
-            window.setTimeout(addObserverForRenderTargetContainer,500);
+            window.setTimeout(observerContainer,500);
             return;
         }
-        observer.observe(renderTargetContainer, {'childList':true});
+        firstObserver.observe(renderTargetContainer, {'childList':true});
     }
-    addObserverForRenderTargetContainer();
+    observerContainer();
+}else{
+    firstObserver.disconnect();
+    // 没有标注时切换章节
+    if(secondObserver === undefined){
+        observerContainer();
+    }
 }
