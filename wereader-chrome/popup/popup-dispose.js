@@ -46,7 +46,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
     // 不在读书页时移除笔记及开发者选项
     if(!/:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/.test(tabs[0].url)) {
         removeTab('noteBtn');
-        removeTab('testBtn');
+        if(bg.Config.enableDevelop) removeTab('testBtn');
     }
     // 绑定标签页按钮点击事件
     document.querySelectorAll('.tablinks').forEach(tablink=>{
@@ -70,6 +70,3 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
     // 默认打开第一个 tab
     document.getElementsByClassName("tablinks")[0].click();
 });
-
-
-
