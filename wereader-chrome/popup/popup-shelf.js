@@ -1,5 +1,4 @@
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
-
 document.getElementById('shelfBtn').addEventListener('click', async ()=>{
 	let shelfData, shelfHtml;
 	const shelfForPopup = bg.getShelfForPopup();
@@ -76,12 +75,13 @@ function createShelf(shelf, htmlText){
 	}
     let shelfContainer = document.getElementById('shelf');
 	shelfContainer.innerHTML = '';
-	//获取创建目录所需书本 url
+	// 获取创建目录所需书本 url
 	let bookId_href = {};
 	for (let i = 0; i < bookIds.length; i++) {
 		bookId_href[bookIds[i]] = `https://weread.qq.com/web/reader/${hrefs[i]}`;
 	}
 	/*创建目录*/
+	console.log(shelf);
 	for (const cate of shelf) {
 		let {cateName, books} = cate;
 		// 某一分类元素
@@ -100,10 +100,25 @@ function createShelf(shelf, htmlText){
 				console.warn(error);
 				continue;
 			}
-			if(!bookId_href[bookId]) continue;// 某些内容（比如公众号）在 books_bookId_href 中不存在数据
+			if(!bookId_href[bookId] && !book.bookId.startsWith('MP_WXS_')){
+				console.log(bookId, 'href not found');
+				continue;
+			}// 某些内容（比如公众号）在 books_bookId_href 中不存在数据
 			let bookEl = document.createElement('a');
 			const attributes = {target:"_blanck",textContent:book.title,href:bookId_href[bookId]}
 			setAttributes(bookEl, attributes);
+			if(book.bookId.startsWith('MP_WXS_')){
+				bookEl.onclick = async function(e){
+					e.preventDefault();
+					let bookId = book.bookId;
+					if (!bookId) return;
+					let resp = await bg.createMpPage(bookId);
+					if(resp.errmsg) {
+						console.log('mpOnclick', resp.errmsg);
+						chrome.tabs.create({url: `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`});
+					}
+				}
+			}
 			booksContainer.appendChild(bookEl);
 		}
 		shelfContainer.appendChild(booksContainer);

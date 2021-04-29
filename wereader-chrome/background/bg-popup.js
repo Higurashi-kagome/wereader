@@ -41,7 +41,7 @@ async function copyBookMarks(isAll) {
 	if (isAll) {	// 获取全书标注
 		res = chapsAndMarks.reduce((tempRes, curChapAndMarks)=>{
 			let {title, level, marks} = curChapAndMarks;
-			if(Config.allTitles||marks.length){
+			if(Config.allTitles || marks.length){
 				tempRes += `${getTitleAddedPre(title, level)}\n\n`;
 				if(curChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 					curChapAndMarks.anchors.forEach(anchor=>{
@@ -163,6 +163,25 @@ async function getShelfData(){
 	const wereader = new Wereader(bookId, userVid);
 	const shelfData = await wereader.getShelfData();
 	return shelfData;
+}
+
+// 创建微信公众号浏览页面
+var sendMpMsg = undefined;
+async function createMpPage(bookId){
+	let json = undefined;
+	if(mpTempData.bookId && mpTempData.bookId[0]){
+		json = mpTempData.bookId[0];
+	}else{
+		let data = await fetch(`https://i.weread.qq.com/book/articles?bookId=${bookId}&count=10&offset=0`);
+		json = await data.json();
+		if(json.errmsg) return json;
+		if(!mpTempData[bookId]){
+			mpTempData[bookId] = [];
+		}
+		mpTempData[bookId][0] = json;
+	}
+	sendMpMsg = {data: json, bookId: bookId};
+	chrome.tabs.create({url: chrome.extension.getURL('popup/mpwx/mp.html')});
 }
 
 // 获取书架页面 HTML

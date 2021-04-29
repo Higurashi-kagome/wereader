@@ -99,3 +99,7 @@ body{
     display: none;
     padding-left: 8px;
 }
+
+#statisticBtn {
+    display: none;
+}

@@ -64,9 +64,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       e.target.parentElement.click();
     };
     // 统计按钮点击事件
-    document.getElementById('statisticBtn').addEventListener('click',()=>{
+    if(bg.Config.enableStatistics){
+      let statisticBtn = document.getElementById('statisticBtn');
+      statisticBtn.style.display = 'block';
+      statisticBtn.addEventListener('click',()=>{
         chrome.tabs.create({url: chrome.extension.getURL('popup/statistics/statistics.html')});
-    });
+      });
+    }
     // 默认打开第一个 tab
     document.getElementsByClassName("tablinks")[0].click();
 });

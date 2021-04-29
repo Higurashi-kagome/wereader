@@ -1,9 +1,11 @@
 // 监听消息
-chrome.runtime.onMessage.addListener(async (msg, sender)=>{
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 	let tabId = sender.tab.id
 	switch(msg.type){
-		case "getShelf":	//content-shelf.js 获取书架数据
-			sendMessageToContentScript({tabId: tabId, message: await getShelfData()});
+		case "getShelf":
+			getShelfData().then(data=>{
+				sendResponse({data: data});
+			});
 			break;
 		case "injectCss":
 			chrome.tabs.insertCSS(tabId,{ file: msg.css }, ()=>{
@@ -15,13 +17,76 @@ chrome.runtime.onMessage.addListener(async (msg, sender)=>{
 			break;
 		case "deleteBookmarks":
 			if(!msg.confirm) return;
-			const deleteResp = await deleteBookmarks(msg.isAll);
-			const deleteMsg = `删除结束，${deleteResp.succ} 成功，${deleteResp.fail} 失败。请重新加载读书页。`;
-			const alertResp = await sendAlertMsg({icon: 'info', text: deleteMsg}, tabId);
-			// 弹窗通知失败后使用 alert()
-			if(alertResp && !alertResp.succ) alert(deleteMsg);
-
+			deleteBookmarks(msg.isAll).then(deleteResp=>{
+				const deleteMsg = `删除结束，${deleteResp.succ} 成功，${deleteResp.fail} 失败。请重新加载读书页。`;
+				sendAlertMsg({icon: 'info', text: deleteMsg}, tabId).then(alertResp=>{
+					// 弹窗通知失败后使用 alert()
+					if(alertResp && !alertResp.succ) alert(deleteMsg);
+				});
+			});
+		case 'fetch':
+			if(!msg.url) return;
+			fetch(msg.url).then(resp=>{
+				if(msg.ContentType === undefined || msg.ContentType === 'json')
+					return resp.json();
+				else if(msg.ContentType === 'html')
+					return resp.text();
+			}).then(data=>{
+				sendResponse({data: data});
+			});
+			break;
+		case 'mploadmore':
+			let index = parseInt(msg.offset / 10);
+			if(mpTempData[msg.bookId] && mpTempData[msg.bookId][index]){
+				sendResponse({data: mpTempData[msg.bookId][index]});
+				return true;
+			}
+			fetch(`https://i.weread.qq.com/book/articles?bookId=${msg.bookId}&count=10&offset=${msg.offset}`).then(resp=>{
+				return resp.json();
+			}).then(data=>{
+				if(!mpTempData[msg.bookId]){
+					mpTempData[msg.bookId] = [];
+				}
+				mpTempData[msg.bookId][index] = data;
+				sendResponse({data: data});
+			});
+			break;
+		case 'mpInit':
+			sendResponse(sendMpMsg);
+			break;
+		case 'createMpPage':
+			createMpPage(msg.bookId).then(resp=>{
+				sendResponse(resp);
+			});
+			break;
+		case 'Wereader':
+			let wereader = new Wereader();
+			switch(msg.func){
+				case 'shelfRemoveBook':
+					wereader.shelfRemoveBook(msg.bookIds).then(resp=>{
+						return resp.json();
+					}).then(json=>{
+						sendResponse({data: json, bookIds: msg.bookIds});
+					});
+					break;
+				case 'shelfMakeBookPrivate':
+					wereader.shelfMakeBookPrivate(msg.bookIds).then(resp=>{
+						return resp.json();
+					}).then(json=>{
+						sendResponse({data: json, bookIds: msg.bookIds});
+					});
+					break;
+				case 'shelfMakeBookPublic':
+					wereader.shelfMakeBookPublic(msg.bookIds).then(resp=>{
+						return resp.json();
+					}).then(json=>{
+						sendResponse({data: json, bookIds: msg.bookIds});
+					});
+					break;
+			}
+			break;
 	}
+	return true;
 });
 
 // 右键反馈

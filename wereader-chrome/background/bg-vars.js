@@ -8,6 +8,7 @@ let shelfForPopup = {shelfData: undefined, shelfHtml: undefined};
 //用于记录 popup 是否请求复制目录
 var isCopyContent = false
 const DefaultRegexPattern = {replacePattern:'',checked:false}
+var mpTempData = {};
 
 //用于检查格式并保存当前配置
 var Config = {
@@ -31,6 +32,7 @@ var Config = {
     addThoughts: false,
     enableRightClick: true,
     enableDevelop: false,
+    enableStatistics: false,
     backupName: DefaultBackupName,
     selectAction: "underlinNone",
     //如果不设置默认值，则在设置页初始化时需要考虑到 
@@ -50,6 +52,8 @@ class Wereader{
         this.shelfDataUrl = `${this.wereadMainUrl}/web/shelf/sync?userVid=${userVid}&synckey=0&lectureSynckey=0`;
         this.removeBookmarkUrl = `${this.wereadMainUrl}/web/book/removeBookmark`;
         this.readDetailUrl = `${url}/readdetail?`;
+        this.shelfRemoveBookUrl = 'https://i.weread.qq.com/shelf/delete';
+        this.shelfBookSecret = 'https://i.weread.qq.com/book/secret';
     }
 
     async getBookmarks(){
@@ -136,5 +140,42 @@ class Wereader{
         let text = await getText(this.wereadMainUrl);
         if(text.indexOf('wr_avatar_img')>-1) return true;
         else return false;
+    }
+
+    async shelfRemoveBook(bookIds) {
+        let payload = {bookIds: bookIds, private: 1}
+        let resp = await fetch(this.shelfRemoveBookUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        return resp;
+    }
+
+    async shelfMakeBookPrivate(bookIds) {
+        let payload = {bookIds: bookIds, private: 1};
+        let resp = await fetch(this.shelfBookSecret, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        return resp;
+    }
+
+    async shelfMakeBookPublic(bookIds) {
+        let payload = {bookIds: bookIds, private: 0}
+      
+        let resp = await fetch('https://i.weread.qq.com/book/secret', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        return resp;
     }
 }

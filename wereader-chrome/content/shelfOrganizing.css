@@ -1,0 +1,34 @@
+.m_shelf_admin {
+    display: flex;
+    flex-direction: row;
+    font-size: 1rem;
+    justify-content: center;
+    margin: 0px;
+    background: white;
+    border-bottom: 1px solid #ebedf1;
+    padding: 0.5rem 30px;
+}
+
+.m_webook_shelf_admin{
+    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e;
+}
+
+.m_webook_shelf_remove_book{
+    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
+}
+
+.m_webook_shelf_make_book_private{
+    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
+}
+
+.m_webook_shelf_make_book_public{
+    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
+}
+
+.m_webook_shelf_select_all{
+    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
+}
+
+.shelf_download_app {
+    display: none;
+}

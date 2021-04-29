@@ -1,0 +1,69 @@
+#webook_mp_load_more{
+    cursor: pointer;
+}
+
+#webook_mp_scroll{
+    margin: 3rem auto;
+    width: 25rem;
+    padding: 0.3125rem; 
+    font-size: 0.875rem; 
+    display: flex; 
+    flex-direction: column;
+}
+a{
+    text-decoration: none;
+    color: #576b95;
+}
+body{
+    background-color: #F5F5F0;
+}
+
+#webook_mp_list{
+    display: flex; 
+    flex-direction: column; 
+    text-align: left;
+}
+
+#webook_mp_list>div {
+    box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
+    margin: 1rem 0rem;
+    border-radius: 0.4rem;
+    flex-direction: row; 
+    justify-content: space-between;
+}
+
+#webook_mp_list>div>div:first-child{
+    border-radius: 0.4rem;
+}
+#webook_mp_list>div>div:last-child{
+    padding: 0.6rem;
+}
+
+#webook_mp_list>div>div:last-child>a{
+    font-weight: bold;
+    font-size: 0.875rem;
+}
+
+#webook_mp_list>div>div:last-child>div{
+    font-size: 0.75rem; 
+    font-weight: normal; 
+    color: #9e9e9e; 
+    margin-top: 0.3125rem;
+}
+
+img{
+    width: 100%;
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+    object-fit: cover;
+} 
+
+#webook_mp_load_more{
+    cursor: pointer; 
+    text-align: center;
+    background-color: #CCC; 
+    border-radius: 0.4rem; 
+    font-weight: bold; 
+    padding: 0.5rem; 
+    margin: 1rem 0;
+}
