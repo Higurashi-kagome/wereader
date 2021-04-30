@@ -192,8 +192,10 @@ $(document).ready(function() {
       })
       if (mps.length == 0) return
       mps.forEach(function(mp) {
-        $('.shelf_list').prepend($(`<a href="/web/reader/${puzzling(mp.bookId)}" class="shelfBook webook_mp" data-id="${mp.bookId}"><div class="wr_bookCover cover">${mp.secret ? '<span class="wr_bookCover_privateTag"></span>': ''}<!----><!----><img src="${mp.cover.replace('http://', 'https://')}" alt="书籍封面" class="wr_bookCover_img"><div class="wr_bookCover_border"></div><span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span></div><div class="title">${mp.title}</div><!----></a>`))
-      })
+        let coverImg = `<img src="${mp.cover.replace('http://', 'https://')}" alt="书籍封面" class="wr_bookCover_img">`;
+        if(mp.cover.indexOf('http')<0) coverImg = '';
+        $('.shelf_list').prepend($(`<a href="/web/reader/${puzzling(mp.bookId)}" class="shelfBook webook_mp" data-id="${mp.bookId}"><div class="wr_bookCover cover">${mp.secret ? '<span class="wr_bookCover_privateTag"></span>': ''}<!----><!---->${coverImg}<div class="wr_bookCover_border"></div><span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span></div><div class="title">${mp.title}</div><!----></a>`))
+      });
       /* 公众号点击事件 */
       $('.webook_mp').on('click', function(e) {
         e.preventDefault()
@@ -203,7 +205,7 @@ $(document).ready(function() {
           type: 'createMpPage',
           bookId: bookId
         }, resp => {
-          if(resp.errmsg){
+          if(resp && resp.errmsg){
             console.log('createMpPage', resp.errmsg);
             window.open(this.href, "_blank");
           }
