@@ -73,7 +73,7 @@ function shelfInsertCheckbox() {
       var _key = href.replace('/web/reader/', '')
       if (shelfdict[_key]) {
         $(this).prepend($(`
-        <div class="m_webook_shelf_checkbox" style="padding: 5px 0px; align-items: center; justify-content: center;">
+        <div class="m_webook_shelf_checkbox">
           <input type="checkbox" data-id="${shelfdict[_key].bookId}" />
         </div>
         `))
@@ -81,6 +81,12 @@ function shelfInsertCheckbox() {
       }
     }
   })
+  // 在“添加”上方添加占位内容，保持对齐
+  $('.shelfBook.shelfBook_add').prepend($(`
+    <div class="just-space m_webook_shelf_checkbox" style="visibility: hidden;">
+      <input type="checkbox"/>
+    </div>
+  `))
   $('input[type="checkbox"]').on('click', function(e) {
     e.stopPropagation()
   })

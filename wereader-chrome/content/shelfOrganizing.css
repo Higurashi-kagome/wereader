@@ -32,3 +32,7 @@
 .shelf_download_app {
     display: none;
 }
+
+.m_webook_shelf_checkbox{
+    padding: 5px 0px; align-items: center; justify-content: center;
+}

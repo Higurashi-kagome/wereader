@@ -1,9 +1,10 @@
 #webook_mp_load_more{
     cursor: pointer;
+    box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
 }
 
 #webook_mp_scroll{
-    margin: 3rem auto;
+    margin: 0rem auto 3rem;
     width: 25rem;
     padding: 0.3125rem; 
     font-size: 0.875rem; 
@@ -61,9 +62,23 @@ img{
 #webook_mp_load_more{
     cursor: pointer; 
     text-align: center;
-    background-color: #CCC; 
+    background-color: #F5F5F0; 
     border-radius: 0.4rem; 
     font-weight: bold; 
     padding: 0.5rem; 
     margin: 1rem 0;
+}
+
+.readerTopBar {
+    font-size: initial;
+    position: sticky;
+    box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
+    top: 0px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    width: 24rem;
+    padding: 0.5rem;
+    margin: 3rem auto 0rem;
+    background-color: #F5F5F0;
 }
