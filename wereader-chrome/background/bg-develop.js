@@ -45,12 +45,12 @@ function getTest(){
 		console.log('chapInfosInServer', data);
 	}
 
-	let logShelfData = async ()=>{
+	let logFuncGetShelfData = async ()=>{
 		console.log(await getShelfData());
 	}
 
-	let logShelfHtml = async ()=>{
-		console.log(await getShelfHtml());
+	let logFuncWereaderGetShelfData = async ()=>{
+		console.log(await wereader.getShelfData());
 	}
 
 	let logReadDetail = async ()=>{
@@ -68,8 +68,8 @@ function getTest(){
 		'logBestBookMarks': logBestBookMarks,
 		'logGetChapters': logGetChapters,
 		'logChapInfosInServer': logChapInfosInServer,
-		'logShelfData': logShelfData,
-		'logShelfHtml': logShelfHtml,
+		'logFuncGetShelfData': logFuncGetShelfData,
+		'logFuncWereaderGetShelfData': logFuncWereaderGetShelfData,
 		'logReadDetail': logReadDetail
 	}
 

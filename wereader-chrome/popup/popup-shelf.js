@@ -1,26 +1,19 @@
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
 document.getElementById('shelfBtn').addEventListener('click', async ()=>{
-	let shelfData, shelfHtml;
-	const shelfForPopup = bg.getShelfForPopup();
-	if(shelfForPopup){
-		shelfData = shelfForPopup.shelfData;
-		shelfHtml = shelfForPopup.shelfHtml;
-	}
-	if(!shelfData || shelfData.errMsg || !shelfHtml){
-		const shelfDataResp = await bg.getShelfData();
-		if(shelfDataResp.errMsg){
+	let shelfData = bg.shelfForPopup.shelfData;
+	if(!shelfData || shelfData.errMsg){
+		const resp = await bg.getShelfData();
+		if(resp.errMsg){
 			chrome.tabs.create({url: 'https://weread.qq.com/', active: false});
         	bg.alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后重新获取书架');
-			return console.log(shelfDataResp);
+			return console.log(resp);
 		} else {
-			shelfData = shelfDataResp;
+			shelfData = resp;
 		}
-		shelfHtml = await bg.getShelfHtml();
 	}
 
-	const shelf = getShelf(shelfData);
-	createShelf(shelf, shelfHtml);
-	bg.setShelfForPopup(shelfData, shelfHtml);
+	createShelf(shelfData);
+	bg.setShelfForPopup(shelfData);
 });
 
 function getShelf(shelfData){
@@ -63,25 +56,11 @@ function getShelf(shelfData){
 	return shelf;
 }
 
-function createShelf(shelf, htmlText){
-	let hrefs = htmlText.match(/(?<=href="\/web\/reader\/)([^"]*)/g);
-	const matchId = /([\d]{1,})(?=\/[a-z_\d]*\.jpg)|(?<=wrepub\/)([\w_]*)|(?<=mmhead\/)([\w]*)|((?<=bookcover\/)[^\/\.]*(?=\.png))/g;
-	let bookIds = htmlText.match(matchId);
-	if(hrefs.length!==bookIds.length) {
-		console.error('Length equal issue.');
-		console.log('hrefs', hrefs);
-		console.log('bookIds', bookIds);
-		console.log('htmlText', htmlText);
-	}
+function createShelf(shelfData){
+	let shelf = getShelf(shelfData);
     let shelfContainer = document.getElementById('shelf');
 	shelfContainer.innerHTML = '';
-	// 获取创建目录所需书本 url
-	let bookId_href = {};
-	for (let i = 0; i < bookIds.length; i++) {
-		bookId_href[bookIds[i]] = `https://weread.qq.com/web/reader/${hrefs[i]}`;
-	}
 	/*创建目录*/
-	console.log(shelf);
 	for (const cate of shelf) {
 		let {cateName, books} = cate;
 		// 某一分类元素
@@ -93,29 +72,23 @@ function createShelf(shelf, htmlText){
 		let booksContainer = document.createElement("div");//章内书本容器
 		setAttributes(booksContainer,{className:'dropdown-container'});
 		for (const book of books) {
-			let bookId = undefined;
-			try {
-				bookId = book.cover.match(matchId)[0];
-			} catch (error) {
-				console.warn(error);
-				continue;
-			}
-			if(!bookId_href[bookId] && !book.bookId.startsWith('MP_WXS_')){
-				console.log(bookId, 'href not found');
-				continue;
-			}// 某些内容（比如公众号）在 books_bookId_href 中不存在数据
+			let bookId = book.bookId;
 			let bookEl = document.createElement('a');
-			const attributes = {target:"_blanck",textContent:book.title,href:bookId_href[bookId]}
+			const attributes = {
+                target:"_blanck", 
+                textContent:book.title, 
+                href: `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`
+            };
 			setAttributes(bookEl, attributes);
-			if(book.bookId.startsWith('MP_WXS_')){
+            // 为微信公众号绑定事件
+			if(bookId.startsWith('MP_WXS_')){
 				bookEl.onclick = async function(e){
 					e.preventDefault();
-					let bookId = book.bookId;
 					if (!bookId) return;
 					let resp = await bg.createMpPage(bookId);
-					if(resp.errmsg) {
+					if(resp && resp.errmsg) {
 						console.log('mpOnclick', resp.errmsg);
-						chrome.tabs.create({url: `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`});
+						chrome.tabs.create({url: attributes.href});
 					}
 				}
 			}

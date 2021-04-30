@@ -49,7 +49,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         if(bg.Config.enableDevelop) removeTab('testBtn');
     }
     // 绑定标签页按钮点击事件
-    document.querySelectorAll('.tablinks').forEach(tablink=>{
+    let tablinks = document.querySelectorAll('.tablinks');
+    tablinks.forEach(tablink=>{
         tablink.addEventListener('click', openTabContent);
     });
     // 绑定下拉按钮点击事件
@@ -71,6 +72,15 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         chrome.tabs.create({url: chrome.extension.getURL('popup/statistics/statistics.html')});
       });
     }
+    // 只有一个按钮被打开时将其设置为全宽
+    let count = 0, onlyone = undefined;
+    tablinks.forEach(tablink=>{
+      if(window.getComputedStyle(tablink).display !== 'none'){
+        onlyone = tablink;
+        count++;
+      }
+    });
+    if(count === 1) onlyone.style.width = '-webkit-fill-available';
     // 默认打开第一个 tab
-    document.getElementsByClassName("tablinks")[0].click();
+    tablinks[0].click();
 });

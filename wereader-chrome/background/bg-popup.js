@@ -132,11 +132,6 @@ async function copyThought() {
 	else copy(res);
 }
 
-// 获取 popup 所需的书架数据
-function getShelfForPopup(){
-	return shelfForPopup;
-}
-
 // 获取当前读书页的 bookId
 async function setBookId(){
 	return new Promise((res, rej)=>{
@@ -182,20 +177,13 @@ async function createMpPage(bookId){
 	}
 	sendMpMsg = {data: json, bookId: bookId};
 	chrome.tabs.create({url: chrome.extension.getURL('popup/mpwx/mp.html')});
-}
-
-// 获取书架页面 HTML
-async function getShelfHtml(){
-	let text = await getText('https://weread.qq.com/web/shelf');
-	return text;
+	return json;
 }
 
 // 设置供 popup 获取的书架数据
-async function setShelfForPopup(shelfData, shelfHtml){
-	if(shelfHtml) shelfForPopup.shelfHtml = shelfHtml;
-	else shelfForPopup.shelfHtml = await getShelfHtml();
-	if(shelfData) shelfForPopup.shelfData = shelfData;
-	else shelfForPopup.shelfData = await getShelfData();
+async function setShelfForPopup(shelfData){
+	if(shelfData) window.shelfForPopup.shelfData = shelfData;
+	else window.shelfForPopup.shelfData = await getShelfData();
 };
 
 // 删除标注
@@ -214,5 +202,5 @@ async function getReadDetail(type=1, count=3, monthTimestamp){
 }
 
 setShelfForPopup().then(()=>{
-	console.log(new Date(), 'shelfForPopup', shelfForPopup);
+	console.log('shelfForPopup', window.shelfForPopup);
 });

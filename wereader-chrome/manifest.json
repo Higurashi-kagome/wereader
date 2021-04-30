@@ -1,7 +1,7 @@
 {
    "manifest_version": 2,
    "name": "微信读书笔记助手",
-   "version": "2.18.0",
+   "version": "2.18.1",
    "description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用 Markdown 做笔记的用户尤其有帮助。",
    "background": {
       "page": "background/background.html",
@@ -42,12 +42,12 @@
          ],
          "css": [
             "content/content-shelf.css",
-            "content/sweetalert2.min.css",
+            "content/assets/css/sweetalert2.min.css",
             "content/shelfOrganizing.css"
          ],
          "js": [
-            "content/jQuery.min.js",
-            "content/sweetalert2.min.js",
+            "content/assets/js/jQuery.min.js",
+            "content/assets/js/sweetalert2.min.js",
             "content/shelfOrganizing.js"
          ],
          "run_at": "document_idle"
@@ -58,10 +58,10 @@
          ],
          "js": [
             "content/content-alert.js",
-            "content/sweetalert2.min.js"
+            "content/assets/js/sweetalert2.min.js"
          ],
          "css": [
-            "content/sweetalert2.min.css"
+            "content/assets/css/sweetalert2.min.css"
          ],
          "run_at": "document_idle"
       },
