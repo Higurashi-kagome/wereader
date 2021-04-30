@@ -1,4 +1,3 @@
-// console.log('inject-selectAction.js', '注入');
 // 为处理某些时候切换章节后动作不生效的问题而将该脚本设置为 inject.js（原先为 content.js）
 if(firstObserver === undefined){
     //标注面板的监听函数

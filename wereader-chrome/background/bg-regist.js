@@ -26,10 +26,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 			});
 		case 'fetch':
 			if(!msg.url) return;
-			fetch(msg.url).then(resp=>{
-				if(msg.ContentType === undefined || msg.ContentType === 'json')
+			fetch(msg.url, msg.init).then(resp=>{
+				let contentType = msg.init.headers['content-type'];
+				if(contentType === undefined || contentType === 'application/json')
 					return resp.json();
-				else if(msg.ContentType === 'html')
+				else if(contentType === 'text/plain')
 					return resp.text();
 			}).then(data=>{
 				sendResponse({data: data});
@@ -54,7 +55,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 		case 'mpInit':
 			sendResponse(sendMpMsg);
 			break;
-		case 'createMpPage':
+		case 'createMpPage': // message from shelf mp
 			createMpPage(msg.bookId).then(resp=>{
 				sendResponse(resp);
 			});

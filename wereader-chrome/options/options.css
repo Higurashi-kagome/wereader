@@ -267,6 +267,7 @@ details[open]>summary {
 a {
     display: inline-block;
     padding-top: 5px;
+    color: #00458b;
 }
 
 .option:not([hidden]) {
