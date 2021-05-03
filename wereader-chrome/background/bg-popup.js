@@ -26,7 +26,7 @@ async function copyComment(userVid, isHtml) {
 async function copyContents(){
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
 	let chapText = response.chapters.reduce((tempText, item)=>{
-		tempText += `${getTitleAddedPre(item.title, parseInt(item.level))}\n\n`;
+		tempText += `${getTitleAddedPreAndSuf(item.title, parseInt(item.level))}\n\n`;
 		return tempText;
 	},'');
 	copy(chapText);
@@ -42,10 +42,10 @@ async function copyBookMarks(isAll) {
 		res = chapsAndMarks.reduce((tempRes, curChapAndMarks)=>{
 			let {title, level, marks} = curChapAndMarks;
 			if(Config.allTitles || marks.length){
-				tempRes += `${getTitleAddedPre(title, level)}\n\n`;
+				tempRes += `${getTitleAddedPreAndSuf(title, level)}\n\n`;
 				if(curChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 					curChapAndMarks.anchors.forEach(anchor=>{
-						tempRes += `${getTitleAddedPre(anchor.title, anchor.level)}\n\n`
+						tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
 					});
 				}
 			}
@@ -57,10 +57,10 @@ async function copyBookMarks(isAll) {
 	} else {	//获取本章标注
 		//遍历目录
 		let targetChapAndMarks = chapsAndMarks.filter(item=>{return item.isCurrent})[0];
-		res += `${getTitleAddedPre(targetChapAndMarks.title, targetChapAndMarks.level)}\n\n`;
+		res += `${getTitleAddedPreAndSuf(targetChapAndMarks.title, targetChapAndMarks.level)}\n\n`;
 		if(targetChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 			targetChapAndMarks.anchors
-			.forEach(anchor=>{res += `${getTitleAddedPre(anchor.title, anchor.level)}\n\n`});}
+			.forEach(anchor=>{res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});}
 		//生成"[插图]"索引
 		let rangeArr = targetChapAndMarks.marks.reduce((tempArr, curMark)=>{
 			let content = curMark.markText||curMark.abstract;
@@ -93,10 +93,10 @@ async function copyBestBookMarks() {
 	let res = bestMarks.reduce((tempRes, curChapAndBestMarks)=>{
 		let {title, level, bestMarks} = curChapAndBestMarks;
 		if(Config.allTitles || bestMarks.length){
-			tempRes += `${getTitleAddedPre(title, level)}\n\n`;
+			tempRes += `${getTitleAddedPreAndSuf(title, level)}\n\n`;
 			if(curChapAndBestMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 				curChapAndBestMarks.anchors
-				.forEach(anchor=>{tempRes += `${getTitleAddedPre(anchor.title, anchor.level)}\n\n`});}
+				.forEach(anchor=>{tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});}
 		}
 		if(!bestMarks.length) return tempRes;
 		bestMarks.forEach(bestMark=>{
@@ -122,7 +122,7 @@ async function copyThought() {
 	let res = "";
 	//thoughts——{chapterUid:[{abstract,content}]}
 	for (let key in thoughts) {
-		res += `${getTitleAddedPre(contents[key].title, contents[key].level)}\n\n`;
+		res += `${getTitleAddedPreAndSuf(contents[key].title, contents[key].level)}\n\n`;
 		thoughts[key].forEach(thou=>{
 			res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
 			res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;

@@ -1,24 +1,23 @@
 /* 用于处理中间过程 */
 
-// 给标题添加级别（井号）
-function getTitleAddedPre(title, level) {
-	//添加 4 5 6 级是为了处理特别的书（如导入的书籍）获取数据
-	const lev3 = Config["lev3"];
-	let titleAddedPre = '';
+// 给标题添加前后缀
+function getTitleAddedPreAndSuf(title, level) {
+	let newTitle = '';
 	switch (level) {
 		case 1:
 		case 2:
 		case 3:
-			titleAddedPre = Config[`lev${level}`] + title;
+			newTitle = Config[`lev${level}Pre`] + title + Config[`lev${level}Suf`];
 			break;
-		case 4:
+		case 4: //添加 4 5 6 级及 default 是为了处理特别的书（如导入的书籍）
 		case 5:
 		case 6:
 		default:
-			titleAddedPre = `${new Array(level - 2).join('#')}${lev3}${title}`;
+			const {lev3Pre, lev3Suf} = Config;
+			newTitle = `${lev3Pre}${title}${lev3Suf}`;
 			break;
 	}
-	return titleAddedPre;
+	return newTitle;
 }
 
 // 获取标注数据

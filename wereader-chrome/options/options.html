@@ -95,36 +95,39 @@
 			<summary>标题</summary>
 			<!-- 一级标题前缀 -->
 			<div class="option vertical">
-				<label for="lev1" id="lev1Label">一级标题前缀<span class="help-icon"></span></label>
-				<textarea type="text" maxlength="150" id="lev1"></textarea>
+				<label for="lev1Pre" id="lev1PreLabel">一级标题前缀<span class="help-icon"></span></label>
+				<textarea type="text" maxlength="150" id="lev1Pre"></textarea>
 			</div>
 			<div hidden="" class="help-content">
 				<p>微信读书中的书通常最多只有三级目录：</p>
 				<img src="icons/chapterLevel.png">
 				<p>其中排第一的标题(朗读者1)即为一级标题。</p>
-				<p>输入框中的内容在导出标题时将会被添加到一级标题前面。如，若这里设置为一个井号加一个空格(# )，则上面的一级标题导出来后为<span class="lineinline"># 朗读者1</span>。</p>
+				<p>“一级标题前缀”中的内容在导出标题时将会被添加到一级标题前面，相应地，下方的“一级标题后缀”中的内容在导出标题时将会被添加到一级标题之后。如，若这里设置为一个井号加一个空格(# )，同时“一级标题后缀”设置为空，则上面的一级标题导出来后为<span class="lineinline"># 朗读者1</span>。</p>
 			</div>
-			<!-- 二级标题前缀 -->
+			<!-- 一级标题后缀 -->
 			<div class="option vertical">
-				<label for="lev2" id="lev2Label">二级标题前缀<span class="help-icon"></span></label>
-				<textarea type="text" maxlength="150" id="lev2"></textarea>
+				<label for="lev1Suf" id="lev1SufLabel">一级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev1Suf"></textarea>
 			</div>
-			<div hidden="" class="help-content">
-				<p>微信读书中的书通常最多只有三级目录：</p>
-				<img src="icons/chapterLevel.png">
-				<p>其中排第二的标题(遇见)即为二级标题。</p>
-				<p>输入框中的内容在导出标题时将会被添加到二级标题前面。如，若这里设置为两个井号加一个空格(## )，则上面的二级标题导出来后为<span class="lineinline">## 遇见</span>。</p>
-			</div>
-			<!-- 三级标题前缀 -->
+			<!-- 二级标注前缀 -->
 			<div class="option vertical">
-				<label for="lev3" id="lev3Label">三级标题前缀<span class="help-icon"></span></label>
-				<textarea type="text" maxlength="150" id="lev3"></textarea>
+				<label for="lev2Pre" id="lev2PreLabel">二级标题前缀</span></label>
+				<textarea type="text" maxlength="150" id="lev2Pre"></textarea>
 			</div>
-			<div hidden="" class="help-content">
-				<p>微信读书中的书通常最多只有三级目录：</p>
-				<img src="icons/chapterLevel.png">
-				<p>其中排第三的标题(朗读者 濮存昕)即为三级标题。</p>
-				<p>输入框中的内容在导出标题时将会被添加到三级标题前面。如，若这里设置为三个井号加一个空格(### )，则上面的三级标题导出来后为<span class="lineinline">### 朗读者 濮存昕</span>。</p>
+			<!-- 二级标题后缀 -->
+			<div class="option vertical">
+				<label for="lev2Suf" id="lev2SufLabel">二级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev2Suf"></textarea>
+			</div>
+			<!-- 三级标注前缀 -->
+			<div class="option vertical">
+				<label for="lev3Pre" id="lev3PreLabel">三级标题前缀</span></label>
+				<textarea type="text" maxlength="150" id="lev3Pre"></textarea>
+			</div>
+			<!-- 三级标题后缀 -->
+			<div class="option vertical">
+				<label for="lev3Suf" id="lev3SufLabel">三级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev3Suf"></textarea>
 			</div>
 		</details>
 		<!-- 想法 -->
