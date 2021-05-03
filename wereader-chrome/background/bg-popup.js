@@ -153,9 +153,7 @@ async function setBookId(){
 
 // 获取书架 json 数据
 async function getShelfData(){
-	const url = 'https://weread.qq.com/web/shelf';
-	const userVid = await getUserVid(url);
-	const wereader = new Wereader(bookId, userVid);
+	const wereader = new Wereader(bookId);
 	const shelfData = await wereader.getShelfData();
 	return shelfData;
 }
@@ -167,8 +165,9 @@ async function createMpPage(bookId){
 	if(mpTempData.bookId && mpTempData.bookId[0]){
 		json = mpTempData.bookId[0];
 	}else{
-		let data = await fetch(`https://i.weread.qq.com/book/articles?bookId=${bookId}&count=10&offset=0`);
-		json = await data.json();
+		let resp = await fetch(`https://i.weread.qq.com/book/articles?bookId=${bookId}&count=10&offset=0`);
+		console.log('resp', resp);
+		json = await resp.json();
 		if(json.errmsg) return json;
 		if(!mpTempData[bookId]){
 			mpTempData[bookId] = [];
@@ -201,6 +200,4 @@ async function getReadDetail(type=1, count=3, monthTimestamp){
 	return readdetail;
 }
 
-setShelfForPopup().then(()=>{
-	console.log('shelfForPopup', window.shelfForPopup);
-});
+setShelfForPopup();

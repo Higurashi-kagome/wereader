@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 		case 'fetch':
 			if(!msg.url) return;
 			fetch(msg.url, msg.init).then(resp=>{
+				console.log('resp', resp);
 				let contentType = msg.init.headers['content-type'];
 				if(contentType === undefined || contentType === 'application/json')
 					return resp.json();
@@ -43,6 +44,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 				return true;
 			}
 			fetch(`https://i.weread.qq.com/book/articles?bookId=${msg.bookId}&count=10&offset=${msg.offset}`).then(resp=>{
+				console.log('resp', resp);
 				return resp.json();
 			}).then(data=>{
 				if(!mpTempData[msg.bookId]){

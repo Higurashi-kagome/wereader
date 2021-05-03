@@ -80,9 +80,13 @@ function copy(text) {
 
 async function getJson(url){
 	try {
-		let response = await fetch(url, {credentials: "include", Cache: 'no-cache'});
-		let data = await response.json();
-		return data;
+		let resp = await fetch(url, {
+			credentials: "include", 
+			Cache: 'no-cache'
+		});
+		console.log('resp', resp);
+		let json = await resp.json();
+		return json;
 	} catch (error) {
 		sendAlertMsg({title: "获取失败:", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
 	}
@@ -91,6 +95,7 @@ async function getJson(url){
 async function getText(url){
 	try {
 		let resp = await fetch(url, {credentials:'include', Cache: 'no-cache'});
+		console.log('resp', resp);
 		let text = await resp.text();
 		return text;
 	} catch (error) {

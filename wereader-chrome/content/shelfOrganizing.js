@@ -162,8 +162,11 @@ function shelfSelectAll() {
 $(document).ready(function() {
 
   /* 初始化书架数据 */
-  fetch(shelfPage).then(function(resp) {return resp.text()}).then(function(data) {
-    var initdata = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
+  fetch(shelfPage).then(resp => {
+    console.log('resp', resp);
+    return resp.text();
+  }).then(text => {
+    var initdata = JSON.parse(text.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
     if (initdata.shelf.books) {
       var books = initdata.shelf.books
       for(var i=0;i<books.length;i++) {
