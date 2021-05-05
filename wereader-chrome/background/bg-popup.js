@@ -153,7 +153,8 @@ async function setBookId(){
 
 // 获取书架 json 数据
 async function getShelfData(){
-	const wereader = new Wereader(bookId);
+	const userVid = await getUserVid();
+	const wereader = new Wereader(bookId, userVid);
 	const shelfData = await wereader.getShelfData();
 	return shelfData;
 }

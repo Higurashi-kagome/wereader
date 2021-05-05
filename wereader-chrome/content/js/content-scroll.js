@@ -30,7 +30,7 @@ window.addEventListener('load',()=>{
             try {
                 //切换滚筒条显隐
                 let message = {type: "injectCss"}
-                message.css = (count == -1) ? "inject/showScroll.css" : "content/content-hideScroll.css"
+                message.css = (count == -1) ? "inject/showScroll.css" : "content/css/content-hideScroll.css"
                 chrome.runtime.sendMessage(message)
                 count = count * (-1)
             } catch (error) {
