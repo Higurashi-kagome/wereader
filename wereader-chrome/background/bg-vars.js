@@ -52,7 +52,7 @@ class Wereader{
         this.bestBookmarksUrl = `${url}/book/bestbookmarks?bookId=${bookId}`;
         this.thoughtsUrl = `${url}/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`;
         this.commentsUrl = `${url}/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
-        this.shelfDataUrl = `${this.wereadMainUrl}/web/shelf/sync?&synckey=0&lectureSynckey=0`;
+        this.shelfDataUrl = `${this.wereadMainUrl}/web/shelf/sync?synckey=0&lectureSynckey=0`;
         this.removeBookmarkUrl = `${this.wereadMainUrl}/web/book/removeBookmark`;
         this.readDetailUrl = `${url}/readdetail?`;
         this.shelfRemoveBookUrl = 'https://i.weread.qq.com/shelf/delete';

@@ -86,16 +86,13 @@ function traverseMarks(marks,all,indexArr=[],markedData){
 			index = index + 1
 		}
 		
-		if(abstract){//如果为想法，则添加前后缀
-			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`
-		}else{//不是想法（为标注）则进行正则匹配
+		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
+			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
+		}else{// 不是想法（为标注）则进行正则匹配
 			markText = regexpReplace(markText)
 		}
 		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`
-		//需要添加想法时，添加想法
-		if(abstract) {
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`
-		}
 	}
 	if(!all){//只在获取本章时添加注脚
 		markedData.forEach(element => {
