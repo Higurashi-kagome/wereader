@@ -285,12 +285,10 @@ function addPreAndSuf(markText,style){
 
 async function getUserVid(url){
 	return new Promise((res, rej) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-			if(!url) url = tabs[0].url; // 没有传入 url 则从当前 tab 获取 vid
-            chrome.cookies.get({url: url, name: 'wr_vid'}, (cookie) => {
-                if(catchErr('getUserVid') || !cookie) return rej(null);
-				return res(cookie.value.toString());
-            });
-        });
+		if(!url) url = 'https://weread.qq.com/';
+		chrome.cookies.get({url: url, name: 'wr_vid'}, (cookie) => {
+			if(catchErr('getUserVid') || !cookie) return rej(null);
+			return res(cookie.value.toString());
+		});
     }).catch(err=>{});
 }

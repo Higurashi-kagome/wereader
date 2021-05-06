@@ -69,7 +69,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       let statisticBtn = document.getElementById('statisticBtn');
       statisticBtn.style.display = 'block';
       statisticBtn.addEventListener('click',()=>{
-        chrome.tabs.create({url: chrome.extension.getURL('popup/statistics/statistics.html')});
+        chrome.tabs.create({url: chrome.runtime.getURL('popup/statistics/statistics.html')});
       });
     }
     // 只有一个按钮被打开时将其设置为全宽

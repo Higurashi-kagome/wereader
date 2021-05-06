@@ -176,7 +176,7 @@ async function createMpPage(bookId){
 		mpTempData[bookId][0] = json;
 	}
 	sendMpMsg = {data: json, bookId: bookId};
-	chrome.tabs.create({url: chrome.extension.getURL('popup/mpwx/mp.html')});
+	chrome.tabs.create({url: chrome.runtime.getURL('popup/mpwx/mp.html')});
 	return json;
 }
 
