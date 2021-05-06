@@ -1,0 +1,31 @@
+.fancybox-overlay.fancybox-overlay-fixed{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 8010;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fancybox-skin{
+  width: fit-content;
+  padding: 15px;
+}
+
+body > div.fancybox-overlay.fancybox-overlay-fixed > div{
+    z-index: 8030;
+    position: absolute;
+}
+
+body > div.fancybox-overlay.fancybox-overlay-fixed > div > div{
+    background: #f8f9fa;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgb(0 0 0 / 50%);
+}
+
+img.fancybox-image {
+  border: 2px solid;
+}
