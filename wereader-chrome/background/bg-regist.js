@@ -122,8 +122,18 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 
 // 监听安装事件
 chrome.runtime.onInstalled.addListener(function(details){
-	if(details.reason != 'install') return;
-	chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
+	const onUpdated = true;
+	const onInstall = true;
+	if(details.reason === 'install' && onInstall){
+		chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
+	} else if(details.reason === 'update' && onUpdated){
+		chrome.notifications.create({
+			title: '微信读书笔记助手',
+			iconUrl: '/icons/icon128.png',
+			message: '已更新至 v2.19.3，支持公众号自动翻页。',
+			type: 'basic'
+		});
+	}
 });
 
 // 页面更新

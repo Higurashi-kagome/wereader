@@ -92,6 +92,10 @@ const helpContent = {
         title: '热门标注显示标注人数',
         help: `<p>选中该选项之后，导出的热门标注中将包含每条热门标注的标记人数。</p>`
     },
+    mpAutoLoadLabel: {
+        title: '公众号自动加载下一页',
+        help: `<p>选中该选项之后，公众号页面将会在滚动至底部时自动加载下一页。</p>`
+    },
     enableRightClickLabel: {
         title: '开启右键',
         help: `<p>选中该选项之后，可在读书页开启右键菜单。在需要复制或另存读书页图片的时候很有帮助。</p>`

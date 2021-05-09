@@ -76,9 +76,29 @@ $(document).ready(function(){
                 }
             })
             $('#webook_mp_list').append(_html)
-            $('#webook_mp_load_more').data('bookid', bookId)
-            $('#webook_mp_load_more').data('offset', Number.parseInt(offset)+10)
+            let loadMore = $('#webook_mp_load_more');
+            loadMore.data('bookid', bookId)
+            loadMore.data('offset', Number.parseInt(offset)+10)
+            if(loadMore.hasClass('loading')){
+                loadMore.removeClass('loading')
+            }
         });
     });
     
 })
+
+
+$(window).scroll(function() {
+    chrome.storage.sync.get(function(sync){
+        if(!sync.mpAutoLoad) return;
+        var scrollTop = $(this).scrollTop(),scrollHeight = $(document).height(),windowHeight = $(this).height();
+        var positionValue = (scrollTop + windowHeight) - scrollHeight;
+        if (Math.abs(positionValue)<=0.9) {
+            let loadMore = $('#webook_mp_load_more');
+            if(!loadMore.hasClass('loading')){
+                loadMore.click();
+                loadMore.addClass('loading');
+            }
+        }
+    });
+});
