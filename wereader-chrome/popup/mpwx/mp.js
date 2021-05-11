@@ -29,17 +29,19 @@ $(document).ready(function(){
                     $(lastEl).append(
                         `<div class='mp-meta sametime'>
                         <div><a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
-                        <div class='mpContent'>${mpInfo.content}</div></div>
+                        <br><span class='mpContent'>${mpInfo.content}</span></div>
                         <img class='thumdnail' src="${mpInfo.pic_url}"/>
                         </div>`)
                     html = tempEl.innerHTML
                 }else{
-                    html +=`<div class='createTime'>${timeConverter(mpInfo.time)}</div>
-                            <div class='webook_mp_item'>
+                    let content = ''
+                    if(mpInfo.content) content = `<br><span class='mpContent'>${mpInfo.content}</span>`
+                    html +=`<div class='webook_mp_item'>
                             <div class='cover'><img src="${mpInfo.pic_url}"/></div>
                             <div class='mp-meta'>
                             <a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
-                            <div class='mpContent'>${mpInfo.content}</div>
+                            ${content}<br>
+                            <span class='createTime'>${timeConverter(mpInfo.time)}</span>
                             </div>
                             </div>`
                 }
