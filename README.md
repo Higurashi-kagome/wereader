@@ -4,7 +4,7 @@
 
 ## 安装
 <!-- (?<=store-v|Edge%20Add--ons-v)(\d{1,2}\.\d{1,2}\.\d{1,2}) for match version -->
-[![](https://img.shields.io/badge/Chrome%20Web%20Store-v2.19.0-brightgreen)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/Edge%20Add--ons-v2.18.1-brightgreen)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: v1\.7\.2](https://img.shields.io/badge/Mozilla%20Add--ons-v1.7.2-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
+[![](https://img.shields.io/badge/Chrome%20Web%20Store-v2.19.4-brightgreen)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/Edge%20Add--ons-v2.19.4-brightgreen)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: v1\.7\.2](https://img.shields.io/badge/Mozilla%20Add--ons-v1.7.2-brightgreen)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
 
 不能访问 Chrome 网上应用店时按如下操作在 Chrome 上手动安装（注意：手动安装的扩展不会自动更新）：
 
@@ -16,18 +16,21 @@
 
 ## 功能
 
-- 支持一键导出本章内 / 全书标注、热门标注、个人书评、个人想法、书本目录；
-- 导出标注的格式可以自定义，你可以设置不同的标注导出效果（如加粗、下划线、斜体）；
-- 书中被标注的图片、注释及代码块也可以被一键导出（仅限于导出本章标注）；
-- 支持为读书页面添加图片、注释、代码块一键复制按钮；
-- 可切换护眼色主题；
-- 支持书架分类；
-- 查看标注时自动滚动到当前章节；
-- 支持借助正则匹配对标注进行处理；
-- 支持选中文字后自动标注或自动复制；
-- 支持读书页右键；
-- 支持一键删除本章标注；
-- 支持统计周、月阅读时间。
+1. 支持一键导出本章内 / 全书标注、热门标注、个人书评、个人想法、书本目录；
+2. 导出标注的格式可以自定义，你可以设置不同的标注导出效果（如加粗、下划线、斜体）；
+3. 书中被标注的图片、注释及代码块也可以被一键导出（仅限于导出本章标注）；
+4. 支持为读书页面添加图片、注释、代码块一键复制按钮；
+5. 可切换护眼色主题；
+6. 支持书架分类；
+7. 查看标注时自动滚动到当前章节；
+8. 支持借助正则匹配对标注进行处理；
+9. 支持选中文字后自动标注或自动复制；
+10. 支持读书页右键；
+11. 支持一键删除本章标注；
+12. 支持统计周、月阅读时间
+13. 支持管理书架；
+14. 支持浏览公众号；
+15. 支持读书页图片放大。
 
 ## 贡献
 

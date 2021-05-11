@@ -31,6 +31,7 @@ var Config = {
     codePre: "```",
     codeSuf: "```",
     displayN: false,
+    mpShrink: false,
     mpAutoLoad: true,
     allTitles: false,
     addThoughts: false,

@@ -122,7 +122,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 
 // 监听安装事件
 chrome.runtime.onInstalled.addListener(function(details){
-	const onUpdated = true;
+	const onUpdated = false;
 	const onInstall = true;
 	if(details.reason === 'install' && onInstall){
 		chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
