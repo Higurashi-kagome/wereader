@@ -1,6 +1,11 @@
-#webook_mp_load_more{
-    cursor: pointer;
-    box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
+body{
+    background-color: #F5F5F0;
+}
+
+a{
+    text-decoration: none;
+    color: #576b95;
+    font-weight: bold;
 }
 
 #webook_mp_scroll{
@@ -11,11 +16,18 @@
     display: flex; 
     flex-direction: column;
 }
-a{
-    text-decoration: none;
-    color: #576b95;
-}
-body{
+
+.readerTopBar {
+    font-size: initial;
+    position: sticky;
+    box-shadow: 0 0 2px #aaa;
+    top: 0px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    width: 24rem;
+    padding: 0.5rem;
+    margin: 3rem auto 0rem;
     background-color: #F5F5F0;
 }
 
@@ -25,7 +37,7 @@ body{
     text-align: left;
 }
 
-#webook_mp_list>div {
+.webook_mp_item {
     box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
     margin: 1rem 0rem;
     border-radius: 0.4rem;
@@ -33,33 +45,32 @@ body{
     justify-content: space-between;
 }
 
-#webook_mp_list>div>div:first-child{
+/* 头图容器 */
+div.cover{
     border-radius: 0.4rem;
 }
-#webook_mp_list>div>div:last-child{
+/* 头图 */
+div.cover>img{
+    height: 10.625rem;
+    width: 100%;
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+    object-fit: cover;
+}
+
+.mp-meta{
     padding: 0.6rem;
 }
 
-#webook_mp_list>div>div:last-child>a{
-    font-weight: bold;
-    font-size: 0.875rem;
-}
-
-#webook_mp_list>div>div:last-child>div{
+.time{
     font-size: 0.75rem; 
     font-weight: normal; 
     color: #9e9e9e; 
     margin-top: 0.3125rem;
 }
 
-img{
-    width: 100%;
-    border-top-left-radius: 0.4rem;
-    border-top-right-radius: 0.4rem;
-    object-fit: cover;
-} 
-
 #webook_mp_load_more{
+    box-shadow: 0 0 2px #aaa;
     cursor: pointer; 
     text-align: center;
     background-color: #F5F5F0; 
@@ -67,18 +78,4 @@ img{
     font-weight: bold; 
     padding: 0.5rem; 
     margin: 1rem 0;
-}
-
-.readerTopBar {
-    font-size: initial;
-    position: sticky;
-    box-shadow: rgb(0 0 0 / 12%) 0rem 0.0625rem 0.1875rem, rgb(0 0 0 / 24%) 0rem 0.0625rem 0.125rem;
-    top: 0px;
-    align-items: center;
-    justify-content: space-between;
-    display: flex;
-    width: 24rem;
-    padding: 0.5rem;
-    margin: 3rem auto 0rem;
-    background-color: #F5F5F0;
 }

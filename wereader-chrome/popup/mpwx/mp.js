@@ -23,29 +23,29 @@ $(document).ready(function(){
     `)
     $('body').append(_mpBox)
 
+    function getHtml(data) {
+        let _html = '';
+        data.reviews.forEach(function(curr) {
+            if (curr.review && curr.review.mpInfo) {
+                let mpInfo = curr.review.mpInfo;
+                _html +=`<div class='webook_mp_item'>
+                                <div class='cover'><img src="${mpInfo.pic_url}"/></div>
+                                <div class='mp-meta'>
+                                    <a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
+                                    <div class='time'>${timeConverter(mpInfo.time)}</div>
+                                </div>
+                        </div>`;
+            }
+        });
+        return _html;
+    }
     /* 获取数据初始化内容 */
     chrome.runtime.sendMessage({type: "mpInit"}, resp => {
         /* 公众号内容初始化 */
         let {data, bookId} = resp;
         if (!data.reviews) return;
         document.title = data.reviews[0].review.mpInfo.mp_name;
-        let _html = ''
-        data.reviews.forEach(function(each) {
-            if (each.review && each.review.mpInfo) {
-                let mpInfo = each.review.mpInfo
-                _html += `
-                    <div>
-                        <div>
-                            <img src="${mpInfo.pic_url}"/>
-                        </div>
-                        <div>
-                            <a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
-                            <div>${timeConverter(mpInfo.time)}</div>
-                        </div>
-                    </div>
-                `
-            }
-        })
+        let _html = getHtml(data)
         $('#webook_mp_list').html(_html)
         $('#webook_mp_load_more').data('bookid', bookId)
         $('#webook_mp_load_more').data('offset', 10)
@@ -54,8 +54,8 @@ $(document).ready(function(){
 
     /* 公众号内容“加载更多”点击事件 */
     $('#webook_mp_load_more').on('click', function() {
-        let bookId = $(this).data('bookid')
-        let offset = $(this).data('offset')
+        let bookId = $(this).data('bookid');
+        let offset = $(this).data('offset');
         if (!bookId || !offset) return;
         chrome.runtime.sendMessage({
             type:'mploadmore',
@@ -64,30 +64,23 @@ $(document).ready(function(){
         }, resp => {
             let {data} = resp;
             if (!data.reviews || data.reviews.length == 0) {
+                $('#webook_mp_load_more').remove();
                 return alert('已加载全部');
             }
-            let _html = '';
-            data.reviews.forEach(function(each) {
-                if (each.review && each.review.mpInfo) {
-                    let mpInfo = each.review.mpInfo
-                    _html += `
-                        <div><div><img src="${mpInfo.pic_url}"/></div><div><a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a><div>${timeConverter(mpInfo.time)}</div></div></div>
-                    `
-                }
-            })
-            $('#webook_mp_list').append(_html)
+            let _html = getHtml(data);
+            $('#webook_mp_list').append(_html);
             let loadMore = $('#webook_mp_load_more');
-            loadMore.data('bookid', bookId)
-            loadMore.data('offset', Number.parseInt(offset)+10)
+            loadMore.data('bookid', bookId);
+            loadMore.data('offset', Number.parseInt(offset)+10);
             if(loadMore.hasClass('loading')){
-                loadMore.removeClass('loading')
+                loadMore.removeClass('loading');
             }
         });
     });
     
 })
 
-
+// 自动翻页
 $(window).scroll(function() {
     chrome.storage.sync.get(function(sync){
         if(!sync.mpAutoLoad) return;
