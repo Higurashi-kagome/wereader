@@ -1,32 +1,28 @@
+:root{
+    --whiteColor: #5d646e;
+    --darkColor: #b2b4b8;
+}
+
 .m_shelf_admin {
     display: flex;
     flex-direction: row;
     font-size: 1rem;
     justify-content: center;
     margin: 0px;
-    background: white;
+    background: inherit;
     border-bottom: 1px solid #ebedf1;
     padding: 0.5rem 30px;
 }
 
-.m_webook_shelf_admin{
-    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e;
+.m_shelf_admin>a{
+    padding: 5px 0; 
+    margin-right:10px; 
+    cursor: pointer; 
+    color: var(--whiteColor);
 }
 
-.m_webook_shelf_remove_book{
-    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
-}
-
-.m_webook_shelf_make_book_private{
-    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
-}
-
-.m_webook_shelf_make_book_public{
-    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
-}
-
-.m_webook_shelf_select_all{
-    padding: 5px 0; margin-right:10px; cursor: pointer; color: #5d646e; display:none;
+.m_shelf_admin>a:not(.m_webook_shelf_admin){
+    display: none;
 }
 
 .shelf_download_app {
@@ -34,5 +30,14 @@
 }
 
 .m_webook_shelf_checkbox{
-    padding: 5px 0px; align-items: center; justify-content: center;
+    padding: 5px 0px; 
+    align-items: center; 
+    justify-content: center;
+}
+
+body:not(.wr_whiteTheme) .m_shelf_admin{
+    border-color: rgba(238,240,244,.1);
+}
+body:not(.wr_whiteTheme) .m_shelf_admin>a{
+    color: var(--darkColor);
 }
