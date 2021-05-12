@@ -239,7 +239,7 @@ $(document).ready(function() {
     } else {
       $('.m_webook_shelf_checkbox').remove()
       $('.m_shelf_admin > a.op').css('display', 'none')
-      $('.shelfBook').off('click')
+      $('.shelfBook:not(.webook_mp)').off('click')
       $(this).data('status', 'close')
     }
   })
