@@ -208,6 +208,8 @@ $(document).ready(function() {
       /* 公众号点击事件 */
       $('.webook_mp').on('click', function(e) {
         e.preventDefault()
+        let checkbox = this.querySelector('.m_webook_shelf_checkbox>input')
+        if(checkbox) return checkbox.checked = !checkbox.checked
         let bookId = $(this).data('id')
         if (!bookId) return
         chrome.runtime.sendMessage({
@@ -218,19 +220,26 @@ $(document).ready(function() {
             console.log('createMpPage', resp.errmsg);
             window.open(this.href, "_blank");
           }
-        });
-      });
-  });
+        })
+      })
+  })
 
   $('.m_webook_shelf_admin').on('click', function() {
     let status = $(this).data('status')
     if (status == 'close') {
       shelfInsertCheckbox()
       $('.m_shelf_admin > a.op').css('display', 'block')
+      $('.shelfBook:not(.webook_mp)').on('click',function(e){
+        e.preventDefault()
+        e.stopPropagation()
+        let checkbox = this.querySelector('.m_webook_shelf_checkbox>input')
+        checkbox.checked = !checkbox.checked
+      })
       $(this).data('status', 'open')
     } else {
       $('.m_webook_shelf_checkbox').remove()
       $('.m_shelf_admin > a.op').css('display', 'none')
+      $('.shelfBook').off('click')
       $(this).data('status', 'close')
     }
   })

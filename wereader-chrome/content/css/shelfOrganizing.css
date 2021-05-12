@@ -35,6 +35,10 @@
     justify-content: center;
 }
 
+.m_webook_shelf_checkbox>input{
+    cursor: pointer;
+}
+
 body:not(.wr_whiteTheme) .m_shelf_admin{
     border-color: rgba(238,240,244,.1);
 }
