@@ -15,8 +15,8 @@ $(document).ready(function(){
     let _mpBox = $(`<div id="webook_mp_scroll"><div><div id="webook_mp_list"></div>
     <div id="webook_mp_load_more">加载更多</div></div></div>`)
     $('body').append(_mpBox)
-
-    function getHtml(data, mpShrink) {
+    function getHtml(data, sync) {
+        let {mpShrink, mpContent} = sync
         let html = '', tempEl = document.createElement('div')
         data.reviews.forEach(function(curr, index) {
             if (curr.review && curr.review.mpInfo) {
@@ -26,22 +26,31 @@ $(document).ready(function(){
                     && prev.review.mpInfo.time === mpInfo.time){
                     tempEl.innerHTML = html
                     let lastEl = tempEl.querySelector('.webook_mp_item:last-child')
+                    let content = ''
+                    if(!mpContent){
+                        let contentEl = lastEl.querySelector('.mpContent')
+                        if(contentEl) contentEl.remove()
+                    } else if (mpInfo.content) {
+                        content = `<div class='mpContent'>${mpInfo.content}</div>`
+                    }
                     $(lastEl).append(
                         `<div class='mp-meta sametime'>
-                        <div><a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
-                        <br><span class='mpContent'>${mpInfo.content}</span></div>
-                        <img class='thumdnail' src="${mpInfo.pic_url}"/>
+                            <div>
+                                <a href="${mpInfo.doc_url}" class='mp-title' target="_blank">${mpInfo.title}</a>
+                                ${content}
+                            </div>
+                            <div><img class='thumdnail' src="${mpInfo.pic_url}"/></div>
                         </div>`)
                     html = tempEl.innerHTML
                 }else{
                     let content = ''
-                    if(mpInfo.content) content = `<br><span class='mpContent'>${mpInfo.content}</span>`
-                    html +=`<div class='webook_mp_item'>
-                            <div class='cover'><img src="${mpInfo.pic_url}"/></div>
+                    if(mpInfo.content) content = `<div class='mpContent'>${mpInfo.content}</div>`
+                    html +=`<div class='createTime'>${timeConverter(mpInfo.time)}</div>
+                            <div class='webook_mp_item'>
+                                <div class='cover'><img src="${mpInfo.pic_url}"/></div>
                             <div class='mp-meta'>
-                            <a href="${mpInfo.doc_url}" target="_blank">${mpInfo.title}</a>
-                            ${content}<br>
-                            <span class='createTime'>${timeConverter(mpInfo.time)}</span>
+                                <a href="${mpInfo.doc_url}" class='mp-title' target="_blank">${mpInfo.title}</a>
+                                ${content}
                             </div>
                             </div>`
                 }
@@ -66,7 +75,7 @@ $(document).ready(function(){
         /* 公众号内容初始化 */
         document.title = data.reviews[0].review.mpInfo.mp_name
         chrome.storage.sync.get(function(sync){
-            $('#webook_mp_list').html(getHtml(data, sync.mpShrink))
+            $('#webook_mp_list').html(getHtml(data, sync))
             $('#webook_mp_load_more').data('bookid', bookId)
             $('#webook_mp_load_more').data('offset', 10)
             $('#webook_mp_box').css('display', 'block')
