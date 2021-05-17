@@ -8,6 +8,14 @@ a{
     font-weight: bold;
 }
 
+a:hover{
+    text-decoration: underline;
+    -webkit-text-decoration-color: orange;
+    text-decoration-color: orange;
+    text-decoration-thickness: 2px;
+    text-decoration-skip: ink;
+}
+
 #webook_mp_scroll{
     margin: 0rem auto 3rem;
     width: 25rem;
