@@ -72,15 +72,23 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
         chrome.tabs.create({url: chrome.runtime.getURL('popup/statistics/statistics.html')});
       });
     }
+    // 选项页
+    if(bg.Config.enableOption){
+      const id = 'openOption'
+      $('.tab').append(`<button class="tablinks" id="${id}">选项</button>`)
+      $(`#${id}`).on('click',()=>{
+        chrome.runtime.openOptionsPage()
+      })
+    }
     // 只有一个按钮被打开时将其设置为全宽
-    let count = 0, onlyone = undefined;
-    tablinks.forEach(tablink=>{
+    let count = 0, onlyone = undefined
+    document.querySelectorAll('.tablinks').forEach(tablink=>{
       if(window.getComputedStyle(tablink).display !== 'none'){
-        onlyone = tablink;
-        count++;
+        onlyone = tablink
+        count++
       }
-    });
-    if(count === 1) onlyone.style.width = '-webkit-fill-available';
+    })
+    if(count === 1) onlyone.style.width = '-webkit-fill-available'
     // 默认打开第一个 tab
     tablinks[0].click();
 });

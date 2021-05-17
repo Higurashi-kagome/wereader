@@ -39,6 +39,7 @@ var Config = {
     enableRightClick: true,
     enableDevelop: false,
     enableStatistics: false,
+    enableOption: true,
     enableFancybox: true,
     backupName: DefaultBackupName,
     selectAction: "underlinNone",
