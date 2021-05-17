@@ -1,7 +1,9 @@
 const helpContent = {
     s1Pre: {
         title: '一级标注前缀',
-        help: `<p>一级标注是指被直线标注的文本：</p>
+        help: `<p>在微信读书中，标注分三类，分别是<span class="lineinline">波浪线</span>、<span class="lineinline">马克笔</span>和<span class="lineinline">直线</span>：</p>
+        <img src="icons/mark.png" alt="mark" style="zoom:60%;" />
+        <p>一级标注即指被直线标注的文本：</p>
         <img src="icons/markstyle1.png">
         <p>“一级标注前缀”中的内容将会被添加到一级标注的前面。</p>
         <p>同样，下方的“一级标注后缀”中的内容将会被添加到一级标注的后面。</p>

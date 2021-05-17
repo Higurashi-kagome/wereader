@@ -245,10 +245,6 @@ details {
     border-top: #bfbfbf 1px dashed;
 }
 
-details:last-of-type {
-    border-bottom: #bfbfbf 1px dashed;
-}
-
 details>summary {
     color: black;
     padding-bottom: 7px;
