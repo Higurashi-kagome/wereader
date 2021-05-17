@@ -31,32 +31,29 @@
 			<summary>标注</summary>
 			<!-- 一级标注前缀 -->
 			<div class="option vertical">
-				<label for="s1Pre" id="s1PreLabel"></label>
 				<textarea type="text" maxlength="150" id="s1Pre"></textarea>
 			</div>
 			<!-- 一级标注后缀 -->
 			<div class="option vertical">
-				<label for="s1Suf" id="s1SufLabel"></label>
+				<label for="s1Suf" id="s1SufLabel">一级标注后缀</label>
 				<textarea type="text" maxlength="150" id="s1Suf"></textarea>
 			</div>
 			<!-- 二级标注前缀 -->
 			<div class="option vertical">
-				<label for="s2Pre" id="s2PreLabel"></label>
 				<textarea type="text" maxlength="150" id="s2Pre"></textarea>
 			</div>
 			<!-- 二级标注后缀 -->
 			<div class="option vertical">
-				<label for="s2Suf" id="s2SufLabel"></label>
+				<label for="s2Suf" id="s2SufLabel">二级标注后缀</label>
 				<textarea type="text" maxlength="150" id="s2Suf"></textarea>
 			</div>
 			<!-- 三级标注前缀 -->
 			<div class="option vertical">
-				<label for="s3Pre" id="s3PreLabel"></label>
 				<textarea type="text" maxlength="150" id="s3Pre"></textarea>
 			</div>
 			<!-- 三级标注后缀 -->
 			<div class="option vertical">
-				<label for="s3Suf" id="s3SufLabel"></label>
+				<label for="s3Suf" id="s3SufLabel">三级标注后缀</label>
 				<textarea type="text" maxlength="150" id="s3Suf"></textarea>
 			</div>
 		</details>
@@ -65,7 +62,6 @@
 			<summary>标题</summary>
 			<!-- 一级标题前缀 -->
 			<div class="option vertical">
-				<label for="lev1Pre" id="lev1PreLabel"></label>
 				<textarea type="text" maxlength="150" id="lev1Pre"></textarea>
 			</div>
 			<!-- 一级标题后缀 -->
@@ -104,7 +100,6 @@
 			</div>
 			<!-- 我的想法后缀 -->
 			<div class="option vertical">
-				<label for="thouSuf" id="thouSufLabel"></label>
 				<textarea type="text" maxlength="150" id="thouSuf"></textarea>
 			</div>
 			<!--  -->
@@ -115,7 +110,6 @@
 			</div>
 			<!-- 想法标注后缀 -->
 			<div class="option vertical">
-				<label for="thouMarkSuf" id="thouMarkSufLabel"></label>
 				<textarea type="text" maxlength="150" id="thouMarkSuf"></textarea>
 			</div>
 		</details>
@@ -127,7 +121,6 @@
 				<input type="text" maxlength="15" id="codePre">
 			</div>
 			<div class="option vertical">
-				<label for="codeSuf" id="codeSufLabel">代码块后缀</label>
 				<input type="text" maxlength="15" id="codeSuf">
 			</div>
 		</details>
@@ -138,7 +131,6 @@
 			<div class="regexpContainer">
 				<div class="option vertical">
 					<div class="option horizon">
-						<label for="re1" id="re1Label"></label>
 						<input type="checkbox" class="contextMenuEnabledInput" id="re1">
 					</div>
 					<input type="text" maxlength="150" class="regexpInput">
@@ -181,43 +173,36 @@
 		<details>
 			<summary>其他</summary>
 			<div class="option">
-				<label for="addThoughts" id="addThoughtsLabel"></label>
 				<input type="checkbox" id="addThoughts">
 			</div>
 			<div class="option">
-				<label for="allTitles" id="allTitlesLabel"></label>
 				<input type="checkbox" id="allTitles">
 			</div>
 			<div class="option">
-				<label for="displayN" id="displayNLabel"></label>
 				<input type="checkbox" id="displayN">
 			</div>
 			<div class="option">
-				<label for="mpAutoLoad" id="mpAutoLoadLabel"></label>
 				<input type="checkbox" id="mpAutoLoad">
 			</div>
 			<div class="option">
-				<label for="mpContent" id="mpContentLabel"></label>
 				<input type="checkbox" id="mpContent">
 			</div>
 			<div class="option">
-				<label for="mpShrink" id="mpShrinkLabel"></label>
 				<input type="checkbox" id="mpShrink">
 			</div>
 			<div class="option">
-				<label for="enableRightClick" id="enableRightClickLabel"></label>
 				<input type="checkbox" id="enableRightClick">
 			</div>
 			<div class="option">
-				<label for="enableFancybox" id="enableFancyboxLabel"></label>
 				<input type="checkbox" id="enableFancybox">
 			</div>
 			<div class="option">
-				<label for="enableStatistics" id="enableStatisticsLabel"></label>
 				<input type="checkbox" id="enableStatistics">
 			</div>
 			<div class="option">
-				<label for="selectActionOptions" id="selectActionOptionsLabel"></label>
+				<input type="checkbox" id="enableOption">
+			</div>
+			<div class="option">
 				<select id="selectActionOptions">
 					<option id="underlinNone">无</option>
 					<option id="copy">复制</option>
@@ -227,7 +212,6 @@
 				</select>
 			</div>
 			<div class="option">
-				<label for="enableDevelop" id="enableDevelopLabel"></label>
 				<input type="checkbox" id="enableDevelop">
 			</div>
 		</details>
@@ -259,6 +243,7 @@
 		</div>
 	</main>
 	<script type="text/javascript" src="options-variables.js"></script>
+	<script type="text/javascript" src="../content/assets/js/jQuery.min.js"></script>
 	<script type="text/javascript" src="options-help.js"></script>
 	<script type="text/javascript" src="options-utils.js"></script>
 	<script type="text/javascript" src="options-main.js"></script>
