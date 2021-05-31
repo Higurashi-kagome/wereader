@@ -59,7 +59,6 @@ async function sendAlertMsg(msg, tabId=undefined) {
 	return response;
 }
 
-// 复制内容
 function copy(text) {
 	//添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
 	let count = 0;
@@ -135,4 +134,17 @@ function puzzling(t) {
     }
     return n.length < 20 && (n += e.substr(0, 20 - n.length)),
     n += MD5(n).substr(0, 3)
+}
+
+function createTab (obj) {
+    return new Promise(resolve => {
+        chrome.tabs.create(obj, async tab => {
+            chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                if (info.status === 'complete' && tabId === tab.id) {
+                    chrome.tabs.onUpdated.removeListener(listener);
+                    resolve(tab);
+                }
+            });
+        });
+    });
 }

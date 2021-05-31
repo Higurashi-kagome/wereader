@@ -1,19 +1,26 @@
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
-document.getElementById('shelfBtn').addEventListener('click', async ()=>{
+document.getElementById('shelfBtn').addEventListener('click', async (event)=>{
 	let shelfData = bg.shelfForPopup.shelfData;
 	if(!shelfData || shelfData.errMsg){
 		const resp = await bg.getShelfData();
 		if(resp.errMsg){
-			chrome.tabs.create({url: 'https://weread.qq.com/', active: false});
-        	bg.alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后重新获取书架');
-			return console.log(resp);
+			document.getElementById('shelf').innerHTML = `<a>正在加载...</a>`;
+			let tab = await bg.createTab({url: 'https://weread.qq.com/', active: false});
+			if(tab){
+				shelfData = await bg.setShelfData();
+				if(shelfData.errMsg){
+					document.getElementById('shelf').innerHTML = `<a>加载失败，请先登陆。</a>`;
+					return;
+				}else{
+					event.target.click();
+				}
+			}
 		} else {
 			shelfData = resp;
+			bg.setShelfData(shelfData);
 		}
 	}
-
 	createShelf(shelfData);
-	bg.setShelfForPopup(shelfData);
 });
 
 function getShelf(shelfData){

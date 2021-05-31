@@ -60,8 +60,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
     // 绑定刷新按钮点击事件
     document.getElementById('reload').onclick = async (e)=>{
       e.stopPropagation();
-      document.getElementById('shelf').innerHTML = '<a>...</a>';
-      await bg.setShelfForPopup();
+      document.getElementById('shelf').innerHTML = '<a>正在加载...</a>';
+      await bg.setShelfData();
       e.target.parentElement.click();
     };
     // 统计按钮点击事件

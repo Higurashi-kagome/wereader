@@ -181,9 +181,13 @@ async function createMpPage(bookId){
 }
 
 // 设置供 popup 获取的书架数据
-async function setShelfForPopup(shelfData){
-	if(shelfData) window.shelfForPopup.shelfData = shelfData;
-	else window.shelfForPopup.shelfData = await getShelfData();
+async function setShelfData(shelfData){
+	if(shelfData){
+		window.shelfForPopup.shelfData = shelfData;
+	}else{
+		window.shelfForPopup.shelfData = await getShelfData();
+		return window.shelfForPopup.shelfData;
+	}
 };
 
 // 删除标注
@@ -200,5 +204,3 @@ async function getReadDetail(type=1, count=3, monthTimestamp){
 	const readdetail = await wereader.getReadDetail(type, count, monthTimestamp);
 	return readdetail;
 }
-
-setShelfForPopup();
