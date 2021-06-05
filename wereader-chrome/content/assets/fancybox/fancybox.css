@@ -29,5 +29,5 @@ body > div.fancybox-overlay.fancybox-overlay-fixed > div > div{
 img.fancybox-image {
   border: 2px solid;
   max-height: 100vh;
-  max-width: 100vw;
+  max-width: 90vw;
 }
