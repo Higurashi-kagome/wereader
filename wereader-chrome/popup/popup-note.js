@@ -35,11 +35,6 @@ window.addEventListener('load',async ()=>{
             case "getMyThoughts":
                 bg.copyThought()
                 break;
-            case "trigCopyBtn":
-                chrome.tabs.executeScript({ file: 'inject/inject-copyBtn.js' }, ()=>{
-                    bg.catchErr("popup.js", "copyBtn");
-                });
-                break;
             case "removeMarksInCurChap":
                 bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: false}});
                 break;

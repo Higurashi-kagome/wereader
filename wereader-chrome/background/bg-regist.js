@@ -123,7 +123,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 // 监听安装事件
 chrome.runtime.onInstalled.addListener(function(details){
 	const onUpdated = false;
-	const onInstall = true;
+	const onInstall = false;
 	if(details.reason === 'install' && onInstall){
 		chrome.tabs.create({url: "https://github.com/Higurashi-kagome/wereader/issues/9"});
 	} else if(details.reason === 'update' && onUpdated){
@@ -144,6 +144,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 		setTimeout(() => {
 			sendMessageToContentScript({tabId: tabId, message: {isSelectAction: true}});
 			sendMessageToContentScript({tabId: tabId, message: {isFancybox: true}});
+			sendMessageToContentScript({tabId: tabId, message: {isCopyBtn: true}});
 		}, 1000);
 	}
 });
