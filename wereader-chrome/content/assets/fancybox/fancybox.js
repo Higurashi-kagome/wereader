@@ -39,10 +39,29 @@ function facnybox(src){
     $('.fancybox-overlay.fancybox-overlay-fixed').on('click', function(){
         $('.fancybox-overlay.fancybox-overlay-fixed').remove();
     });
+    let view = $('.fancybox-wrap.fancybox-desktop.fancybox-type-image.fancybox-opened');
+    let [dx,dy,sx,sy,down] = [0,0,0,0,false];
     // 点击图片位置结束冒泡，避免关闭
-    $('.fancybox-wrap.fancybox-desktop.fancybox-type-image.fancybox-opened').on('click', function(e){
+    view.on('click', function(e){
         e.stopPropagation();
     });
+    let outer = $('.fancybox-outer');
+    outer.on('mousedown', function (e) {
+        dx = e.clientX;
+        dy = e.clientY;
+        sx = parseInt(outer.parent().parent().css('left'));
+        sy = parseInt(outer.parent().parent().css('top'));
+        if (!down) down = true;
+    });
+    document.onmousemove = function(e){
+        if (down) {
+            outer.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
+            outer.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
+        }
+    }
+    document.onmouseup = function(){
+        if (down) down = false;
+    }
 }
 
 

@@ -13,6 +13,8 @@
 .fancybox-skin{
   width: fit-content;
   padding: 15px;
+  resize: both;
+  overflow: hidden;
 }
 
 body > div.fancybox-overlay.fancybox-overlay-fixed > div{
@@ -28,6 +30,11 @@ body > div.fancybox-overlay.fancybox-overlay-fixed > div > div{
 
 img.fancybox-image {
   border: 2px solid;
+  width: 100%;
   max-height: 100vh;
   max-width: 90vw;
+}
+
+.fancybox-outer{
+  cursor: all-scroll;
 }
