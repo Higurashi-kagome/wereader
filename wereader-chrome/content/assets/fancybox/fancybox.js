@@ -26,11 +26,7 @@ function facnybox(src){
         `<div class="fancybox-overlay fancybox-overlay-fixed">
             <div class="fancybox-wrap fancybox-desktop fancybox-type-image fancybox-opened">
                 <div class="fancybox-skin">
-                    <div class="fancybox-outer">
-                        <div class="fancybox-inner">
-                            <img class="fancybox-image" src="${src}">
-                        </div>
-                    </div>
+                    <img class="fancybox-image" src="${src}">
                 </div>
             </div>
         </div>`
@@ -45,18 +41,18 @@ function facnybox(src){
     view.on('click', function(e){
         e.stopPropagation();
     });
-    let outer = $('.fancybox-outer');
-    outer.on('mousedown', function (e) {
+    let image = $('.fancybox-image');
+    image.on('mousedown', function (e) {
         dx = e.clientX;
         dy = e.clientY;
-        sx = parseInt(outer.parent().parent().css('left'));
-        sy = parseInt(outer.parent().parent().css('top'));
+        sx = parseInt(image.parent().parent().css('left'));
+        sy = parseInt(image.parent().parent().css('top'));
         if (!down) down = true;
     });
     document.onmousemove = function(e){
         if (down) {
-            outer.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
-            outer.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
+            image.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
+            image.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
         }
     }
     document.onmouseup = function(){
