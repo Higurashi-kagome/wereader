@@ -9,24 +9,6 @@ function copyElObserver(){
     observer.observe(target, {'childList':true});
 }
 
-async function copy(targetText){
-    try {
-        await navigator.clipboard.writeText(targetText);
-        console.log('Copied to clipboard');
-    } catch (err) {
-        alert('Failed to copy: ', err);
-    }
-}
-//设置属性
-function setAttributes(element,attributes){
-	for(let key in attributes){
-		if(Object.prototype.toString.call(attributes[key]) === '[object Object]'){
-			setAttributes(element[key],attributes[key])
-		}else{
-			element[key] = attributes[key]
-		}
-	}
-}
 //给图片添加复制按钮
 function addCopyBtn1(){
     let imgs = document.getElementById("renderTargetContent").getElementsByTagName('img');
@@ -44,14 +26,14 @@ function addCopyBtn1(){
         // if(imgs[i].style.transform.match(/translate\(\s*(\d*)px,\s*\d*px/)[1] == "0"){
         // }else{
         // }
-        setAttributes(btn,
+        window.setAttributes(btn,
             {id:`linkCopy${i}`,
             textContent:"📋",
             className:"wr_absolute wr_readerImage_opacity",
             style: {cssText: `left:${parseInt(left)+parseInt(width)}px;top:${top}px`}
         });
         $(btn).on('click', function(){
-            copy(imgMdText)
+            window.copy(imgMdText)
             this.textContent = "✔"
             const id = this.id
             setTimeout(function () {
@@ -70,13 +52,13 @@ function addCopyBtn2(){
         //获取注释内容、注释按钮位置等信息
         let footernote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("cn")
-        setAttributes(btn,{
+        window.setAttributes(btn,{
             id:"noteCopy" + i,
             textContent:"📋"
         });
         // 复制按钮点击事件
         btn.addEventListener('click', function(){
-            copy(footernote)
+            window.copy(footernote)
             this.textContent = "✔"
             let id = this.id
             setTimeout(function () {
@@ -112,7 +94,7 @@ function addCopyBtn3(){
             let [, left, top] = pre[i].style.transform.match(/translate\(\s*(\d*)px,\s*(\d*)px/);
             let width = pre[i].style.width.replace('px','');
             let btn =  document.createElement("cc");
-            setAttributes(btn,{
+            window.setAttributes(btn,{
                 id: `codeCopy${i}`,textContent: "📋",
                 className: "wr_absolute",
                 style: {cssText: `left:${parseInt(left)+parseInt(width)}px;top:${top}px`}
@@ -125,7 +107,7 @@ function addCopyBtn3(){
                 //每次点击复制按钮都获取一次代码块设置
                 chrome.storage.sync.get(["codePre","codeSuf"], function(setting) {
                     let code =  setting.codePre + "\n" + _code + setting.codeSuf
-                    copy(code)
+                    window.copy(code)
                 })
                 setTimeout(function () {
                     document.getElementById(id).textContent = "📋"

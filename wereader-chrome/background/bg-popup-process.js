@@ -36,7 +36,9 @@ async function getBookMarks(isAddThou) {
 			curMark.range = parseInt(curMark.range.replace(/"(\d*)-\d*"/, "$1"));
 			return curMark;
 		});
-		marksInAChap.reverse();
+		// 排序*大多数时候数据是有序的，但存在特殊情况所以必须排序*
+		colId = "range";
+		marksInAChap.sort(rank);
 		chap.marks = marksInAChap;
 		return chap;
 	});
@@ -56,7 +58,7 @@ function traverseMarks(marks,all,indexArr=[],markedData){
 			let amarkedData = markedData[indexArr[index]]
 			if(!amarkedData){//数组越界
 				console.log('markedData', markedData);
-				console.log('markText', markText);
+				console.log('marks', marks);
 				return '';
 			}
 			let replacement = ''
