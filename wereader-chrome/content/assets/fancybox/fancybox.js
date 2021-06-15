@@ -1,58 +1,62 @@
 // 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片绑定点击事件
-function imageObserver(){
-    let observer = new MutationObserver(wrapImageWithFancyBox);
+function fancyboxTargetObserver(){
+    let observer = new MutationObserver(bindfancyBox);
     let target = document.getElementById('renderTargetContent').children[0];
     if(!target){
-        window.setTimeout(imageObserver,500);
+        window.setTimeout(fancyboxTargetObserver,500);
         return;
     }
     observer.observe(target, {'childList':true});
 }
 
-function wrapImageWithFancyBox(){
-    $('img.wr_readerImage_opacity').each(function() {
-        var image = $(this);
-        image.css('cursor','pointer');
-        image.on('click', function(){
+// 绑定点击事件
+function bindfancyBox(){
+    $('img.wr_readerImage_opacity,#renderTargetContent pre').each(function() {
+        let box = $(this);
+        box.css('cursor','pointer');
+        box.on('click', function(){
+            let boxInnerHTML;
             const src = $(this).attr('data-src');
-            facnybox(src);
+            if(src) boxInnerHTML = `<img class="fancybox-image" src="${src}">`;
+            else boxInnerHTML = `<pre class="fancybox-pre">${$(this).text()}</pre>`
+            showFancybox(boxInnerHTML);
         });
     });
 }
 
-function facnybox(src){
-    if($(".fancybox-overlay.fancybox-overlay-fixed").length !== 0) return;
+function showFancybox(boxInnerHTML){
+    if($(".fancybox-overlay").length !== 0) return;
+    // 插入
     $("body").append(
-        `<div class="fancybox-overlay fancybox-overlay-fixed">
-            <div class="fancybox-wrap fancybox-desktop fancybox-type-image fancybox-opened">
-                <div class="fancybox-skin">
-                    <img class="fancybox-image" src="${src}">
-                </div>
+        `<div class="fancybox-overlay">
+            <div class="fancybox-wrap">
+                <div class="fancybox-skin">${boxInnerHTML}</div>
             </div>
         </div>`
     );
-    // 点击空白关闭图片
-    $('.fancybox-overlay.fancybox-overlay-fixed').on('click', function(){
-        $('.fancybox-overlay.fancybox-overlay-fixed').remove();
+    // 点击空白移除
+    $('.fancybox-overlay').on('click', function(){
+        $('.fancybox-overlay').remove();
     });
-    let view = $('.fancybox-wrap.fancybox-desktop.fancybox-type-image.fancybox-opened');
-    let [dx,dy,sx,sy,down] = [0,0,0,0,false];
-    // 点击图片位置结束冒泡，避免关闭
-    view.on('click', function(e){
+    let fancyboxWrap = $('.fancybox-wrap');
+    // 点击可见部分结束冒泡，避免关闭
+    fancyboxWrap.on('click', function(e){
         e.stopPropagation();
     });
-    let image = $('.fancybox-image');
-    image.on('mousedown', function (e) {
+    // 随鼠标移动
+    let [dx,dy,sx,sy,down] = [0,0,0,0,false];
+    let view = $('.fancybox-image,.fancybox-pre');
+    view.on('mousedown', function (e) {
         dx = e.clientX;
         dy = e.clientY;
-        sx = parseInt(image.parent().parent().css('left'));
-        sy = parseInt(image.parent().parent().css('top'));
+        sx = parseInt(view.parent().parent().css('left'));
+        sy = parseInt(view.parent().parent().css('top'));
         if (!down) down = true;
     });
     document.onmousemove = function(e){
         if (down) {
-            image.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
-            image.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
+            view.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
+            view.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
         }
     }
     document.onmouseup = function(){
@@ -66,8 +70,8 @@ chrome.runtime.onMessage.addListener(function(msg){
     if(!msg.isFancybox) return;
     chrome.storage.sync.get(['enableFancybox'], function(result){
         if(result.enableFancybox) {
-            wrapImageWithFancyBox();
-            imageObserver();
+            bindfancyBox();
+            fancyboxTargetObserver();
         }
     });
 });

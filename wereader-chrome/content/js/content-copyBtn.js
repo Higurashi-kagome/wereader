@@ -87,7 +87,7 @@ function addCopyBtn2(){
 
 //给代码块添加复制按钮
 function addCopyBtn3(){
-    let pre = document.getElementsByTagName("pre")
+    let pre = document.getElementById('renderTargetContent').getElementsByTagName("pre")
     if(pre.length > 0){
         for(let i=0;i<pre.length;i++){
             let _code = pre[i].textContent;

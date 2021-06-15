@@ -1,5 +1,5 @@
 /* background */
-.fancybox-overlay.fancybox-overlay-fixed{
+.fancybox-overlay{
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,6 @@
   align-items: center;
 }
 
-/* view */
 .fancybox-skin{
   width: fit-content;
   padding: 15px;
@@ -19,22 +18,33 @@
   overflow: hidden;
 }
 
-body > div.fancybox-overlay.fancybox-overlay-fixed > div{
+.fancybox-wrap{
     z-index: 8030;
     position: absolute;
 }
 
-body > div.fancybox-overlay.fancybox-overlay-fixed > div > div{
+.fancybox-skin{
     background: #f8f9fa;
     border-radius: 4px;
     box-shadow: 0 10px 25px rgb(0 0 0 / 50%);
 }
 
-img.fancybox-image {
-  border: 2px solid;
-  width: 100%;
-  height: 100%;
+.fancybox-skin>*{
   max-height: 100vh;
   max-width: 90vw;
   cursor: all-scroll;
+}
+
+img.fancybox-image,
+pre.fancybox-pre {
+  width: 100%;
+  height: 100%;
+}
+
+pre.fancybox-pre{
+  overflow: auto;
+  color: black;
+  background-color: #e6e6e6;
+  font-family:'Courier New', Courier, monospace;
+  font-size: 1rem;
 }
