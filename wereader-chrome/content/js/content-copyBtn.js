@@ -153,7 +153,7 @@ function documentMouseMove(event) {
 function documentKeyDown(event) {
 	pressedKeys[event.keyCode] = true;
 	if(pressedKeys[17]) {
-		if(mouseMoveTarget.className.indexOf('wr_underline')>=0){
+		if(/wr_(myNote|underline)/.test(mouseMoveTarget.className)){
 			mouseMoveTarget.style.display = 'none';
 		}
 	}
@@ -162,7 +162,7 @@ function documentKeyDown(event) {
 function documentKeyUp(event) {
 	pressedKeys[event.keyCode] = false;
 	if(event.keyCode == 17) {
-		$('.wr_underline').css('display','block');
+		$('.wr_underline,.wr_myNote').css('display','block');
 	}
 }
 
