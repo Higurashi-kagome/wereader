@@ -17,6 +17,13 @@ function getTest(){
 		});
 	}
 
+	let logShelfHtml = ()=>{
+		fetch('https://weread.qq.com/web/shelf').then(function(resp) {return resp.text()}).then(function(data) {
+			var initdata = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
+			console.log(initdata);
+		})
+	}
+
 	let logConfig = ()=>{
 		console.log('Config', Config);
 	}
@@ -24,10 +31,6 @@ function getTest(){
 	let logGetBookMarks = async ()=>{
 		const chapsAndMarks = await getBookMarks();
 		console.log('chapsAndMarks', chapsAndMarks);
-	}
-
-	let trigMarkedDatajs = async ()=>{
-		sendMessageToContentScript({message: {isGetMarkedData: true}});
 	}
 
 	let logBestBookMarks = async ()=>{
@@ -64,13 +67,13 @@ function getTest(){
 		'logStorage': logStorage,
 		'logConfig': logConfig,
 		'logGetBookMarks': logGetBookMarks,
-		'trigMarkedDatajs': trigMarkedDatajs,
 		'logBestBookMarks': logBestBookMarks,
 		'logGetChapters': logGetChapters,
 		'logChapInfosInServer': logChapInfosInServer,
 		'logFuncGetShelfData': logFuncGetShelfData,
 		'logFuncWereaderGetShelfData': logFuncWereaderGetShelfData,
-		'logReadDetail': logReadDetail
+		'logReadDetail': logReadDetail,
+		'logShelfHtml': logShelfHtml
 	}
 
 	return functions;

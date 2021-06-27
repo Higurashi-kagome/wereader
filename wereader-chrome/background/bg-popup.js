@@ -69,16 +69,18 @@ async function copyBookMarks(isAll) {
 		},[]);
 		//由 rangeArr 生成索引数组 indexArr
 		let indexArr = [], generatedArr = [];
+		/* 
 		for (let j = 0, index = -1; j < rangeArr.length; j++) {
 			let targetIndex = generatedArr.indexOf(rangeArr[j]);
 			if(targetIndex < 0) indexArr[j] = ++index;
 			else indexArr[j] = indexArr[targetIndex];
 			generatedArr.push(rangeArr[j]);
-		}
+		} */
 		// 请求需要追加到文本中的图片 Markdown 文本
-		const markedData = await sendMessageToContentScript({
+		let markedData = [];
+		/* markedData = await sendMessageToContentScript({
 			message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
-		});
+		}); */
 		let str = traverseMarks(targetChapAndMarks.marks,isAll, indexArr, markedData);
 		res += str;
 		if(str) copy(res);

@@ -47,54 +47,60 @@ async function getBookMarks(isAddThou) {
 	return chaptersAndMarks;
 }
 
+// 导出标注添加图片等内容
+function addMarkedData(markText, indexArr, markedData,all){
+	let index = 0;
+	//只获取本章时"[插图]"转图片、注释或代码块
+	while(!all && /\[插图\]/.test(markText)){
+		let amarkedData = markedData[indexArr[index]]
+		if(!amarkedData){//数组越界
+			console.log('markedData', markedData);
+			console.log('marks', marks);
+			return '';
+		}
+		let replacement = ''
+		if(amarkedData.src){//图片
+			//非行内图片单独占行（即使它与文字一起标注）
+			let inser1 = '', inser2 = ''
+			//不为行内图片且'[插图]'前有内容
+			if(!amarkedData.isInlineImg && markText.indexOf('[插图]') > 0)
+				inser1 = '\n\n'
+			//不为行内图片且'[插图]'后有内容
+			if(!amarkedData.isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
+				inser2 = '\n\n'
+			replacement = `${inser1}![${amarkedData.alt}](${amarkedData.src})${inser2}`
+		}else if(amarkedData.footnote){//注释
+			replacement = `[^${amarkedData.name}]`
+		}else if(amarkedData.code){//代码块
+			let inser1 = '', inser2 = ''
+			//'[插图]'前有内容
+			if(markText.indexOf('[插图]') > 0)
+				inser1 = '\n\n'
+			//'[插图]'后有内容
+			if(markText.indexOf('[插图]') != (markText.length - 4))
+				inser2 = '\n\n'
+			replacement = `${inser1}${Config.codePre}\n${amarkedData.code}${Config.codeSuf}${inser2}`
+		}
+		markText = markText.replace(/\[插图\]/, replacement)
+		index = index + 1
+	}
+	return markText;
+}
+
 // 处理章内标注
 function traverseMarks(marks,all,indexArr=[],markedData){
-	let res = "", index = 0;
+	let res = "";
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
-		let abstract = marks[j].abstract
-		let markText = abstract ? abstract : marks[j].markText
-		//只获取本章时"[插图]"转图片、注释或代码块
-		while(!all && /\[插图\]/.test(markText)){
-			let amarkedData = markedData[indexArr[index]]
-			if(!amarkedData){//数组越界
-				console.log('markedData', markedData);
-				console.log('marks', marks);
-				return '';
-			}
-			let replacement = ''
-			if(amarkedData.src){//图片
-				//非行内图片单独占行（即使它与文字一起标注）
-				let inser1 = '', inser2 = ''
-				//不为行内图片且'[插图]'前有内容
-				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') > 0)
-					inser1 = '\n\n'
-				//不为行内图片且'[插图]'后有内容
-				if(!amarkedData.isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
-					inser2 = '\n\n'
-				replacement = `${inser1}![${amarkedData.alt}](${amarkedData.src})${inser2}`
-			}else if(amarkedData.footnote){//注释
-				replacement = `[^${amarkedData.name}]`
-			}else if(amarkedData.code){//代码块
-				let inser1 = '', inser2 = ''
-				//'[插图]'前有内容
-				if(markText.indexOf('[插图]') > 0)
-					inser1 = '\n\n'
-				//'[插图]'后有内容
-				if(markText.indexOf('[插图]') != (markText.length - 4))
-					inser2 = '\n\n'
-				replacement = `${inser1}${Config.codePre}\n${amarkedData.code}${Config.codeSuf}${inser2}`
-			}
-			markText = markText.replace(/\[插图\]/, replacement)
-			index = index + 1
-		}
-		
+		let abstract = marks[j].abstract;
+		let markText = abstract ? abstract : marks[j].markText;
+		// markText = addMarkedData(markText, indexArr, markedData,all);
 		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
 		}else{// 不是想法（为标注）则进行正则匹配
-			markText = regexpReplace(markText)
+			markText = regexpReplace(markText);
 		}
-		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`
+		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`;
 	}
 	if(!all){//只在获取本章时添加注脚
 		markedData.forEach(element => {
