@@ -3,16 +3,16 @@
 function settingInitialize() {
 	//获取 syncSetting
 	chrome.storage.sync.get(function (configInSync) {
-		let unuserdKeysInSync = []
+		let unusedKeysInSync = []
 		for(let key in configInSync){
 			if(Config[key] !== undefined) continue;
 			//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
 			delete configInSync[key];
-			unuserdKeysInSync.push(key);
+			unusedKeysInSync.push(key);
 		}
 		for(let key in Config){
 			//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
-			if(configInSync[key] == undefined || configInSync[key].constructor != Config[key].constructor){
+			if(configInSync[key] === undefined || configInSync[key].constructor != Config[key].constructor){
 				configInSync[key] = Config[key];
 			}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
 				Config[key] = configInSync[key];
@@ -22,7 +22,7 @@ function settingInitialize() {
 		chrome.storage.sync.set(configInSync,function(){
 			if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
 			//必须用 remove 来删除元素
-			chrome.storage.sync.remove(unuserdKeysInSync,function(){
+			chrome.storage.sync.remove(unusedKeysInSync,function(){
 				if(catchErr("settingInitialize"))console.error(StorageErrorMsg);
 			});
 		})

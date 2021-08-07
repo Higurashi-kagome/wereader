@@ -239,8 +239,9 @@ function initialize(setting,settings){
         }
     }
     //"自动标注"选项
-    if(setting.selectAction){
-        document.getElementById(setting.selectAction).selected =true;
+    const targetOption = document.getElementById(setting.selectAction);
+    if(setting.selectAction && targetOption){
+        targetOption.selected =true;
     }
     document.getElementById("selectActionOptions").onchange = function(){
         let options = this.options

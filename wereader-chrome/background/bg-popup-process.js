@@ -88,12 +88,11 @@ function addMarkedData(markText, indexArr, markedData,all){
 }
 
 // 处理章内标注
-function traverseMarks(marks,all,indexArr=[],markedData){
+function traverseMarks(marks){
 	let res = "";
 	for (let j = 0; j < marks.length; j++) {//遍历章内标注
 		let abstract = marks[j].abstract;
 		let markText = abstract ? abstract : marks[j].markText;
-		// markText = addMarkedData(markText, indexArr, markedData,all);
 		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
 			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
@@ -101,11 +100,6 @@ function traverseMarks(marks,all,indexArr=[],markedData){
 			markText = regexpReplace(markText);
 		}
 		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`;
-	}
-	if(!all){//只在获取本章时添加注脚
-		markedData.forEach(element => {
-			if(element.footnote) res += `[^${element.name}]:${element.footnote}\n\n`;
-		});
 	}
 	return res;
 }

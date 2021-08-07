@@ -50,7 +50,7 @@ async function copyBookMarks(isAll) {
 				}
 			}
 			if(!marks.length) return tempRes;
-			tempRes += traverseMarks(marks, isAll);
+			tempRes += traverseMarks(marks);
 			return tempRes;
 		},'');
 		copy(res);
@@ -60,28 +60,9 @@ async function copyBookMarks(isAll) {
 		res += `${getTitleAddedPreAndSuf(targetChapAndMarks.title, targetChapAndMarks.level)}\n\n`;
 		if(targetChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
 			targetChapAndMarks.anchors
-			.forEach(anchor=>{res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});}
-		//生成"[插图]"索引
-		let rangeArr = targetChapAndMarks.marks.reduce((tempArr, curMark)=>{
-			let content = curMark.markText||curMark.abstract;
-			tempArr = tempArr.concat(getRangeArrFrom(curMark.range, content));
-			return tempArr;
-		},[]);
-		//由 rangeArr 生成索引数组 indexArr
-		let indexArr = [], generatedArr = [];
-		/* 
-		for (let j = 0, index = -1; j < rangeArr.length; j++) {
-			let targetIndex = generatedArr.indexOf(rangeArr[j]);
-			if(targetIndex < 0) indexArr[j] = ++index;
-			else indexArr[j] = indexArr[targetIndex];
-			generatedArr.push(rangeArr[j]);
-		} */
-		// 请求需要追加到文本中的图片 Markdown 文本
-		let markedData = [];
-		/* markedData = await sendMessageToContentScript({
-			message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
-		}); */
-		let str = traverseMarks(targetChapAndMarks.marks,isAll, indexArr, markedData);
+			.forEach(anchor=>{res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});
+		}
+		let str = traverseMarks(targetChapAndMarks.marks);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});

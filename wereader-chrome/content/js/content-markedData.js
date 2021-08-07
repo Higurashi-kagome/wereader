@@ -1,4 +1,5 @@
 /*用于获取被标注的图片的 Markdown 文本数组，用于支持导出被标注的图片*/
+// todo
 //将所有图片、脚注、代码块放到一个数组中
 (async (window)=>{
     function getElObj(){

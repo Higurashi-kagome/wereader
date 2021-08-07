@@ -35,7 +35,7 @@ var Config = {
     mpContent: false,
     mpAutoLoad: true,
     allTitles: false,
-    addThoughts: false,
+    addThoughts: true,
     enableRightClick: true,
     enableDevelop: false,
     enableStatistics: false,
@@ -43,7 +43,7 @@ var Config = {
     enableFancybox: true,
     enableCopyBtn: true,
     backupName: DefaultBackupName,
-    selectAction: "underlinNone",
+    selectAction: "underlineNone",
     //如果不设置默认值，则在设置页初始化时需要考虑到 
     re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
     flag: 0

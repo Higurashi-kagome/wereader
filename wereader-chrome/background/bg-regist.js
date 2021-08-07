@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
 			});
 			break;
 		case "saveRegexpOptions"://保存直接关闭设置页时onchange未保存的信息
-			updateStorageAreainBg(msg.regexpSet);
+			updateStorageAreaInBg(msg.regexpSet);
 			break;
 		case "deleteBookmarks":
 			if(!msg.confirm) return;

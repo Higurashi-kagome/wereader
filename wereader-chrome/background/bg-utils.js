@@ -17,7 +17,7 @@ function catchErr(...sender) {
 }
 
 // 更新 sync 和 local ——处理设置页 onchange 不生效的问题
-function updateStorageAreainBg(configMsg={},callback=function(){}){
+function updateStorageAreaInBg(configMsg={},callback=function(){}){
 	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
 	if(configMsg.key === undefined) return;
 	let config = {}

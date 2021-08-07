@@ -17,7 +17,7 @@ function addCopyBtn1(){
         let nextId = $(imgs[i]).next().attr('id');
         if(nextId && nextId.match(/(linkCopy)/)[1]) continue;
         let src = imgs[i].getAttribute("data-src");
-        if(!src) return console.error('获取图片链接失败');
+        if(!src) continue;
         let imgMdText = `![${src.split("/").pop()}](${src})`;
         let [, left, top] = imgs[i].style.transform.match(/translate\(\s*(\d*)px,\s*(\d*)px/);
         let width = imgs[i].style.width.replace('px','');

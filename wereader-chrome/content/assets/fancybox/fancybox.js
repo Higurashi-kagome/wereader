@@ -11,6 +11,14 @@ function fancyboxTargetObserver(){
 
 // 绑定点击事件
 function bindfancyBox(){
+    // 清除原点击事件
+    let imgs = document.querySelectorAll("img.wr_readerImage_opacity");
+    for (let i = 0; i < imgs.length; i++) {
+        let img = imgs[i];
+        imgClone = img.cloneNode(true);
+        img.parentNode.replaceChild(imgClone, img);
+    }
+    // 绑定新事件
     $('img.wr_readerImage_opacity,#renderTargetContent pre').each(function() {
         let box = $(this);
         box.css('cursor','pointer');
@@ -64,7 +72,6 @@ function showFancybox(boxInnerHTML){
     }
 }
 
-
 // 使用扩展通知来处理切换章节后失效的问题
 chrome.runtime.onMessage.addListener(function(msg){
     if(!msg.isFancybox) return;
@@ -72,6 +79,13 @@ chrome.runtime.onMessage.addListener(function(msg){
         if(result.enableFancybox) {
             bindfancyBox();
             fancyboxTargetObserver();
+            // 绑定 esc 事件
+            $(document).keydown(function (event) {
+                let el = $('.fancybox-overlay')
+                if (event.keyCode == 27 && el) {
+                    el.remove();
+                }
+            });
         }
     });
 });

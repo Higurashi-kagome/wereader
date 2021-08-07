@@ -1,4 +1,3 @@
-// 为处理某些时候切换章节后动作不生效的问题而将该脚本设置为 inject.js（原先为 content.js）
 //标注面板的监听函数
 let onToolbarObserve =  (mutationsList, observer)=>{
     for(let mutation of mutationsList) {
@@ -11,7 +10,7 @@ let onToolbarObserve =  (mutationsList, observer)=>{
                 const storageKey = 'selectAction'
                 chrome.storage.sync.get([storageKey], function(setting){
                     let targetUnderlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0]
-                    if(setting[storageKey] != "underlinNone" && targetUnderlineBtn){
+                    if(setting[storageKey] != "underlineNone" && targetUnderlineBtn){
                         targetUnderlineBtn.click()
                     }
                     //重新监听
@@ -35,11 +34,13 @@ let onContainerObserve = (mutationsList, observer)=>{
                 observer.disconnect();
             }
             //如果选中了文字
-            if(window.getComputedStyle(readerToolbarContainer).display=='block' && document.getElementsByClassName('wr_selection')[0]){
+            if(readerToolbarContainer
+                && window.getComputedStyle(readerToolbarContainer).display=='block'
+                && document.getElementsByClassName('wr_selection')[0]){
                 const storageKey = 'selectAction'
                 chrome.storage.sync.get([storageKey], function(setting){
                     let targetUnderlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0]
-                    if(setting[storageKey] != "underlinNone" && targetUnderlineBtn){
+                    if(setting[storageKey] != "underlineNone" && targetUnderlineBtn){
                         targetUnderlineBtn.click();
                     }
                 })
@@ -72,7 +73,7 @@ let observerContainer =  ()=>{
 
 
 // 使用扩展通知来处理切换章节后失效的问题
-chrome.runtime.onMessage.addListener(function(msg,sender,sendResponse){
+chrome.runtime.onMessage.addListener(function(msg){
     if(!msg.isSelectAction) return;
     if(firstObserver !== undefined){
         firstObserver.disconnect();
