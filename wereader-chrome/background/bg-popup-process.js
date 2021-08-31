@@ -153,7 +153,7 @@ async function getBestBookMarks() {
 	const wereader = new Wereader(bookId);
 	let {items: bestMarksData} = await wereader.getBestBookmarks();
 	//处理书本无热门标注的情况
-	if(!bestMarksData.length){
+	if(!bestMarksData || !bestMarksData.length){
 		return sendAlertMsg({text: "该书无热门标注",icon:'warning'});
 	}
 	//查找每章节热门标注

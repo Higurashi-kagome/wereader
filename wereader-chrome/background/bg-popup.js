@@ -43,8 +43,10 @@ async function copyBookMarks(isAll) {
 			let {title, level, marks} = curChapAndMarks;
 			if(Config.allTitles || marks.length){
 				tempRes += `${getTitleAddedPreAndSuf(title, level)}\n\n`;
-				if(curChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
-					curChapAndMarks.anchors.forEach(anchor=>{
+				// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
+				let anchors = curChapAndMarks.anchors
+				if(anchors && anchors[0].title != title){
+					anchors.forEach(anchor=>{
 						tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
 					});
 				}
@@ -57,12 +59,16 @@ async function copyBookMarks(isAll) {
 	} else {	//获取本章标注
 		//遍历目录
 		let targetChapAndMarks = chapsAndMarks.filter(item=>{return item.isCurrent})[0];
-		res += `${getTitleAddedPreAndSuf(targetChapAndMarks.title, targetChapAndMarks.level)}\n\n`;
-		if(targetChapAndMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
-			targetChapAndMarks.anchors
-			.forEach(anchor=>{res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});
+		let {title, level, marks} = targetChapAndMarks;
+		res += `${getTitleAddedPreAndSuf(title, level)}\n\n`;
+		// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
+		let anchors = targetChapAndMarks.anchors
+		if(anchors && anchors[0].title != title){
+			anchors.forEach(anchor=>{
+				res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
+			});
 		}
-		let str = traverseMarks(targetChapAndMarks.marks);
+		let str = traverseMarks(marks);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});
@@ -72,14 +78,19 @@ async function copyBookMarks(isAll) {
 // 获取热门标注
 async function copyBestBookMarks() {
 	let bestMarks = await getBestBookMarks();
+	if(!bestMarks) return; // 无热门标注
 	//遍历 bestMark
 	let res = bestMarks.reduce((tempRes, curChapAndBestMarks)=>{
 		let {title, level, bestMarks} = curChapAndBestMarks;
 		if(Config.allTitles || bestMarks.length){
 			tempRes += `${getTitleAddedPreAndSuf(title, level)}\n\n`;
-			if(curChapAndBestMarks.anchors){ // 存在锚点标题则默认将追加到上级上级标题末尾
-				curChapAndBestMarks.anchors
-				.forEach(anchor=>{tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`});}
+			// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
+			let anchors = targetChapAndMarks.anchors
+			if(anchors && anchors[0].title != title){
+				anchors.forEach(anchor=>{
+					tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
+				});
+			}
 		}
 		if(!bestMarks.length) return tempRes;
 		bestMarks.forEach(bestMark=>{
