@@ -129,3 +129,7 @@
 - 书架书本支持顶置
 - 完善 fancybox（从原生 fancybox 中借鉴）
 - 考虑重新支持导出图片
+- 增加 popup options 公众号 fancybox 等页面之间的相似度与关联度
+- 使用本地化的 HTML 来指引用户进行反馈
+- 打包到项目文件夹下而不是 Windows 桌面上
+- 使用 webpack 打包
