@@ -21,7 +21,7 @@ function bindfancyBox(){
     // 绑定新事件
     $('img.wr_readerImage_opacity,#renderTargetContent pre').each(function() {
         let box = $(this);
-        box.css('cursor','pointer');
+        // box.css('cursor','pointer');
         box.on('click', function(){
             let boxInnerHTML;
             const src = $(this).attr('data-src');
