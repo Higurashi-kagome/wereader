@@ -42,6 +42,7 @@ function showFancybox(boxInnerHTML){
             </div>
         </div>`
     );
+	$(".fancybox-pre").parent().addClass("pre");
     // 点击空白移除
     $('.fancybox-overlay').on('click', function(){
         $('.fancybox-overlay').remove();

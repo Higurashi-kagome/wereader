@@ -11,11 +11,14 @@
 	align-items: center;
 }
 
-.fancybox-skin{
-	width: 90%;
+.fancybox-skin {
 	padding: 15px;
 	resize: both;
 	overflow: hidden;
+}
+
+.fancybox-skin:not(.pre) {
+	width: 90%;
 }
 
 .fancybox-wrap{
