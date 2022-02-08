@@ -1,50 +1,50 @@
 /* background */
 .fancybox-overlay{
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 8010;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 8010;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .fancybox-skin{
-  width: fit-content;
-  padding: 15px;
-  resize: both;
-  overflow: hidden;
+	width: 90%;
+	padding: 15px;
+	resize: both;
+	overflow: hidden;
 }
 
 .fancybox-wrap{
-    z-index: 8030;
-    position: absolute;
+	z-index: 8030;
+	position: absolute;
 }
 
 .fancybox-skin{
-    background: #f8f9fa;
-    border-radius: 4px;
-    box-shadow: 0 10px 25px rgb(0 0 0 / 50%);
+	background: #f8f9fa;
+	border-radius: 4px;
+	box-shadow: 0 10px 25px rgb(0 0 0 / 50%);
 }
 
 .fancybox-skin>*{
-  max-height: 100vh;
-  max-width: 90vw;
-  cursor: all-scroll;
+	max-height: 100vh;
+	max-width: 90vw;
+	cursor: all-scroll;
 }
 
 img.fancybox-image,
 pre.fancybox-pre {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 pre.fancybox-pre{
-  overflow: auto;
-  color: black;
-  background-color: #e6e6e6;
-  font-family:'Courier New', Courier, monospace;
-  font-size: 1rem;
+	overflow: auto;
+	color: black;
+	background-color: #e6e6e6;
+	font-family:'Courier New', Courier, monospace;
+	font-size: 1rem;
 }
