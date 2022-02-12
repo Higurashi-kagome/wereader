@@ -95,11 +95,12 @@ function traverseMarks(marks){
 		let markText = abstract ? abstract : marks[j].markText;
 		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
-			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
 		}else{// 不是想法（为标注）则进行正则匹配
 			markText = regexpReplace(markText);
 		}
 		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`;
+		// 如果为想法，则将想法加入 res
+		if (abstract) res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
 	}
 	return res;
 }
