@@ -130,7 +130,7 @@ chrome.runtime.onInstalled.addListener(function(details){
 		chrome.notifications.create({
 			title: '微信读书笔记助手',
 			iconUrl: '/icons/icon128.png',
-			message: '已更新至 v2.19.3，支持公众号自动翻页。',
+			message: '',
 			type: 'basic'
 		});
 	}
