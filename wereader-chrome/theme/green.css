@@ -21,3 +21,8 @@ body{ background: #BEE5C5 !important; }
 .readerCatalog_searchBar_left{
     background: #BCE4C3 !important;
 }
+/* 读书信息“更多” */
+.wr_whiteTheme .bookReviewList_item .content_Normal.hasMore:after, .wr_whiteTheme .reader_topReview_item .content_Normal.hasMore:after,
+.wr_whiteTheme .bookInfo_intro.hasMore:after{
+	background: linear-gradient(90deg, rgba(31, 32, 34, 0), rgb(190 229 197) 50%, rgb(190 229 197)) !important;
+}
