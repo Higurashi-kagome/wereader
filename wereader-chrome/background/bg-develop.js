@@ -1,3 +1,8 @@
+function logAndCopy(data, msg = '') {
+	console.log(msg, data);
+	copy(data);
+}
+
 /* 用于测试 */
 function getTest(){
 
@@ -5,61 +10,67 @@ function getTest(){
 
 	let logBookmarksJson = async ()=>{
 		const data = await wereader.getBookmarks();
-		console.log('bookmarksJson', data);
+		logAndCopy(data, 'bookmarksJson');
 	}
 
 	let logStorage = ()=>{
+		let storage = {};
 		chrome.storage.sync.get(function(sync){
-			console.log('storage.sync', sync);
+			storage.sync = sync;
+			chrome.storage.local.get(function(local){
+				storage.local = local;
+				logAndCopy(storage, 'storage');
+			});
 		});
-		chrome.storage.local.get(function(local){
-			console.log('storage.local', local);
-		});
+		
 	}
 
 	let logShelfHtml = ()=>{
 		fetch('https://weread.qq.com/web/shelf').then(function(resp) {return resp.text()}).then(function(data) {
-			var initdata = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
-			console.log(initdata);
+			var initData = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
+			logAndCopy(initData, 'initData');
 		})
 	}
 
 	let logConfig = ()=>{
-		console.log('Config', Config);
+		logAndCopy(Config, 'Config');
 	}
 
 	let logGetBookMarks = async ()=>{
 		const chapsAndMarks = await getBookMarks();
-		console.log('chapsAndMarks', chapsAndMarks);
+		logAndCopy(chapsAndMarks, 'chapsAndMarks');
 	}
 
 	let logBestBookMarks = async ()=>{
-		const bestbookmarks = await getBestBookMarks();
-		console.log('bestbookmarks', bestbookmarks);
+		const bestBookmarks = await getBestBookMarks();
+		logAndCopy(bestBookmarks, 'bestBookmarks');
 	}
 
 	let logGetChapters = async ()=>{
 		const chapters = await getChapters();
-		console.log('chapters', chapters);
+		logAndCopy(chapters, 'chapters');
 	}
 
 	let logChapInfosInServer = async ()=>{
 		const data = await wereader.getChapInfos();
-		console.log('chapInfosInServer', data);
+		logAndCopy(data, 'chapInfosInServer');
 	}
 
 	let logFuncGetShelfData = async ()=>{
-		console.log(await getShelfData());
+		const shelfData = await getShelfData();
+		logAndCopy(shelfData, 'shelfData');
 	}
 
 	let logFuncWereaderGetShelfData = async ()=>{
-		console.log(await wereader.getShelfData());
+		const wereaderShelfData = await wereader.getShelfData();
+		logAndCopy(wereaderShelfData, 'wereaderShelfData');
 	}
 
 	let logReadDetail = async ()=>{
-		console.log(await getReadDetail());
-		// console.log(await getReadDetail(1, 3, 1609430400));
-		console.log(await getReadDetail(0));
+		const readDetail = await getReadDetail();
+		logAndCopy(readDetail, 'readDetail');
+		// logAndCopy(1609430400, await getReadDetail(1, 3);
+		// console.log(await getReadDetail(0));
 	}
 
 	let functions = {
