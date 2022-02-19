@@ -163,7 +163,6 @@ $(document).ready(function() {
 
   /* 初始化书架数据 */
   fetch(shelfPage).then(resp => {
-    console.log('resp', resp);
     return resp.text();
   }).then(text => {
     var initdata = JSON.parse(text.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
@@ -192,14 +191,14 @@ $(document).ready(function() {
       /* 书架中插入公众号 */
       let {data} = resp;
       if(!data.books) return;
-      let mps = []
+      let mps = [];
       data.books.forEach(each => {
-        if (each.bookId.startsWith('MP_WXS_')) {
-          mps.push(each)
-          shelfdict[puzzling(each.bookId)] = each
+        if (each.bookId && each.bookId.startsWith('MP_WXS_')) {
+          mps.push(each);
+          shelfdict[puzzling(each.bookId)] = each;
         }
-      })
-      if (mps.length == 0) return
+      });
+      if (mps.length == 0) return;
       mps.forEach(function(mp) {
         let coverImg = `<img src="${mp.cover.replace('http://', 'https://')}" alt="书籍封面" class="wr_bookCover_img">`;
         if(mp.cover.indexOf('http')<0) coverImg = '';
