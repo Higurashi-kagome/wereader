@@ -1,6 +1,6 @@
 function logAndCopy(data, msg = '') {
 	console.log(msg, data);
-	copy(data);
+	copy(JSON.stringify(data));
 }
 
 /* 用于测试 */
