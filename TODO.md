@@ -125,7 +125,6 @@
 - 迁移到 manifest V3
 - 当书本中不包含任何标注而只是包含想法时，导出标注提示“本书无标注”
 - 修正后的初始化 Config 值不能够自动更新的问题，如 underlinNone=>underlineNone
-- 书架书本支持顶置
 - 完善 fancybox（从原生 fancybox 中借鉴）
 - 考虑重新支持导出图片
 - 增加 popup options 公众号 fancybox 等页面之间的相似度与关联度
