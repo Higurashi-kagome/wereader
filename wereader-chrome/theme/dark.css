@@ -29,3 +29,7 @@ body{ background: #17181a !important; }
 }
 /*下载APP二维码*/
 .download_dialog_content{background: #303030 !important;}
+
+#searchNoteInput{
+	background-color: #F1E5C9;
+}
