@@ -21,6 +21,7 @@ document.getElementById('shelfBtn').addEventListener('click', async (event)=>{
 		}
 	}
 	createShelf(shelfData);
+	createSearchInput();
 });
 
 function getShelf(shelfData){
