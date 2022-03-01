@@ -1,42 +1,42 @@
 const helpContent = {
     s1Pre: {
-        title: '一级标注前缀',
+        title: '直线标注前缀',
         help: `<p>在微信读书中，标注分三类，分别是<span class="lineinline">波浪线</span>、<span class="lineinline">马克笔</span>和<span class="lineinline">直线</span>：</p>
         <img src="icons/mark.png" alt="mark" style="zoom:60%;" />
-        <p>一级标注即指被直线标注的文本：</p>
+        <p><span class="lineinline">直线标注</span>即指被直线标注的文本：</p>
         <img src="icons/markstyle1.png">
-        <p>“一级标注前缀”中的内容将会被添加到一级标注的前面。</p>
-        <p>同样，下方的“一级标注后缀”中的内容将会被添加到一级标注的后面。</p>
-        <p>所以，当“一级标注前缀”和“一级标注后缀”分别被设置为<span class="lineinline">**\`</span>和<span class="lineinline">\`**</span>时，上图中的标注将会被导出为<span class="lineinline">**\`我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却\`**</span>。</p>`
+        <p>“直线标注前缀”中的内容将会被添加到直线标注的前面。</p>
+        <p>同样，下方的“直线标注后缀”中的内容将会被添加到直线标注的后面。</p>
+        <p>所以，当“直线标注前缀”和“直线标注后缀”分别被设置为<span class="lineinline">**\`</span>和<span class="lineinline">\`**</span>时，上图中的标注将会被导出为<span class="lineinline">**\`我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却\`**</span>。</p>`
     },
     s2Pre: {
-        title: '二级标注前缀',
-        help: `<p>二级标注是指被马克笔标注的文本：</p>
+        title: '马克笔标注前缀',
+        help: `<p><span class="lineinline">马克笔标注</span>是指被马克笔标注的文本：</p>
         <img src="icons/markstyle2.png">
-        <p>“二级标注前缀”中的内容将会被添加到二级标注的前面。</p>
-        <p>下方的“二级标注后缀”中的内容将会被添加到二级标注的后面。</p>`
+        <p>“马克笔标注前缀”中的内容将会被添加到马克笔标注的前面。</p>
+        <p>下方的“马克笔标注后缀”中的内容将会被添加到马克笔标注的后面。</p>`
     },
     s3Pre: {
-        title: '三级标注前缀',
-        help: `<p>三级标注是指被波浪线标注的文本：</p>
+        title: '波浪线标注前缀',
+        help: `<p><span class="lineinline">波浪线标注</span>是指被波浪线标注的文本：</p>
         <img src="icons/markstyle3.png">
-        <p>“三级标注前缀”中的内容将会被添加到三级标注的前面。</p>
-        <p>下方的“三级标注后缀”中的内容将会被添加到三级标注的后面。</p>`
+        <p>“波浪线标注前缀”中的内容将会被添加到波浪线标注的前面。</p>
+        <p>下方的“波浪线标注后缀”中的内容将会被添加到波浪线标注的后面。</p>`
     },
     lev1Pre: {
         title: '一级标题前缀',
         help: `<p>微信读书中的书通常最多只有三级目录：</p>
         <img src="icons/chapterLevel.png">
-        <p>其中排第一的标题(朗读者1)即为一级标题。</p>
-        <p>“一级标题前缀”中的内容在导出标题时将会被添加到一级标题前面，相应地，下方的“一级标题后缀”中的内容在导出标题时将会被添加到一级标题之后。如，若这里设置为一个井号加一个空格(# )，同时“一级标题后缀”设置为空，则上面的一级标题导出来后为<span class="lineinline"># 朗读者1</span>。</p>`
+        <p>其中排第一的标题（朗读者1）即为<span class="lineinline">一级标题</span>。</p>
+        <p>“一级标题前缀”中的内容在导出标题时将会被添加到一级标题前面，相应地，下方的“一级标题后缀”中的内容在导出标题时将会被添加到一级标题之后。如，若这里设置为一个井号加一个空格（# ），同时“一级标题后缀”设置为空，则上面的一级标题导出来后为<span class="lineinline"># 朗读者1</span>。</p>`
     },
     thouSuf: {
         title: '想法后缀',
-        help: `<p>想法也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>`
+        help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>`
     },
     thouMarkSuf: {
         title: '想法标注后缀',
-        help: `<p>想法标注即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>`
+        help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>`
     },
     codeSuf: {
         title: '代码块后缀',
