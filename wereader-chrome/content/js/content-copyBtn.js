@@ -122,6 +122,42 @@ function addCopyBtn(){
     addCopyBtn1();
     addCopyBtn2();
     addCopyBtn3();
+	addCopyBtn4();
+}
+
+// 给想法添加复制按钮
+function addCopyBtn4() {
+	const interval1 = setInterval(() => {
+		if (!$('.wr_myNote').length) return;
+		if ($('#readerReviewDetailPanel').length) {
+			clearInterval(interval1);
+			return;
+		}
+		$('.wr_myNote').each((idx, el)=>{
+			if ($('#thoughtCopy').length) return;
+			$(el).on('click', ()=>{
+				const interval2 = setInterval(() => {
+					if (!$('#readerReviewDetailPanel').length) return;
+					if ($('#thoughtCopy').length) return;
+					let btn = $(document.createElement('button'));
+					btn.attr('id', 'thoughtCopy').html("📋").css({'float': 'right', 'font-size': 'initial'});
+					// 复制按钮点击事件
+					btn.on('click', function(){
+						const content = $('#readerReviewDetailPanel .content').text();
+						window.copy(content);
+						$(this).html("✔");
+						setTimeout(function () {
+							btn.html("📋");
+						}, 1500);
+					});
+					$('#readerReviewDetailPanel .actions').append(btn);
+					clearInterval(interval2);
+				},10);
+			});
+		});
+		clearInterval(interval1);
+	},10);
+	
 }
 
 //console.log("inject-copyBtn.js：已注入")
