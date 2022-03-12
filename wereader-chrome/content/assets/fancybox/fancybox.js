@@ -80,13 +80,6 @@ chrome.runtime.onMessage.addListener(function(msg){
         if(result.enableFancybox) {
             bindfancyBox();
             fancyboxTargetObserver();
-            // 绑定 esc 事件
-            $(document).keydown(function (event) {
-                let el = $('.fancybox-overlay')
-                if (event.keyCode == 27 && el) {
-                    el.remove();
-                }
-            });
         }
     });
 });
