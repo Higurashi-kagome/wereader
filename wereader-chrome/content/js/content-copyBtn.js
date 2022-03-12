@@ -1,16 +1,18 @@
 // 图片等内容是动态加载的，所以监听 dom 的变化并随时重新生成复制按钮
 function copyElObserver(){
-    let observer = new MutationObserver(addCopyBtn);
-    let target = document.getElementById('renderTargetContent').children[0];
-    if(!target){
-        window.setTimeout(copyElObserver,500);
-        return;
-    }
-    observer.observe(target, {'childList':true});
+	$('#renderTargetContent').unbindArrive(".passage-wrapper");
+	$('#renderTargetContent').arrive(".passage-wrapper", addCopyBtn);
+}
+
+// 想法面板监听
+function thoughtPanelShowObserver() {
+	$('.app_content').unbindArrive(".readerReviewDetail_item");
+	// 监听是否出现了想法面板，出现则尝试给面板生成复制按钮，并给面板绑定更新事件
+	$('.app_content').arrive(".readerReviewDetail_item", addCopyBtnForThoughts);
 }
 
 //给图片添加复制按钮
-function addCopyBtn1(){
+function addCopyBtnForImgs(){
     let imgs = document.getElementById("renderTargetContent").getElementsByTagName('img');
     for(let i=0;i<imgs.length;i++){
         // 已生成按钮则 continue
@@ -45,12 +47,12 @@ function addCopyBtn1(){
 }
 
 //给注释添加复制按钮
-function addCopyBtn2(){
+function addCopyBtnForAnnotation(){
     //获取并遍历注释控件
     const footerNotes = document.getElementsByClassName("reader_footer_note js_readerFooterNote wr_absolute");
     for(let i=0;i<footerNotes.length;i++){
         //获取注释内容、注释按钮位置等信息
-        let footernote = footerNotes[i].getAttribute("data-wr-footernote")
+        let footerNote = footerNotes[i].getAttribute("data-wr-footernote")
         let btn =  document.createElement("cn")
         window.setAttributes(btn,{
             id:"noteCopy" + i,
@@ -58,7 +60,7 @@ function addCopyBtn2(){
         });
         // 复制按钮点击事件
         btn.addEventListener('click', function(){
-            window.copy(footernote)
+            window.copy(footerNote)
             this.textContent = "✔"
             let id = this.id
             setTimeout(function () {
@@ -86,7 +88,7 @@ function addCopyBtn2(){
 }
 
 //给代码块添加复制按钮
-function addCopyBtn3(){
+function addCopyBtnForPre(){
     let pre = document.getElementById('renderTargetContent').getElementsByTagName("pre")
     if(pre.length > 0){
         for(let i=0;i<pre.length;i++){
@@ -119,45 +121,30 @@ function addCopyBtn3(){
 }
 
 function addCopyBtn(){
-    addCopyBtn1();
-    addCopyBtn2();
-    addCopyBtn3();
-	addCopyBtn4();
+    addCopyBtnForImgs();
+    addCopyBtnForAnnotation();
+    addCopyBtnForPre();
+	thoughtPanelShowObserver();
 }
 
 // 给想法添加复制按钮
-function addCopyBtn4() {
-	const interval1 = setInterval(() => {
-		if (!$('.wr_myNote').length) return;
-		if ($('#readerReviewDetailPanel').length) {
-			clearInterval(interval1);
-			return;
-		}
-		$('.wr_myNote').each((idx, el)=>{
-			if ($('#thoughtCopy').length) return;
-			$(el).on('click', ()=>{
-				const interval2 = setInterval(() => {
-					if (!$('#readerReviewDetailPanel').length) return;
-					if ($('#thoughtCopy').length) return;
-					let btn = $(document.createElement('button'));
-					btn.attr('id', 'thoughtCopy').html("📋").css({'float': 'right', 'font-size': 'initial'});
-					// 复制按钮点击事件
-					btn.on('click', function(){
-						const content = $('#readerReviewDetailPanel .content').text();
-						window.copy(content);
-						$(this).html("✔");
-						setTimeout(function () {
-							btn.html("📋");
-						}, 1500);
-					});
-					$('#readerReviewDetailPanel .actions').append(btn);
-					clearInterval(interval2);
-				},10);
-			});
+function addCopyBtnForThoughts() {
+	$('.readerReviewDetail_item .actions').each((idx, el)=>{
+		if ($(el).find('.thoughtCopy').length) return;
+		// 创建复制按钮
+		let btn = $(document.createElement('button'));
+		btn.attr('class', 'thoughtCopy').html("📋").css({'float': 'right', 'font-size': 'initial'});
+		// 复制按钮点击事件
+		btn.on('click', function(){
+			const content = $(this).parent().parent().find('.content')[0].innerText;
+			window.copy(content);
+			$(this).html("✔");
+			setTimeout(function () {
+				btn.html("📋");
+			}, 1500);
 		});
-		clearInterval(interval1);
-	},10);
-	
+		$(el).append(btn);
+	})
 }
 
 //console.log("inject-copyBtn.js：已注入")

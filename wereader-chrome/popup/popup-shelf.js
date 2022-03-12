@@ -1,21 +1,19 @@
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
-document.getElementById('shelfBtn').addEventListener('click', async (event)=>{
+$('#shelfBtn').on('click', async ()=>{
 	let shelfData = bg.shelfForPopup.shelfData;
+	// 从背景页获取数据无效
 	if(!shelfData || shelfData.errMsg){
 		const resp = await bg.getShelfData();
-		if(resp.errMsg){
-			document.getElementById('shelf').innerHTML = `<a>正在加载...</a>`;
+		if(resp.errMsg){	// 从服务端获取数据失败
+			$('#shelf').html(`<a>正在加载...</a>`);
 			let tab = await bg.createTab({url: 'https://weread.qq.com/', active: false});
 			if(tab){
 				shelfData = await bg.setShelfData();
 				if(shelfData.errMsg){
-					document.getElementById('shelf').innerHTML = `<a>加载失败，请先登陆。</a>`;
-					return;
-				}else{
-					event.target.click();
-				}
+					return $('#shelf').html(`<a>加载失败，请先登陆。</a>`);
+				}else $(this).click();
 			}
-		} else {
+		} else {	// 从服务端获取数据成功，保存数据到背景页
 			shelfData = resp;
 			bg.setShelfData(shelfData);
 		}
@@ -99,44 +97,33 @@ function getShelf(shelfData){
 
 function createShelf(shelfData){
 	let shelf = getShelf(shelfData);
-    let shelfContainer = document.getElementById('shelf');
-	shelfContainer.innerHTML = '';
+	let shelfContainer = $('#shelf').html('');
 	/*创建目录*/
-	for (const cate of shelf) {
-		let {cateName, books} = cate;
-		// 某一分类元素
-		let cateEl = document.createElement('button'); 
-		setAttributes(cateEl,{textContent:cateName,className:"dropdown-btn"});
-		shelfContainer.appendChild(cateEl);
+	for (const {cateName, books} of shelf) {
 		// 遍历某一分类下的书本
 		if(!books.length) continue;
-		let booksContainer = document.createElement("div");//章内书本容器
-		setAttributes(booksContainer,{className:'dropdown-container'});
-		for (const book of books) {
-			let bookId = book.bookId;
-			let bookEl = document.createElement('a');
-			const attributes = {
-				target: "_blank",
-				textContent: book.title,
-				href: `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`
-			};
-			setAttributes(bookEl, attributes);
+		let booksContainer = $(`<div class='dropdown-container'></div>`);//章内书本容器
+		for (const {bookId, title} of books) {
+			const href = `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`;
+			let bookEl = $(`<a target='_blank' href='${href}'>${title}</a>`);
 			// 为微信公众号绑定事件
 			if(bookId && bookId.startsWith('MP_WXS_')){
-				bookEl.onclick = async function(e){
+				bookEl.on('click', async function(e){
 					e.preventDefault();
 					if (!bookId) return;
 					let resp = await bg.createMpPage(bookId);
 					if(resp && resp.errmsg) {
 						console.log('mpOnclick', resp.errmsg);
-						chrome.tabs.create({url: attributes.href});
+						chrome.tabs.create({url: href});
 					}
-				}
+				});
 			}
-			booksContainer.appendChild(bookEl);
+			booksContainer.append(bookEl);
 		}
-		shelfContainer.appendChild(booksContainer);
-		cateEl.addEventListener('click', dropdownClickEvent);
+		// 某一分类元素
+		let cateEl = $(`<button class='dropdown-btn'>${cateName}</button>`); 
+		shelfContainer.append(cateEl, booksContainer);
+		cateEl.on('click', dropdownClickEvent);
 	}
 }
 

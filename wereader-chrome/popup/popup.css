@@ -6,16 +6,17 @@ body{
 #reload {
     font-family: Lucida Sans Unicode;
     transition: transform 500ms;
+	margin-left: 5px;
 }
 #reload:hover{
     transform: rotate(360deg);
 }
 
-.tablinks:not(.active) #reload {
+.tabLinks:not(.active) #reload {
     display: none;
 }
 
-.tablinks.active #reload{
+.tabLinks.active #reload{
     display: inline-block;
 }
 
@@ -49,7 +50,7 @@ body{
 }
 
 /* Style the tab content */
-.tabcontent {
+.tabContent {
     display: none;
     border: 1px solid #ccc;
     border-top: none;

@@ -58,6 +58,7 @@
 | [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者。 |
 | [SingleFile](https://github.com/gildas-lormeau/SingleFile)   | 设置页模仿自该扩展。                                         |
 | [weread_helper_extension](https://github.com/ellipse42/weread_helper_extension) | 参考该项目中的代码实现了书架管理和公众号浏览。               |
+| [uzairfarooq/arrive](https://github.com/uzairfarooq/arrive)  | 借助该项目方便地监听 DOM 变动。                              |
 
 ## 参考
 

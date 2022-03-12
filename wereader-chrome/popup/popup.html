@@ -7,14 +7,11 @@
     <body>
         <!-- Tab links -->
         <div class="tab">
-            <button class="tablinks" id="noteBtn">笔记</button>
-            <button class="tablinks" id="shelfBtn">书架&nbsp;<span id='reload' title="刷新">&#x21bb;</span></button>
-            <button class="tablinks" id="statisticBtn">统计</button>
+			<button class="tabLinks" id="shelfBtn">书架</button>
         </div>
-
         <!-- Tab content -->
         <!-- 笔记 -->
-        <div class="tabcontent vertical-menu">
+        <div class="tabContent vertical-menu" data-for='noteBtn' style="display: none;">
             <button class="dropdown-btn">获取书评</button>
             <div class="dropdown-container">
                 <a id="getTextComment" class="caller">纯文本</a>
@@ -35,14 +32,17 @@
             </div>
         </div>
         <!-- 书架 -->
-        <div class="tabcontent vertical-menu" id='shelf'><a>...</a></div>
-        <div class="tabcontent vertical-menu"><a>...</a></div>
+        <div class="tabContent vertical-menu" data-for="shelfBtn" id='shelf'><a>...</a></div>
+		<!-- 脚本 -->
+		<script type="text/javascript" src="../content/assets/js/jQuery.min.js"></script>
+		<script type="text/javascript" src="popup-vars.js"></script>
+		<script type="text/javascript" src="popup-note.js"></script>
+		<script type="text/javascript" src="popup-shelf.js"></script>
+		<script type="text/javascript" src="popup-shelf-reload.js"></script>
+		<script type="text/javascript" src="popup-shelf-search.js"></script>
+		<script type="text/javascript" src="popup-statistic.js"></script>
+		<script type="text/javascript" src="popup-options.js"></script>
+		<script type="text/javascript" src="popup-develop.js"></script>
+		<script type="text/javascript" src="popup-dispose.js"></script>
     </body>
-    <script type="text/javascript" src="../content/assets/js/jQuery.min.js"></script>
-    <script type="text/javascript" src="popup-vars.js"></script>
-    <script type="text/javascript" src="popup-develop.js"></script>
-    <script type="text/javascript" src="popup-note.js"></script>
-    <script type="text/javascript" src="popup-shelf.js"></script>
-	<script type="text/javascript" src="popup-shelf-search.js"></script>
-    <script type="text/javascript" src="popup-dispose.js"></script>
 </html>
