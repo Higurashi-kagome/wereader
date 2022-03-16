@@ -5,7 +5,7 @@ $(document).keydown(function (event) {
 	let thoughtPanel = $('.readerWriteReviewPanel');
 	// 想法浏览面板
 	let thoughtReview = $('#readerReviewDetailPanel');
-	/* TODO：与想法浏览面板同时显示的标注面板 */
+	/* TODO：与想法浏览面板同时显示的标注面板不能够正常退出显示的问题 */
 	if (event.keyCode == 27) {
 		if (fancybox.length) fancybox.remove();
 		if (thoughtPanel.length && thoughtPanel.css('display') !== 'none') $('.closeButton').click();

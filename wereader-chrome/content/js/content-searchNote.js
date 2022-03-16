@@ -1,6 +1,6 @@
 document.querySelector('.note').addEventListener('click',function(){
 	if (document.getElementById('searchNoteInput')) return;
-	$(".readerNotePanel").prepend(`<input type="text" id="searchNoteInput" style="font-size: 16px;padding: 12px 20px 12px 40px;border: 1px solid #ddd; " placeholder="搜索...">`);
+	$(".readerNotePanel").prepend(`<div id='noteTools' style="display: flex;flex-direction: column;align-items: stretch;"><input type="text" id="searchNoteInput" style="background:transparent; font-size: 16px;padding: 12px 20px 12px 40px;border:1px groove; flex-grow: 1;" placeholder="搜索..."></div>`);
 	$('#searchNoteInput').keyup(function (e) {
 		let input = $(this);
 		let filter = input.val().toUpperCase();

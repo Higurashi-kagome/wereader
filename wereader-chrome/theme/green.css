@@ -27,6 +27,30 @@ body{ background: #BEE5C5 !important; }
 	background: linear-gradient(90deg, rgba(31, 32, 34, 0), rgb(190 229 197) 50%, rgb(190 229 197)) !important;
 }
 
-#searchNoteInput{
-	background-color: #BEE5C5;
+/* 笔记目录 */
+#noteTools button {
+	color: initial;
+}
+
+#noteTools ul {
+	display: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+	max-height: 500px;
+	overflow: auto;
+	width: 100%;
+}
+
+#noteTools li a {
+	display: block;
+	color: #000;
+	padding: 5px 16px;
+	text-decoration: none;
+}
+
+/* 鼠标移动到选项上修改背景颜色 */
+#noteTools li a:hover {
+    background-color: #555;
+    color: white;
 }

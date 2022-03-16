@@ -85,14 +85,20 @@ function addThemeBtn(){
     },false)
 }
 
-var Flag = 0
+var Flag = 0;
+var queryStatus = 0;
 //轮询，主题初始化（实现记住上次设置的背景主题）
 const timeId = setInterval(() => {
+	// 防止多次执行
+	if (queryStatus) clearInterval(this.timeId);
     //如果发现页面显示正在加载
     if (document.getElementsByClassName("readerChapterContentLoading").length != 0) {
         //设置背景色
         try{
             chrome.storage.sync.get(['flag'], function(result) {
+				// 防止多次注入
+				if (queryStatus) return;
+				else queryStatus = 1;
                 if(result.flag == 0){
                     //设置绿色主题
                     if(document.getElementsByClassName("readerControls_item white").length != 0){
@@ -107,9 +113,27 @@ const timeId = setInterval(() => {
                     }
                     chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
                     Flag = 2
-                }else{
-                    Flag = 0
-                }
+                }else if(result.flag == 2){
+					// 设置黑色主题
+					chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"});
+					if(document.getElementsByClassName("readerControls_item dark").length != 0){
+                        clickDarkOrWhite("readerControls_item dark");
+                    } else {
+						// 有时候按钮还没加载出来，必须要等待并点击，不然字体颜色不正常
+						$('.readerControls .readerControls').unbindArrive(".readerControls_item .dark");
+						$('.readerControls .readerControls').arrive(".readerControls_item .dark", ()=>{
+							clickDarkOrWhite("readerControls_item dark");
+						});
+					}
+					// Flag = 0;
+                } else if(result.flag == -1){
+					// 设置白色主题
+					chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
+					if(document.getElementsByClassName("readerControls_item white").length != 0){
+                        clickDarkOrWhite("readerControls_item white")
+                    }
+					// Flag = 0;
+				}
             })
         }catch(err){
             console.warn("content-theme.js => setInterval() => " + err.message)

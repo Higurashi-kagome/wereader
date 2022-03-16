@@ -30,6 +30,33 @@ body{ background: #17181a !important; }
 /*下载APP二维码*/
 .download_dialog_content{background: #303030 !important;}
 
-#searchNoteInput{
-	background-color: #F1E5C9;
+/* 笔记目录 */
+#noteTools button {
+	color: inherit;
+}
+
+#noteTools ul {
+	display: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+	max-height: 500px;
+	overflow: auto;
+	width: 100%;
+}
+
+#noteTools li a {
+	display: block;
+	color: #000;
+	padding: 5px 16px;
+	text-decoration: none;
+}
+
+/* 鼠标移动到选项上修改背景颜色 */
+#noteTools li a:hover {
+    background-color: #555;
+    color: white;
+}
+#noteTools li a {
+    color:  white;
 }
