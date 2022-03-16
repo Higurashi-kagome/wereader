@@ -125,7 +125,7 @@ async function getChapters(){
 	const wereader = new Wereader(bookId);
 	const chapInfos = await wereader.getChapInfos();
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}});
-	if(!response) return alert("获取目录出错。");
+	if(!response || !chapInfos) return alert("获取目录出错。");
 	let chapsFromServer = chapInfos.data[0].updated;
 	let checkedChaps = chapsFromServer.map(chapInServer=>{
 		let chapsFromDom = response.chapters;
