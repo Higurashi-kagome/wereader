@@ -54,3 +54,8 @@ body{ background: #BEE5C5 !important; }
     background-color: #555;
     color: white;
 }
+
+/* 主题按钮 */
+.readerControls_item.theme, #progressText {
+	color: rgb(0,0,0);
+}

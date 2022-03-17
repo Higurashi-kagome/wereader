@@ -60,3 +60,8 @@ body{ background: #17181a !important; }
 #noteTools li a {
     color:  white;
 }
+
+/* 主题按钮 */
+.readerControls_item.theme, #progressText {
+	color: rgb(190,190,190);
+}

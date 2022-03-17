@@ -16,12 +16,6 @@ window.addEventListener('load',()=>{
         var span2=document.createElement("span")
         span2.textContent = "进度"
         span2.id = "progressText"
-        //如果网页一开始为夜色模式，则需要将span文字颜色设置为灰色，否则保持默认
-        if(document.getElementsByClassName("readerControls_item white").length != 0){
-            span2.style.color = "rgb(190,190,190)"
-        }else{
-            span2.style.color = "rgb(0,0,0)"
-        }
         progressBtn.appendChild(span2)
         
         //绑定点击事件
