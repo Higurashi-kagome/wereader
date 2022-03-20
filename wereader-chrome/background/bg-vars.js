@@ -36,12 +36,10 @@ var Config = {
     mpAutoLoad: true,
     allTitles: false,
     addThoughts: true,
-    enableRightClick: true,
     enableDevelop: false,
     enableStatistics: false,
     enableOption: true,
     enableFancybox: true,
-    enableCopyBtn: true,
     backupName: DefaultBackupName,
     selectAction: "underlineNone",
     //如果不设置默认值，则在设置页初始化时需要考虑到 

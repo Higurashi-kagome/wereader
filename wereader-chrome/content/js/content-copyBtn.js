@@ -1,3 +1,5 @@
+/* 已弃用，改为使用右键复制 */
+
 // 图片等内容是动态加载的，所以监听 dom 的变化并随时重新生成复制按钮
 function copyElObserver(){
 	$('#renderTargetContent').unbindArrive(".passage-wrapper");

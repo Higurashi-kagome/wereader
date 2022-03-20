@@ -1,10 +1,7 @@
 // 解除右键限制
-chrome.storage.sync.get(['enableRightClick'],(result)=>{
-    if(!result.enableRightClick) return;
-    window.addEventListener("contextmenu",function(t) {
-        t.stopImmediatePropagation();
-    },true);
-});
+window.addEventListener("contextmenu",function(t) {
+	t.stopImmediatePropagation();
+},true);
 
 // 鼠标按下事件：点击右键时保存光标下的当前元素
 var clickedEl;

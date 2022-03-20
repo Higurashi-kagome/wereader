@@ -97,17 +97,9 @@ const helpContent = {
         title: '集中显示同时发布的公众号文章',
         help: `<p>选中该选项之后，公众号中同一时间发布的文章将会汇总到一起显示。</p>`
     },
-    enableRightClick: {
-        title: '开启右键',
-        help: `<p>选中该选项之后，可在读书页开启右键菜单。在需要复制或另存读书页图片的时候很有帮助。</p>`
-    },
     enableFancybox: {
         title: '开启 fancybox',
         help: `<p>选中该选项之后，将支持读书页图片放大显示。</p>`
-    },
-    enableCopyBtn: {
-        title: '开启复制按钮',
-        help: `<p>选中该选项之后，在图片、代码、注释上悬停将出现复制按钮。</p>`
     },
     enableStatistics: {
         title: '开启统计',
