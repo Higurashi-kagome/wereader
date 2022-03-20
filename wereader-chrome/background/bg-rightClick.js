@@ -9,7 +9,9 @@ chrome.contextMenus.create({
 function rightClickEventListener(info, tab) {
 	// 获取 DOM 元素
 	chrome.tabs.sendMessage(tab.id, "getClickedEl", {frameId: info.frameId}, data => {
-		console.log(data);
+		// 在图标的右键菜单上点击将会报错，所以设置错误捕捉
+		// 设置成 "contexts": ["page"] 无法处理图片被标注覆盖的情况
+		if (chrome.runtime.lastError) return;
 		let clickedEl = $(data.clickedEl);
 		let clickedElTagName = clickedEl.prop("tagName").toLowerCase();
 		if (clickedElTagName == 'img')
