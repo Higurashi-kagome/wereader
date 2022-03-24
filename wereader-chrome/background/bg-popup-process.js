@@ -48,51 +48,66 @@ async function getBookMarks(isAddThou) {
 }
 
 // 导出标注添加图片等内容
-function addMarkedData(markText, indexArr, markedData,all){
-	let index = 0;
-	//只获取本章时"[插图]"转图片、注释或代码块
-	while(!all && /\[插图\]/.test(markText)){
-		let amarkedData = markedData[indexArr[index]]
-		if(!amarkedData){//数组越界
-			console.log('markedData', markedData);
-			console.log('marks', marks);
-			return '';
-		}
-		let replacement = ''
-		if(amarkedData.src){//图片
-			//非行内图片单独占行（即使它与文字一起标注）
-			let inser1 = '', inser2 = ''
-			//不为行内图片且'[插图]'前有内容
-			if(!amarkedData.isInlineImg && markText.indexOf('[插图]') > 0)
-				inser1 = '\n\n'
-			//不为行内图片且'[插图]'后有内容
-			if(!amarkedData.isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
-				inser2 = '\n\n'
-			replacement = `${inser1}![${amarkedData.alt}](${amarkedData.src})${inser2}`
-		}else if(amarkedData.footnote){//注释
-			replacement = `[^${amarkedData.name}]`
-		}else if(amarkedData.code){//代码块
-			let inser1 = '', inser2 = ''
+function addMarkedData(markText, markedData, footnoteContent){
+	while(/\[插图\]/.test(markText)){
+		const aMarkedData = markedData.shift();
+		const {imgSrc, alt, isInlineImg, footnote, footnoteName, code} = aMarkedData;
+		let replacement = '';
+		if(imgSrc) {// 图片
+			// 非行内图片单独占行（即使它与文字一起标注）
+			let insert1 = '', insert2 = '';
+			// 不为行内图片且'[插图]'前有内容
+			if(!isInlineImg && markText.indexOf('[插图]') > 0)
+				insert1 = '\n\n'
+			// 不为行内图片且'[插图]'后有内容
+			if(!isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
+				insert2 = '\n\n'
+			replacement = `${insert1}![${alt}](${imgSrc})${insert2}`
+		}else if (footnote) {//注释
+			const footnoteId = footnoteName.replace(/[\s<>"]/, '-');
+			const footnoteNum = footnoteName.match(/(?<=注)(\d)*$/)[0];
+			replacement = `<sup><a id="${footnoteId}-ref" href="#${footnoteId}">${footnoteNum}</a></sup>`;
+			footnoteContent += `<p id="${footnoteId}">${footnoteNum}. ${footnote}<a href="#${footnoteId}-ref">&#8617;</a></p>\n`;
+		}else if (code) {//代码块
+			let insert1 = '', insert2 = ''
 			//'[插图]'前有内容
 			if(markText.indexOf('[插图]') > 0)
-				inser1 = '\n\n'
+				insert1 = '\n\n'
 			//'[插图]'后有内容
 			if(markText.indexOf('[插图]') != (markText.length - 4))
-				inser2 = '\n\n'
-			replacement = `${inser1}${Config.codePre}\n${amarkedData.code}${Config.codeSuf}${inser2}`
+				insert2 = '\n\n'
+			replacement = `${insert1}${Config.codePre}\n${code}${Config.codeSuf}${insert2}`
 		}
-		markText = markText.replace(/\[插图\]/, replacement)
-		index = index + 1
+		if (replacement) markText = markText.replace(/\[插图\]/, replacement);
+		else console.log(aMarkedData);
 	}
-	return markText;
+	// markedData 种的元素将会一个一个删除，footnoteContent 不断更新，最后在 traverseMarks 中追加到文字末尾
+	return [markText, markedData, footnoteContent];
 }
 
 // 处理章内标注
-function traverseMarks(marks){
-	let res = "";
-	for (let j = 0; j < marks.length; j++) {//遍历章内标注
+function traverseMarks(marks, markedData){
+	let res = "", matchSum = 0, isAddMarkedData = false;
+	// 获取“[插图]”数量 matchSum
+	if (markedData) {
+		for (let j = 0; j < marks.length; j++) {
+			let abstract = marks[j].abstract;
+			let markText = abstract ? abstract : marks[j].markText;
+			let regex = /\[插图\]/g;
+			let result = markText.match(regex);
+			let count = !result ? 0 : result.length;
+			matchSum += count;
+		}
+		if (markedData.length == matchSum) isAddMarkedData = true;
+		else console.log(markedData, marks);
+	}
+	// 遍历章内标注
+	let footnoteContent = "";
+	for (let j = 0; j < marks.length; j++) {
 		let abstract = marks[j].abstract;
 		let markText = abstract ? abstract : marks[j].markText;
+		if (isAddMarkedData && markedData)
+			[markText, markedData, footnoteContent] = addMarkedData(markText, markedData, footnoteContent);
 		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
 		}else{// 不是想法（为标注）则进行正则匹配
@@ -102,23 +117,8 @@ function traverseMarks(marks){
 		// 如果为想法，则将想法加入 res
 		if (abstract) res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
 	}
+	if (isAddMarkedData && footnoteContent) res += footnoteContent;
 	return res;
-}
-
-// 生成用于记录“[插图]”的数组
-function getRangeArrFrom(strRange, str){
-	let lenCount = 0;
-	strRange = parseInt(strRange);
-	let rangeArr = str.split(/(?=\[插图\])|(?<=\[插图\])/).reduce((accArr, curItem)=>{
-		if(curItem != '[插图]'){
-			lenCount += curItem.length;
-		}else{
-			accArr.push(strRange + lenCount);
-			lenCount += 4;
-		}
-		return accArr;
-	},[]);
-	return rangeArr;
 }
 
 async function getChapters(){

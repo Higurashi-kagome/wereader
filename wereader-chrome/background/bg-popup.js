@@ -68,7 +68,11 @@ async function copyBookMarks(isAll) {
 				res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
 			});
 		}
-		let str = traverseMarks(marks);
+		// 请求需要追加到文本中的图片 Markdown 文本
+		const markedData = await sendMessageToContentScript({
+			message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
+		});
+		let str = traverseMarks(marks, markedData);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});

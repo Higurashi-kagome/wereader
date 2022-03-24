@@ -199,11 +199,16 @@ $(document).ready(function() {
         }
       });
       if (mps.length == 0) return;
+	//   TODO
+	  let shelfArchive = $(`<a class="shelfArchive"><div class="cover"></div><div class="title">公众号</div></a>`);
+	  let shelfArchiveCover = shelfArchive.find('.cover');
       mps.forEach(function(mp) {
         let coverImg = `<img src="${mp.cover.replace('http://', 'https://')}" alt="书籍封面" class="wr_bookCover_img">`;
         if(mp.cover.indexOf('http')<0) coverImg = '';
-        $('.shelf_list').prepend($(`<a href="/web/reader/${puzzling(mp.bookId)}" class="shelfBook webook_mp" data-id="${mp.bookId}"><div class="wr_bookCover cover">${mp.secret ? '<span class="wr_bookCover_privateTag"></span>': ''}<!----><!---->${coverImg}<div class="wr_bookCover_border"></div><span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span></div><div class="title">${mp.title}</div><!----></a>`))
+        $('.shelf_list').prepend($(`<a href="/web/reader/${puzzling(mp.bookId)}" class="shelfBook webook_mp" data-id="${mp.bookId}"><div class="wr_bookCover cover">${mp.secret ? '<span class="wr_bookCover_privateTag"></span>' : ''}<!----><!---->${coverImg}<div class="wr_bookCover_border"></div><span class="wr_bookCover_decor wr_bookCover_gradientDecor wr_bookCover_borderDecor"></span></div><div class="title">${mp.title}</div><!----></a>`))
+
       });
+	//   $('.shelf_list').prepend($(``))
       /* 公众号点击事件 */
       $('.webook_mp').on('click', function(e) {
         e.preventDefault()
