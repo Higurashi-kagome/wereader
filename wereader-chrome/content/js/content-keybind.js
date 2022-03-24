@@ -1,15 +1,14 @@
 // 绑定 esc 事件
 $(document).keydown(function (event) {
 	let fancybox = $('.fancybox-overlay');
-	// 想法发布面板
-	let thoughtPanel = $('.readerWriteReviewPanel');
-	// 想法浏览面板
-	let thoughtReview = $('#readerReviewDetailPanel');
-	/* TODO：与想法浏览面板同时显示的标注面板不能够正常退出显示的问题 */
+	let thoughtPanel = $('.readerWriteReviewPanel'); // 想法发布面板
+	let thoughtReview = $('#readerReviewDetailPanel'); // 想法浏览面板
+	let reader_toolbar = $('.reader_toolbar_container'); // 标注面板
 	if (event.keyCode == 27) {
 		if (fancybox.length) fancybox.remove();
 		if (thoughtPanel.length && thoughtPanel.css('display') !== 'none') $('.closeButton').click();
-		if (thoughtReview.length) $('body').click();
+		if (thoughtReview.length && thoughtReview.parent().css('display') !== 'none')$('body').click();
+		if (reader_toolbar.length && reader_toolbar.css('display') !== 'none') reader_toolbar.remove();
 	}
 });
 
