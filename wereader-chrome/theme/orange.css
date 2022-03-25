@@ -49,6 +49,20 @@ body{ background: #E8DDC2 !important; }
 	text-decoration: none;
 }
 
+/* 标注目录按钮 */
+.notesMenuBtn {
+	font-size: 16px;
+	padding: 12px 20px 12px 40px;
+	border:1px groove;
+	border-bottom: none;
+	text-align: left;
+}
+
+/* 标注目录中的当前目录 */
+#sectionListItem_title_scroll a.current::after {
+	content: ' ←';
+}
+
 /* 鼠标移动到选项上修改背景颜色 */
 #noteTools li a:hover {
     background-color: #555;
