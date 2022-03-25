@@ -119,7 +119,14 @@
     // console.log("content-markedData.js：被注入")
     chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
         if(!request.isGetMarkedData) return;
+		// 遮盖，在这里进行遮盖要更加迅速
+		// 复制一份去除点击事件防止用户点击
+		let originMast = $(".wr_mask");
+		let mask = originMast.clone().addClass("wr_mask_Show need_remove");
+		originMast.parent().prepend(mask);
         getMarkedData(request.addThoughts).then(markedData=>{
+			// 去除遮盖
+			$(".wr_mask_Show.need_remove").remove();
             sendResponse(markedData);
         });
         // 存在异步问题，必须返回 true
