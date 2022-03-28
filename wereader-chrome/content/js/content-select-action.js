@@ -29,6 +29,7 @@ let onToolbarAttrChanged =  (mutationsList, observer)=>{
 
 
 //为标注面板（readerToolbarContainer）添加监听函数
+var toolbarAttrObserver;
 let observeToolbar = ()=>{
 	let readerToolbarContainer = document.getElementsByClassName('reader_toolbar_container')[0];
 	if(!readerToolbarContainer) {
@@ -36,7 +37,8 @@ let observeToolbar = ()=>{
 		return;
 	}
 	// 监听属性 style 变化
-	let toolbarAttrObserver = new MutationObserver(onToolbarAttrChanged);
+	if (toolbarAttrObserver) toolbarAttrObserver.disconnect(); // 设为全局变量，确保只有一个监听器
+	toolbarAttrObserver = new MutationObserver(onToolbarAttrChanged);
 	toolbarAttrObserver.observe(readerToolbarContainer, {'attributes': true});
 }
 
@@ -60,8 +62,10 @@ let observeParent =  ()=>{
 	$(parent).arrive(listenFor, onParentShow);
 }
 
-// 使用扩展通知来处理切换章节后失效的问题
-chrome.runtime.onMessage.addListener(function(msg){
-	if(!msg.isSelectAction) return;
+window.addEventListener('load', ()=>{
 	observeParent();
-});
+	// 处理切换章节后失效的问题
+	$('.app_content').arrive('.readerChapterContent', ()=>{
+		observeParent();
+	});
+})

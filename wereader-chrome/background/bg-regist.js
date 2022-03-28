@@ -135,16 +135,3 @@ chrome.runtime.onInstalled.addListener(function(details){
 		});
 	}
 });
-
-// 页面更新
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-	if (changeInfo.status !== "complete") return;
-	if(tab.url.indexOf('//weread.qq.com/web/reader/') > -1){
-		// 有些脚本执行前需要适当延时
-		setTimeout(() => {
-			sendMessageToContentScript({tabId: tabId, message: {isSelectAction: true}});
-			sendMessageToContentScript({tabId: tabId, message: {isFancybox: true}});
-			sendMessageToContentScript({tabId: tabId, message: {isCopyBtn: true}});
-		}, 1000);
-	}
-});

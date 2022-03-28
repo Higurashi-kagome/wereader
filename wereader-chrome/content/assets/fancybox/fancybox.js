@@ -1,6 +1,6 @@
 // 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片绑定点击事件
 function fancyboxTargetObserver(){
-    let observer = new MutationObserver(bindfancyBox);
+    let observer = new MutationObserver(bindFancyBox);
     let target = document.getElementById('renderTargetContent').children[0];
     if(!target){
         window.setTimeout(fancyboxTargetObserver,500);
@@ -10,7 +10,7 @@ function fancyboxTargetObserver(){
 }
 
 // 绑定点击事件
-function bindfancyBox(){
+function bindFancyBox(){
     // 清除原点击事件
     let imgs = document.querySelectorAll("img.wr_readerImage_opacity");
     for (let i = 0; i < imgs.length; i++) {
@@ -73,13 +73,20 @@ function showFancybox(boxInnerHTML){
     }
 }
 
-// 使用扩展通知来处理切换章节后失效的问题
-chrome.runtime.onMessage.addListener(function(msg){
-    if(!msg.isFancybox) return;
-    chrome.storage.sync.get(['enableFancybox'], function(result){
-        if(result.enableFancybox) {
-            bindfancyBox();
-            fancyboxTargetObserver();
-        }
-    });
-});
+window.addEventListener('load', ()=>{
+	chrome.storage.sync.get(['enableFancybox'], function(result){
+		if(result.enableFancybox) {
+			bindFancyBox();
+			fancyboxTargetObserver();
+			// 处理切换章节后失效的问题
+			$('.app_content').arrive('.readerChapterContent', ()=>{
+				chrome.storage.sync.get(['enableFancybox'], function(result){
+					if(result.enableFancybox) {
+						bindFancyBox();
+						fancyboxTargetObserver();
+					}
+				});
+			});
+		}
+	});
+})
