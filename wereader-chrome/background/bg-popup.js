@@ -34,11 +34,13 @@ async function copyContents(){
 
 // 获取标注并复制标注到剪切板
 async function copyBookMarks(isAll) {
-	const chapsAndMarks = await getBookMarks();
-	if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
-	//得到res
+	// 通知生成遮盖
+	await sendMessageToContentScript({message: {isAddMask: true}});
+	// 得到 res
 	var res = "";
-	if (isAll) {	// 获取全书标注
+	if (isAll) { // 获取全书标注
+		const chapsAndMarks = await getBookMarks();
+		if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 		res = chapsAndMarks.reduce((tempRes, curChapAndMarks)=>{
 			let {title, level, marks} = curChapAndMarks;
 			if(Config.allTitles || marks.length){
@@ -56,7 +58,10 @@ async function copyBookMarks(isAll) {
 			return tempRes;
 		},'');
 		copy(res);
-	} else {	//获取本章标注
+	} else { // 获取本章标注
+		// “全书”与“本章”分别获取目录，实现页面及时遮盖
+		const chapsAndMarks = await getBookMarks();
+		if(!chapsAndMarks) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 		//遍历目录
 		let targetChapAndMarks = chapsAndMarks.filter(item=>{return item.isCurrent})[0];
 		let {title, level, marks} = targetChapAndMarks;
@@ -77,6 +82,8 @@ async function copyBookMarks(isAll) {
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});
 	}
+	// 通知移除遮盖
+	await sendMessageToContentScript({message: {isRemoveMask: true}});
 }
 
 // 获取热门标注
