@@ -22,8 +22,10 @@
 }
 
 .fancybox-wrap{
-	z-index: 8030;
+	display: flex;
 	position: absolute;
+	max-height: 100%;
+	z-index: 8030;
 }
 
 .fancybox-skin{

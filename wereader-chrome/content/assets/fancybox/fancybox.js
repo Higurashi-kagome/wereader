@@ -33,44 +33,52 @@ function bindFancyBox(){
 }
 
 function showFancybox(boxInnerHTML){
-    if($(".fancybox-overlay").length !== 0) return;
-    // 插入
-    $("body").append(
-        `<div class="fancybox-overlay">
-            <div class="fancybox-wrap">
-                <div class="fancybox-skin">${boxInnerHTML}</div>
-            </div>
-        </div>`
-    );
+	if($(".fancybox-overlay").length !== 0) return;
+	// 插入
+	$("body").append(
+		`<div class="fancybox-overlay">
+			<div class="fancybox-wrap">
+				<div class="fancybox-skin">${boxInnerHTML}</div>
+			</div>
+		</div>`
+	);
 	$(".fancybox-pre").parent().addClass("pre");
-    // 点击空白移除
-    $('.fancybox-overlay').on('click', function(){
-        $('.fancybox-overlay').remove();
-    });
-    let fancyboxWrap = $('.fancybox-wrap');
-    // 点击可见部分结束冒泡，避免关闭
-    fancyboxWrap.on('click', function(e){
-        e.stopPropagation();
-    });
-    // 随鼠标移动
-    let [dx,dy,sx,sy,down] = [0,0,0,0,false];
-    let view = $('.fancybox-image,.fancybox-pre');
-    view.on('mousedown', function (e) {
-        dx = e.clientX;
-        dy = e.clientY;
-        sx = parseInt(view.parent().parent().css('left'));
-        sy = parseInt(view.parent().parent().css('top'));
-        if (!down) down = true;
-    });
-    document.onmousemove = function(e){
-        if (down) {
-            view.parent().parent().css('top',e.clientY - (dy - sy) + 'px');
-            view.parent().parent().css('left',e.clientX - (dx - sx) + 'px');
-        }
-    }
-    document.onmouseup = function(){
-        if (down) down = false;
-    }
+	// 点击空白移除
+	$('.fancybox-overlay').on('click', function(){
+		$('.fancybox-overlay').remove();
+	});
+	let fancyboxWrap = $('.fancybox-wrap');
+	// 点击可见部分结束冒泡，避免关闭
+	fancyboxWrap.on('click', function(e){
+		e.stopPropagation();
+	});
+	// 随鼠标移动
+	let [mousedownX,mousedownY,elLeft,elRight,elTop,elBottom,isMousedown] = [0,0,0,0,0,0,false];
+	let view = $('.fancybox-image,.fancybox-pre');
+	view.on('mousedown', function (e) {
+		// 客户端区域坐标。例如，客户端区域的左上角的 clientY 值为 0 ，这一值与页面是否有垂直滚动无关
+		mousedownX = e.clientX; // （向右为正，越靠右越大）
+		mousedownY = e.clientY; // （向下为正，越靠下越大）
+		// 页面坐标
+		elLeft = parseInt(view.parent().parent().css('left'));
+		elRight = parseInt(view.parent().parent().css('right'));
+		elTop = parseInt(view.parent().parent().css('top'));
+		elBottom = parseInt(view.parent().parent().css('bottom'));
+		if (!isMousedown) isMousedown = true;
+	});
+	document.onmousemove = function(e){
+		if (isMousedown) {
+			// 元素原 top 值加鼠标 Y 方向偏移距离
+			view.parent().parent().css('top', elTop + e.clientY - mousedownY + 'px');
+			view.parent().parent().css('bottom', elBottom + mousedownY - e.clientY + 'px');
+			// 元素原 left 值加鼠标 X 方向偏移距离
+			view.parent().parent().css('left',elLeft + e.clientX - mousedownX + 'px');
+			view.parent().parent().css('right',elRight + mousedownX - e.clientX + 'px');
+		}
+	}
+	document.onmouseup = function(){
+		if (isMousedown) isMousedown = false;
+	}
 }
 
 window.addEventListener('load', ()=>{
