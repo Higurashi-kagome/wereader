@@ -13,7 +13,7 @@
 
 .fancybox-skin {
 	padding: 15px;
-	resize: both;
+	/* resize: both; */
 	overflow: hidden;
 }
 

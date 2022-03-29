@@ -59,6 +59,7 @@
 | [SingleFile](https://github.com/gildas-lormeau/SingleFile)   | 设置页模仿自该扩展。                                         |
 | [weread_helper_extension](https://github.com/ellipse42/weread_helper_extension) | 参考该项目中的代码实现了书架管理和公众号浏览。               |
 | [uzairfarooq/arrive](https://github.com/uzairfarooq/arrive)  | 方便监听 DOM 变动。                                          |
+| [jquery/jquery\-mousewheel](https://github.com/jquery/jquery-mousewheel) | 方便监听滚轮事件。                                           |
 
 ## 参考
 

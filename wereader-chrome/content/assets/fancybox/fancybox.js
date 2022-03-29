@@ -59,26 +59,54 @@ function showFancybox(boxInnerHTML){
 		// 客户端区域坐标。例如，客户端区域的左上角的 clientY 值为 0 ，这一值与页面是否有垂直滚动无关
 		mousedownX = e.clientX; // （向右为正，越靠右越大）
 		mousedownY = e.clientY; // （向下为正，越靠下越大）
+		let wrap = view.parent().parent();
 		// 页面坐标
-		elLeft = parseInt(view.parent().parent().css('left'));
-		elRight = parseInt(view.parent().parent().css('right'));
-		elTop = parseInt(view.parent().parent().css('top'));
-		elBottom = parseInt(view.parent().parent().css('bottom'));
+		elLeft = parseFloat(wrap.css('left'));
+		elRight = parseFloat(wrap.css('right'));
+		elTop = parseFloat(wrap.css('top'));
+		elBottom = parseFloat(wrap.css('bottom'));
 		if (!isMousedown) isMousedown = true;
 	});
 	document.onmousemove = function(e){
 		if (isMousedown) {
+			let wrap = view.parent().parent();
 			// 元素原 top 值加鼠标 Y 方向偏移距离
-			view.parent().parent().css('top', elTop + e.clientY - mousedownY + 'px');
-			view.parent().parent().css('bottom', elBottom + mousedownY - e.clientY + 'px');
+			wrap.css('top', elTop + e.clientY - mousedownY + 'px');
+			wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px');
 			// 元素原 left 值加鼠标 X 方向偏移距离
-			view.parent().parent().css('left',elLeft + e.clientX - mousedownX + 'px');
-			view.parent().parent().css('right',elRight + mousedownX - e.clientX + 'px');
+			wrap.css('left',elLeft + e.clientX - mousedownX + 'px');
+			wrap.css('right',elRight + mousedownX - e.clientX + 'px');
 		}
 	}
 	document.onmouseup = function(){
 		if (isMousedown) isMousedown = false;
 	}
+	// 滚轮缩放
+	view.on('mousewheel', function(event) {
+		event.preventDefault();
+		let wrap = view.parent().parent();
+		elLeft = parseFloat(wrap.css('left'));
+		elRight = parseFloat(wrap.css('right'));
+		elTop = parseFloat(wrap.css('top'));
+		elBottom = parseFloat(wrap.css('bottom'));
+		let height = parseFloat(wrap.css('height'));
+		let rate = parseFloat(wrap.css('width')) / height;
+		const dist = 10;
+		if (event.deltaY < 0) {
+			wrap.css('top', elTop + dist + 'px');
+			wrap.css('bottom', elBottom + dist + 'px');
+			wrap.css('left', elLeft + dist*rate + 'px');
+			wrap.css('right', elRight + dist*rate + 'px');
+		} else {
+			wrap.css('top', elTop - dist + 'px');
+			wrap.css('bottom', elBottom - dist + 'px');
+			wrap.css('left', elLeft - dist*rate + 'px');
+			wrap.css('right', elRight - dist*rate + 'px');
+		}
+		// 移除限制，方便缩放
+		view.css('max-height', 'none', 'max-width', 'none');
+		wrap.css('max-height', 'none');
+	});
 }
 
 window.addEventListener('load', ()=>{
