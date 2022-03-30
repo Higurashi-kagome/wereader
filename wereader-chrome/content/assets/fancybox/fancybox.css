@@ -13,7 +13,6 @@
 
 .fancybox-skin {
 	padding: 15px;
-	/* resize: both; */
 	overflow: hidden;
 }
 
@@ -21,11 +20,16 @@
 	width: 90%;
 }
 
+.fancybox-skin.pre{
+	resize: both;
+}
+
 .fancybox-wrap{
 	display: flex;
 	position: absolute;
 	max-height: 100%;
 	z-index: 8030;
+	transition: top 0.05s linear 0s, bottom 0.05s linear 0s, left 0.05s linear 0s, right 0.05s linear 0s;
 }
 
 .fancybox-skin{
@@ -50,6 +54,6 @@ pre.fancybox-pre{
 	overflow: auto;
 	color: black;
 	background-color: #e6e6e6;
-	font-family:'Courier New', Courier, monospace;
+	font-family: monospace;
 	font-size: 1rem;
 }

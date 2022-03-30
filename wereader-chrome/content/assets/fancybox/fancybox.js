@@ -82,9 +82,10 @@ function showFancybox(boxInnerHTML){
 		if (isMousedown) isMousedown = false;
 	}
 	// 滚轮缩放
-	view.on('mousewheel', function(event) {
+	let img = $('.fancybox-image');
+	img.on('mousewheel', function(event) {
 		event.preventDefault();
-		let wrap = view.parent().parent();
+		let wrap = img.parent().parent();
 		elLeft = parseFloat(wrap.css('left'));
 		elRight = parseFloat(wrap.css('right'));
 		elTop = parseFloat(wrap.css('top'));
@@ -104,7 +105,8 @@ function showFancybox(boxInnerHTML){
 			wrap.css('right', elRight - dist*rate + 'px');
 		}
 		// 移除限制，方便缩放
-		view.css('max-height', 'none', 'max-width', 'none');
+		img.css('max-height', 'none');
+		img.css('max-width', 'none');
 		wrap.css('max-height', 'none');
 	});
 }
