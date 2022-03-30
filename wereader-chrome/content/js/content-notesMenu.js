@@ -22,7 +22,12 @@ document.querySelector('.note').addEventListener('click',function(){
 		const className = (titleText == curChapTitle) ? 'current' : '';
 		// 生成目录
 		let li = $(`<li><a class='${className}'>${titleText}</a></li>`).click(()=>{
+			// 标题被搜索框排除时也能够跳转
+			let elParent = $(el.parentElement);
+			let isHide = elParent.css('display') == 'none';
+			if (isHide) elParent.css('display', 'block');
 			el.parentElement.scrollIntoView({behavior: "smooth"});
+			if (isHide) elParent.css('display', 'none');
 			ul.toggle();
 		});
 		ul.append(li);
