@@ -1,4 +1,4 @@
-// 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片绑定点击事件
+// 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片/代码块绑定点击事件
 function fancyboxTargetObserver(){
     let observer = new MutationObserver(bindFancyBox);
     let target = document.getElementById('renderTargetContent').children[0];
@@ -20,9 +20,7 @@ function bindFancyBox(){
     }
     // 绑定新事件
     $('img.wr_readerImage_opacity,#renderTargetContent pre').each(function() {
-        let box = $(this);
-        // box.css('cursor','pointer');
-        box.on('click', function(){
+        $(this).on('click', function(){
             let boxInnerHTML;
             const src = $(this).attr('data-src');
             if(src) boxInnerHTML = `<img class="fancybox-image" src="${src}">`;
@@ -30,6 +28,85 @@ function bindFancyBox(){
             showFancybox(boxInnerHTML);
         });
     });
+}
+
+// fancybox 移动
+function bindMouseMove() {
+	let [mousedownX,mousedownY,elLeft,elRight,elTop,elBottom,isMousedown] = [0,0,0,0,0,0,false];
+	let view = $('.fancybox-image,.fancybox-pre');
+	view.mousedown(function(e) {
+		// 客户端区域坐标。例如，客户端区域的左上角的 clientY 值为 0 ，这一值与页面是否有垂直滚动无关
+		mousedownX = e.clientX; // （向右为正，越靠右越大）
+		mousedownY = e.clientY; // （向下为正，越靠下越大）
+		let wrap = view.parent().parent();
+		// 页面坐标
+		elLeft = parseFloat(wrap.css('left'));
+		elRight = parseFloat(wrap.css('right'));
+		elTop = parseFloat(wrap.css('top'));
+		elBottom = parseFloat(wrap.css('bottom'));
+		if (!isMousedown) isMousedown = true;
+	});
+	// 加了动画，移动时可能超出 fancybox，所以绑定到 document
+	$(document).on('mousemove', function(e) {
+		if (isMousedown) {
+			let wrap = view.parent().parent();
+			// 元素原 top 值加鼠标 Y 方向偏移距离
+			wrap.css('top', elTop + e.clientY - mousedownY + 'px');
+			wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px');
+			// 元素原 left 值加鼠标 X 方向偏移距离
+			wrap.css('left',elLeft + e.clientX - mousedownX + 'px');
+			wrap.css('right',elRight + mousedownX - e.clientX + 'px');
+		}
+	});
+	$(document).on('mouseup', function() {
+		if (isMousedown) isMousedown = false;
+	});
+}
+
+// fancybox 滚轮缩放
+function bindMouseWheel() {
+	let [elLeft,elRight,elTop,elBottom] = [0,0,0,0];
+	let img = $('.fancybox-image');
+	img.on('mousewheel', function(e) {
+		e.preventDefault();
+		// 获取 wrap 位置
+		let wrap = img.parent().parent();
+		elLeft = parseFloat(wrap.css('left'));
+		elRight = parseFloat(wrap.css('right'));
+		elTop = parseFloat(wrap.css('top'));
+		elBottom = parseFloat(wrap.css('bottom'));
+		let height = parseFloat(wrap.css('height'));
+		let rate = parseFloat(wrap.css('width')) / height;
+		const totalPx = 20; // top 和 bottom 的总改变量
+		// 获取定点缩放数据
+		let mousedownX = e.clientX; // （向右为正，越靠右越大）
+		let mousedownY = e.clientY; // （向下为正，越靠下越大）
+		let imgRect = img[0].getBoundingClientRect(); // https://javascript.info/coordinates
+		let leftDist = mousedownX - imgRect.left;
+		let rightDist = imgRect.width - leftDist;
+		let topDist = mousedownY - imgRect.top;
+		let bottomDist = imgRect.height - topDist;
+		let topPx = totalPx * topDist / imgRect.height;
+		let bottomPx = totalPx * bottomDist / imgRect.height;
+		let leftPx = totalPx * rate * leftDist / imgRect.width;
+		let rightPx = totalPx * rate * rightDist / imgRect.width;
+		// 缩放
+		if (e.deltaY < 0) {
+			wrap.css('top', elTop + topPx + 'px');
+			wrap.css('bottom', elBottom + bottomPx + 'px');
+			wrap.css('left', elLeft + leftPx + 'px');
+			wrap.css('right', elRight + rightPx + 'px');
+		} else {
+			wrap.css('top', elTop - topPx + 'px');
+			wrap.css('bottom', elBottom - bottomPx + 'px');
+			wrap.css('left', elLeft - leftPx + 'px');
+			wrap.css('right', elRight - rightPx + 'px');
+		}
+		// 移除限制，方便缩放
+		img.css('max-height', 'none');
+		img.css('max-width', 'none');
+		wrap.css('max-height', 'none');
+	});
 }
 
 function showFancybox(boxInnerHTML){
@@ -47,68 +124,12 @@ function showFancybox(boxInnerHTML){
 	$('.fancybox-overlay').on('click', function(){
 		$('.fancybox-overlay').remove();
 	});
-	let fancyboxWrap = $('.fancybox-wrap');
 	// 点击可见部分结束冒泡，避免关闭
-	fancyboxWrap.on('click', function(e){
+	$('.fancybox-wrap').on('click', function(e){
 		e.stopPropagation();
 	});
-	// 随鼠标移动
-	let [mousedownX,mousedownY,elLeft,elRight,elTop,elBottom,isMousedown] = [0,0,0,0,0,0,false];
-	let view = $('.fancybox-image,.fancybox-pre');
-	view.on('mousedown', function (e) {
-		// 客户端区域坐标。例如，客户端区域的左上角的 clientY 值为 0 ，这一值与页面是否有垂直滚动无关
-		mousedownX = e.clientX; // （向右为正，越靠右越大）
-		mousedownY = e.clientY; // （向下为正，越靠下越大）
-		let wrap = view.parent().parent();
-		// 页面坐标
-		elLeft = parseFloat(wrap.css('left'));
-		elRight = parseFloat(wrap.css('right'));
-		elTop = parseFloat(wrap.css('top'));
-		elBottom = parseFloat(wrap.css('bottom'));
-		if (!isMousedown) isMousedown = true;
-	});
-	document.onmousemove = function(e){
-		if (isMousedown) {
-			let wrap = view.parent().parent();
-			// 元素原 top 值加鼠标 Y 方向偏移距离
-			wrap.css('top', elTop + e.clientY - mousedownY + 'px');
-			wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px');
-			// 元素原 left 值加鼠标 X 方向偏移距离
-			wrap.css('left',elLeft + e.clientX - mousedownX + 'px');
-			wrap.css('right',elRight + mousedownX - e.clientX + 'px');
-		}
-	}
-	document.onmouseup = function(){
-		if (isMousedown) isMousedown = false;
-	}
-	// 滚轮缩放
-	let img = $('.fancybox-image');
-	img.on('mousewheel', function(event) {
-		event.preventDefault();
-		let wrap = img.parent().parent();
-		elLeft = parseFloat(wrap.css('left'));
-		elRight = parseFloat(wrap.css('right'));
-		elTop = parseFloat(wrap.css('top'));
-		elBottom = parseFloat(wrap.css('bottom'));
-		let height = parseFloat(wrap.css('height'));
-		let rate = parseFloat(wrap.css('width')) / height;
-		const dist = 10;
-		if (event.deltaY < 0) {
-			wrap.css('top', elTop + dist + 'px');
-			wrap.css('bottom', elBottom + dist + 'px');
-			wrap.css('left', elLeft + dist*rate + 'px');
-			wrap.css('right', elRight + dist*rate + 'px');
-		} else {
-			wrap.css('top', elTop - dist + 'px');
-			wrap.css('bottom', elBottom - dist + 'px');
-			wrap.css('left', elLeft - dist*rate + 'px');
-			wrap.css('right', elRight - dist*rate + 'px');
-		}
-		// 移除限制，方便缩放
-		img.css('max-height', 'none');
-		img.css('max-width', 'none');
-		wrap.css('max-height', 'none');
-	});
+	bindMouseMove();
+	bindMouseWheel();
 }
 
 window.addEventListener('load', ()=>{
