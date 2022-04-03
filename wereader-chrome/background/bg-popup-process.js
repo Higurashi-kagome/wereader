@@ -99,7 +99,10 @@ function traverseMarks(marks, markedData){
 			matchSum += count;
 		}
 		if (markedData.length == matchSum) isAddMarkedData = true;
-		else console.log(markedData, marks);
+		else {
+			console.log('markedData', markedData);
+			console.log('marks', marks);
+		}
 	}
 	// 遍历章内标注
 	let footnoteContent = "";

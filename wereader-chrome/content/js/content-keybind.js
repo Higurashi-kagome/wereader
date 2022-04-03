@@ -1,5 +1,5 @@
 // 绑定 esc 事件
-$(document).keydown(function (event) {
+$(document).on('keydown', function (event) {
 	let fancybox = $('.fancybox-overlay');
 	let thoughtPanel = $('.readerWriteReviewPanel'); // 想法发布面板
 	let thoughtReview = $('#readerReviewDetailPanel'); // 想法浏览面板
