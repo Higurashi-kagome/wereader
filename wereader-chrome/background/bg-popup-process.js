@@ -109,7 +109,7 @@ function traverseMarks(marks, markedData){
 	for (let j = 0; j < marks.length; j++) {
 		let abstract = marks[j].abstract;
 		let markText = abstract ? abstract : marks[j].markText;
-		if (isAddMarkedData && markedData)
+		if (isAddMarkedData && markedData) // 不断 shift，最终 markedData 变为 undefined
 			[markText, markedData, footnoteContent] = addMarkedData(markText, markedData, footnoteContent);
 		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;

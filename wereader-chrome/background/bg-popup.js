@@ -74,9 +74,11 @@ async function copyBookMarks(isAll) {
 			});
 		}
 		// 请求需要追加到文本中的图片 Markdown 文本
-		const markedData = await sendMessageToContentScript({
-			message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
-		});
+		let markedData = undefined;
+		if (Config.enableCopyImgs)
+			markedData = await sendMessageToContentScript({
+				message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
+			});
 		let str = traverseMarks(marks, markedData);
 		res += str;
 		if(str) copy(res);

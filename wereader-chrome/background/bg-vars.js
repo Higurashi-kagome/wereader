@@ -39,6 +39,7 @@ var Config = {
     enableDevelop: false,
     enableStatistics: false,
     enableOption: true,
+	enableCopyImgs: true,
     enableFancybox: true,
     backupName: DefaultBackupName,
     selectAction: "underlineNone",
