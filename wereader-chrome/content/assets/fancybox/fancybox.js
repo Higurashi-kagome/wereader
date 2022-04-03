@@ -50,12 +50,10 @@ function bindMouseMove() {
 	$(document).on('mousemove', function(e) {
 		if (isMousedown) {
 			let wrap = view.parent().parent();
-			// 元素原 top 值加鼠标 Y 方向偏移距离
-			wrap.css('top', elTop + e.clientY - mousedownY + 'px');
-			wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px');
-			// 元素原 left 值加鼠标 X 方向偏移距离
-			wrap.css('left',elLeft + e.clientX - mousedownX + 'px');
-			wrap.css('right',elRight + mousedownX - e.clientX + 'px');
+			wrap.css('top', elTop + e.clientY - mousedownY + 'px'); // 元素原 top 值加鼠标 Y 方向偏移距离
+			if (view.is('.fancybox-image')) wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px'); // 代码块用 resize 缩放
+			wrap.css('left',elLeft + e.clientX - mousedownX + 'px'); // 元素原 left 值加鼠标 X 方向偏移距离
+			if (view.is('.fancybox-image')) wrap.css('right',elRight + mousedownX - e.clientX + 'px'); // 代码块用 resize 缩放
 		}
 	});
 	$(document).on('mouseup', function() {
