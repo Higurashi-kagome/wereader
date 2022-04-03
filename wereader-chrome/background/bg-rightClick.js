@@ -36,9 +36,10 @@ function rightClickEventListener(info, tab) {
 			copy(clickedEl.text());
 		}
 		else if (clickedEl.is('.content'))
-		{	// 想法，使用 text() 获取的内容似乎不能正确换行
-			let thought = clickedEl[0].innerText;
-			copy(thought);
+		{	// 想法
+			// let thought = clickedEl[0].outerText; // 不能正确换行，原因未知
+			let thought = data.clickedElText;
+			if (thought) copy(thought);
 		}
 		else if (clickedEl.is('.sectionListItem_content.noteItem_content,.text,.abstract'))
 		{	// 标注、想法

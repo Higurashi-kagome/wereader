@@ -21,6 +21,9 @@ $(document).on('mousedown', (event)=>{
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if(request == "getClickedEl") {
 		// 不知道为什么，测试时直接传 mouseMoveTarget 过去常常为 {}，所以选择转成 html 字符串传
-		sendResponse({ clickedEl: clickedEl.outerHTML, originClickedEl: clickedEl });
+		let data = { clickedEl: clickedEl.outerHTML, originClickedEl: clickedEl };
+		// 想法包含换行时，换行符在背景页不能正确获取，所以直接传文本
+		if ($(clickedEl).is('.readerReviewDetail_item>.content')) Object.assign(data, {copy: true, clickedElText: clickedEl.outerText});
+		sendResponse(data);
 	}
 });
