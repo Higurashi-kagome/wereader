@@ -1,5 +1,13 @@
 /* 供其他 content.js 调用的函数 */
-
+function simulateClick(element, init = {}) {
+	const clientRect = element.getBoundingClientRect();
+	const clientX = clientRect.left;
+	const clientY = clientRect.top;
+	const position = { clientX: clientX, clientY: clientY };
+	Object.assign(init, position);
+	let mouseEvent = new MouseEvent("click", init);
+	element.dispatchEvent(mouseEvent);
+}
 //获取当前目录
 function getCurrentChapTitle(){
     let currentChapTitle = '';
