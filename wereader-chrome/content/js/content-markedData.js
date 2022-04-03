@@ -25,6 +25,39 @@
 		}
 		return elObj;
 	}
+	// 本章标注内容中是否有 [插图]
+	function hasImgs() {
+		// 元素内是否有 [插图]
+		function isContainImgText(element) {
+			let el = $(element);
+			let text = el.find('.text'); // 标注/想法内容
+			let abstract = el.find('.abstract'); // 想法对应文字
+			if (abstract.length) { // 想法中包含 [插图]
+				if (abstract.text().indexOf('[插图]')>=0) return true;
+			} else if (text.length && text.text().indexOf('[插图]')>=0){ // 标注中包含 [插图]
+				return true;
+			}
+			return false;
+		}
+		// 遍历标注、检查是否存在 [插图]
+		let sectionListItems = document.getElementsByClassName('sectionListItem');
+		let foundChap = false;
+		for (let i = 0; i < sectionListItems.length; i++) {
+			const element = sectionListItems[i];
+			let sectionListItem_title = element.getElementsByClassName('sectionListItem_title')[0]; // 标题
+			if(sectionListItem_title && sectionListItem_title.textContent == currentChapTitle){ // 第一次找到本章内容
+				foundChap = true;
+				if (isContainImgText(element)) return true;
+			}else if(foundChap == true 
+				&& sectionListItem_title 
+				&& sectionListItem_title.textContent != currentChapTitle){
+				break; // 不再属于当前章节，退出循环
+			}else if(foundChap == true){ // 本章内的内容
+				if (isContainImgText(element)) return true;
+			}
+		}
+		return false;
+	}
 	// 获取图片和注释
 	async function getMarkedData(addThoughts, markedData = [], firstPage = true) {
 		if (firstPage) { // 点击当前章节，切换到第一页
@@ -42,7 +75,7 @@
 			mask.style.background = '#ffff0085'; // 高亮
 			let maskTop = parseFloat(mask.style.top);
 			let maskHeight = parseFloat(mask.style.height);
-			await window.sleep(80); // 扫描间隔
+			await window.sleep(50); // 扫描间隔
 			let ImgsSelector = "img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre"; // 图片之类
 			// 遍历图片之类，检查是否被当前标注遮盖
 			$(ImgsSelector).each((idx, el)=>{
@@ -77,9 +110,11 @@
 	// 监听背景页通知
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
 		if(!request.isGetMarkedData) return;
-		getMarkedData(request.addThoughts).then(markedData=>{
-			sendResponse(markedData);
-		});
+		if (!hasImgs()) sendResponse([]); // 没有 [插图] 则不需要尝试获取图片
+		else
+			getMarkedData(request.addThoughts).then(markedData=>{
+				sendResponse(markedData);
+			});
 		return true; // 存在异步问题，必须返回 true
 	});
 })(window);
@@ -87,4 +122,4 @@
 // click This Chap
 // foreach masks
 // 	find Target Imgs
-// click next page if exist and repeat find as before
+// click next page if exists and repeat finding process as before
