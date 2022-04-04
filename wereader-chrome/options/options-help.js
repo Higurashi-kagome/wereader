@@ -101,6 +101,10 @@ const helpContent = {
         title: '开启 fancybox',
         help: `<p>选中该选项之后，将支持读书页图片放大显示。</p>`
     },
+	enableThoughtEsc: {
+        title: '开启想法转义\<\>',
+        help: `<p>发表想法时，有时候 \< 和 \> 将会被转义，选中该选项后扩展会将这两个字符替换为全角形式，避免转义。</p>`
+    },
     enableStatistics: {
         title: '开启统计',
         help: `<p>选中该选项之后，将会在 popup 中添加名为“统计”的按钮，点击该按钮可查看周、月阅读时长统计图。</p>`
