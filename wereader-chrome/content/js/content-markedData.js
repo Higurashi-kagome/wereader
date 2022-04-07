@@ -1,4 +1,8 @@
 /*用于获取被标注的图片的 Markdown 文本数组，用于支持导出被标注的图片等内容*/
+// click This Chap
+// foreach masks
+//     find Target Imgs
+// click next page if exists and repeat finding process as before
 // TODO：更好的等待方式？
 (async (window)=>{
 	const currentChapTitle = window.getCurrentChapTitle();
@@ -61,15 +65,17 @@
 	// 获取图片和注释
 	async function getMarkedData(addThoughts, markedData = [], firstPage = true) {
 		if (firstPage) { // 点击当前章节，切换到第一页
+			$('#routerView').arrive('.readerCatalog', {onceOnly: true, fireOnAttributesModification: true}, ()=>{ // 目录等待
+				window.simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0]);
+			});
 			window.simulateClick($('.readerControls_item.catalog')[0]); // 点击目录显示之后才能够正常获取 BoundingClientRect
-			await window.sleep(100); // 目录等待
-			window.simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0]); // 跳转
 			await window.sleep(1000); // 跳转等待
 		}
 		let masksSelector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2'; // 三种标注线
 		if(addThoughts) masksSelector = `${masksSelector},.wr_myNote`; // 获取想法时加上想法标注线
 		// 遍历标注
 		let masks = document.querySelectorAll(masksSelector);
+		let notesCounter = 1;
 		for (const mask of masks) {
 			mask.scrollIntoView({block: 'center'}); // 滚动到视图，加载图片
 			mask.style.background = '#ffff0085'; // 高亮
@@ -118,8 +124,3 @@
 		return true; // 存在异步问题，必须返回 true
 	});
 })(window);
-
-// click This Chap
-// foreach masks
-// 	find Target Imgs
-// click next page if exists and repeat finding process as before
