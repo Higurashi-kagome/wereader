@@ -47,80 +47,98 @@ async function getBookMarks(isAddThou) {
 	return chaptersAndMarks;
 }
 
-// 导出标注添加图片等内容
-function addMarkedData(markText, markedData, footnoteContent){
-	while(/\[插图\]/.test(markText)){
-		const aMarkedData = markedData.shift();
-		const {imgSrc, alt, isInlineImg, footnote, footnoteName, code} = aMarkedData;
+// 给某一条标注添加图片等内容
+function addMarkedData(mark, markedData, footnoteContent) {
+	let abstract = mark.abstract;
+	let markText = abstract ? abstract : mark.markText;
+	for (const markedDataIdx of mark.markedDataIdxes) { // 遍历索引，逐个替换
+		const {imgSrc, alt, isInlineImg, footnote, footnoteName, code} = markedData[markedDataIdx];
 		let replacement = '';
-		if(imgSrc) {// 图片
-			// 非行内图片单独占行（即使它与文字一起标注）
-			let insert1 = '', insert2 = '';
-			// 不为行内图片且'[插图]'前有内容
-			if(!isInlineImg && markText.indexOf('[插图]') > 0)
+		/* 生成替换字符串 */
+		if(imgSrc) { // 图片
+			let insert1 = '', insert2 = ''; // 非行内图片单独占行（即使它与文字一起标注）
+			if(!isInlineImg && markText.indexOf('[插图]') > 0) // 不为行内图片且'[插图]'前有内容
 				insert1 = '\n\n'
-			// 不为行内图片且'[插图]'后有内容
-			if(!isInlineImg && markText.indexOf('[插图]') != (markText.length - 4))
+			if(!isInlineImg && markText.indexOf('[插图]') != (markText.length - 4)) // 不为行内图片且'[插图]'后有内容
 				insert2 = '\n\n'
 			replacement = `${insert1}![${alt}](${imgSrc})${insert2}`
-		}else if (footnote) {//注释
+		}else if (footnote) { //注释
 			const footnoteId = footnoteName.replace(/[\s<>"]/, '-');
 			const footnoteNum = footnoteName.match(/(?<=注)(\d)*$/)[0];
 			replacement = `<sup><a id="${footnoteId}-ref" href="#${footnoteId}">${footnoteNum}</a></sup>`;
 			footnoteContent += `<p id="${footnoteId}">${footnoteNum}. ${footnote}<a href="#${footnoteId}-ref">&#8617;</a></p>\n`;
-		}else if (code) {//代码块
+		}else if (code) { //代码块
 			let insert1 = '', insert2 = ''
-			//'[插图]'前有内容
-			if(markText.indexOf('[插图]') > 0)
+			if(markText.indexOf('[插图]') > 0) //'[插图]'前有内容
 				insert1 = '\n\n'
-			//'[插图]'后有内容
-			if(markText.indexOf('[插图]') != (markText.length - 4))
+			if(markText.indexOf('[插图]') != (markText.length - 4)) //'[插图]'后有内容
 				insert2 = '\n\n'
 			replacement = `${insert1}${Config.codePre}\n${code}${Config.codeSuf}${insert2}`
 		}
-		if (replacement) markText = markText.replace(/\[插图\]/, replacement);
-		else console.log(aMarkedData);
+		if (replacement) { // 替换
+			markText = markText.replace(/\[插图\]/, replacement);
+			if (abstract) mark.abstract = markText; // 新字符串赋值回 mark
+			else mark.markText = markText;
+		} else console.log(mark, markedData, replacement);
 	}
-	// markedData 种的元素将会一个一个删除，footnoteContent 不断更新，最后在 traverseMarks 中追加到文字末尾
-	return [markText, markedData, footnoteContent];
+	// footnoteContent 不断更新，最后在 traverseMarks 中追加到文字末尾
+	return [mark, footnoteContent];
+}
+
+// 在 marks 中添加替换数据索引（每一个“[插图]”用哪个位置的 markedData 替换）
+function addRangeIndexST(marks) {
+	let used = {}; // “[插图]”的 range 作为键，该“[插图]”所对应的数据在 markedData 中的索引作为值
+	// 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
+	function getIndexes(str, subStr){
+		let indexes  = [];
+		var idx = str.indexOf(subStr);
+		while(idx > -1){
+			indexes.push(idx);
+			idx = str.indexOf(subStr, idx+1);
+		}
+		return indexes;
+	}
+	const name = '[插图]';
+	let markedDataIdx = 0; // markedData 索引
+	for (let i = 0; i < marks.length; i++) { // 遍历标注
+		let {abstract, range} = marks[i];
+		let markText = abstract ? abstract : marks[i].markText;
+		let indexes = getIndexes(markText, name);
+		let markedDataIdxes = [];
+		for (const idx of indexes) { // indexes：所有“[插图]”在 markText 中出现的位置
+			// idx：某一个“[插图]”在 markText 中的位置
+			let imgRange = range + idx;  // 每一个“[插图]”在本章标注中的唯一位置
+			if (used[imgRange] == undefined) { // 该“[插图]”没有记录过
+				used[imgRange] = markedDataIdx; // 记录某个位置的“[插图]”所对应的替换数据
+				markedDataIdxes.push(markedDataIdx++);
+			} else { // “[插图]”被记录过（同一个“[插图]”多次出现）
+				markedDataIdxes.push(used[imgRange]);
+			}
+		}
+		marks[i].markedDataIdxes = markedDataIdxes;
+	}
+	return marks;
 }
 
 // 处理章内标注
-function traverseMarks(marks, markedData){
-	let res = "", matchSum = 0, isAddMarkedData = false;
-	// 获取“[插图]”数量 matchSum
-	if (markedData) {
-		for (let j = 0; j < marks.length; j++) {
-			let abstract = marks[j].abstract;
-			let markText = abstract ? abstract : marks[j].markText;
-			let regex = /\[插图\]/g;
-			let result = markText.match(regex);
-			let count = !result ? 0 : result.length;
-			matchSum += count;
-		}
-		if (markedData.length == matchSum) isAddMarkedData = true;
-		else {
-			console.log('markedData', markedData);
-			console.log('marks', marks);
-		}
-	}
-	// 遍历章内标注
-	let footnoteContent = "";
-	for (let j = 0; j < marks.length; j++) {
+function traverseMarks(marks, markedData = []) {
+	let res = "", footnoteContent = "";
+	for (let j = 0; j < marks.length; j++) { // 遍历章内标注
+		if (markedData.length)
+			[marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent);
 		let abstract = marks[j].abstract;
 		let markText = abstract ? abstract : marks[j].markText;
-		if (isAddMarkedData && markedData) // 不断 shift，最终 markedData 变为 undefined
-			[markText, markedData, footnoteContent] = addMarkedData(markText, markedData, footnoteContent);
-		if(abstract){// 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
+		if(abstract){ // 如果为想法，则为想法所标注的内容添加前后缀，同时将想法加入 res
 			markText = `${Config.thouMarkPre}${markText}${Config.thouMarkSuf}`;
-		}else{// 不是想法（为标注）则进行正则匹配
+		}else{ // 不是想法（为标注）则进行正则匹配
 			markText = regexpReplace(markText);
 		}
 		res += `${addPreAndSuf(markText, marks[j].style)}\n\n`;
-		// 如果为想法，则将想法加入 res
-		if (abstract) res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
+		if (abstract) // 如果为想法，则将想法加入 res
+			res += `${Config.thouPre}${marks[j].content}${Config.thouSuf}\n\n`;
 	}
-	if (isAddMarkedData && footnoteContent) res += footnoteContent;
+	if (markedData.length && footnoteContent)
+		res += footnoteContent;
 	return res;
 }
 

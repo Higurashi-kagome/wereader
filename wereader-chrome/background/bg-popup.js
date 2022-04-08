@@ -73,12 +73,13 @@ async function copyBookMarks(isAll) {
 				res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level)}\n\n`
 			});
 		}
-		// 请求需要追加到文本中的图片 Markdown 文本
-		let markedData = undefined;
+		// 请求需要追加到文本中的图片 Markdown 文本，并添加索引数据到 marks
+		let markedData = [];
 		if (Config.enableCopyImgs)
 			markedData = await sendMessageToContentScript({
 				message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
 			});
+			marks = addRangeIndexST(marks);
 		let str = traverseMarks(marks, markedData);
 		res += str;
 		if(str) copy(res);
