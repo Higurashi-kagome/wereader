@@ -1,6 +1,18 @@
 /* 主要用于实现阅读页主题色切换，另外还负责从 content-scroll.js 中调用函数帮助实现进度*/
+// ========== based on：https://stackoverflow.com/a/19127555 ==========
+function loadCSS(file) {
+	const filePath = chrome.extension.getURL(file);
+	const className = filePath.match(/(?<=\/\/)([^\/]*)/)[0];
+	$('.' + className).remove();
+	let link = document.createElement("link");
+	link.href = filePath;
+	link.classList.add(className);
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.getElementsByTagName("head")[0].appendChild(link);
+}
+// ========== based on：https://stackoverflow.com/a/19127555 ==========
 
-//console.log("inject-theme.js：被注入")
 //添加主题切换按钮并绑定点击事件
 function addThemeBtn(){
 	// 创建
@@ -22,23 +34,23 @@ function addThemeBtn(){
         if($('.readerControls_item.white').length){
             //设置白色主题
             Flag=-1
-            chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"})
+			loadCSS("theme/white.css")
             $('.readerControls_item.white').click();
         }else if(Flag == 0){
             //设置绿色主题
             if($('.readerControls_item.white').length){
                 $('.readerControls_item.white').click();
             }
-            chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
+			loadCSS("theme/green.css")
         }else if(Flag == 1){
             //设置橙色主题
             if($('.readerControls_item.white').length){
                 $('.readerControls_item.white').click();
             }
-            chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
+			loadCSS("theme/orange.css")
         }else if(Flag == 2){
             //设置黑色主题
-            chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"})
+			loadCSS("theme/dark.css")
             $('.readerControls_item.dark').click();
         }
         //保存当前主题对应编号
@@ -55,22 +67,22 @@ $(document).arrive('.readerControls_item', {onceOnly: true}, ()=>{
 		if(result.flag === 0){
 			//设置绿色主题
 			$('.readerControls_item.white').click();
-			chrome.runtime.sendMessage({type: "injectCss", css: "theme/green.css"})
+			loadCSS("theme/green.css")
 			// 绿色的下一个为橙色（1）
 			Flag = 1
 		}else if(result.flag === 1){
 			//设置橙色主题
 			$('.readerControls_item.white').click();
-			chrome.runtime.sendMessage({type: "injectCss", css: "theme/orange.css"})
+			loadCSS("theme/orange.css")
 			// 橙色的下一个为黑色（2）
 			Flag = 2
 		}else if(result.flag === 2){
 			// 设置黑色主题
-			chrome.runtime.sendMessage({type: "injectCss", css: "theme/dark.css"});
+			loadCSS("theme/dark.css")
 			$('.readerControls_item.dark').click();
 		} else if(result.flag === -1){
 			// 设置白色主题
-			chrome.runtime.sendMessage({type: "injectCss", css: "theme/white.css"});
+			loadCSS("theme/white.css")
 			$('.readerControls_item.white').click();
 		}
 	});

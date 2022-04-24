@@ -27,24 +27,8 @@
 9. 解除右键限制；
 10. 一键删除标注；
 11. 统计周、月阅读时间
-12. 书架管理（暂时不支持）；
-13. 浏览公众号；
-14. 读书页图片、代码块放大。
-
-## 贡献
-
-如果你有兴趣为此项目贡献代码，那么你可以：
-
-- 完善 popup —— popup 的 CSS 文件位于 [`./wereader-chrome/popup/popup.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/popup/popup.css)；
-- 完善设置页——设置页的 CSS 文件位于 [`./wereader-chrome/options/options.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/options/options.css)；
-- 完善阅读页滚动条——相关 CSS 文件位于[ `./wereader-chrome/inject/showScroll.css`](https://github.com/Higurashi-kagome/wereader/blob/master/wereader-chrome/inject/showScroll.css)；
-- 可通过更改扩展注入页面的主题 CSS 文件来完善主题，你能够从 [`./wereader-chrome/theme/`](https://github.com/Higurashi-kagome/wereader/tree/master/wereader-chrome/theme) 找到这些 CSS 文件；
-- 将 Firefox 扩展更新至与 Chrome 扩展相同的版本，或者，你可以尝试提升扩展的兼容性，使单个扩展能够在多个平台运行；
-- 做任何你认为有助于完善此项目的事。
-
-不用在意贡献的大小，任何有帮助的内容都可能被接受。
-
-如果你在尝试阅读源码，有不懂的地方也可以直接[联系](mailto:higurashi-kagome@qq.com)我。
+12. 浏览公众号；
+13. 读书页图片、代码块放大。
 
 ## 致谢
 
@@ -57,7 +41,7 @@
 | [sweetalert2](https://github.com/sweetalert2/sweetalert2)    | 实现弹窗。                                                   |
 | [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者。 |
 | [SingleFile](https://github.com/gildas-lormeau/SingleFile)   | 设置页模仿自该扩展。                                         |
-| [weread_helper_extension](https://github.com/ellipse42/weread_helper_extension) | 参考该项目中的代码实现了书架管理和公众号浏览。               |
+| [weread_helper_extension](https://github.com/ellipse42/weread_helper_extension) | 参考该项目中的代码实现了公众号浏览和书架管理（目前该功能已移除，建议通过手机管理书架）。 |
 | [uzairfarooq/arrive](https://github.com/uzairfarooq/arrive)  | 方便监听 DOM 变动。                                          |
 | [jquery/jquery\-mousewheel](https://github.com/jquery/jquery-mousewheel) | 方便监听滚轮事件。                                           |
 
