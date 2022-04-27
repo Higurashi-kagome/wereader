@@ -35,11 +35,14 @@ function setAttributes(element,attributes){
 	}
 }
 
+// 复制文本内容
 async function copy(targetText){
-    try {
-        await navigator.clipboard.writeText(targetText);
-        console.log('Copied to clipboard');
-    } catch (err) {
-        alert('Failed to copy: ', err);
-    }
+	try {
+		await navigator.clipboard.writeText(targetText);
+	} catch (err) {
+		console.log('Failed to copy: ', err);
+		console.log("targetText", targetText);
+		mySweetAlert({text: "复制出错", icon: 'warning'});
+	}
+	mySweetAlert({icon: 'success',title: '复制成功'});
 }
