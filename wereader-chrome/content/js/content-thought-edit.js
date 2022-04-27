@@ -1,4 +1,4 @@
-/* 完善想法发布功能 */
+/* 支持将想法中的 <> 转全角、支持 Ctrl+Enter 发布想法 */
 window.addEventListener('load', ()=>{
 	$('.app_content').arrive('.writeReview_submit_button.wr_btn.wr_btn_Big', {onceOnly: true}, (btn)=>{
 		let textarea = $('#WriteBookReview');
@@ -9,7 +9,6 @@ window.addEventListener('load', ()=>{
 					let text = textarea.val();
 					let newText = text.replace(/</g, '＜').replace(/>/g, '＞');
 					textarea.val(newText);
-					console.log(text, '=>', newText);
 				}
 				btn.click();
 			});

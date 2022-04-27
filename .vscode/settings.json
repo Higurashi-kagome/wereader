@@ -11,5 +11,10 @@
 		"**/node_modules": true,
 		"wereader-firefox": true
 	},
-	"explorerExclude.backup": null
+	"explorerExclude.backup": null,
+	"editor.snippetSuggestions": "inline",
+	"cSpell.words": [
+		"Swal",
+		"sweetalert"
+	]
 }

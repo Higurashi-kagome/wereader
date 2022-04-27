@@ -130,7 +130,7 @@ function showFancybox(boxInnerHTML){
 	bindMouseWheel();
 }
 
-window.addEventListener('load', ()=>{
+$(function () { // 比 onload 事件先执行
 	chrome.storage.sync.get(['enableFancybox'], function(result){
 		if(result.enableFancybox) {
 			bindFancyBox();
@@ -146,4 +146,4 @@ window.addEventListener('load', ()=>{
 			});
 		}
 	});
-})
+});

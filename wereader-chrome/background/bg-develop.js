@@ -25,13 +25,6 @@ function getTest(){
 		
 	}
 
-	let logShelfHtml = ()=>{
-		fetch('https://weread.qq.com/web/shelf').then(function(resp) {return resp.text()}).then(function(data) {
-			var initData = JSON.parse(data.match(/window\.__INITIAL_STATE__\=({.*?});/)[1])
-			logAndCopy(initData, 'initData');
-		})
-	}
-
 	let logConfig = ()=>{
 		logAndCopy(Config, 'Config');
 	}
@@ -84,7 +77,6 @@ function getTest(){
 		'logFuncGetShelfData': logFuncGetShelfData,
 		'logFuncWereaderGetShelfData': logFuncWereaderGetShelfData,
 		'logReadDetail': logReadDetail,
-		'logShelfHtml': logShelfHtml
 	}
 
 	return functions;
