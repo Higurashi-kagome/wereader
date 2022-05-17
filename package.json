@@ -23,10 +23,12 @@
   "homepage": "https://github.com/Higurashi-kagome/wereader#readme",
   "devDependencies": {
     "@types/arrive": "^2.4.1",
+    "@types/chart.js": "^2.9.37",
     "@types/chrome": "^0.0.183",
     "@types/jquery": "^3.5.14",
     "@types/jquery-mousewheel": "^3.1.9",
     "arrive": "^2.4.1",
+    "chart.js": "^2.9.4",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^10.2.4",
     "html-webpack-plugin": "^5.5.0",

@@ -18,7 +18,7 @@
 		  "24": "icons/icon24.png",
 		  "32": "icons/icon32.png"
 	   },
-	   "default_popup": "popup/popup.html",
+	   "default_popup": "popup.html",
 	   "default_title": "wereader"
 	},
 	"content_scripts": [

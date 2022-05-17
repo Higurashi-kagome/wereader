@@ -15,7 +15,10 @@
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [
+		"bookid",
+		"mpwx",
 		"Swal",
-		"sweetalert"
+		"sweetalert",
+		"webook"
 	]
 }

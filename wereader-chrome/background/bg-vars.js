@@ -131,18 +131,19 @@ class Wereader{
         return {succ: succ, fail: fail}
     }
 
+	 /**
+	 * 本年月数据及去年年总结：https://i.weread.qq.com/readdetail 
+	 * 指定月及该月之前指定数量的月数据：https://i.weread.qq.com/readdetail?baseTimestamp=1612108800&count=3&type=1
+	 * type=1：获取月数据
+	 * type=0：获取周数据
+	 */
     async getReadDetail(type=1, count=3, monthTimestamp){
-        /**
-         * 本年月数据及去年年总结：https://i.weread.qq.com/readdetail 
-         * 指定月及该月之前指定数量的月数据：https://i.weread.qq.com/readdetail?baseTimestamp=1612108800&count=3&type=1
-         * type=1：获取月数据
-         * type=0：获取周数据
-         */
         let url = this.readDetailUrl;
         if(monthTimestamp) url = `${url}&baseTimestamp=${monthTimestamp}`;
         if(count) url = `${url}&count=${count}`;
         if([0,1].indexOf(type)>-1) url = `${url}&type=${type}`;
         const respJson = await getJson(url);
+		console.log(respJson);
         return respJson;
     }
 

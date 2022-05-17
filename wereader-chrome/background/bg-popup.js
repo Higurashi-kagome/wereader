@@ -209,6 +209,6 @@ async function deleteBookmarks(isAll=false){
 
 async function getReadDetail(type=1, count=3, monthTimestamp){
 	const wereader = new Wereader(bookId);
-	const readdetail = await wereader.getReadDetail(type, count, monthTimestamp);
-	return readdetail;
+	const readDetail = await wereader.getReadDetail(type, count, monthTimestamp);
+	return readDetail;
 }
