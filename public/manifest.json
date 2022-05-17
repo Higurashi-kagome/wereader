@@ -1,0 +1,59 @@
+{
+	"manifest_version": 2,
+	"name": "Test",
+	"version": "2.24.2",
+	"description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用 Markdown 做笔记的用户比较有帮助。",
+	"background": {
+	   "page": "background/background.html",
+	   "persisten": false
+	},
+	"icons": {
+	   "16": "icons/icon16.png",
+	   "48": "icons/icon48.png",
+	   "128": "icons/icon128.png"
+	},
+	"browser_action": {
+	   "default_icon": {
+		  "16": "icons/icon16.png",
+		  "24": "icons/icon24.png",
+		  "32": "icons/icon32.png"
+	   },
+	   "default_popup": "popup/popup.html",
+	   "default_title": "wereader"
+	},
+	"content_scripts": [
+	   {
+		  "matches": [
+			 "*://weread.qq.com/web/reader/*"
+		  ],
+		  "js": [
+			 "content.js"
+		  ],
+		  "css": [
+			 "content/css/content-hideScroll.css"
+		  ],
+		  "run_at": "document_idle"
+	   }
+	],
+	"web_accessible_resources": [
+		 "theme/*.css",
+		 "inject/*.css",
+		 "content/css/*.css",
+		 "content/assets/fancybox/*.css"
+	],
+	"options_page": "options/options.html",
+	"options_ui": {
+	   "page": "options/options.html",
+	   "open_in_tab": true
+	},
+	"homepage_url": "https://github.com/Higurashi-kagome/wereader",
+	"permissions": [
+	   "tabs",
+	   "cookies",
+	   "storage",
+	   "contextMenus",
+	   "*://weread.qq.com/*",
+	   "*://i.weread.qq.com/*",
+	   "webRequest"
+	]
+ }

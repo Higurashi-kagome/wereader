@@ -9,7 +9,8 @@
 		"**/.history": true,
 		"**/__pycache__": true,
 		"**/node_modules": true,
-		"wereader-firefox": true
+		"wereader-firefox": true,
+		"package-lock.json": true
 	},
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",

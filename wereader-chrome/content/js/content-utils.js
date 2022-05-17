@@ -24,17 +24,6 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-//设置属性
-function setAttributes(element,attributes){
-	for(let key in attributes){
-		if(Object.prototype.toString.call(attributes[key]) === '[object Object]'){
-			setAttributes(element[key],attributes[key])
-		}else{
-			element[key] = attributes[key]
-		}
-	}
-}
-
 // 复制文本内容
 async function copy(targetText){
 	try {

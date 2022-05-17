@@ -1,0 +1,19 @@
+{
+	"include":["./src/**/*", "src/background.ts"],
+	"exclude": [
+        "node_modules"
+    ],
+	"compilerOptions": {
+		"target": "ES6",
+		"lib": ["ES6", "DOM", "dom.iterable"],
+		"outDir": "dist/js",
+		"module": "ES6",
+		"rootDir": "src",
+		"esModuleInterop": true,
+		"removeComments": true,
+		"strict": true,
+		"noEmitOnError": true,
+		"moduleResolution":"Node",
+		"typeRoots": [ "node_modules/@types" ]
+	}
+}
