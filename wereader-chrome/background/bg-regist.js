@@ -1,5 +1,6 @@
 // 监听消息
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse)=>{
+	console.log('background onMessage: ', msg);
 	let tabId = sender.tab.id
 	switch(msg.type){
 		case "getShelf":

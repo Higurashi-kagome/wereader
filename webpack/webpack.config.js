@@ -66,10 +66,13 @@ module.exports = {
 				// from 相对于 context
 				// to 相对于编译文件夹
 				{from: ".", to: ".", context: "wereader-chrome"},
-				{from: ".", to: ".", context: "public"},
+				{from: "manifest.json", to: ".", context: "public"},
+				{from: "extension-icons", to: "./icons/extension-icons", context: "public"},
 				{from: "popup/static/css/popup.css", to: ".", context: "src"},
 				{from: "statistics/statistics.css", to: ".", context: "src"},
-				{from: "mpwx/mp.css", to: ".", context: "src"}
+				{from: "mpwx/mp.css", to: ".", context: "src"},
+				{from: "options.css", to: ".", context: "src/options"},
+				{from: "icons", to: "./icons/options-icons", context: "src/options"}
 			]
 		}),
 		new HTMLWebpackPlugin({
@@ -104,6 +107,16 @@ module.exports = {
 			},
 			chunks: ['mp']
 		}),
+		new HTMLWebpackPlugin({
+			filename: 'options.html',
+			template: 'src/options/options.html',
+			inject: 'body',
+			minify: {
+				removeComments: true,
+				collapseWhitespace: true
+			},
+			chunks: ['options']
+		}),
 	],
 
 	optimization: {
@@ -113,8 +126,7 @@ module.exports = {
 			// 清除 console.log
 			terserOptions: {
 				compress: {
-					drop_console: true,
-					pure_funcs: ['console.log']
+					// pure_funcs: ['console.log']
 				},
 			}
 		})],

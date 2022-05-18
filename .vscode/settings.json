@@ -15,10 +15,14 @@
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [
+		"BACKUPKEY",
+		"BACKUPNAME",
 		"bookid",
+		"ERRORMSG",
 		"mpwx",
 		"Swal",
 		"sweetalert",
 		"webook"
-	]
+	],
+	"npm-scripts.showStartNotification": false
 }

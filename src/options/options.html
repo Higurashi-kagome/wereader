@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html  class="maximized">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>options</title>
+	<link rel="icon" type="image/x-icon" href="../icons/icon48.png">
+	<link rel="stylesheet" href="options.css">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+	<main>
+		<h3>
+			<span class="options-title">
+				<span id="expandAllButton"></span>
+				<span id="titleLabel">选项</span>
+			</span>
+			<!-- 配置切换 -->
+			<span class="profiles">
+				<select id="profileNamesInput">
+					<!-- <option>默认设置</option> -->
+				</select>
+				<button id="addProfileButton" title="添加一个新的配置文件"><img src="./icons/options-icons/button_new.png"></button>
+				<button id="deleteProfileButton" title="删除配置文件" disabled=""><img src="./icons/options-icons/button_delete.png"></button>
+				<button id="renameProfileButton" title="重命名配置文件" disabled=""><img src="./icons/options-icons/button_edit.png"></button>
+			</span>
+		</h3>
+		<!-- 标注 -->
+		<details>
+			<summary>标注</summary>
+			<!-- 直线标注前缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="s1Pre"></textarea>
+			</div>
+			<!-- 直线标注后缀 -->
+			<div class="option vertical">
+				<label for="s1Suf" id="s1SufLabel">直线标注后缀</label>
+				<textarea type="text" maxlength="150" id="s1Suf"></textarea>
+			</div>
+			<!-- 马克笔标注前缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="s2Pre"></textarea>
+			</div>
+			<!-- 马克笔标注后缀 -->
+			<div class="option vertical">
+				<label for="s2Suf" id="s2SufLabel">马克笔标注后缀</label>
+				<textarea type="text" maxlength="150" id="s2Suf"></textarea>
+			</div>
+			<!-- 波浪线标注前缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="s3Pre"></textarea>
+			</div>
+			<!-- 波浪线标注后缀 -->
+			<div class="option vertical">
+				<label for="s3Suf" id="s3SufLabel">波浪线标注后缀</label>
+				<textarea type="text" maxlength="150" id="s3Suf"></textarea>
+			</div>
+		</details>
+		<!-- 标题 -->
+		<details>
+			<summary>标题</summary>
+			<!-- 一级标题前缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="lev1Pre"></textarea>
+			</div>
+			<!-- 一级标题后缀 -->
+			<div class="option vertical">
+				<label for="lev1Suf" id="lev1SufLabel">一级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev1Suf"></textarea>
+			</div>
+			<!-- 马克笔标注前缀 -->
+			<div class="option vertical">
+				<label for="lev2Pre" id="lev2PreLabel">二级标题前缀</span></label>
+				<textarea type="text" maxlength="150" id="lev2Pre"></textarea>
+			</div>
+			<!-- 二级标题后缀 -->
+			<div class="option vertical">
+				<label for="lev2Suf" id="lev2SufLabel">二级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev2Suf"></textarea>
+			</div>
+			<!-- 波浪线标注前缀 -->
+			<div class="option vertical">
+				<label for="lev3Pre" id="lev3PreLabel">三级标题前缀</span></label>
+				<textarea type="text" maxlength="150" id="lev3Pre"></textarea>
+			</div>
+			<!-- 三级标题后缀 -->
+			<div class="option vertical">
+				<label for="lev3Suf" id="lev3SufLabel">三级标题后缀</span></label>
+				<textarea type="text" maxlength="150" id="lev3Suf"></textarea>
+			</div>
+		</details>
+		<!-- 想法 -->
+		<details>
+			<summary>想法</summary>
+			<!-- 我的想法前缀 -->
+			<div class="option vertical">
+				<label for="thouPre" id="thouPreLabel">想法前缀</label>
+				<textarea type="text" maxlength="150" id="thouPre"></textarea>
+			</div>
+			<!-- 我的想法后缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="thouSuf"></textarea>
+			</div>
+			<!--  -->
+			<!-- 想法标注前缀 -->
+			<div class="option vertical">
+				<label for="thouMarkPre" id="thouMarkPreLabel">想法标注前缀</label>
+				<textarea type="text" maxlength="150" id="thouMarkPre"></textarea>
+			</div>
+			<!-- 想法标注后缀 -->
+			<div class="option vertical">
+				<textarea type="text" maxlength="150" id="thouMarkSuf"></textarea>
+			</div>
+		</details>
+		<!-- 代码块 -->
+		<details>
+			<summary>代码块</summary>
+			<div class="option vertical">
+				<label for="codePre" id="codePreLabel">代码块前缀</label>
+				<input type="text" maxlength="15" id="codePre">
+			</div>
+			<div class="option vertical">
+				<input type="text" maxlength="15" id="codeSuf">
+			</div>
+		</details>
+		<!-- 正则替换 -->
+		<details>
+			<summary>正则替换</summary>
+			<!--  -->
+			<div class="regexpContainer">
+				<div class="option vertical">
+					<div class="option horizon">
+						<input type="checkbox" class="contextMenuEnabledInput" id="re1">
+					</div>
+					<input type="text" maxlength="150" class="regexpInput">
+				</div>
+			<!--  -->
+				<div class="option vertical">
+					<div class="option horizon">
+						<label for="re2" id="re2Label">模式2</label>
+						<input type="checkbox" class="contextMenuEnabledInput" id="re2">
+					</div>
+					<input type="text" maxlength="150" class="regexpInput">
+				</div>
+			<!--  -->
+				<div class="option vertical">
+					<div class="option horizon">
+						<label for="re3" id="re3Label">模式3</label>
+						<input type="checkbox" class="contextMenuEnabledInput" id="re3">
+					</div>
+					<input type="text" maxlength="150" class="regexpInput">
+				</div>
+			<!--  -->
+				<div class="option vertical">
+					<div class="option horizon">
+						<label for="re4" id="re4Label">模式4</label>
+						<input type="checkbox" class="contextMenuEnabledInput" id="re4">
+					</div>
+					<input type="text" maxlength="150" class="regexpInput">
+				</div>
+			<!--  -->
+				<div class="option vertical">
+					<div class="option horizon">
+						<label for="re5" id="re5Label">模式5</label>
+						<input type="checkbox" class="contextMenuEnabledInput" id="re5">
+					</div>
+					<input type="text" maxlength="150" class="regexpInput">
+				</div>
+			</div>
+		</details>
+		<!-- 其他 -->
+		<details>
+			<summary>其他</summary>
+			<div class="option">
+				<input type="checkbox" id="addThoughts">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableCopyImgs">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="allTitles">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="displayN">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="mpAutoLoad">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="mpContent">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="mpShrink">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableFancybox">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableThoughtEsc">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableStatistics">
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableOption">
+			</div>
+			<div class="option">
+				<select id="selectActionOptions">
+					<option id="underlineNone">无</option>
+					<option id="copy">复制</option>
+					<option id="underlineBg">马克笔</option>
+					<option id="underlineStraight">直线</option>
+					<option id="underlineHandWrite">波浪线</option>
+					<option id="query">查询</option>>
+				</select>
+			</div>
+			<div class="option">
+				<input type="checkbox" id="enableDevelop">
+			</div>
+		</details>
+		<!-- 确认提示 -->
+		<div id="confirmContainer" class="popup">
+			<div class="popup-content">
+				<header>
+					<span id="confirmLabel"></span>
+				</header>
+				<footer>
+					<button type="submit" id="confirmButton">确定</button>
+					<button id="cancelButton">取消</button>
+				</footer>
+			</div>
+		</div>
+		<!-- 输入提示 -->
+		<div id="promptContainer" class="popup">
+			<div class="popup-content">
+				<header>
+					<span id="promptLabel"></span>
+				</header>
+				<main><input id="promptInput" maxlength="20" type="text"></main>
+				<footer>
+					<button type="submit" id="promptConfirmButton">确定</button>
+					<button id="promptCancelButton">取消</button>
+				</footer>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>
