@@ -5,6 +5,29 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
+const cssLoaders = [
+	"style-loader", // 用来将 css 引入到代码中
+	"css-loader", // 用来处理 css 代码
+	// 引入 postcss，处理 css 的兼容性问题
+	{
+		loader: "postcss-loader",
+		options: {
+			postcssOptions: {
+				plugins: [
+					[
+						"postcss-preset-env",
+						{
+							browsers: 'last 2 versions' // 兼容最新的两个版本的浏览器
+						}
+					]
+				]
+			}
+		}
+	}
+]
+
+const lessLoaders = cssLoaders.concat(["less-loader"]) // less-loader 将 less 和 webpage 整合在一起
+
 // webpack 的配置信息
 module.exports = {
 	mode: 'production',
@@ -52,6 +75,18 @@ module.exports = {
 				],
 				// 指定要排除的文件
 				exclude: /node-modules/
+			},
+
+			// 设置 less 文件的处理
+			{
+				test: /\.less$/,
+				use: lessLoaders
+			},
+
+			// 设置 css 文件的处理
+			{
+				test: /\.css$/,
+				use: cssLoaders
 			}
 		]
 	},
