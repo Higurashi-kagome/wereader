@@ -1,4 +1,4 @@
-const bg: any = chrome.extension.getBackgroundPage();
+const bg: any = chrome.extension.getBackgroundPage()?.statisticsApi;
 
 /**
  * @description: 将整数数组中的整数由秒转为小时
@@ -13,4 +13,4 @@ const bg: any = chrome.extension.getBackgroundPage();
     return convertedTime;
 }
 
-export {convertTime, bg};
+export { bg, convertTime };
