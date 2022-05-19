@@ -1,3 +1,5 @@
+import 'arrive';
+
 /**
  * 用于获取被标注的图片的 Markdown 文本数组，用于支持导出被标注的图片等内容
  * 
@@ -6,9 +8,16 @@
  *     find Target Imgs
  * click next page if exists and repeat finding process as before
  */
-import $ from "jquery";
-import {simulateClick, getCurrentChapTitle, sleep} from "./content-utils";
-import "arrive";
+import $ from 'jquery';
+
+import { Code } from '../types/Code';
+import { Footnote } from '../types/Footnote';
+import { Img } from '../types/Img';
+import {
+	getCurrentChapTitle,
+	simulateClick,
+	sleep,
+} from './content-utils';
 
 // 检查指定章节的标注内容中是否有 [插图]
 function hasImgs(currentChapTitle: string) {
@@ -59,8 +68,10 @@ async function initMarkedDateGetter(){
 		}
 		return elObj;
 	}
+
+	
 	// 获取图片和注释
-	async function getMarkedData(addThoughts: boolean, markedData: object[] = [], firstPage = true) {
+	async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnote|Code> = [], firstPage = true) {
 		if (firstPage) { // 点击当前章节，切换到第一页
 			$('#routerView')[0].arrive('.readerCatalog', {onceOnly: true, fireOnAttributesModification: true}, function() { // 目录等待
 				simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0]);
@@ -85,7 +96,7 @@ async function initMarkedDateGetter(){
 				let {imgSrc,alt,isInlineImg,footnote,currentChapTitle,code,height,top} = getTargetObj(el);
 				if(!footnote && Math.abs(top + height - maskTop - maskHeight) > 0.2) return; // 继续：不是脚注（图片/代码块），但没被标注
 				if(footnote && (top < maskTop || (maskTop + maskHeight) < (top + height))) return; // 继续：是脚注，但没被标注
-				if(imgSrc){
+				if(imgSrc && alt !== undefined && isInlineImg !== undefined){
 					markedData.push({alt: alt, imgSrc: imgSrc, isInlineImg: isInlineImg});
 				}else if(footnote){
 					markedData.push({footnoteName: `${currentChapTitle}-注${notesCounter++}`, footnote: footnote});
@@ -114,12 +125,13 @@ async function initMarkedDateGetter(){
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
 		if(!request.isGetMarkedData) return;
 		if (!hasImgs(currentChapTitle)) sendResponse([]); // 没有 [插图] 则不需要尝试获取图片
-		else
+		else {
 			getMarkedData(request.addThoughts).then(markedData=>{
 				sendResponse(markedData);
 			});
+		}
 		return true; // 存在异步问题，必须返回 true
 	});
 }
 
-export {initMarkedDateGetter};
+export { initMarkedDateGetter };

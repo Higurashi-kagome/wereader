@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 // 背景页
-const bg: any = chrome.extension.getBackgroundPage()!;
+const bg: any = chrome.extension.getBackgroundPage()!.popupApi;
 // 测试 url 是否为阅读页的正则表达式 /:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/
 const readPageRegexp = /:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/;
 

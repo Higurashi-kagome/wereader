@@ -10,18 +10,29 @@
 		"**/__pycache__": true,
 		"**/node_modules": true,
 		"wereader-firefox": true,
-		"package-lock.json": true
+		"package-lock.json": true,
+		"wereader-chrome": true
 	},
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [
 		"BACKUPKEY",
 		"BACKUPNAME",
+		"bestbookmarks",
 		"bookid",
+		"bookmarklist",
 		"ERRORMSG",
+		"Logined",
+		"mploadmore",
 		"mpwx",
+		"persisten",
+		"readdetail",
+		"Reposted",
+		"soldout",
 		"Swal",
 		"sweetalert",
+		"synckeys",
+		"Vids",
 		"webook"
 	],
 	"npm-scripts.showStartNotification": false

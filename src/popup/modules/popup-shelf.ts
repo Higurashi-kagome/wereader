@@ -1,7 +1,17 @@
-import $ from "jquery";
-import { createSearchInput } from "./popup-shelf-search";
-import { bg, dropdownClickEvent, partSort } from "./popup-utils";
-import { Archive, Book, ShelfDataTypeJson, ShelfErrorDataType } from "../../types/shelfTypes";
+import $ from 'jquery';
+
+import {
+	Archive,
+	Book,
+	ShelfDataTypeJson,
+	ShelfErrorDataType,
+} from '../../types/shelfTypes';
+import { createSearchInput } from './popup-shelf-search';
+import {
+	bg,
+	dropdownClickEvent,
+	partSort,
+} from './popup-utils';
 
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
 function initShelfTab() {
@@ -13,7 +23,7 @@ function initShelfTab() {
 			const resp: ShelfDataTypeJson | ShelfErrorDataType = await bg.getShelfData();
 			if(resp.errMsg){	// 从服务端获取数据失败
 				$('#shelf').html(`<a>正在加载...</a>`);
-				let tab = await bg.createTab({url: 'https://weread.qq.com/', active: false});
+				let tab = await bg.createTab({url: bg.Wereader.maiUrl, active: false});
 				if(tab){
 					shelfData = await bg.setShelfData();
 					if(shelfData.errMsg){
@@ -158,4 +168,4 @@ function createShelf(shelfData: ShelfDataTypeJson){
 	}
 }
 
-export {initShelfTab};
+export { initShelfTab };

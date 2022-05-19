@@ -1,7 +1,17 @@
-import { Chart, ChartConfiguration } from "chart.js";
-import $ from "jquery";
-import { readDetailData, readDetailJson } from "../types/readDetailTypes";
-import { bg, convertTime } from "./statistics-var";
+import {
+	Chart,
+	ChartConfiguration,
+} from 'chart.js';
+import $ from 'jquery';
+
+import {
+	readDetailData,
+	readDetailJson,
+} from '../types/readDetailTypes';
+import {
+	bg,
+	convertTime,
+} from './statistics-var';
 
 let monthConfig: ChartConfiguration = {
     type: 'line',
@@ -109,7 +119,7 @@ function initMonthStatistics() {
 			let ctx = canvas.getContext('2d')!;
 			monthLine = new Chart(ctx, monthConfig);
 		} catch (error) {
-			chrome.tabs.create({url: 'https://weread.qq.com/', active: false});
+			chrome.tabs.create({url: bg.Wereader.maiUrl, active: false});
 			alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后刷新该页面重新获取统计');
 			return console.log(error, readDetail!);
 		}
@@ -158,4 +168,4 @@ function initMonthStatistics() {
 	});
 }
 
-export {initMonthStatistics};
+export { initMonthStatistics };

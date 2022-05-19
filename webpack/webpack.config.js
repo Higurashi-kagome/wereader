@@ -117,11 +117,22 @@ module.exports = {
 			},
 			chunks: ['options']
 		}),
+		new HTMLWebpackPlugin({
+			filename: 'bg.html',
+			template: 'src/background/bg.html',
+			inject: 'body',
+			minify: {
+				removeComments: true,
+				collapseWhitespace: true
+			},
+			chunks: ['background']
+		}),
 	],
 
 	optimization: {
 		// 压缩代码
 		minimize: true,
+		// https://github.com/terser/terserx
 		minimizer: [new TerserWebpackPlugin ({
 			// 清除 console.log
 			terserOptions: {

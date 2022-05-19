@@ -173,6 +173,7 @@
 ---
 
 - TODO
+  - 主题色变色问题
   - 标注导出后跳转回原阅读位置
   - 更加友好的 Issue 模板
     - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser

@@ -4,7 +4,7 @@
 	"version": "2.24.2",
 	"description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用 Markdown 做笔记的用户比较有帮助。",
 	"background": {
-	   "page": "background/background.html",
+	   "page": "bg.html",
 	   "persisten": false
 	},
 	"icons": {

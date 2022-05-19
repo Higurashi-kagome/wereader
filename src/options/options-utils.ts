@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { DefaultRegexPattern } from "../background/modules/bg-vars";
 import { BACKUPKEY, RegexpInputClassName, STORAGE_ERRORMSG } from "./options-var";
 //错误捕捉函数
 function catchErr(sender: string) {
@@ -46,14 +47,18 @@ function updateStorageArea(
 }
 
 //从页面获取正则设置
+type reName = 're1' | 're2' | 're3' | 're4' | 're5';
+type reConfigType = {replacePattern:string, checked:boolean};
+type reConfigCollectionType = {[key in reName]: reConfigType};
+type reConfigKeyType = {re: reConfigCollectionType}
 function getRegexpSet(){
     const regexpKey = "re"
-    let config: {re: {[regexpName: string]: {replacePattern:string, checked:boolean}}} = {re: {}}
+    let config: reConfigKeyType = {re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern}}
     let checkBoxCollection = document.getElementsByClassName("contextMenuEnabledInput");
     for(let i = 0;i < checkBoxCollection.length;i++){
 		let checkBox = checkBoxCollection[i] as HTMLInputElement;
         let regexInputContainer = checkBox.parentNode!.parentNode! as HTMLElement;
-        let checkBoxId = checkBox.id
+        let checkBoxId = checkBox.id as reName;
 		let regexpInput = regexInputContainer.getElementsByClassName(RegexpInputClassName)[0] as HTMLInputElement;
         let regexpInputValue = regexpInput.value
         //需要检查匹配模式是否为空
@@ -63,4 +68,4 @@ function getRegexpSet(){
     return {key: regexpKey, value: config[regexpKey]}
 }
 
-export {catchErr, updateStorageArea, getRegexpSet};
+export {catchErr, updateStorageArea, getRegexpSet, reConfigCollectionType};

@@ -1,6 +1,6 @@
 /* 保存供其他 content.js 调用的函数 */
-import $ from "jquery";
-import Swal, { SweetAlertOptions }  from "sweetalert2";
+import $ from 'jquery';
+import Swal, { SweetAlertOptions } from 'sweetalert2';
 
 /* 模拟点击 */
 function simulateClick(element: HTMLElement, init = {}): void {
@@ -72,7 +72,7 @@ async function copy(targetText: string): Promise<void> {
  * @param elementId 设置给 link 元素的 id 值，已存在该 id 的元素时将移除原元素，再将 elementId 作为新元素 id 设置
  * @returns 返回插入后的元素
  */
-// ========== based on：https://stackoverflow.com/a/19127555 ==========
+// ========== https://stackoverflow.com/a/19127555 ==========
 function loadCSS(file: string, elementId?: string | undefined) {
 	const filePath = chrome.extension.getURL(file);
 	let link = document.createElement("link");
@@ -90,11 +90,11 @@ function loadCSS(file: string, elementId?: string | undefined) {
 }
 
 export {
-	simulateClick,
-	getCurrentChapTitle,
-	sleep,
+	alertMsgType,
 	copy,
+	getCurrentChapTitle,
 	loadCSS,
 	mySweetAlert,
-	alertMsgType
+	simulateClick,
+	sleep,
 };
