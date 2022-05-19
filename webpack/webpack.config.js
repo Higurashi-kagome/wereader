@@ -28,6 +28,29 @@ const cssLoaders = [
 
 const lessLoaders = cssLoaders.concat(["less-loader"]) // less-loader 将 less 和 webpage 整合在一起
 
+const babelLoader = {
+	// 指定加载器
+	loader:"babel-loader",
+	// 设置 babel
+	options: {
+		// 设置预定义的环境
+		presets:[
+			[
+				// 指定环境的插件
+				"@babel/preset-env",
+				// 配置信息
+				{
+					// 要兼容的目标浏览器
+					targets: "defaults",
+					"corejs": "3",
+					// 使用 core-js 的方式 "usage" 表示按需加载
+					"useBuiltIns": "usage"
+				}
+			]
+		]
+	}
+}
+
 // webpack 的配置信息
 module.exports = {
 	mode: 'production',
@@ -70,6 +93,7 @@ module.exports = {
 				test: /\.tsx?$/,
 				// 指定要使用的 loader
 				use: [
+					babelLoader,
 					// 'babel-loader',
 					'ts-loader'
 				],
