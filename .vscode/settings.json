@@ -9,7 +9,31 @@
 		"**/.history": true,
 		"**/__pycache__": true,
 		"**/node_modules": true,
-		"wereader-firefox": true
+		"wereader-firefox": true,
+		"package-lock.json": true,
+		"wereader-chrome": false
 	},
-	"explorerExclude.backup": null
+	"explorerExclude.backup": null,
+	"editor.snippetSuggestions": "inline",
+	"cSpell.words": [
+		"BACKUPKEY",
+		"BACKUPNAME",
+		"bestbookmarks",
+		"bookid",
+		"bookmarklist",
+		"ERRORMSG",
+		"Logined",
+		"mploadmore",
+		"mpwx",
+		"persisten",
+		"readdetail",
+		"Reposted",
+		"soldout",
+		"Swal",
+		"sweetalert",
+		"synckeys",
+		"Vids",
+		"webook"
+	],
+	"npm-scripts.showStartNotification": false
 }
