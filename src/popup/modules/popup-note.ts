@@ -1,5 +1,11 @@
-import { bg, dropdownClickEvent, readPageRegexp } from "./popup-utils";
-import $ from "jquery";
+import $ from 'jquery';
+
+import { tabClickEvent } from './popup-tabs';
+import {
+	bg,
+	dropdownClickEvent,
+	readPageRegexp,
+} from './popup-utils';
 
 /* 初始化笔记面板，为各个按钮绑定点击事件 */
 async function initNoteTab(url: string) {
@@ -14,7 +20,7 @@ async function initNoteTab(url: string) {
 		bg.alert('信息获取失败，请确保正常登陆后刷新重试');
 		return window.close();
 	}
-	$('.tab').prepend($(`<button class="tabLinks" id="noteBtn">笔记</button>`));
+	$(`<button class="tabLinks" id="noteBtn">笔记</button>`).prependTo($('.tab')).on('click', tabClickEvent);
 	// 功能入口
 	$('.caller').on('click', listener);
 	// 下拉按钮点击事件
@@ -57,4 +63,4 @@ async function initNoteTab(url: string) {
 	}
 }
 
-export {initNoteTab};
+export { initNoteTab };

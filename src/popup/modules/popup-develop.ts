@@ -1,5 +1,10 @@
-import { bg, readPageRegexp } from "./popup-utils";
-import $ from "jquery";
+import $ from 'jquery';
+
+import { tabClickEvent } from './popup-tabs';
+import {
+	bg,
+	readPageRegexp,
+} from './popup-utils';
 
 /* 从背景页获取用于测试的函数后，在 popup 页面上创建开发者选项面板，方便调用测试函数 */
 function initTestTab(url: string) {
@@ -17,9 +22,9 @@ function initTestTab(url: string) {
 		});
 		testContent.append(el);
 	}
-	$('.tab').append($(`<button class='tabLinks' id='testBtn'>开发者选项</button>`));
+	$(`<button class='tabLinks' id='testBtn'>开发者选项</button>`).appendTo($('.tab')).on('click', tabClickEvent);
 	// script 标签在 body 标签最后
 	$('script:first-of-type').before(testContent);
 }
 
-export {initTestTab};
+export { initTestTab };
