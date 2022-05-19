@@ -1,0 +1,81 @@
+/*正文外*/
+body{ background: #17181a !important; }
+
+.app_content,/*正文*/
+.wr_decoration.wr_readerBackground_opacity,
+.readerTopBar,/*顶部*/
+.readerCatalog,/*目录*/
+.readerNotePanel/*标注*/
+{
+    background: #1f2022 !important;
+}
+/*下一章*/
+.readerFooter_button{
+    background: #363739 !important;
+}
+
+.readerControls_item,/*目录、标注等按钮*/
+.readerControls_fontSize/*字体大小按钮*/
+{
+    background: #27282a !important;
+}
+/*字号选择展开后的背景*/
+.fontSizeButton_bg{
+    background: #323234 !important;
+}
+/*搜索*/
+.readerCatalog_searchBar_left{
+    background: #353638 !important;
+}
+/*下载APP二维码*/
+.download_dialog_content{background: #303030 !important;}
+
+/* 笔记目录 */
+#noteTools button {
+	color: inherit;
+}
+
+#noteTools ul {
+	display: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+	max-height: 500px;
+	overflow: auto;
+	width: 100%;
+}
+
+#noteTools li a {
+	display: block;
+	color: #000;
+	padding: 5px 16px;
+	text-decoration: none;
+}
+
+/* 标注目录按钮 */
+.notesMenuBtn {
+	font-size: 16px;
+	padding: 12px 20px 12px 40px;
+	border:1px groove;
+	border-bottom: none;
+	text-align: left;
+}
+
+/* 标注目录中的当前目录 */
+#sectionListItem_title_scroll a.current::after {
+	content: ' ←';
+}
+
+/* 鼠标移动到选项上修改背景颜色 */
+#noteTools li a:hover {
+    background-color: #555;
+    color: white;
+}
+#noteTools li a {
+    color:  white;
+}
+
+/* 主题按钮 */
+.readerControls_item.theme, #progressText {
+	color: rgb(190,190,190);
+}

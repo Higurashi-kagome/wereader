@@ -34,7 +34,7 @@
 	   }
 	],
 	"web_accessible_resources": [
-		 "theme/*.css",
+		 "content/static/css/theme/*.css",
 		 "content/static/css/*.css"
 	],
 	"options_page": "options.html",

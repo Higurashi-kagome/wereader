@@ -65,7 +65,6 @@ module.exports = {
 			patterns: [
 				// from 相对于 context
 				// to 相对于编译文件夹
-				{from: ".", to: ".", context: "wereader-chrome"},
 				{from: "manifest.json", to: ".", context: "public"},
 				{from: "extension-icons", to: "./icons/extension-icons", context: "public"},
 				{from: "popup/static/css/popup.css", to: ".", context: "src"},

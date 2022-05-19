@@ -1,8 +1,10 @@
+import 'arrive';
+
 /* 主要用于实现阅读页主题色切换，另外还负责从 content-scroll.js 中调用函数帮助实现进度*/
-import $ from "jquery";
-import Swal from "sweetalert2";
-import "arrive";
-import { loadCSS } from "./content-utils";
+import $ from 'jquery';
+import Swal from 'sweetalert2';
+
+import { loadCSS } from './content-utils';
 
 function initTheme() {
 	console.log('initTheme');
@@ -30,23 +32,23 @@ function initTheme() {
 			if($('.readerControls_item.white').length){
 				//设置白色主题
 			    Flag=-1
-				loadCSS("theme/white.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/white.css", themeStyleElemId)
 				$('.readerControls_item.white').trigger("click");
 			}else if(Flag == 0){
 				//设置绿色主题
 				if($('.readerControls_item.white').length){
 					$('.readerControls_item.white').trigger("click");
 				}
-				loadCSS("theme/green.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/green.css", themeStyleElemId)
 			}else if(Flag == 1){
 				//设置橙色主题
 				if($('.readerControls_item.white').length){
 					$('.readerControls_item.white').trigger("click");
 				}
-				loadCSS("theme/orange.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/orange.css", themeStyleElemId)
 			}else if(Flag == 2){
 				//设置黑色主题
-				loadCSS("theme/dark.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/dark.css", themeStyleElemId)
 				$('.readerControls_item.dark').trigger("click");
 			}
 			//保存当前主题对应编号
@@ -62,22 +64,22 @@ function initTheme() {
 			if(result.flag === 0){
 				//设置绿色主题
 				$('.readerControls_item.white').trigger("click");
-				loadCSS("theme/green.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/green.css", themeStyleElemId)
 				// 绿色的下一个为橙色（1）
 				Flag = 1
 			}else if(result.flag === 1){
 				//设置橙色主题
 				$('.readerControls_item.white').trigger("click");
-				loadCSS("theme/orange.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/orange.css", themeStyleElemId)
 				// 橙色的下一个为黑色（2）
 				Flag = 2
 			}else if(result.flag === 2){
 				// 设置黑色主题
-				loadCSS("theme/dark.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/dark.css", themeStyleElemId)
 				$('.readerControls_item.dark').trigger("click");
 			} else if(result.flag === -1){
 				// 设置白色主题
-				loadCSS("theme/white.css", themeStyleElemId)
+				loadCSS("content/static/css/theme/white.css", themeStyleElemId)
 				$('.readerControls_item.white').trigger("click");
 			}
 		});
@@ -91,4 +93,4 @@ function initTheme() {
 	});
 }
 
-export {initTheme};
+export { initTheme };
