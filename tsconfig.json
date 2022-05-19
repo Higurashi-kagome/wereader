@@ -8,6 +8,7 @@
 		"lib": ["ES6", "DOM", "dom.iterable"],
 		"outDir": "dist/js",
 		"module": "ES6",
+		"jsx": "react",
 		"rootDir": "src",
 		"esModuleInterop": true,
 		"removeComments": true,

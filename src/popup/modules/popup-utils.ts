@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 // 背景页
 const bg: any = chrome.extension.getBackgroundPage()!.popupApi;
@@ -6,8 +6,7 @@ const bg: any = chrome.extension.getBackgroundPage()!.popupApi;
 const readPageRegexp = /:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/;
 
 // 下拉按钮点击事件
-// TODO：类型信息
-const dropdownClickEvent = function(this: any){
+const dropdownClickEvent = function(this: HTMLElement){
 	$(this).toggleClass("active");
 	$(this).next().toggle();
 }
@@ -18,24 +17,17 @@ function partSort(arr: Array<any>, a: number, b: number, fun = function(a: any, 
 	// Variables to store start and end of the index range
 	let l = Math.min(a, b);
 	let r = Math.max(a, b);
-
 	// Temporary array
 	let temp = new Array(r - l + 1);
 	for (let i = l, j = 0; i <= r; i++, j++) {
 		temp[j] = arr[i];
 	}
-
 	// Sort the temporary array
 	temp.sort(fun);
-
 	// Modifying original array with temporary array elements
 	for (let i = l, j = 0; i <= r; i++, j++) {
 		arr[i] = temp[j];
 	}
 }
 
-export {
-	bg, readPageRegexp,
-	dropdownClickEvent,
-	partSort
-};
+export { bg, dropdownClickEvent, partSort, readPageRegexp };

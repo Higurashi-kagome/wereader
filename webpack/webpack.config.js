@@ -42,9 +42,9 @@ const babelLoader = {
 				{
 					// 要兼容的目标浏览器
 					targets: "defaults",
-					"corejs": "3",
+					corejs: "3",
 					// 使用 core-js 的方式 "usage" 表示按需加载
-					"useBuiltIns": "usage"
+					useBuiltIns: "usage"
 				}
 			]
 		]
@@ -60,13 +60,15 @@ module.exports = {
 		background: path.resolve(__dirname, "..", "src", "background.ts"),
 		// 内容注入脚本
 		content: path.resolve(__dirname, "..", "src", "content.ts"),
+		// 窗口页面
+		popupPage: path.resolve(__dirname, "..", "src/popup/page", "popup-page.tsx"),
 		// 窗口脚本
 		popup: path.resolve(__dirname, "..", "src", "popup.ts"),
 		// 选项页脚本
 		options: path.resolve(__dirname, "..", "src", "options.ts"),
 		// 统计页脚本
 		statistics: path.resolve(__dirname, "..", "src/statistics/", "statistics.ts"),
-		// 统计页脚本
+		// 公众号阅读页脚本
 		mpwx: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
 	},
 
@@ -81,7 +83,7 @@ module.exports = {
 	// 设置模块如何被解析
 	resolve: {
 		// ts 和 js 文件可以作为模块使用
-		extensions: [".ts", ".js"],
+		extensions: [".ts", ".js", ".tsx"],
 	},
 
 	// 指定打包时要使用的模块
@@ -144,7 +146,7 @@ module.exports = {
 				collapseWhitespace: true
 			},
 			// 要引入到 HTML 中的打包好的 js 脚本
-			chunks: ['popup']
+			chunks: ['popupPage', 'popup']
 		}),
 		new HTMLWebpackPlugin({
 			filename: 'statistics.html',

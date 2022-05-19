@@ -8,6 +8,7 @@ import {
 } from '../../types/shelfTypes';
 import { initShelfReload } from './popup-shelf-reload';
 import { createSearchInput } from './popup-shelf-search';
+import { tabClickEvent } from './popup-tabs';
 import {
 	bg,
 	dropdownClickEvent,
@@ -18,6 +19,7 @@ import {
 function initShelfTab() {
 	/* 绑定书架 tab 按钮点击事件 */
 	$('#shelfBtn').on('click', async function(){
+		console.log('call: #shelfBtn.onclick');
 		let shelfData = bg.shelfForPopup.shelfData;
 		// 从背景页获取数据无效
 		if(!shelfData || shelfData.errMsg){
@@ -36,9 +38,10 @@ function initShelfTab() {
 				bg.setShelfData(shelfData);
 			}
 		}
+		console.log('call: #shelfBtn.onclick var shelfData\n', shelfData);
 		createShelf(shelfData);
 		createSearchInput();
-	});
+	}).on('click', tabClickEvent);
 	initShelfReload();
 }
 
@@ -128,6 +131,7 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 
 function createShelf(shelfData: ShelfDataTypeJson){
 	let shelf = getShelf(shelfData);
+	console.log('call: createShelf var shelf\n', shelf);
 	let shelfContainer = $('#shelf').html('');
 	/*创建目录*/
 	for (const {cateName, books} of shelf) {

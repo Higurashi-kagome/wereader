@@ -168,19 +168,22 @@
 - 初次加载书架时，在已经打开读书页的情况下不再打开页面
 - 没有登录时，由扩展直接给出二维码？
 - arrive 不能和 jQuery 协同工作的问题
-- 选项页输入框超出边界的问题
+- 支持按微信读书的分类显示书架
+- 分开开发模式和生产模式
+- 更加友好的 Issue 模板
+    - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
+    - https://github.com/Snipaste/feedback/tree/master/.github/ISSUE_TEMPLATE
 
 ---
 
 - TODO
-  - 主题色变色问题
+  - 主题色变色慢
   - 标注导出后跳转回原阅读位置
-  - 更加友好的 Issue 模板
-    - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
-    - https://github.com/Snipaste/feedback/tree/master/.github/ISSUE_TEMPLATE
   - 删除想法复制后的空格
   - 迁移到 V3：https://developer.chrome.com/blog/mv2-transition/
-  - 使用 TS
-    - 同时使用框架支持 Firefox
+  - 支持 Firefox（使用框架、工具之类）
   - 书摘功能：
     - https://github.com/niklasvh/html2canvas
+
+- Bug
+  - popup 书架不能够正常展开的问题
