@@ -1,7 +1,0 @@
-data/
-test-*.*
-test.*
-upload.py
-tempCodeRunnerFile.py
-__pycache__
-/.vscode
