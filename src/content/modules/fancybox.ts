@@ -1,10 +1,12 @@
-import $ from "jquery";
-import "jquery-mousewheel";
-import { loadCSS } from "./content-utils";
+import 'jquery-mousewheel';
+
+import $ from 'jquery';
+
+import { loadCSS } from './content-utils';
 
 function initFancyBox() {
 	console.log('initFancyBox');
-	loadCSS('content/assets/fancybox/fancybox.css', 'wereader-fancybox-style-el');
+	loadCSS('content/static/css/fancybox.css', 'wereader-fancybox-style-el');
 	// 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片/代码块绑定点击事件
 	function fancyboxTargetObserver(){
 		let observer = new MutationObserver(bindFancyBox);
@@ -156,4 +158,4 @@ function initFancyBox() {
 	});
 }
 
-export {initFancyBox};
+export { initFancyBox };

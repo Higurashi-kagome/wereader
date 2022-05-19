@@ -35,8 +35,7 @@
 	],
 	"web_accessible_resources": [
 		 "theme/*.css",
-		 "content/static/css/*.css",
-		 "content/assets/fancybox/*.css"
+		 "content/static/css/*.css"
 	],
 	"options_page": "options.html",
 	"options_ui": {
