@@ -1,0 +1,23 @@
+/* 显示进度条 */
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+body::-webkit-scrollbar {
+    display: block;
+    /* -webkit-appearance: none; */
+    background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+body::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+
+/*定义滑块*/
+body::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}

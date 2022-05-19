@@ -11,7 +11,7 @@
 		"**/node_modules": true,
 		"wereader-firefox": true,
 		"package-lock.json": true,
-		"wereader-chrome": true
+		"wereader-chrome": false
 	},
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",

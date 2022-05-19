@@ -70,6 +70,7 @@ module.exports = {
 				{from: "extension-icons", to: "./icons/extension-icons", context: "public"},
 				{from: "popup/static/css/popup.css", to: ".", context: "src"},
 				{from: "statistics/statistics.css", to: ".", context: "src"},
+				{from: "content/static/css", to: "./content/static/css", context: "src"},
 				{from: "mpwx/mp.css", to: ".", context: "src"},
 				{from: "options.css", to: ".", context: "src/options"},
 				{from: "icons", to: "./icons/options-icons", context: "src/options"}

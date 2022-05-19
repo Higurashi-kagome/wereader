@@ -1,6 +1,7 @@
 /* 用于实现进度查看 */
-import Swal from "sweetalert2";
-import { loadCSS } from "./content-utils";
+import Swal from 'sweetalert2';
+
+import { loadCSS } from './content-utils';
 
 function initScrollBar() {
 	console.log('initScrollBar');
@@ -17,18 +18,20 @@ function initScrollBar() {
 			progressBtn.setAttribute("title", "进度");
 			progressBtn.setAttribute("class","readerControls_item download");
 			//设置按钮文字
-			var span2 = document.createElement("span");
-			span2.textContent = "进度";
-			span2.id = "progressText";
-			progressBtn.appendChild(span2);
+			var progressText = document.createElement("span");
+			progressText.textContent = "进度";
+			progressText.id = "progressText";
+			progressBtn.appendChild(progressText);
 			
+			// 隐藏滚动条
+			loadCSS("content/static/css/content-hideScroll.css", 'wereader-scrollbar-style-el')
+
 			//绑定点击事件
 			var count = -1;
 			progressBtn.addEventListener('click', function(){
 				try {
 					//切换滚筒条显隐
-					// TODO：将 showScroll.css 移动到 content，使用脚本加 link 元素
-					let cssFile = (count === -1) ? "inject/showScroll.css" : "content/css/content-hideScroll.css";
+					let cssFile = (count === -1) ? "content/static/css/showScroll.css" : "content/static/css/content-hideScroll.css";
 					loadCSS(cssFile, 'wereader-scrollbar-style-el');
 					count = count * (-1);
 				} catch (error) {
@@ -42,4 +45,4 @@ function initScrollBar() {
 	});
 }
 
-export {initScrollBar};
+export { initScrollBar };
