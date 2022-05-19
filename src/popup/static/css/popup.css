@@ -4,8 +4,8 @@ body{
 
 /* reload */
 #reload {
-    font-family: Lucida Sans Unicode;
-    transition: transform 500ms;
+	font-family: Lucida Sans Unicode;
+	transition: transform 500ms;
 	margin-left: 5px;
 }
 #reload:hover{
@@ -99,4 +99,34 @@ body{
 .dropdown-container {
     display: none;
     padding-left: 8px;
+}
+
+/* 进度条 */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background: #dddddd00;
+}
+
+::-webkit-scrollbar-button {
+    width: 5px;
+    height: 5px;
+    background: #dddddd00;
+}
+
+::-webkit-scrollbar-button:hover {
+    background: #d1d1d188;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cccccc88;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #88888888;
+}
+
+::-webkit-scrollbar-track {
+    background: #dddddd00;
 }

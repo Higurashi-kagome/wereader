@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 
 /**
  * 绑定 tab 按钮点击事件
@@ -17,4 +17,4 @@ function initTabClick() {
 	});
 }
 
-export {initTabClick};
+export { initTabClick };

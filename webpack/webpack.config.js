@@ -169,6 +169,7 @@ module.exports = {
 		minimize: true,
 		// https://github.com/terser/terserx
 		minimizer: [new TerserWebpackPlugin ({
+			extractComments: false,
 			// 清除 console.log
 			terserOptions: {
 				compress: {
