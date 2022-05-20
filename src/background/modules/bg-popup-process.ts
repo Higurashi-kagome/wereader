@@ -169,10 +169,16 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 		let mark = marks[j];
 		if (markedData.length) [marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent);
 		if(isThought(mark)){ // 如果为想法
-			// 想法所标注的内容加入 res
-			res += `${Config.thouMarkPre}${mark.abstract}${Config.thouMarkSuf}\n\n`;
-			// 想法加入 res
-			res += `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+			// 是否将想法添加到对应标注之前
+			if (Config.thoughtFirst){
+				// 想法加入 res
+				res += `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+				// 想法所标注的内容加入 res
+				res += `${Config.thouMarkPre}${mark.abstract}${Config.thouMarkSuf}\n\n`;
+			} else {
+				res += `${Config.thouMarkPre}${mark.abstract}${Config.thouMarkSuf}\n\n`;
+				res += `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+			}
 		} else if(isUpdated(mark)){ // 不是想法（为标注）
 			// 则进行正则匹配
 			let markText = regexpReplace(mark.markText);

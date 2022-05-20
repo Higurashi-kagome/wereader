@@ -159,12 +159,17 @@ export async function copyThought() {
 	}, new Map<number, ChapInfoUpdated>());
 	let thoughts = await getMyThought();
 	let res = "";
-	//thoughts——{chapterUid:[{abstract,content}]}
 	thoughts.forEach((thoughtsInAChap, chapUid)=>{
 		res += `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level)}\n\n`;
 		thoughtsInAChap.forEach((thou)=>{
-			res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
-			res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
+			// 是否将想法添加到对应标注之前
+			if (Config.thoughtFirst){
+				res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
+				res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
+			}else{
+				res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
+				res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
+			}
 		});
 	})
 	if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'});
@@ -219,7 +224,7 @@ export async function createMpPage(bookId: string){
 		mpTempData[bookId][0] = json;
 	}
 	sendMpMsg = {data: json, bookId: bookId};
-	chrome.tabs.create({url: chrome.runtime.getURL('popup/mpwx/mp.html')});
+	chrome.tabs.create({url: chrome.runtime.getURL('mp.html')});
 	return json;
 }
 

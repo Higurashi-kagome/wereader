@@ -1,4 +1,5 @@
-import $ from "jquery";
+import $ from 'jquery';
+
 const helpContent: {[key: string]: any} = {
     s1Pre: {
         title: '直线标注前缀',
@@ -77,6 +78,10 @@ const helpContent: {[key: string]: any} = {
     addThoughts: {
         title: '导出标注包含想法',
         help: `<p>选中该选项之后，导出的标注（本章标注或是全书标注）中将包含你在书中留下的想法。</p>`
+    },
+	thoughtFirst: {
+        title: '想法在标注之前',
+        help: `<p>选中该选项之后，导出的想法排在对应标注的前面。</p>`
     },
     allTitles: {
         title: '导出标注包含所有章节',
@@ -157,4 +162,4 @@ function initHelpContent() {
 	});
 }
 
-export {initHelpContent};
+export { initHelpContent };
