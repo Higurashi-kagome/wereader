@@ -25,14 +25,14 @@ declare global {
 window.bookId = undefined;
 // 所有已打开读书页的书本 id
 var bookIds = new Map<number, string>();
-const DefaultBackupName = "默认设置"
-const StorageErrorMsg = "存储出错"
+const DefaultBackupName = "默认设置";
+const StorageErrorMsg = "存储出错";
 const BackupKey = "backup";
 let shelfForPopup = {shelfData: undefined};
 //用于记录 popup 是否请求复制目录
-var isCopyContent = false
-const DefaultRegexPattern = {replacePattern:'',checked:false}
-var mpTempData: {[bookId: string]: any[]};
+var isCopyContent = false;
+const DefaultRegexPattern = {replacePattern: '', checked: false};
+var mpTempData: {[bookId: string]: any[]} = {};
 
 //用于检查格式并保存当前配置
 interface ConfigType{
@@ -60,6 +60,7 @@ interface ConfigType{
     mpAutoLoad: boolean,
     allTitles: boolean,
     addThoughts: boolean,
+	thoughtFirst: boolean,
     enableDevelop: boolean,
     enableStatistics: boolean,
     enableOption: boolean,
@@ -99,6 +100,7 @@ var Config: ConfigType = {
     mpAutoLoad: true,
     allTitles: false,
     addThoughts: true,
+	thoughtFirst: false,
     enableDevelop: false,
     enableStatistics: false,
     enableOption: true,

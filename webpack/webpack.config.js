@@ -53,7 +53,8 @@ const babelLoader = {
 
 // webpack 的配置信息
 module.exports = {
-	mode: 'production',
+	mode: 'development',
+	devtool: 'source-map',
 	// 配置入口
 	entry: {
 		// 背景页脚本
@@ -61,7 +62,7 @@ module.exports = {
 		// 内容注入脚本
 		content: path.resolve(__dirname, "..", "src", "content.ts"),
 		// 窗口页面
-		popupPage: path.resolve(__dirname, "..", "src/popup/page", "popup-page.tsx"),
+		popupPage: path.resolve(__dirname, "..", "src/popup/page", "Popup.tsx"),
 		// 窗口脚本
 		popup: path.resolve(__dirname, "..", "src", "popup.ts"),
 		// 选项页脚本
@@ -69,7 +70,7 @@ module.exports = {
 		// 统计页脚本
 		statistics: path.resolve(__dirname, "..", "src/statistics/", "statistics.ts"),
 		// 公众号阅读页脚本
-		mpwx: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
+		mp: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
 	},
 
 	// 配置输出
@@ -92,7 +93,7 @@ module.exports = {
 		rules: [
 			{
 				// 指定使规则生效的文件
-				test: /\.tsx?$/,
+				test: /\.tsx?$/i,
 				// 指定要使用的 loader
 				use: [
 					babelLoader,
@@ -105,13 +106,13 @@ module.exports = {
 
 			// 设置 less 文件的处理
 			{
-				test: /\.less$/,
+				test: /\.less$/i,
 				use: lessLoaders
 			},
 
 			// 设置 css 文件的处理
 			{
-				test: /\.css$/,
+				test: /\.css$/i,
 				use: cssLoaders
 			}
 		]
@@ -131,7 +132,6 @@ module.exports = {
 				{from: "popup/static/css/popup.css", to: ".", context: "src"},
 				{from: "statistics/statistics.css", to: ".", context: "src"},
 				{from: "content/static/css", to: "./content/static/css", context: "src"},
-				{from: "mpwx/mp.css", to: ".", context: "src"},
 				{from: "options.css", to: ".", context: "src/options"},
 				{from: "icons", to: "./icons/options-icons", context: "src/options"}
 			]
@@ -192,7 +192,7 @@ module.exports = {
 
 	optimization: {
 		// 压缩代码
-		minimize: true,
+		minimize: false,
 		// https://github.com/terser/terserx
 		minimizer: [new TerserWebpackPlugin ({
 			extractComments: false,

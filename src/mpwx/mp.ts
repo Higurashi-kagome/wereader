@@ -1,6 +1,9 @@
-import $ from "jquery";
-import { mpTypeJson } from "../types/mpTypes";
-import { timeConverter } from "./mp-utils";
+import './mp.css';
+
+import $ from 'jquery';
+
+import { mpTypeJson } from '../types/mpTypes';
+import { timeConverter } from './mp-utils';
 
 $(function(){
     /* 插入容器 */
