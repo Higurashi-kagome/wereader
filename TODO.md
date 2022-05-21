@@ -170,6 +170,8 @@
 - arrive 不能和 jQuery 协同工作的问题
 - 支持按微信读书的分类显示书架
 - 分开开发模式和生产模式
+- 书架显示更详细的书本信息（区分同名书籍）
+- 滚动条切换时跳动
 - 更加友好的 Issue 模板
     - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
     - https://github.com/Snipaste/feedback/tree/master/.github/ISSUE_TEMPLATE
@@ -184,6 +186,3 @@
   - 支持 Firefox（使用框架、工具之类）
   - 书摘功能：
     - https://github.com/niklasvh/html2canvas
-
-- Bug
-  - popup 书架不能够正常展开的问题

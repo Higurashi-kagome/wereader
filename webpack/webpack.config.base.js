@@ -2,7 +2,6 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserWebpackPlugin = require("terser-webpack-plugin");
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 
 const cssLoaders = [
@@ -53,8 +52,6 @@ const babelLoader = {
 
 // webpack 的配置信息
 module.exports = {
-	mode: 'development',
-	devtool: 'source-map',
 	// 配置入口
 	entry: {
 		// 背景页脚本
@@ -62,7 +59,7 @@ module.exports = {
 		// 内容注入脚本
 		content: path.resolve(__dirname, "..", "src", "content.ts"),
 		// 窗口页面
-		popupPage: path.resolve(__dirname, "..", "src/popup/page", "Popup.tsx"),
+		popupPage: path.resolve(__dirname, "..", "src/popup/page", "popup-page.tsx"),
 		// 窗口脚本
 		popup: path.resolve(__dirname, "..", "src", "popup.ts"),
 		// 选项页脚本
@@ -129,10 +126,9 @@ module.exports = {
 				// to 相对于编译文件夹
 				{from: "manifest.json", to: ".", context: "public"},
 				{from: "extension-icons", to: "./icons/extension-icons", context: "public"},
-				{from: "popup/static/css/popup.css", to: ".", context: "src"},
-				{from: "statistics/statistics.css", to: ".", context: "src"},
 				{from: "content/static/css", to: "./content/static/css", context: "src"},
 				{from: "options.css", to: ".", context: "src/options"},
+				{from: "statistics.css", to: ".", context: "src/statistics"},
 				{from: "icons", to: "./icons/options-icons", context: "src/options"}
 			]
 		}),
@@ -188,20 +184,5 @@ module.exports = {
 			},
 			chunks: ['background']
 		}),
-	],
-
-	optimization: {
-		// 压缩代码
-		minimize: false,
-		// https://github.com/terser/terserx
-		minimizer: [new TerserWebpackPlugin ({
-			extractComments: false,
-			// 清除 console.log
-			terserOptions: {
-				compress: {
-					// pure_funcs: ['console.log']
-				},
-			}
-		})],
-	},
+	]
 }
