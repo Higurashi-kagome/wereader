@@ -4,6 +4,14 @@ interface IProps{
 	value: string
 }
 
+declare global {
+	namespace JSX {
+	  interface IntrinsicElements {
+		button: any;
+	  }
+	}
+}
+
 /**
  * 下拉按钮
  */

@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { render } from 'react-dom';
+
+import { createRoot } from 'react-dom/client';
 
 import { TabBtn } from './popup-tab-btn';
 import { TabBtnContainer } from './popup-tab-btn-container';
@@ -27,4 +28,4 @@ export const Popup: FC<IProps> = () => {
 	);
 }
 
-render(<Popup/>, document.body);
+createRoot(document.getElementById('popup-container')!).render(<Popup/>);
