@@ -47,8 +47,11 @@ async function initNoteTab(url: string) {
 			case "getBestBookMarks":
 				bg.copyBestBookMarks()
 				break;
-			case "getMyThoughts":
-				bg.copyThought()
+			case "getMyThoughtsInCurChap":
+				bg.copyThought(false)
+				break;
+			case "getAllMyThoughts":
+				bg.copyThought(true)
 				break;
 			case "removeMarksInCurChap":
 				bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: false}});

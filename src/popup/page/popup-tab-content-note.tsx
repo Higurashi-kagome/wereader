@@ -29,7 +29,11 @@ export class NoteTabContent extends React.Component<IProps>{
 				</DropDownContainer>
 				<DropDownCaller id="getContents" value='获取目录'></DropDownCaller>
 				<DropDownCaller id="getBestBookMarks" value='获取热门标注'></DropDownCaller>
-				<DropDownCaller id="getMyThoughts" value='获取我的想法'></DropDownCaller>
+				<DropDownBtn value='获取我的想法'></DropDownBtn>
+				<DropDownContainer>
+					<DropDownCaller id="getMyThoughtsInCurChap" value='本章'></DropDownCaller>
+					<DropDownCaller id="getAllMyThoughts" value='全部'></DropDownCaller>
+				</DropDownContainer>
 				<DropDownBtn value='删除标注'></DropDownBtn>
 				<DropDownContainer>
 					<DropDownCaller id="removeMarksInCurChap" value='本章'></DropDownCaller>

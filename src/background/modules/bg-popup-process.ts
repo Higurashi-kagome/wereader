@@ -265,7 +265,7 @@ export async function getBestBookMarks() {
 }
 
 // 获取想法
-interface ThoughtsInAChap{
+export interface ThoughtsInAChap{
 	range: string;
 	abstract: string;
 	content: string

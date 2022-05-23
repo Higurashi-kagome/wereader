@@ -11,6 +11,7 @@ import {
 	getChapters,
 	getMyThought,
 	getTitleAddedPreAndSuf,
+	ThoughtsInAChap,
 	traverseMarks,
 } from './bg-popup-process';
 import {
@@ -146,7 +147,7 @@ export async function copyBestBookMarks() {
 }
 
 // 获取想法
-export async function copyThought() {
+export async function copyThought(isAll?: boolean) {
 	let chaps = await getChapters();
 	if (chaps === undefined) {
 		alert('获取想法出错');
@@ -157,10 +158,17 @@ export async function copyThought() {
 		tempContents.set(aChap.chapterUid, aChap);
 		return tempContents;
 	}, new Map<number, ChapInfoUpdated>());
+	// 找到当前章节 uid
+	let curChapUid = 0;
+	for (const [chapUid, aChap] of contents) {
+		if (aChap.isCurrent) {
+			curChapUid = chapUid;
+			break;
+		}
+	}
 	let thoughts = await getMyThought();
-	let res = "";
-	thoughts.forEach((thoughtsInAChap, chapUid)=>{
-		res += `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level)}\n\n`;
+	function getTempRes(thoughtsInAChap: ThoughtsInAChap[], chapUid: number) {
+		let tempRes = `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level)}\n\n`;
 		thoughtsInAChap.forEach((thou)=>{
 			// 想法
 			let thouContent = `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
@@ -168,12 +176,23 @@ export async function copyThought() {
 			let thouAbstract = `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
 			// 是否将想法添加到对应标注之前
 			if (Config.thoughtFirst){
-				res += (thouContent + thouAbstract);
+				tempRes += (thouContent + thouAbstract);
 			} else {
-				res += (thouAbstract + thouContent);
+				tempRes += (thouAbstract + thouContent);
 			}
 		});
-	})
+		return tempRes;
+	}
+	let res = "";
+	if (isAll) {
+		thoughts.forEach((thoughtsInAChap, chapUid)=>{
+			res += getTempRes(thoughtsInAChap, chapUid);
+		})
+	} else {
+		let chapUid = curChapUid;
+		let thoughtsInAChap = thoughts.get(chapUid)!;
+		res += res += getTempRes(thoughtsInAChap, chapUid);
+	}
 	if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'});
 	else copy(res);
 }
