@@ -164,25 +164,40 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 	function isUpdated(mark: object): mark is Updated {
 		return 'markText' in mark;
 	}
+	let prevMarkText = ""; // 保存上一条标注文本
+	let tempRes = ""; // 保存上一条处理后追加到 res 的标注文本
 	let res = "", footnoteContent = "";
 	for (let j = 0; j < marks.length; j++) { // 遍历章内标注
 		let mark = marks[j];
 		if (markedData.length) [marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent);
 		if(isThought(mark)){ // 如果为想法
+			// 想法
+			let thouContent = `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+			// 想法所标注的内容
+			const abstract = mark.abstract;
+			let thouAbstract = `${Config.thouMarkPre}${abstract}${Config.thouMarkSuf}\n\n`;
+			// 想法所对应文本与上一条标注相同时
+			if (abstract === prevMarkText) {
+				// 如果只保留标注文本，则 thouAbstract 设为空
+				if (Config.thoughtTextOptions === 'thoughtTextMark') thouAbstract = '';
+				// 如果只保留想法所对应的文本，将上一次追加得到的标注文本（tempRes）删掉
+				else if (Config.thoughtTextOptions === 'thoughtTextThought') {
+					res = res.replace(new RegExp(`${tempRes}$`), "");
+				}
+				prevMarkText = '';
+			}
 			// 是否将想法添加到对应标注之前
 			if (Config.thoughtFirst){
-				// 想法加入 res
-				res += `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
-				// 想法所标注的内容加入 res
-				res += `${Config.thouMarkPre}${mark.abstract}${Config.thouMarkSuf}\n\n`;
+				res += (thouContent + thouAbstract);
 			} else {
-				res += `${Config.thouMarkPre}${mark.abstract}${Config.thouMarkSuf}\n\n`;
-				res += `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+				res += (thouAbstract + thouContent);
 			}
 		} else if(isUpdated(mark)){ // 不是想法（为标注）
 			// 则进行正则匹配
-			let markText = regexpReplace(mark.markText);
-			res += `${addMarkPreAndSuf(markText, mark.style)}\n\n`;
+			prevMarkText = mark.markText;
+			tempRes = regexpReplace(prevMarkText);
+			tempRes = `${addMarkPreAndSuf(tempRes, mark.style)}\n\n`;
+			res += tempRes;
 		}
 	}
 	if (markedData.length && footnoteContent)

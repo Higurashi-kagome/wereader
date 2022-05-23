@@ -172,6 +172,8 @@
 - 分开开发模式和生产模式
 - 书架显示更详细的书本信息（区分同名书籍）
 - 滚动条切换时跳动
+- 同一个位置发布了多条想法时会重复导出想法所对应文本的问题
+- https://weread.qq.com/web/reader/789322705c636278978f93f 16 章出现“该章节无标注”的问题 #68
 - 更加友好的 Issue 模板
     - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
     - https://github.com/Snipaste/feedback/tree/master/.github/ISSUE_TEMPLATE
@@ -182,7 +184,9 @@
   - 主题色变色慢
   - 标注导出后跳转回原阅读位置
   - 删除想法复制后的空格
-  - 迁移到 V3：https://developer.chrome.com/blog/mv2-transition/
+  - 迁移到 V3
+    - https://developer.chrome.com/blog/mv2-transition/
+    - https://blog.shahednasser.com/chrome-extension-tutorial-migrating-to-manifest-v3-from-v2/
   - 支持 Firefox（使用框架、工具之类）
   - 书摘功能：
     - https://github.com/niklasvh/html2canvas

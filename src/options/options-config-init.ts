@@ -1,7 +1,10 @@
+import $ from 'jquery';
 
-import $ from "jquery";
-import { updateStorageArea } from "./options-utils"
-import { InputIds, CheckBoxIds } from "./options-var"
+import { updateStorageArea } from './options-utils';
+import {
+	CheckBoxIds,
+	InputIds,
+} from './options-var';
 
 /********************* 当前设置初始化 *********************/
 function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
@@ -34,6 +37,20 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 			}
 		}
 	})
+	/* "想法所对应文本被标注时保留"选项 */
+	const targetThouOption = document.getElementById(setting.thoughtTextOptions) as HTMLOptionElement
+	if(setting.thoughtTextOptions && targetThouOption){
+		targetThouOption.selected =true;
+	}
+	const thoughtTextOptions = $("#thoughtTextOptions") as JQuery<HTMLSelectElement>;
+	thoughtTextOptions.on('change', function(){
+		let options = this.options
+		for (let i=0; i<options.length; i++){
+			if(options[i].selected == true){
+				updateStorageArea({key:"thoughtTextOptions", value: options[i].id});
+			}
+		}
+	})
 }
 
-export {initCurrentConfig};
+export { initCurrentConfig };

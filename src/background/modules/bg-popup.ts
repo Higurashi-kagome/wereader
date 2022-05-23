@@ -162,13 +162,15 @@ export async function copyThought() {
 	thoughts.forEach((thoughtsInAChap, chapUid)=>{
 		res += `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level)}\n\n`;
 		thoughtsInAChap.forEach((thou)=>{
+			// 想法
+			let thouContent = `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
+			// 想法所标注的内容
+			let thouAbstract = `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
 			// 是否将想法添加到对应标注之前
 			if (Config.thoughtFirst){
-				res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
-				res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
-			}else{
-				res += `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
-				res += `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
+				res += (thouContent + thouAbstract);
+			} else {
+				res += (thouAbstract + thouContent);
 			}
 		});
 	})

@@ -69,6 +69,7 @@ interface ConfigType{
 	enableThoughtEsc: boolean,
     backupName: string,
     selectAction: string,
+    thoughtTextOptions: string,
     //如果不设置默认值，则在设置页初始化时需要考虑到 
     re: reConfigCollectionType,
     flag: 0,
@@ -109,6 +110,7 @@ var Config: ConfigType = {
 	enableThoughtEsc: true,
     backupName: DefaultBackupName,
     selectAction: "underlineNone",
+	thoughtTextOptions: "thoughtTextThought",
     //如果不设置默认值，则在设置页初始化时需要考虑到 
     re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
     flag: 0
