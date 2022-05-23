@@ -70,8 +70,8 @@ async function getBookMarks(isAddThou?: boolean) {
 		let chapAndMarks: ChapAndMarks = chap as unknown as ChapAndMarks;
 		//取得章内标注并初始化 range
 		let marksInAChap = marks.filter((mark)=>mark.chapterUid == chapAndMarks.chapterUid);
-		marksInAChap.map((curMark)=>{
-			curMark.range = curMark.range.replace(/"(\d*)-\d*"/, "$1");
+		marksInAChap = marksInAChap.map((curMark)=>{
+			curMark.range = curMark.range.replace(/(\d*)-\d*/, "$1");
 			return curMark;
 		});
 		// 排序*大多数时候数据是有序的，但存在特殊情况所以必须排序*
@@ -253,7 +253,7 @@ export async function getBestBookMarks() {
 		let bestMarksInAChap = 
 			bestMarksData.filter((bestMark)=>bestMark.chapterUid == tempChap.chapterUid)
 			.reduce((tempBestMarksInAChap: Item[], curBestMark)=>{
-				curBestMark.range = parseInt(curBestMark.range.toString().replace(/"(\d*)-\d*"/, "$1"));
+				curBestMark.range = parseInt(curBestMark.range.toString().replace(/(\d*)-\d*/, "$1"));
 				tempBestMarksInAChap.push(curBestMark);
 				return tempBestMarksInAChap;
 		},[]);
@@ -291,7 +291,7 @@ export async function getMyThought() {
 			let abstract = item.review.abstract
 			//替换想法前后空字符
 			let content = item.review.content.replace(/(^\s*|\s*$)/g,'')
-			let range = item.review.range.replace(/"(\d*)-\d*"/, "$1")
+			let range = item.review.range.replace(/(\d*)-\d*/, "$1")
 			//如果没有发生替换（为章末想法时发生）
 			if(item.review.range.indexOf('-') < 0){
 				abstract = "章末想法";

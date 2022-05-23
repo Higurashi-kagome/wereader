@@ -14,11 +14,11 @@ util.js 是从 background.js 分离出来的，这里的所有函数最初都放
 现在之所以单独放在这个文件中纯粹是为了缩减 background.js 的代码量，从而使结构清晰
 */
 
-// 排序
+// 排序（只处理整数键）
 export function sortByKey(array: {[key: string]: any}[], key: string) {
 	return array.sort((a, b) => {
-		let x = a[key];
-		let y = b[key];
+		let x = parseInt(a[key]);
+		let y = parseInt(b[key]);
 		return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 	});
 }
