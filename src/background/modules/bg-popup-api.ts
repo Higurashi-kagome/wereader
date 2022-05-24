@@ -1,5 +1,9 @@
 /* 将 popup 所需要用到的内容加入 window */
 
+import {
+	ShelfDataTypeJson,
+	ShelfErrorDataType,
+} from '../../types/shelfTypes';
 import { getTest } from './bg-dev';
 import {
 	copyBestBookMarks,
@@ -20,19 +24,45 @@ import {
 } from './bg-utils';
 import {
 	Config,
-	shelfForPopup,
+	ConfigType,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
+export interface ShelfForPopupType{
+	shelfData: ShelfDataTypeJson | ShelfErrorDataType
+}
+let shelfForPopup: ShelfForPopupType = { shelfData: {} };
+
+export interface PopupApi {
+	Config: ConfigType;
+	getTest: Function;
+	setBookId: Function;
+	alert: Function;
+	getUserVid: Function;
+	copyComment: Function;
+	copyContents: Function;
+	copyBookMarks: Function;
+	copyBestBookMarks: Function;
+	copyThought: Function;
+	sendMessageToContentScript: Function;
+	shelfForPopup: ShelfForPopupType;
+	getShelfData: Function;
+	createTab: Function;
+	setShelfData: Function;
+	puzzling: Function;
+	createMpPage: Function;
+	Wereader: typeof Wereader;
+}
+
 declare global{
 	interface Window{
-		popupApi: {[key: string]: any}
+		popupApi: PopupApi
 	}
 }
 
 
 export function initPopupApi() {
-	window.popupApi = {};
+	window.popupApi = {} as PopupApi;
 	window.popupApi.Config = Config;
 	window.popupApi.getTest = getTest;
 	window.popupApi.setBookId = setBookId;

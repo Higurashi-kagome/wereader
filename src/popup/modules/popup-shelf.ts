@@ -22,7 +22,7 @@ function initShelfTab() {
 		console.log('call: #shelfBtn.onclick');
 		let shelfData = bg.shelfForPopup.shelfData;
 		// 从背景页获取数据无效
-		if(!shelfData || shelfData.errMsg){
+		if(Object.keys(shelfData).length === 0 || shelfData.errMsg){
 			const resp: ShelfDataTypeJson | ShelfErrorDataType = await bg.getShelfData();
 			if(resp.errMsg){	// 从服务端获取数据失败
 				$('#shelf').html(`<a>正在加载...</a>`);

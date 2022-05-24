@@ -9,7 +9,6 @@ export {
 	DefaultRegexPattern,
 	isCopyContent,
 	mpTempData,
-	shelfForPopup,
 	StorageErrorMsg,
 };
 
@@ -28,7 +27,6 @@ var bookIds = new Map<number, string>();
 const DefaultBackupName = "默认设置";
 const StorageErrorMsg = "存储出错";
 const BackupKey = "backup";
-let shelfForPopup = {shelfData: undefined};
 //用于记录 popup 是否请求复制目录
 var isCopyContent = false;
 const DefaultRegexPattern = {replacePattern: '', checked: false};

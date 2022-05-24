@@ -1,8 +1,8 @@
+import { ShelfDataTypeJson } from '../../types/shelfTypes';
 import { BestMarksJson } from '../types/BestMarksJson';
 import { ChapInfoJson } from '../types/ChapInfoJson';
 import { CommentsJson } from '../types/CommentsJson';
 import { MarksJson } from '../types/MarksJson';
-import { ShelfJson } from '../types/ShelfJson';
 import { ThoughtJson } from '../types/ThoughtJson';
 import {
 	getJson,
@@ -66,7 +66,7 @@ export class Wereader{
 		return data;
 	}
 
-	async getShelfData(): Promise<ShelfJson>{
+	async getShelfData(): Promise<ShelfDataTypeJson>{
 		const data = await getJson(this.shelfDataUrl);
 		console.log(data);
 		return data;

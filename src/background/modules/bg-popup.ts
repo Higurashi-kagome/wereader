@@ -3,6 +3,10 @@ import { responseType } from '../../content/modules/content-getChapters';
 import { Code } from '../../content/types/Code';
 import { Footnote } from '../../content/types/Footnote';
 import { Img } from '../../content/types/Img';
+import {
+	ShelfDataTypeJson,
+	ShelfErrorDataType,
+} from '../../types/shelfTypes';
 import { ChapInfoUpdated } from '../types/ChapInfoJson';
 import {
 	addRangeIndexST,
@@ -250,7 +254,7 @@ export async function createMpPage(bookId: string){
 }
 
 // 设置供 popup 获取的书架数据
-export async function setShelfData(shelfData: any){
+export async function setShelfData(shelfData: ShelfDataTypeJson | ShelfErrorDataType){
 	if(shelfData){
 		window.popupApi.shelfForPopup.shelfData = shelfData;
 	}else{
