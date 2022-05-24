@@ -34,6 +34,22 @@ var isCopyContent = false;
 const DefaultRegexPattern = {replacePattern: '', checked: false};
 var mpTempData: {[bookId: string]: any[]} = {};
 
+// "想法所对应文本被标注时保留"选项
+export enum ThoughtTextOptions{
+	JustThought = "thoughtTextThought",
+	All = "thoughtTextAll",
+	JustMark = "thoughtTextMark"
+}
+
+// "选中后动作"选项
+export enum SelectActionOptions{
+	None = "underlineNone",
+	Copy = "copy",
+	Bg = "underlineBg",
+	Straight = "underlineStraight",
+	HandWrite = "underlineHandWrite"
+}
+
 //用于检查格式并保存当前配置
 interface ConfigType{
 	s1Pre: string,
@@ -109,8 +125,8 @@ var Config: ConfigType = {
     enableFancybox: true,
 	enableThoughtEsc: true,
     backupName: DefaultBackupName,
-    selectAction: "underlineNone",
-	thoughtTextOptions: "thoughtTextThought",
+    selectAction: SelectActionOptions.None,
+	thoughtTextOptions: ThoughtTextOptions.JustThought,
     //如果不设置默认值，则在设置页初始化时需要考虑到 
     re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
     flag: 0

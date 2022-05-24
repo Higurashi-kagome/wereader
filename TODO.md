@@ -149,7 +149,6 @@
 - 将“获取书评”改为“获取我的书评”并移动到后面
 - edge 扩展语言问题
 - 似乎：与标题共父元素的标注被删除时，当前标注目录跳转失败
-- 更精准的 pint resizing
 - 支持框选删除标注
 - 框选删除功能
 - 想法输入框支持代码 Ctrl+Tab 缩进。
@@ -161,7 +160,6 @@
 - 标注搜索使用回车搜索而不是即时搜索
 - 替换代码块中的特殊字符？
 - 复制到的想法中最后总是包含一个换行符
-- 滚动条直接在 content.js 中实现
 - 想法面板缩放：[Create resizable split views \- HTML DOM](https://htmldom.dev/create-resizable-split-views/)
 - 支持更换字体？
 - 支持更多背景色、支持更换背景（纸张效果）？
@@ -169,11 +167,13 @@
 - 没有登录时，由扩展直接给出二维码？
 - arrive 不能和 jQuery 协同工作的问题
 - 支持按微信读书的分类显示书架
-- 分开开发模式和生产模式
 - 书架显示更详细的书本信息（区分同名书籍）
 - 滚动条切换时跳动
 - 同一个位置发布了多条想法时会重复导出想法所对应文本的问题
 - 简化按 range 排序（不用替换掉 - 及其后面的内容）
+- 配置代码检查
+  - https://typescript-eslint.io/docs/linting/
+- 打包扩展，手动安装
 - https://weread.qq.com/web/reader/789322705c636278978f93f 16 章出现“该章节无标注”的问题 #68
 - 更加友好的 Issue 模板
     - https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser

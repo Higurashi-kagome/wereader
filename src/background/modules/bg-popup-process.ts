@@ -12,7 +12,10 @@ import {
 	sendMessageToContentScript,
 	sortByKey,
 } from './bg-utils';
-import { Config } from './bg-vars';
+import {
+	Config,
+	ThoughtTextOptions,
+} from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
 export { getBookMarks, getTitleAddedPreAndSuf };
@@ -179,9 +182,9 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 			// 想法所对应文本与上一条标注相同时
 			if (abstract === prevMarkText) {
 				// 如果只保留标注文本，则 thouAbstract 设为空
-				if (Config.thoughtTextOptions === 'thoughtTextMark') thouAbstract = '';
+				if (Config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
 				// 如果只保留想法所对应的文本，将上一次追加得到的标注文本（tempRes）删掉
-				else if (Config.thoughtTextOptions === 'thoughtTextThought') {
+				else if (Config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
 					res = res.replace(new RegExp(`${tempRes}$`), "");
 				}
 				prevMarkText = '';

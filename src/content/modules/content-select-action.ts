@@ -1,4 +1,6 @@
-import $ from "jquery";
+import $ from 'jquery';
+
+import { SelectActionOptions } from '../../background/modules/bg-vars';
 
 function initSelectAction() {
 	console.log('initSelectAction');
@@ -7,7 +9,7 @@ function initSelectAction() {
 		const storageKey = 'selectAction';
 		chrome.storage.sync.get([storageKey], function(setting){
 			let underlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0] as HTMLElement;
-			if(setting[storageKey] != "underlineNone" && underlineBtn){
+			if(setting[storageKey] != SelectActionOptions.None && underlineBtn){
 				underlineBtn.click()
 			}
 			//重新监听
@@ -75,4 +77,4 @@ function initSelectAction() {
 	});
 }
 
-export {initSelectAction};
+export { initSelectAction };
