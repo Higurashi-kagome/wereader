@@ -4,8 +4,8 @@ import { SweetAlertOptions } from 'sweetalert2';
 
 import { regexpSetType } from '../../options/options-unload';
 import {
-	BackupKey,
-	StorageErrorMsg,
+    BackupKey,
+    StorageErrorMsg,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
@@ -177,14 +177,14 @@ async function getUserVid(url?: string){
 }
 
 export {
-	catchErr,
-	copy,
-	createTab,
-	getJson,
-	getText,
-	getUserVid,
-	puzzling,
-	sendAlertMsg,
-	sendMessageToContentScript,
-	updateStorageAreaInBg,
+    catchErr,
+    copy,
+    createTab,
+    getJson,
+    getText,
+    getUserVid,
+    puzzling,
+    sendAlertMsg,
+    sendMessageToContentScript,
+    updateStorageAreaInBg,
 };

@@ -36,3 +36,14 @@
    5. 划线动作
    6. Ctrl+Enter 想法发布
    7. Escape 退出面板
+
+----
+
+测试
+
+[Java核心技术第10版（套装共2册）](https://weread.qq.com/web/reader/e56324b071a5ee49e56bbae)：
+
+- 5.1 类、超类和子类
+- 3.2 注释
+
+[网络是怎样连接的](https://weread.qq.com/web/reader/6f932ec05dd9eb6f96f14b9)：1.2 向DNS服务器查询Web服务器的IP地址

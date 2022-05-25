@@ -8,15 +8,17 @@ import { Item } from '../types/BestMarksJson';
 import { ChapInfoUpdated } from '../types/ChapInfoJson';
 import { Updated } from '../types/Updated';
 import {
-	sendAlertMsg,
-	sendMessageToContentScript,
-	sortByKey,
+    sendAlertMsg,
+    sendMessageToContentScript,
+    sortByKey,
 } from './bg-utils';
 import {
-	Config,
-	ThoughtTextOptions,
+    Config,
+    ThoughtTextOptions,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
+
+const escapeRegExp = require('lodash.escaperegexp');
 
 export { getBookMarks, getTitleAddedPreAndSuf };
 
@@ -185,7 +187,7 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 				if (Config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
 				// 如果只保留想法所对应的文本，将上一次追加得到的标注文本（tempRes）删掉
 				else if (Config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
-					res = res.replace(new RegExp(`${tempRes}$`), "");
+					res = res.replace(new RegExp( escapeRegExp(tempRes) + `$`), "");
 				}
 				prevMarkText = '';
 			}

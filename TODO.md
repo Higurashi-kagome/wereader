@@ -191,3 +191,4 @@
   - 支持 Firefox（使用框架、工具之类）
   - 书摘功能：
     - https://github.com/niklasvh/html2canvas
+  - [网络是怎样连接的](https://weread.qq.com/web/reader/6f932ec05dd9eb6f96f14b9)：1.2 向DNS服务器查询Web服务器的IP地址 宝珠导出出错
