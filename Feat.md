@@ -41,6 +41,8 @@
 
 测试
 
+笔记导出（包含图片和想法）
+
 [Java核心技术第10版（套装共2册）](https://weread.qq.com/web/reader/e56324b071a5ee49e56bbae)：
 
 - 5.1 类、超类和子类

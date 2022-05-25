@@ -1,19 +1,19 @@
 {
 	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/CVS": true,
-		"**/.DS_Store": true,
-		"**/Thumbs.db": true,
-		"**/.history": true,
-		"**/__pycache__": true,
-		"**/node_modules": true,
-		"wereader-firefox": true,
-		"package-lock.json": true,
-		"wereader-chrome": false,
-		"dist": true
-	},
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.history": true,
+        "**/__pycache__": true,
+        "**/node_modules": true,
+        "wereader-firefox": true,
+        "package-lock.json": true,
+        "wereader-chrome": false,
+        "dist": false
+    },
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [

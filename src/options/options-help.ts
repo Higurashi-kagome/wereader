@@ -120,8 +120,8 @@ const helpContent: {[key: string]: any} = {
         help: `<p>选中该选项之后，将会在 popup 中添加名为“选项”的按钮，点击该按钮可进入选项页。</p>`
     },
 	enableCopyImgs: {
-        title: '开启图片导出',
-        help: `<p>选中该选项之后，将会在导出本章标注时一起导出被标注的图片、代码块或注释。</p>`
+        title: '开启图片/注释/代码块导出',
+        help: `<p>选中该选项之后，将会在导出本章标注时一起导出被标注的图片、注释或代码块。</p>`
     },
     selectActionOptions: {
         title: '选中后动作',

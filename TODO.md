@@ -172,6 +172,7 @@
 - 同一个位置发布了多条想法时会重复导出想法所对应文本的问题
 - 简化按 range 排序（不用替换掉 - 及其后面的内容）
 - 配置代码检查
+- 日志-方便检查错误
   - https://typescript-eslint.io/docs/linting/
 - 打包扩展，手动安装
 - https://weread.qq.com/web/reader/789322705c636278978f93f 16 章出现“该章节无标注”的问题 #68
