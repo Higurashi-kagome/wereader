@@ -9,6 +9,17 @@ import {
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
+// 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
+export function getIndexes(str: string, subStr: string){
+    let indexes  = [];
+    let idx = str.indexOf(subStr);
+    while(idx > -1){
+        indexes.push(idx);
+        idx = str.indexOf(subStr, idx+1);
+    }
+    return indexes;
+}
+
 /* 说明：
 util.js 是从 background.js 分离出来的，这里的所有函数最初都放在 background.js 中被调用。
 现在之所以单独放在这个文件中纯粹是为了缩减 background.js 的代码量，从而使结构清晰

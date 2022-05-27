@@ -4,31 +4,31 @@ import { Code } from '../../content/types/Code';
 import { Footnote } from '../../content/types/Footnote';
 import { Img } from '../../content/types/Img';
 import {
-	ShelfDataTypeJson,
-	ShelfErrorDataType,
+    ShelfDataTypeJson,
+    ShelfErrorDataType,
 } from '../../types/shelfTypes';
 import { ChapInfoUpdated } from '../types/ChapInfoJson';
 import {
-	addRangeIndexST,
-	getBestBookMarks,
-	getBookMarks,
-	getChapters,
-	getMyThought,
-	getTitleAddedPreAndSuf,
-	ThoughtsInAChap,
-	traverseMarks,
+    addRangeIndexST,
+    getBestBookMarks,
+    getBookMarks,
+    getChapters,
+    getMyThought,
+    getTitleAddedPreAndSuf,
+    ThoughtsInAChap,
+    traverseMarks,
 } from './bg-popup-process';
 import {
-	catchErr,
-	copy,
-	getUserVid,
-	sendAlertMsg,
-	sendMessageToContentScript,
+    catchErr,
+    copy,
+    getUserVid,
+    sendAlertMsg,
+    sendMessageToContentScript,
 } from './bg-utils';
 import {
-	bookIds,
-	Config,
-	mpTempData,
+    bookIds,
+    Config,
+    mpTempData,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
@@ -107,12 +107,16 @@ export async function copyBookMarks(isAll: boolean) {
 		}
 		// 请求需要追加到文本中的图片 Markdown 文本，并添加索引数据到 marks
 		let markedData: Array<Img|Footnote|Code> = [];
-		if (Config.enableCopyImgs)
-			markedData = await sendMessageToContentScript({
+		if (Config.enableCopyImgs){
+            markedData = await sendMessageToContentScript({
 				message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
 			}) as Array<Img|Footnote|Code>;
-			marks = addRangeIndexST(marks);
-		let str = traverseMarks(marks, markedData);
+        }
+        let isMatched = false; // marks 传给 addRangeIndexST 方法后是否被更新（更新说明 marks 与 markedData 匹配）
+        if (markedData && markedData.length > 0) [marks, isMatched] = addRangeIndexST(marks, markedData.length);
+        // 如果 marks 与 markedData 不匹配，则将 markedData 清空
+        if (!isMatched) markedData = [];
+        let str = traverseMarks(marks, markedData);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});

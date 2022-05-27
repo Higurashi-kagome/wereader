@@ -8,6 +8,7 @@ import { Item } from '../types/BestMarksJson';
 import { ChapInfoUpdated } from '../types/ChapInfoJson';
 import { Updated } from '../types/Updated';
 import {
+    getIndexes,
     sendAlertMsg,
     sendMessageToContentScript,
     sortByKey,
@@ -89,10 +90,16 @@ async function getBookMarks(isAddThou?: boolean) {
 }
 
 // 给某一条标注添加图片等内容
+// TODO：换掉 any 类型
 function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 	let abstract = mark.abstract;
 	let markText = abstract ? abstract : mark.markText;
 	for (const markedDataIdx of mark.markedDataIdxes) { // 遍历索引，逐个替换
+        // 数据缺失
+        if (markedData[markedDataIdx] === undefined) {
+            console.log(mark, markedData);
+            break;
+        }
 		const {imgSrc, alt, isInlineImg, footnote, footnoteName, code} = markedData[markedDataIdx];
 		let replacement = '';
 		/* 生成替换字符串 */
@@ -114,42 +121,38 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 				insert1 = '\n\n'
 			if(markText.indexOf('[插图]') != (markText.length - 4)) //'[插图]'后有内容
 				insert2 = '\n\n'
-			replacement = `${insert1}${Config.codePre}\n${code}${Config.codeSuf}${insert2}`
+			replacement = `${insert1}${Config.codePre}\n${code}\n${Config.codeSuf}${insert2}`
 		}
 		if (replacement) { // 替换
 			markText = markText.replace(/\[插图\]/, replacement);
 			if (abstract) mark.abstract = markText; // 新字符串赋值回 mark
 			else mark.markText = markText;
-		} else console.log(mark, markedData, replacement);
+		} else console.log(mark, markedData);
 	}
 	// footnoteContent 不断更新，最后在 traverseMarks 中追加到文字末尾
 	return [mark, footnoteContent];
 }
 
 // 在 marks 中添加替换数据索引（每一个“[插图]”用哪个位置的 markedData 替换）
-export function addRangeIndexST(marks: any) {
-	let used: {[key: string]: any} = {}; // “[插图]”的 range 作为键，该“[插图]”所对应的数据在 markedData 中的索引作为值
-	// 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
-	function getIndexes(str: string, subStr: string){
-		let indexes  = [];
-		var idx = str.indexOf(subStr);
-		while(idx > -1){
-			indexes.push(idx);
-			idx = str.indexOf(subStr, idx+1);
-		}
-		return indexes;
-	}
-	const name = '[插图]';
-	let markedDataIdx = 0; // markedData 索引
-	for (let i = 0; i < marks.length; i++) { // 遍历标注
-		let {abstract, range} = marks[i];
+export function addRangeIndexST(marks: any, markedDataLength: number) {
+    // “[插图]”的 range 作为键，该“[插图]”所对应的数据在 markedData 中的索引作为值
+	let used: {[key: string]: number} = {};
+    // markedData 索引
+	let markedDataIdx = 0;
+    // 不重复的“[插图]”的个数，正常情况下，应该与 markedData 的长度相等
+    let targetCnt = 0;
+	for (let i = 0; i < marks.length; i++) {
+		let {abstract, range: markRange} = marks[i];
 		let markText = abstract ? abstract : marks[i].markText;
-		let indexes = getIndexes(markText, name);
+        // 获取当前标注中的“[插图]”位置
+		let indexes = getIndexes(markText, '[插图]');
 		let markedDataIdxes = [];
-		for (const idx of indexes) { // indexes：所有“[插图]”在 markText 中出现的位置
-			// idx：某一个“[插图]”在 markText 中的位置
-			let imgRange = range + idx;  // 每一个“[插图]”在本章标注中的唯一位置
-			if (used[imgRange] == undefined) { // 该“[插图]”没有记录过
+        // 遍历当前标注中的“[插图]”位置
+		for (const idx of indexes) {
+            // 计算某个“[插图]”在本章标注中的唯一位置
+			let imgRange = markRange + idx;
+			if (used[imgRange] === undefined) { // 该“[插图]”没有记录过
+                targetCnt++;
 				used[imgRange] = markedDataIdx; // 记录某个位置的“[插图]”所对应的替换数据
 				markedDataIdxes.push(markedDataIdx++);
 			} else { // “[插图]”被记录过（同一个“[插图]”多次出现）
@@ -158,15 +161,17 @@ export function addRangeIndexST(marks: any) {
 		}
 		marks[i].markedDataIdxes = markedDataIdxes;
 	}
-	return marks;
+    // 返回 boolean 值表示 marks 与 markedData 数据匹配
+    if (markedDataLength === targetCnt) return [marks, true];
+	else return [marks, false];
 }
 
 // 处理章内标注
 export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: Array<Img|Footnote|Code> = []) {
-	function isThought(mark: object): mark is ThoughtsInAChap {
+	function isThought(mark: Updated | ThoughtsInAChap): mark is ThoughtsInAChap {
 		return ('abstract' in mark && 'content' in mark);
 	}
-	function isUpdated(mark: object): mark is Updated {
+	function isUpdated(mark: Updated | ThoughtsInAChap): mark is Updated {
 		return 'markText' in mark;
 	}
 	let prevMarkText = ""; // 保存上一条标注文本
@@ -205,8 +210,9 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 			res += tempRes;
 		}
 	}
-	if (markedData.length && footnoteContent)
-		res += footnoteContent;
+	if (markedData.length && footnoteContent) {
+        res += footnoteContent;
+    }
 	return res;
 }
 
