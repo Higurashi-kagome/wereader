@@ -9,6 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack/webpack.config.production.js",
+    "pack": "node script/pack.js",
     "dev": "webpack --config webpack/webpack.config.dev.js"
   },
   "repository": {
@@ -51,6 +52,7 @@
     "postcss": "^8.4.14",
     "postcss-loader": "^7.0.0",
     "postcss-preset-env": "^7.5.0",
+    "python-shell": "^3.0.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "style-loader": "^3.3.1",
