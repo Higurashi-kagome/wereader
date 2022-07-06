@@ -38,29 +38,70 @@ function originTest(mask: HTMLElement, el: HTMLElement, curChapTitle: string) {
     return true;
 }
 
+/*
+获取包含本章标注所在章节的标题。
+有些书（比如https://weread.qq.com/web/reader/6a732ce07201202c6a7b30a）的子标题不在服务器标注信息中，此时要确定当前标注所在章节，需要从 getCurrentChapTitle 的返回值向前查找，直到找到存在标注的章节。
+如果本章存在标注，将返回本章标注所在章节的标题，否则返回空字符串
+ */
+function getCurrentMarkedChap() {
+	/* 检查本章是否有标注 */
+	let masksSelector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2'; // 三种标注线
+	let masks = document.querySelectorAll<HTMLElement>(masksSelector);
+	if (!masks.length) return "";
+	/* 确定本章标注所在章节的标题 */
+	const curChapTitle = getCurrentChapTitle();
+	let section_titles = document.getElementsByClassName('sectionListItem_title'); // 标注面板中的标题
+	for (let i = 0; i < section_titles.length; i++) {
+		const s_title = section_titles[i]; // 标题
+		// 在标注面板中找到 curChapTitle
+		if(s_title && s_title.textContent == curChapTitle){
+			return curChapTitle;
+		}
+	}
+	// 此时确定 curChapTitle 不是本章标注所在章节
+	// 向前找标题
+	let menu_titles = document.getElementsByClassName('chapterItem_text'); // 菜单中的标题
+	let tmp_title = "";
+	// 遍历目录标题
+	for (let i = 0; i < menu_titles.length; i++) {
+		const m_title = menu_titles[i].textContent!;
+		// 在标注标题中找目录标题
+		for (let i = 0; i < section_titles.length; i++) {
+			const s_title = section_titles[i];
+			// 确定某个目录标题下存在标注，将其保存到 tmp_title
+			if(s_title && s_title.textContent === m_title) {
+				tmp_title = m_title;
+			}
+		}
+		// 到达 curChapTitle，不再向下找
+		if (m_title === curChapTitle) return tmp_title;
+	}
+}
+
 // 检查指定章节的标注内容中有多少个 [插图]
 function countTargets() {
-    const curChapTitle = getCurrentChapTitle()
-    let targetCnt = 0;
+	const curChapTitle = getCurrentMarkedChap();
+	if (!curChapTitle) return 0;
+	let targetCnt = 0;
 	// 遍历标注、检查是否存在 [插图]
 	let sectionListItems = document.getElementsByClassName('sectionListItem');
 	let foundChap = false;
 	for (let i = 0; i < sectionListItems.length; i++) {
 		const element = sectionListItems[i];
 		let sectionListItem_title = element.getElementsByClassName('sectionListItem_title')[0]; // 标题
-        // 第一次找到本章内容
+		// 第一次找到本章内容
 		if(sectionListItem_title && sectionListItem_title.textContent == curChapTitle){
 			foundChap = true;
 			if ($(element).text().indexOf('[插图]')>=0) {
-                targetCnt++;
-            }
+				targetCnt++;
+			}
 		}else if(foundChap == true  && sectionListItem_title 
 			&& sectionListItem_title.textContent != curChapTitle){
 			break; // 不再属于当前章节，退出循环
 		}else if(foundChap == true){ // 本章内的内容
 			if ($(element).text().indexOf('[插图]')>=0) {
-                targetCnt++;
-            }
+				targetCnt++;
+			}
 		}
 	}
 	return targetCnt;
