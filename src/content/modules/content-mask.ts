@@ -5,6 +5,7 @@ function initMask() {
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
 		function removeMask() {$('.mask_parent.need_remove').remove();}
 		if(request.isAddMask) {
+			removeMask();
 			let mask = $(`<div class='mask_parent need_remove'><div class="wr_mask wr_mask_Show"></div></div>`);
 			$('#routerView').append(mask);
 			// 防止导出标注出错导致遮盖不被移除

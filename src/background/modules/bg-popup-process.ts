@@ -224,22 +224,53 @@ export async function getChapters(){
 		alert("获取目录出错。");
 		return;
 	}
-	const chaps = chapInfos.data[0].updated;
-	let checkedChaps = chaps.map((chap)=>{
-		let chapsFromDom = response.chapters;
+	const chapsInServer = chapInfos.data[0].updated;
+	const chapsFromDom = response.chapters;
+	let checkedChaps = chapsInServer.map((chapInServer)=>{
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
-		if(!chapsFromDom.filter((chap: any)=>chap.title===chap.title).length){
+		if(chapsFromDom.length === chapsInServer.length &&
+			!chapsFromDom.filter(chap => chap.title===chapInServer.title).length){
 			// 将 chapsFromDom 中的信息赋值给 chapsFromServer
-			if(chapsFromDom[chap.chapterIdx-1]) chap.title = chapsFromDom[chap.chapterIdx-1].title;
+			if(chapsFromDom[chapInServer.chapterIdx-1])
+				chapInServer.title = chapsFromDom[chapInServer.chapterIdx-1].title;
 		}
 		//某些书没有目录级别
-		if(!chap.level){
-			let targetChapFromDom = chapsFromDom.filter((chapter: any)=>chapter.title===chap.title);
-			if(targetChapFromDom.length) chap.level = targetChapFromDom[0].level;
-			else  chap.level = 1;
+		if(!chapInServer.level){
+			let targetChapFromDom = chapsFromDom.filter(chap => chap.title===chapInServer.title);
+			if(targetChapFromDom.length) chapInServer.level = targetChapFromDom[0].level;
+			else chapInServer.level = 1;
 		}
-		chap.isCurrent = chap.title === response.currentContent || response.currentContent.indexOf(chap.title)>-1
-		return chap;
+		chapInServer.isCurrent = chapInServer.title === response.currentContent || response.currentContent.indexOf(chapInServer.title)>-1
+		return chapInServer;
+	});
+	// https://github.com/Higurashi-kagome/wereader/issues/76 start
+	/* 判断从 DOM 获取的当前章节是否存在于 server 中（从 DOM 获取到的章节数可能多于 server 中的章节数，且当前章节为不存在于 server 中的某些子标题） */
+	let isInServer = chapsInServer.filter(chap => {
+		return (chap.title===response.currentContent 
+			|| response.currentContent.indexOf(chap.title) > -1);
+	}).length > 0;
+	/* 不存在于 server 则在从 DOM 获取到的章节信息中向前找，找到一个存在于 server 中的目录，则将其作为当前目录 */
+	if(!isInServer){
+		for (let i = 0; i < chapsFromDom.length; i++) {
+			// 在 chapsFromDom 找到当前章节
+			if(chapsFromDom[i].title === response.currentContent) {
+				// 从当前章节向前找，找到一个存在于 server 中的目录，则将其作为当前目录
+				for (let j = i; j > -1; j--) {
+					if (chapsInServer.filter(c => c.title===chapsFromDom[j].title).length) {
+						response.currentContent = chapsFromDom[j].title;
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+	// https://github.com/Higurashi-kagome/wereader/issues/76 end
+	checkedChaps = chapsInServer.map((chapInServer)=>{
+		chapInServer.isCurrent = 
+			(chapInServer.title === response.currentContent
+			|| response.currentContent.indexOf(chapInServer.title) > -1);
+		return chapInServer;
 	});
 	return checkedChaps;
 }
