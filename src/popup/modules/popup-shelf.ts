@@ -59,6 +59,7 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 			cateName: "",
 			books: []
 		};
+		if (!curCate) return tempShelf;
 		cate.cateName = curCate.name;
 		cate.books = [];
 		cate.isTop = curCate.isTop;
@@ -85,7 +86,7 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 		let topBookIdx = [];
 		for (let i = 0; i < cate.books.length; i++) {
 			let book = cate.books[i];
-			if (book.isTop) topBookIdx.push(i);
+			if (book && book.isTop) topBookIdx.push(i);
 		}
 		for (let i = 0; i < topBookIdx.length; i++) {
 			let book = cate.books.splice(topBookIdx[i], 1)[0];
@@ -110,7 +111,8 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 	// 分类顶置
 	let idx = [];
 	for (let i = 0; i < shelf.length; i++) {
-		if (shelf[i].isTop) idx.push(i);
+		const item = shelf[i]
+		if (item && item.isTop) idx.push(i);
 	}
 	for (let i = 0; i < idx.length; i++) {
 		shelf.unshift(shelf.splice(idx[i], 1)[0]);

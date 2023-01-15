@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 
 interface IProps{
 	value: string
@@ -7,7 +7,7 @@ interface IProps{
 declare global {
 	namespace JSX {
 	  interface IntrinsicElements {
-		button: any;
+		button: DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 	  }
 	}
 }
