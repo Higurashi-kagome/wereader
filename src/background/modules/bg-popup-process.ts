@@ -77,7 +77,9 @@ async function getBookMarks(isAddThou?: boolean) {
 		//取得章内标注并初始化 range
 		let marksInAChap = marks.filter((mark)=>mark.chapterUid == chapAndMarks.chapterUid);
 		marksInAChap = marksInAChap.map((curMark)=>{
-			curMark.range = curMark.range.replace(/(\d*)-\d*/, "$1");
+			if(curMark.range != null && typeof curMark.range.valueOf() === "string"){
+				curMark.range = curMark.range.replace(/(\d*)-\d*/, "$1");
+			}
 			return curMark;
 		});
 		// 排序*大多数时候数据是有序的，但存在特殊情况所以必须排序*
