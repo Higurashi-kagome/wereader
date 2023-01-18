@@ -3,9 +3,11 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
 const cssLoaders = [
 	"style-loader", // 用来将 css 引入到代码中
+	"vue-style-loader",
 	"css-loader", // 用来处理 css 代码
 	// 引入 postcss，处理 css 的兼容性问题
 	{
@@ -55,19 +57,17 @@ module.exports = {
 	// 配置入口
 	entry: {
 		// 背景页脚本
-		background: path.resolve(__dirname, "..", "src", "background.ts"),
+		background: path.resolve(__dirname, "../src/background.ts"),
 		// 内容注入脚本
-		content: path.resolve(__dirname, "..", "src", "content.ts"),
-		// 窗口页面
-		popupPage: path.resolve(__dirname, "..", "src/popup/page", "popup-page.tsx"),
+		content: path.resolve(__dirname, "../src/content.ts"),
 		// 窗口脚本
-		popup: path.resolve(__dirname, "..", "src", "popup.ts"),
+		popup: path.resolve(__dirname, "../src/popup/index.ts"),
 		// 选项页脚本
-		options: path.resolve(__dirname, "..", "src", "options.ts"),
+		options: path.resolve(__dirname, "../src/options.ts"),
 		// 统计页脚本
-		statistics: path.resolve(__dirname, "..", "src/statistics/", "statistics.ts"),
+		// statistics: path.resolve(__dirname, "../src/statistics/statistics.ts"),
 		// 公众号阅读页脚本
-		mp: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
+		mp: path.resolve(__dirname, "../src/mpwx/mp.ts"),
 	},
 
 	// 配置输出
@@ -80,8 +80,8 @@ module.exports = {
 
 	// 设置模块如何被解析
 	resolve: {
-		// ts 和 js 文件可以作为模块使用
-		extensions: [".ts", ".js", ".tsx"],
+		// ts 和 js 文件允许在引入模块时不带扩展名
+		extensions: [".ts", ".js"],
 	},
 
 	// 指定打包时要使用的模块
@@ -89,29 +89,28 @@ module.exports = {
 		// 指定加载规则
 		rules: [
 			{
-				// 指定使规则生效的文件
-				test: /\.tsx?$/i,
-				// 指定要使用的 loader
-				use: [
-					babelLoader,
-					// 'babel-loader',
-					'ts-loader'
-				],
-				// 指定要排除的文件
-				exclude: /node-modules/
+				test: /\.vue$/,
+				loader: 'vue-loader'
 			},
-
 			// 设置 less 文件的处理
 			{
 				test: /\.less$/i,
 				use: lessLoaders
 			},
-
 			// 设置 css 文件的处理
 			{
 				test: /\.css$/i,
 				use: cssLoaders
-			}
+			},
+			{
+				test: /\.ts$/i,
+				use: [
+					babelLoader,
+					'ts-loader'
+				],
+				// 指定要排除的文件
+				exclude: /node-modules/
+			},
 		]
 	},
 
@@ -142,18 +141,18 @@ module.exports = {
 				collapseWhitespace: true
 			},
 			// 要引入到 HTML 中的打包好的 js 脚本
-			chunks: ['popupPage', 'popup']
+			chunks: ['popup']
 		}),
-		new HTMLWebpackPlugin({
-			filename: 'statistics.html',
-			template: 'src/statistics/statistics.html',
-			inject: 'body',
-			minify: {
-				removeComments: true,
-				collapseWhitespace: true
-			},
-			chunks: ['statistics']
-		}),
+		// new HTMLWebpackPlugin({
+		// 	filename: 'statistics.html',
+		// 	template: 'src/statistics/statistics.html',
+		// 	inject: 'body',
+		// 	minify: {
+		// 		removeComments: true,
+		// 		collapseWhitespace: true
+		// 	},
+		// 	chunks: ['statistics']
+		// }),
 		new HTMLWebpackPlugin({
 			filename: 'mp.html',
 			template: 'src/mpwx/mp.html',
@@ -184,5 +183,6 @@ module.exports = {
 			},
 			chunks: ['background']
 		}),
+		new VueLoaderPlugin()
 	]
 }

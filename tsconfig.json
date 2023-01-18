@@ -1,20 +1,25 @@
 {
-	"include":["./src/**/*", "src/background.ts"],
+	"include":["./src/**/*", "src/background.ts", "./src/**/*.vue",],
 	"exclude": [
         "node_modules"
     ],
 	"compilerOptions": {
-		"target": "ES6",
+		// 指定编译的 ECMAScript 目标版本
+		"target": "es2015",
+		// 编译过程中需要引入的库文件的列表
 		"lib": ["ES6", "DOM", "dom.iterable"],
 		"outDir": "dist/js",
-		"module": "ES6",
+		// 指定生成哪个模块系统代码
+		"module": "es2015",
 		"jsx": "react",
 		"rootDir": "src",
 		"esModuleInterop": true,
 		"removeComments": true,
 		"strict": true,
 		"noEmitOnError": true,
+		// 决定如何处理模块
 		"moduleResolution":"Node",
-		"typeRoots": [ "node_modules/@types" ],
+		// 默认所有可见的"@types"包会在编译过程中被包含进来。如果指定了 typeRoots，只有 typeRoots 下面的包才会被包含进来
+		"typeRoots": [ "node_modules/@types" ]
 	}
 }
