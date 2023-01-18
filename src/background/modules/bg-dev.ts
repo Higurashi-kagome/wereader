@@ -75,6 +75,11 @@ export function getTest(){
 		// console.log(await getReadDetail(0));
 	}
 
+	let logThoughtJson = async ()=>{
+		const thoughts = await wereader.getThoughts();
+		logAndCopy(thoughts, 'thoughts');
+	}
+
 	let functions = {
 		'logBookmarksJson': logBookmarksJson,
 		'logStorage': logStorage,
@@ -86,6 +91,7 @@ export function getTest(){
 		'logFuncGetShelfData': logFuncGetShelfData,
 		'logFuncWereaderGetShelfData': logFuncWereaderGetShelfData,
 		'logReadDetail': logReadDetail,
+		'logThoughtJson': logThoughtJson
 	}
 
 	return functions;

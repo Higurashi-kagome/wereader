@@ -334,12 +334,14 @@ export async function getMyThought() {
 			//找到指定章节的想法
 			let abstract = item.review.abstract
 			//替换想法前后空字符
-			let content = item.review.content.replace(/(^\s*|\s*$)/g,'')
-			let range = item.review.range.replace(/(\d*)-\d*/, "$1")
+			let content = item.review.content?.replace(/(^\s*|\s*$)/g,'') ?? '';
+			let range = item.review.range
 			//如果没有发生替换（为章末想法时发生）
-			if(item.review.range.indexOf('-') < 0){
+			if(range == null || typeof range.valueOf !== 'string' || range.indexOf('-') < 0){
 				abstract = "章末想法";
 				range = item.review.createTime.toString();
+			}else{
+				range = range.replace(/(\d*)-\d*/, "$1");
 			}
 			thoughtsInAChap.push({ abstract: abstract, content: content, range: range })
 		}
