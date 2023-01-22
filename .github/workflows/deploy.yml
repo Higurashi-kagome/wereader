@@ -21,7 +21,7 @@ jobs:
 
       - name: Update extension version
         run: >-
-          npx dot-json ${GITHUB_WORKSPACE}/dist/manifest.json version ${{ github.ref_name }}
+          npx dot-json ../dist/manifest.json version ${{ github.ref_name }}
 
       - name: Build
         run: |-
