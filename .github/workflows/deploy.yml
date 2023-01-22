@@ -36,11 +36,14 @@ jobs:
       - name: Update extension version
         run: npx dot-json dist/manifest.json version ${{ steps.getVersion.outputs.version }}
 
+      - name: Zip
+        run: zip -r ${{ env.PACK_NAME }}.zip dist
+
       - name: Archive chrome-extension artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.PACK_NAME }}
-          path: dist
+          path: ${{ env.PACK_NAME }}.zip
 
       - name: Create release
         uses: actions/github-script@v6
