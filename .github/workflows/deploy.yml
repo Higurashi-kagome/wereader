@@ -21,12 +21,12 @@ jobs:
 
       - name: Update extension version
         run: >-
-          npx dot-json dist/manifest.json version ${{ github.ref_name  }}
+          npx dot-json dist/manifest.json version ${{ github.ref_name }}
 
       - name: Build
         run: |-
           npm run build
-          zip -r chrome-extension-${{GITHUB_SHA}}.zip dist
+          zip -r chrome-extension-${{ github.ref_name }}.zip dist
 
       - name: Archive chrome-extension artifact
         uses: actions/upload-artifact@v2
