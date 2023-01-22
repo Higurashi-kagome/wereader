@@ -67,10 +67,4 @@ jobs:
           name: ${{ env.PACK_NAME }}
 
       - name: Upload
-        run: |-
-          npx chrome-webstore-upload-cli upload \\
-            --source ${{ env.PACK_NAME }}.zip \\
-            --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
-            --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
-            --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
-            --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
+        run: npx chrome-webstore-upload-cli upload --source ${{ env.PACK_NAME }}.zip --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
