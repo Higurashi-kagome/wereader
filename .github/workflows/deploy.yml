@@ -68,7 +68,7 @@ jobs:
 
       - name: Upload
         run: |-
-          webstore upload \\
+          npx chrome-webstore-upload-cli upload \\
             --source ${{ env.PACK_NAME }}.zip \\
             --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
