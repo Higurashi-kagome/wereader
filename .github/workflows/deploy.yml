@@ -25,9 +25,17 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Sub version
+        uses: bhowell2/github-substring-action@v1.0.0
+        id: getVersion
+        with:
+          value: ${{ github.ref_name }}
+          index_of_str: "v"
+          output_name: version
+
       - name: Update extension version
         run: >-
-          npx dot-json dist/manifest.json version ${{ github.ref_name }}
+          npx dot-json dist/manifest.json version ${{ steps.getVersion.outputs.version }}
 
       - name: Zip
         run: zip -r ${{ env.PACK_NAME }}.zip dist
