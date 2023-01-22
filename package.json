@@ -38,6 +38,7 @@
     "arrive": "^2.4.1",
     "babel-loader": "^8.2.5",
     "chart.js": "^2.9.4",
+    "chrome-webstore-upload-cli": "^2.1.0",
     "clean-webpack-plugin": "^4.0.0",
     "clipboard": "^2.0.6",
     "copy-webpack-plugin": "^10.2.4",

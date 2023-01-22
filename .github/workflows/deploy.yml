@@ -8,6 +8,9 @@ on:
     tags:
       - v*.*.*
 
+env:
+  PACK_NAME: chrome-extension-${{ github.ref_name }}
+
 jobs:
   build-extension:
     name: run build
@@ -27,13 +30,13 @@ jobs:
           npx dot-json dist/manifest.json version ${{ github.ref_name }}
 
       - name: Zip
-        run: zip -r chrome-extension-${{ github.ref_name }}.zip dist
+        run: zip -r $PACK_NAME.zip dist
 
       - name: Archive chrome-extension artifact
         uses: actions/upload-artifact@v2
         with:
-          name: chrome-extension-${{ github.ref_name }}
-          path: chrome-extension-${{ github.ref_name }}.zip
+          name: $PACK_NAME
+          path: $PACK_NAME.zip
 
       - name: Create release
         uses: actions/github-script@v6
@@ -61,15 +64,15 @@ jobs:
       - name: Download bundle artifact
         uses: actions/download-artifact@v3
         with:
-          name: chrome-extension-${{ github.ref_name }}
+          name: $PACK_NAME
 
       - name: Install webstore cli
         run: npm install -g chrome-webstore-upload-cli
 
       - name: Upload
         run: |-
-          webstore upload \\
-            --source chrome-extension-${{ github.ref_name }}.zip \\
+          chrome-webstore-upload upload \\
+            --source $PACK_NAME.zip \\
             --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
             --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
