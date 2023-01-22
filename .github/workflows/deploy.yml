@@ -66,12 +66,9 @@ jobs:
         with:
           name: ${{ env.PACK_NAME }}
 
-      - name: Install webstore cli
-        run: npm install -g chrome-webstore-upload-cli
-
       - name: Upload
         run: |-
-          chrome-webstore-upload upload \\
+          npx chrome-webstore-upload upload \\
             --source ${{ env.PACK_NAME }}.zip \\
             --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
