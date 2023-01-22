@@ -68,8 +68,8 @@ jobs:
 
       - name: Upload
         run: |-
-          chrome-webstore-upload upload \\
-            --source dist \\
+          webstore upload \\
+            --source chrome-extension-${{ github.ref_name }}.zip \\
             --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
             --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
             --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
