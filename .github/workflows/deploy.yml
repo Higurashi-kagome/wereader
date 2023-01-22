@@ -1,0 +1,75 @@
+# refs:
+# https://jam.dev/blog/automating-chrome-extension-publishing/
+# https://github.com/notlmn/copy-as-markdown/blob/master/.github/workflows/deployment.yml
+name: Upload Chrome Extension
+
+on:
+  push:
+    tags:
+      - v*.*.*
+
+jobs:
+  build-extension:
+    name: run build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: npm ci || npm install
+
+      - name: Update extension version
+        run: >-
+          npx dot-json dist/manifest.json version ${{ github.ref_name  }}
+
+      - name: Build
+        run: |-
+          npm run build
+          zip -r chrome-extension-${{GITHUB_SHA}}.zip dist
+
+      - name: Archive chrome-extension artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: chrome-extension-${{ github.ref_name }}
+          path: chrome-extension-${{ github.ref_name }}.zip
+
+      - name: Create release
+        uses: actions/github-script@v6
+        with:
+          script: >
+            await github.request(`POST /repos/${{ github.repository
+            }}/releases`, {
+              tag_name: "${{ github.ref_name }}",
+              generate_release_notes: true
+            });
+
+  # api usage reference:
+  # * <https://developer.chrome.com/docs/webstore/using_webstore_api/>
+  # * <https://github.com/fregante/chrome-webstore-upload/blob/main/How%20to%20generate%20Google%20API%20keys.md>
+  upload-chrome-extension:
+    name: upload chrome extension
+    runs-on: ubuntu-latest
+    needs: build-extension
+
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16.10"
+
+      - name: Download bundle artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: chrome-extension-${{ github.ref_name }}
+
+      - name: Install webstore cli
+        run: npm install -g chrome-webstore-upload-cli
+
+      - name: Upload
+        run: |-
+          chrome-webstore-upload upload \\
+            --source dist \\
+            --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} \\
+            --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} \\
+            --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} \\
+            --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
