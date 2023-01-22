@@ -36,13 +36,13 @@ jobs:
 
       - name: Create release
         uses: actions/github-script@v6
-          with:
-            script: >
-              await github.request(`POST /repos/${{ github.repository
-              }}/releases`, {
-                tag_name: "${{ github.ref_name }}",
-                generate_release_notes: true
-              });
+        with:
+          script: >
+            await github.request(`POST /repos/${{ github.repository
+            }}/releases`, {
+              tag_name: "${{ github.ref_name }}",
+              generate_release_notes: true
+            });
 
   # api usage reference:
   # * <https://developer.chrome.com/docs/webstore/using_webstore_api/>
