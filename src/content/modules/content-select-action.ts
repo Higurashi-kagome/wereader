@@ -6,6 +6,12 @@ function initSelectAction() {
 	console.log('initSelectAction');
 	// 点击元素
 	let clickTarget = (callback?: Function) => {
+		// Ctrl 按键按下时不点击
+		// TODO 支持按照禁用时的点击选项改变选中后动作
+		if(window.pressedKeys.get(17)) {
+			if (callback) callback();
+			return;
+		}
 		const storageKey = 'selectAction';
 		chrome.storage.sync.get([storageKey], function(setting){
 			let underlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0] as HTMLElement;

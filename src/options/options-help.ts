@@ -124,7 +124,7 @@ const helpContent: {[key: string]: any} = {
         help: `<p>选中该选项之后，将会在导出本章标注时一起导出被标注的图片、注释或代码块。</p>`
     },
     selectActionOptions: {
-        title: '选中后动作',
+        title: '选中后动作（可按下 Ctrl 临时禁用）',
         help: `<p>在这里可设置选中文字后的动作。设置为“马克笔”则会在每次选中文字时自动点击“马克笔”以标注选中内容。设置为“复制”则在选中文字后自动复制选中内容。设置为“无”则关闭动作。</p>`
     },
 	thoughtTextOptions: {
