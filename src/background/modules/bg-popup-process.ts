@@ -337,7 +337,7 @@ export async function getMyThought() {
 			let content = item.review.content?.replace(/(^\s*|\s*$)/g,'') ?? '';
 			let range = item.review.range
 			//如果没有发生替换（为章末想法时发生）
-			if(range == null || typeof range.valueOf !== 'string' || range.indexOf('-') < 0){
+			if(range == null || typeof range.valueOf() !== 'string' || range.indexOf('-') < 0){
 				abstract = "章末想法";
 				range = item.review.createTime.toString();
 			}else{
