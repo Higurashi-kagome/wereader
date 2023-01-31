@@ -8,9 +8,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config webpack/webpack.config.dev.js",
-    "build": "webpack --config webpack/webpack.config.production.js",
-    "pack": "node script/pack-crx.js"
+    "dev": "webpack --config webpack/webpack.config.dev.js && node scripts/zip.js",
+    "build": "webpack --config webpack/webpack.config.production.js && node scripts/zip.js",
+    "pack": "node scripts/zip.js"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "chrome-webstore-upload-cli": "^2.1.0",
     "clean-webpack-plugin": "^4.0.0",
     "clipboard": "^2.0.6",
+    "compressing": "^1.7.0",
     "copy-webpack-plugin": "^10.2.4",
     "core-js": "^3.22.5",
     "css-loader": "^6.7.1",
