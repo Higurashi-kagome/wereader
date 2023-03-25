@@ -115,7 +115,10 @@ export async function copyBookMarks(isAll: boolean) {
         let isMatched = false; // marks 传给 addRangeIndexST 方法后是否被更新（更新说明 marks 与 markedData 匹配）
         if (markedData && markedData.length > 0) [marks, isMatched] = addRangeIndexST(marks, markedData.length);
         // 如果 marks 与 markedData 不匹配，则将 markedData 清空
-        if (!isMatched) markedData = [];
+        if (!isMatched) {
+			console.log('标注不匹配', markedData, marks);
+			markedData = [];
+		}
         let str = traverseMarks(marks, markedData);
 		res += str;
 		if(str) copy(res);

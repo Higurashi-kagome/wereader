@@ -1,10 +1,11 @@
 
 /* 给标注添加目录 */
 import $ from "jquery";
-import { getCurrentChapTitle } from "./content-utils";
+import { getCurrentChapTitle, loadCSS } from "./content-utils";
 
 function initNotesMenu() {
 	console.log('initNotesMenu');
+	loadCSS('content/static/css/notes-menu.css', 'wereader-notes-menu-style-el')
 	window.addEventListener('load', ()=>{
 		const title_scroll_selector = '#sectionListItem_title_scroll';
 		// 出现切换章节且已经创建目录，则重新标记当前章节（点击 .note 再处理比较慢，所以提前监听，加快处理目录的速度）
