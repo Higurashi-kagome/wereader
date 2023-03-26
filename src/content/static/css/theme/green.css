@@ -8,7 +8,7 @@ body{ background: #BEE5C5 !important; }
 .readerControls_item, /*目录、标注等按钮*/
 .readerControls_fontSize, /*字体大小按钮*/
 .fontSizeButton_bg, /*字号选择展开后的背景*/
-.download_dialog_content, /*下载APP二维码*/
+.download_dialog_content, /*下载 APP 二维码*/
 .readerNotePanel /*标注*/
 {
     background: #C7EDCC !important;
@@ -25,51 +25,4 @@ body{ background: #BEE5C5 !important; }
 .wr_whiteTheme .bookReviewList_item .content_Normal.hasMore:after, .wr_whiteTheme .reader_topReview_item .content_Normal.hasMore:after,
 .wr_whiteTheme .bookInfo_intro.hasMore:after{
 	background: linear-gradient(90deg, rgba(31, 32, 34, 0), rgb(190 229 197) 50%, rgb(190 229 197)) !important;
-}
-
-/* 笔记目录 */
-#noteTools button {
-	color: initial;
-}
-
-#noteTools ul {
-	display: none;
-	margin: 0;
-	padding: 0;
-	width: 200px;
-	max-height: 500px;
-	overflow: auto;
-	width: 100%;
-}
-
-#noteTools li a {
-	display: block;
-	color: #000;
-	padding: 5px 16px;
-	text-decoration: none;
-}
-
-/* 标注目录按钮 */
-.notesMenuBtn {
-	font-size: 16px;
-	padding: 12px 20px 12px 40px;
-	border:1px groove;
-	border-bottom: none;
-	text-align: left;
-}
-
-/* 标注目录中的当前目录 */
-#sectionListItem_title_scroll a.current::after {
-	content: ' ←';
-}
-
-/* 鼠标移动到选项上修改背景颜色 */
-#noteTools li a:hover {
-    background-color: #555;
-    color: white;
-}
-
-/* 主题按钮 */
-.readerControls_item.theme, #progressText {
-	color: rgb(0,0,0);
 }

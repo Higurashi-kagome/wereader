@@ -7,7 +7,7 @@
 	color:  white !important;
 }
 
-/* 进度按钮 */
-#progressText {
+/* 主题按钮、进度按钮 */
+.readerControls_item.theme, #progressText {
 	color: rgb(190,190,190) !important;
 }

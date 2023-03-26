@@ -82,11 +82,16 @@ function loadCSS(file: string, elementId?: string | undefined) {
 	const extId = filePath.match(/(?<=\/\/)([^\/]*)/)![0]!;
 	link.classList.add(extId);
 	// 如果 id 存在，直接移除原元素
-	if (elementId && document.getElementById(elementId)) $('#' + elementId).remove();
+	if(elementId) unloadCSS(elementId)
 	// 如果传入了 elementId，则将其设置为元素 id
 	if (elementId) link.id = elementId;
 	document.getElementsByTagName("head")[0].appendChild(link);
 	return link;
+}
+
+function unloadCSS(elementId: string) {
+	// 如果 id 存在，直接移除原元素
+	if (elementId && document.getElementById(elementId)) $('#' + elementId).remove();
 }
 
 export {
@@ -94,6 +99,7 @@ export {
 	copy,
 	getCurrentChapTitle,
 	loadCSS,
+	unloadCSS,
 	mySweetAlert,
 	simulateClick,
 	sleep,
