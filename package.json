@@ -8,9 +8,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config webpack/webpack.config.dev.js && node scripts/zip.js",
-    "build": "webpack --config webpack/webpack.config.production.js && node scripts/zip.js",
-    "pack": "node scripts/zip.js"
+    "build-dev": "webpack --config webpack/webpack.config.dev.js && node scripts/zip.js",
+    "build-prod": "webpack --config webpack/webpack.config.production.js && node scripts/zip.js",
+    "pack-zip": "node scripts/zip.js"
   },
   "repository": {
     "type": "git",

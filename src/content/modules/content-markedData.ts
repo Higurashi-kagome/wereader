@@ -45,7 +45,7 @@ function originTest(mask: HTMLElement, el: HTMLElement, curChapTitle: string) {
  */
 function getCurrentMarkedChap() {
 	/* 检查本章是否有标注 */
-	let masksSelector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2'; // 三种标注线
+	let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight'; // 三种标注线
 	let masks = document.querySelectorAll<HTMLElement>(masksSelector);
 	if (!masks.length) return "";
 	/* 确定本章标注所在章节的标题 */
@@ -81,6 +81,7 @@ function getCurrentMarkedChap() {
 // 检查指定章节的标注内容中有多少个 [插图]
 function countTargets() {
 	const curChapTitle = getCurrentMarkedChap();
+	console.log("当前章节", curChapTitle);
 	if (!curChapTitle) return 0;
 	let targetCnt = 0;
 	// 遍历标注、检查是否存在 [插图]
@@ -91,6 +92,7 @@ function countTargets() {
 		let sectionListItem_title = element.getElementsByClassName('sectionListItem_title')[0]; // 标题
 		// 第一次找到本章内容
 		if(sectionListItem_title && sectionListItem_title.textContent == curChapTitle){
+			console.log("找到当前章节的标注");
 			foundChap = true;
 			if ($(element).text().indexOf('[插图]')>=0) {
 				targetCnt++;
@@ -150,6 +152,7 @@ function isOverladed(el1: HTMLElement, el2: HTMLElement) {
 }
 
 async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnote|Code> = [], firstPage = true) {
+	console.log("开始获取标注数据");
     if (firstPage) { // 点击当前章节，切换到第一页
         $('#routerView')[0].arrive('.readerCatalog', {onceOnly: true, fireOnAttributesModification: true}, function() { // 目录等待
             simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0]);
@@ -157,8 +160,8 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
         simulateClick($('.readerControls_item.catalog')[0]); // 点击目录显示之后才能够正常获取 BoundingClientRect
         await sleep(1000); // 跳转等待
     }
-    let masksSelector = '.wr_underline.s0,.wr_underline.s1,.wr_underline.s2'; // 三种标注线
-    if(addThoughts) masksSelector = `${masksSelector},.wr_myNote`; // 获取想法时加上想法标注线
+    let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight'; // 三种标注线
+    if(addThoughts) masksSelector = `${masksSelector},.wr_underline_thought`; // 获取想法时加上想法标注线
     // 遍历标注
     let masks = document.querySelectorAll<HTMLElement>(masksSelector);
     let notesCounter = 1;
@@ -205,10 +208,11 @@ async function initMarkedDateGetter(){
     chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
         if(!request.isGetMarkedData) return;
         const targetCnt = countTargets();
+		console.log("找到插图数：", targetCnt);
         if (targetCnt === 0) sendResponse([]); // 没有 [插图] 则不需要尝试获取图片
         else {
             getMarkedData(request.addThoughts).then(markedData=>{
-                console.log(markedData);
+                console.log("获取到的 markedData", markedData);
                 sendResponse(markedData);
             });
         }

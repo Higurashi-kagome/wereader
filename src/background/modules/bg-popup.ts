@@ -111,6 +111,7 @@ export async function copyBookMarks(isAll: boolean) {
             markedData = await sendMessageToContentScript({
 				message: {isGetMarkedData: true, addThoughts: Config.addThoughts}
 			}) as Array<Img|Footnote|Code>;
+			console.log("获取到的 markedData", markedData);
         }
         let isMatched = false; // marks 传给 addRangeIndexST 方法后是否被更新（更新说明 marks 与 markedData 匹配）
         if (markedData && markedData.length > 0) [marks, isMatched] = addRangeIndexST(marks, markedData.length);
