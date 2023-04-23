@@ -66,7 +66,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: "16.10"
+          node-version: "16.14"
 
       - name: Download bundle artifact
         uses: actions/download-artifact@v3
@@ -77,4 +77,4 @@ jobs:
         run: npx chrome-webstore-upload-cli upload --source ${{ env.PACK_NAME }}.zip --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
 
       - name: Upload Edge
-        run: node ../scripts/submit-edge.mjs ${{ secrets.CI_EDGE_PRODUCT_ID }} ${{ secrets.CI_EDGE_CLIENT_ID }} ${{ secrets.CI_EDGE_CLIENT_SECRET }} ${{ secrets.CI_EDGE_ACCESS_TOKEN_URL }} ${{ env.PACK_NAME }}.zip
+        run: node scripts/submit-edge.mjs ${{ secrets.CI_EDGE_PRODUCT_ID }} ${{ secrets.CI_EDGE_CLIENT_ID }} ${{ secrets.CI_EDGE_CLIENT_SECRET }} ${{ secrets.CI_EDGE_ACCESS_TOKEN_URL }} ${{ env.PACK_NAME }}.zip

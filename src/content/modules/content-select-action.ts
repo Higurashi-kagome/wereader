@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import { SelectActionOptions } from '../../background/modules/bg-vars';
+import { hideToolbar, hideSelection } from './content-hide';
 
 function initSelectAction() {
 	console.log('initSelectAction');
@@ -16,7 +17,9 @@ function initSelectAction() {
 		chrome.storage.sync.get([storageKey], function(setting){
 			let underlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0] as HTMLElement;
 			if(setting[storageKey] != SelectActionOptions.None && underlineBtn){
-				underlineBtn.click()
+				underlineBtn.click();
+				hideToolbar();
+				hideSelection();
 			}
 			//重新监听
 			if (callback) callback();
