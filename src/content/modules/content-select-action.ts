@@ -28,6 +28,7 @@ function initSelectAction() {
 
 	// 标注面板的监听函数：在标注面板属性值改变时调用
 	let onToolbarAttrChanged =  (mutationsList: MutationRecord[], observer: MutationObserver)=>{
+		console.log('Toolbar 属性改变');
 		for(let mutation of mutationsList) {
 			if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 				let container = $('.reader_toolbar_container');
@@ -36,6 +37,7 @@ function initSelectAction() {
 					// 结束监听以防止监听面板消失时触发自动标注
 					observer.disconnect();
 					// 点击目标，并在回调函数中重新监听
+					console.log('属性监听器监听到触发条件');
 					clickTarget(observeToolbar);
 				}
 			}
@@ -61,22 +63,24 @@ function initSelectAction() {
 		 * 在第一次使用标注之前，页面中不存在 .reader_toolbar_container，
 		 * 使用该函数设置对 .reader_toolbar_container 的父元素（.renderTargetContainer）进行监听。
 		 */
+		const p = '.renderTargetContainer';
 		let observeParent =  function() {
-			const p = '.renderTargetContainer';
-			const listenFor = '.reader_toolbar_container';
-			if ($(listenFor).length) return; // 已经存在则不调用
-			$(p)[0].unbindArrive(listenFor);
-			/* 监听到父元素 .renderTargetContainer 中出现了 .reader_toolbar_container，则自动标注，
-			并初始化对 .reader_toolbar_container 的监听 */
-			$(p)[0].arrive(listenFor, function (readerToolbarContainer: Element) {
-				// 标注面板出现
-				let container = $(readerToolbarContainer);
-				// 选中了文字则点击面板按钮
-				if(container.length && container.css('display') == 'block' && $('.wr_selection').length)
-					clickTarget();
-				// 开始监听标注面板
-				if(container.length) observeToolbar();
+			let parentObserver = new MutationObserver((mutationsList: MutationRecord[], observer: MutationObserver)=>{
+				for(let mutation of mutationsList) {
+					if (mutation.type === 'childList') {
+						let container = $('.reader_toolbar_container');
+						// 选中了文字则点击面板按钮
+						if(container.length && container.css('display') == 'block' && $('.wr_selection').length) {
+							// 标注面板出现
+							console.log('父容器监听器监听到触发事件');
+							clickTarget();
+						}
+						// 开始监听标注面板
+						if(container.length) observeToolbar();
+					}
+				}
 			});
+			parentObserver.observe($(p)[0], {'childList': true})
 		}
 		observeParent();
 		// 处理切换章节后失效的问题
