@@ -37,10 +37,12 @@ export async function copyComment(userVid: string, isHtml: boolean) {
 	const wereader = new Wereader(window.bookId, userVid);
 	let data = await wereader.getComments();
 	//遍历书评
+	let title = '', content = '', htmlContent = '';
 	for (const item of data.reviews) {
 		if (item.review.bookId != window.bookId) continue;
-		var {title, content, htmlContent} = item.review;
-		content = content.replace("\n", "\n\n");
+		title = item.review.title;
+		content = item.review.content.replace("\n", "\n\n");
+		htmlContent = item.review.htmlContent;
 		break;
 	}
 	if (htmlContent || content || title) {//有书评
