@@ -19,6 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.14"
+
       - name: Install
         run: npm ci || npm install
         
@@ -58,23 +63,28 @@ jobs:
   # api usage reference:
   # * <https://developer.chrome.com/docs/webstore/using_webstore_api/>
   # * <https://github.com/fregante/chrome-webstore-upload/blob/main/How%20to%20generate%20Google%20API%20keys.md>
+  # https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/publish/api/using-addons-api
+  # https://www.plasmo.com/blog/posts/edge-extension
   upload-extension:
     name: upload extension
     runs-on: ubuntu-latest
     needs: build-extension
 
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16.14"
-
       - name: Download bundle artifact
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACK_NAME }}
 
-      - name: Upload Chrome
+      - name: Upload to Chrome
         run: npx chrome-webstore-upload-cli upload --source ${{ env.PACK_NAME }}.zip --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
 
-      - name: Upload Edge
-        run: node ../scripts/submit-edge.mjs ${{ secrets.CI_EDGE_PRODUCT_ID }} ${{ secrets.CI_EDGE_CLIENT_ID }} ${{ secrets.CI_EDGE_CLIENT_SECRET }} ${{ secrets.CI_EDGE_ACCESS_TOKEN_URL }} ${{ env.PACK_NAME }}.zip
+      # https://github.com/marketplace/actions/publish-edge-add-on
+      - name: Publish to Edge
+        uses: wdzeng/edge-addon@v1
+        with:
+          product-id: ${{ secrets.CI_EDGE_PRODUCT_ID }}
+          zip-path: ${{ env.PACK_NAME }}.zip
+          client-id: ${{ secrets.CI_EDGE_CLIENT_ID }}
+          client-secret: ${{ secrets.CI_EDGE_CLIENT_SECRET }}
+          access-token-url: ${{ secrets.CI_EDGE_ACCESS_TOKEN_URL }}

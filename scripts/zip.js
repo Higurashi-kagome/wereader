@@ -19,7 +19,7 @@ function walkSync(currentDirPath, callback) {
 	})
 }
 
-fs.unlinkSync(zipPath)
+fs.existsSync(zipPath) && fs.unlinkSync(zipPath)
 
 const paths = []
 walkSync('dist', function(filepath, stat) {
