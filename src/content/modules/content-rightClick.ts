@@ -1,3 +1,4 @@
+import { noteSelector } from "../../common/constants";
 import { mouseMoveTarget } from "./content-mousemove";
 import $ from "jquery";
 
@@ -18,7 +19,7 @@ function initRightClick() {
 	$(document).on('mousedown', (event)=>{
 		if (3 == event.which) { // 右键为 3
 			// fix：在按下 Ctrl 标注元素消失后右击鼠标，在松开 Ctrl 时标注将不会恢复显示
-			setTimeout(() => {$('.wr_underline,.wr_myNote').css('display','block');}, 500);
+			setTimeout(() => {$(noteSelector).css('display','block');}, 500);
 		} else if (1 == event.which) { /* 左键为 1 */ }
 	});
 
