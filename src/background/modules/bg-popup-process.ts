@@ -107,9 +107,9 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 		/* 生成替换字符串 */
 		if(imgSrc) { // 图片
 			let insert1 = '', insert2 = ''; // 非行内图片单独占行（即使它与文字一起标注）
-			if(!isInlineImg && markText.indexOf('[插图]') > 0) // 不为行内图片且'[插图]'前有内容
+			if(!isInlineImg && markText.indexOf(Config.imgTag) > 0) // 不为行内图片且 Config.imgTag 前有内容
 				insert1 = '\n\n'
-			if(!isInlineImg && markText.indexOf('[插图]') != (markText.length - 4)) // 不为行内图片且'[插图]'后有内容
+			if(!isInlineImg && markText.indexOf(Config.imgTag) != (markText.length - Config.imgTag.length)) // 不为行内图片且 Config.imgTag 后有内容
 				insert2 = '\n\n'
 			replacement = `${insert1}![${alt}](${imgSrc})${insert2}`
 		}else if (footnote) { //注释
@@ -119,14 +119,14 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 			footnoteContent += `<p id="${footnoteId}">${footnoteNum}. ${footnote}<a href="#${footnoteId}-ref">&#8617;</a></p>\n`;
 		}else if (code) { //代码块
 			let insert1 = '', insert2 = ''
-			if(markText.indexOf('[插图]') > 0) //'[插图]'前有内容
+			if(markText.indexOf(Config.imgTag) > 0) //Config.imgTag 前有内容
 				insert1 = '\n\n'
-			if(markText.indexOf('[插图]') != (markText.length - 4)) //'[插图]'后有内容
+			if(markText.indexOf(Config.imgTag) != (markText.length - Config.imgTag.length)) //Config.imgTag 后有内容
 				insert2 = '\n\n'
 			replacement = `${insert1}${Config.codePre}\n${code}\n${Config.codeSuf}${insert2}`
 		}
 		if (replacement) { // 替换
-			markText = markText.replace(/\[插图\]/, replacement);
+			markText = markText.replace(Config.imgTag, replacement);
 			if (abstract) mark.abstract = markText; // 新字符串赋值回 mark
 			else mark.markText = markText;
 		} else console.log(mark, markedData);
@@ -135,29 +135,29 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 	return [mark, footnoteContent];
 }
 
-// 在 marks 中添加替换数据索引（每一个“[插图]”用哪个位置的 markedData 替换）
+// 在 marks 中添加替换数据索引（每一个 Config.imgTag 用哪个位置的 markedData 替换）
 export function addRangeIndexST(marks: any, markedDataLength: number) {
-    // “[插图]”的 range 作为键，该“[插图]”所对应的数据在 markedData 中的索引作为值
+    // Config.imgTag 的 range 作为键，该 Config.imgTag 所对应的数据在 markedData 中的索引作为值
 	let used: {[key: string]: number} = {};
     // markedData 索引
 	let markedDataIdx = 0;
-    // 不重复的“[插图]”的个数，正常情况下，应该与 markedData 的长度相等
+    // 不重复的 Config.imgTag 的个数，正常情况下，应该与 markedData 的长度相等
     let targetCnt = 0;
 	for (let i = 0; i < marks.length; i++) {
 		let {abstract, range: markRange} = marks[i];
 		let markText = abstract ? abstract : marks[i].markText;
-        // 获取当前标注中的“[插图]”位置
-		let indexes = getIndexes(markText, '[插图]');
+        // 获取当前标注中的 Config.imgTag 位置
+		let indexes = getIndexes(markText, Config.imgTag);
 		let markedDataIdxes = [];
-        // 遍历当前标注中的“[插图]”位置
+        // 遍历当前标注中的 Config.imgTag 位置
 		for (const idx of indexes) {
-            // 计算某个“[插图]”在本章标注中的唯一位置
+            // 计算某个 Config.imgTag 在本章标注中的唯一位置
 			let imgRange = markRange + idx;
-			if (used[imgRange] === undefined) { // 该“[插图]”没有记录过
+			if (used[imgRange] === undefined) { // 该 Config.imgTag 没有记录过
                 targetCnt++;
-				used[imgRange] = markedDataIdx; // 记录某个位置的“[插图]”所对应的替换数据
+				used[imgRange] = markedDataIdx; // 记录某个位置的 Config.imgTag 所对应的替换数据
 				markedDataIdxes.push(markedDataIdx++);
-			} else { // “[插图]”被记录过（同一个“[插图]”多次出现）
+			} else { // Config.imgTag 被记录过（同一个 Config.imgTag 多次出现）
 				markedDataIdxes.push(used[imgRange]);
 			}
 		}

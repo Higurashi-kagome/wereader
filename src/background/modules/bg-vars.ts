@@ -1,3 +1,4 @@
+import { IMG_TAG } from '../../common/constants';
 import { reConfigCollectionType } from '../../options/options-utils';
 
 export {
@@ -56,6 +57,7 @@ interface ConfigType{
     s2Suf: string,
     s3Pre: string,
     s3Suf: string,
+    imgTag: string,
     lev1Pre: string,
     lev1Suf: string,
     lev2Pre: string,
@@ -97,6 +99,7 @@ var Config: ConfigType = {
     s2Suf: "**",
     s3Pre: "",
     s3Suf: "",
+    imgTag: IMG_TAG,
     lev1Pre: "## ",
     lev1Suf: "",
     lev2Pre: "### ",

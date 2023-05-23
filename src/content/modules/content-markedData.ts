@@ -78,13 +78,13 @@ function getCurrentMarkedChap() {
 	}
 }
 
-// 检查指定章节的标注内容中有多少个 [插图]
+// 检查指定章节的标注内容中有多少个 IMG_TAG
 function countTargets() {
 	const curChapTitle = getCurrentMarkedChap();
 	console.log("当前章节", curChapTitle);
 	if (!curChapTitle) return 0;
 	let targetCnt = 0;
-	// 遍历标注、检查是否存在 [插图]
+	// 遍历标注、检查是否存在 IMG_TAG
 	let sectionListItems = document.getElementsByClassName('sectionListItem');
 	let foundChap = false;
 	for (let i = 0; i < sectionListItems.length; i++) {
@@ -94,14 +94,14 @@ function countTargets() {
 		if(sectionListItem_title && sectionListItem_title.textContent == curChapTitle){
 			console.log("找到当前章节的标注");
 			foundChap = true;
-			if ($(element).text().indexOf('[插图]')>=0) {
+			if ($(element).text().indexOf(IMG_TAG)>=0) {
 				targetCnt++;
 			}
 		}else if(foundChap == true  && sectionListItem_title 
 			&& sectionListItem_title.textContent != curChapTitle){
 			break; // 不再属于当前章节，退出循环
 		}else if(foundChap == true){ // 本章内的内容
-			if ($(element).text().indexOf('[插图]')>=0) {
+			if ($(element).text().indexOf(IMG_TAG)>=0) {
 				targetCnt++;
 			}
 		}
@@ -202,21 +202,28 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
 };
 
 /* 初始化 */
+var IMG_TAG = ""
 async function initMarkedDateGetter(){
     console.log('initMarkedDateGetter');
     /* 监听背景页通知 */
     chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
         if(!request.isGetMarkedData) return;
-        const targetCnt = countTargets();
-		console.log("找到插图数：", targetCnt);
-        if (targetCnt === 0) sendResponse([]); // 没有 [插图] 则不需要尝试获取图片
-        else {
-            getMarkedData(request.addThoughts).then(markedData=>{
-                console.log("获取到的 markedData", markedData);
-                sendResponse(markedData);
-            });
-        }
-        return true; // 存在异步问题，必须返回 true
+		chrome.storage.sync.get(['imgTag'], function(result){
+			if (result?.imgTag) {
+				IMG_TAG = result.imgTag
+				const targetCnt = countTargets();
+				console.log(`找到“${IMG_TAG}”数：`, targetCnt);
+				if (targetCnt === 0) sendResponse([]); // 没有 IMG_TAG 则不需要尝试获取图片
+				else {
+					getMarkedData(request.addThoughts).then(markedData=>{
+						console.log("获取到的 markedData", markedData);
+						sendResponse(markedData);
+					});
+				}
+			}
+		});
+		// 这里必须返回 true，否则 sendResponse 方法可能不会被执行
+		return true;
     });
 }
 
