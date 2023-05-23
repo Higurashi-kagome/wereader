@@ -77,8 +77,8 @@ jobs:
           name: ${{ env.PACK_NAME }}
 
       # https://github.com/fregante/chrome-webstore-upload-cli
-      - name: Publish to Chrome
-        run: npx chrome-webstore-upload-cli publish --source ${{ env.PACK_NAME }}.zip --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
+      - name: Upload to Chrome
+        run: npx chrome-webstore-upload-cli upload --source ${{ env.PACK_NAME }}.zip --extension-id ${{ secrets.CI_GOOGLE_EXTENSION_ID }} --client-id ${{ secrets.CI_GOOGLE_CLIENT_ID }} --client-secret ${{ secrets.CI_GOOGLE_CLIENT_SECRET }} --refresh-token ${{ secrets.CI_GOOGLE_REFRESH_TOKEN }}
 
       # https://github.com/marketplace/actions/publish-edge-add-on
       - name: Publish to Edge
