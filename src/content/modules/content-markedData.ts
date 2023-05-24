@@ -172,7 +172,10 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
         await sleep(50); // 扫描间隔
         let ImgsSelector = "img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre"; // 图片之类
         // 遍历图片之类，检查是否被当前标注遮盖
-        $(ImgsSelector).each((idx, el): false | void => {
+		let targetEls = $(ImgsSelector).get();
+		// #99
+        targetEls.sort((x, y)=>x.getBoundingClientRect().left - y.getBoundingClientRect().left);
+		targetEls.forEach((el): false | void => {
             if(!isOverladed(mask, el)) return;
             let {imgSrc,alt,isInlineImg,footnote,currentChapTitle,code} = getTargetObj(el, curChapTitle);
             if(imgSrc && alt !== undefined && isInlineImg !== undefined){
