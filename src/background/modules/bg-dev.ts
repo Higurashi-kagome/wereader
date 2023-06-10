@@ -23,7 +23,7 @@ export function getTest(){
 		let storage: {
 			sync: {[key: string]: any},
 			local: {[key: string]: any}
-		};
+		} = {sync: {}, local: {}};
 		chrome.storage.sync.get(function(sync){
 			storage.sync = sync;
 			chrome.storage.local.get(function(local){

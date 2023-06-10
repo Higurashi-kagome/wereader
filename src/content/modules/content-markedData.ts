@@ -20,6 +20,8 @@ import {
     simulateClick,
     sleep,
 } from './content-utils';
+import { getSyncStorage } from '../../common/utils';
+import { scaleStorageKey } from '../../common/constants';
 
 /* 原检查 el 是否 被 mask 覆盖的思路 */
 function originTest(mask: HTMLElement, el: HTMLElement, curChapTitle: string) {
@@ -140,14 +142,29 @@ function getTargetObj(el: HTMLElement, curChapTitle: string) {
     return elObj;
 }
 
-/* 检查 el2 是否 被 el1 覆盖 */
-function isOverladed(el1: HTMLElement, el2: HTMLElement) {
+/**
+ * 检查 el2 是否被 el1 覆盖
+ * @param el1 覆盖元素
+ * @param el2 被覆盖元素
+ * @param scale 被覆盖元素缩放比例
+ * @returns el2 被 el1 覆盖时，返回 true，否则返回 false
+ */
+function isCovered(el1: HTMLElement, el2: HTMLElement, scale?: number) {
     const rect1 = el1.getBoundingClientRect();
-    const rect2 = el2.getBoundingClientRect();
-    const overlap = !(rect1.right < rect2.left || 
-                      rect1.left > rect2.right || 
-                      rect1.bottom < rect2.top || 
-                      rect1.top > rect2.bottom)
+	let {right: r2Right, left: r2Left, top: r2Top, bottom: r2Bottom} = el2.getBoundingClientRect();
+	scale = scale || .97
+	if(scale){
+		let subWidth = (1 - scale) * (r2Right - r2Left)
+		let subHeight = (1 - scale) * (r2Bottom - r2Top)
+		r2Right = r2Right - subWidth/2
+		r2Left = r2Left + subWidth/2
+		r2Top = r2Top + subHeight/2
+		r2Bottom = r2Bottom - subHeight/2
+	}
+    const overlap = !(rect1.right < r2Left || 
+                      rect1.left > r2Right || 
+                      rect1.bottom < r2Top || 
+                      rect1.top > r2Bottom)
     return overlap;
 }
 
@@ -166,6 +183,8 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
     let masks = document.querySelectorAll<HTMLElement>(masksSelector);
     let notesCounter = 1;
     const curChapTitle = getCurrentChapTitle();
+	const scale = await getSyncStorage(scaleStorageKey);
+	console.log(`缩放比例：${scale}`);
     for (const mask of masks) {
         mask.scrollIntoView({block: 'center'}); // 滚动到视图，加载图片
         mask.style.background = '#ffff0085'; // 高亮
@@ -176,7 +195,7 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
 		// #99
         targetEls.sort((x, y)=>x.getBoundingClientRect().left - y.getBoundingClientRect().left);
 		targetEls.forEach((el): false | void => {
-            if(!isOverladed(mask, el)) return;
+            if(!isCovered(mask, el, parseFloat(scale))) return;
             let {imgSrc,alt,isInlineImg,footnote,currentChapTitle,code} = getTargetObj(el, curChapTitle);
             if(imgSrc && alt !== undefined && isInlineImg !== undefined){
                 markedData.push({alt: alt, imgSrc: imgSrc, isInlineImg: isInlineImg});
