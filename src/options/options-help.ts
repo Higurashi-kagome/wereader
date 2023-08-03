@@ -142,6 +142,10 @@ const helpContent: {[key: string]: any} = {
     enableDevelop: {
         title: '开发者选项',
         help: `<p>选中该选项之后，将会在 popup 中添加名为“开发者选项”的按钮，点击该按钮可调用用于测试的某些函数。</p>`
+    },
+    distinctThouMarks: {
+        title: '多条想法对应相同标注时只保留一条标注',
+        help: `<p>选中该选项之后，如果有多条想法对应相同标注，将只会导出一条标注，而不会每条想法都相应导出一遍标注。</p>`
     }
 }
 

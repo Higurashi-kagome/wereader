@@ -177,8 +177,9 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 		return 'markText' in mark;
 	}
 	let prevMarkText = ""; // 保存上一条标注文本
+	let prevMarkType = ""; // 保存上一次标注类型（0 标注 1 想法）
 	let tempRes = ""; // 保存上一条处理后追加到 res 的标注文本
-	let res = "", footnoteContent = "";
+	let res: string[] = [], footnoteContent = "";
 	for (let j = 0; j < marks.length; j++) { // 遍历章内标注
 		let mark = marks[j];
 		if (markedData.length) [marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent);
@@ -190,32 +191,39 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 			let thouAbstract = `${Config.thouMarkPre}${abstract}${Config.thouMarkSuf}\n\n`;
 			// 想法所对应文本与上一条标注相同时
 			if (abstract === prevMarkText) {
-				// 如果只保留标注文本，则 thouAbstract 设为空
-				if (Config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
-				// 如果只保留想法所对应的文本，将上一次追加得到的标注文本（tempRes）删掉
-				else if (Config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
-					res = res.replace(new RegExp( escapeRegExp(tempRes) + `$`), "");
+				if (prevMarkType == '0') {
+					// 如果只保留标注文本，则 thouAbstract 设为空
+					if (Config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
+					// 如果只保留想法所对应的文本，将上一次追加得到的标注文本删掉
+					else if (Config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
+						res.pop();
+					}
+				} else {
+					// 多个想法对应相同的标注时，不重复记录标注内容
+					if(Config.distinctThouMarks) thouAbstract = '';
 				}
-				prevMarkText = '';
 			}
 			// 是否将想法添加到对应标注之前
 			if (Config.thoughtFirst){
-				res += (thouContent + thouAbstract);
+				res.push(thouContent + thouAbstract);
 			} else {
-				res += (thouAbstract + thouContent);
+				res.push(thouAbstract + thouContent);
 			}
+			prevMarkText = abstract;
+			prevMarkType = '1'
 		} else if(isUpdated(mark)){ // 不是想法（为标注）
 			// 则进行正则匹配
 			prevMarkText = mark.markText;
+			prevMarkType = '0'
 			tempRes = regexpReplace(prevMarkText);
 			tempRes = `${addMarkPreAndSuf(tempRes, mark.style)}\n\n`;
-			res += tempRes;
+			res.push(tempRes);
 		}
 	}
 	if (markedData.length && footnoteContent) {
-        res += footnoteContent;
+        res.push(footnoteContent);
     }
-	return res;
+	return res.join("");
 }
 
 export async function getChapters(){
