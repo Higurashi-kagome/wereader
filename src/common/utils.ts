@@ -12,11 +12,11 @@ export function getLocalStorage(key: string): Promise<any> {
 
 export function getSyncStorage(key: string): Promise<any> {
 	return new Promise((res, rej)=>{
-		chrome.storage.sync.get([key], function(local){
+		chrome.storage.sync.get([key], function(sync){
 			if(chrome.runtime.lastError){
 				rej(chrome.runtime.lastError.message)
 			}else{
-				res(local[key])
+				res(sync[key])
 			}
 		});
 	})

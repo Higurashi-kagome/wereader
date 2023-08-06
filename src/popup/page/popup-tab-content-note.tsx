@@ -17,6 +17,7 @@ export class NoteTabContent extends React.Component<IProps>{
 		const P = this.props;
 		return (
 			<TabContent for='noteBtn' >
+				<DropDownCaller id="copyBookInfo" value='获取书本信息'></DropDownCaller>
 				<DropDownBtn value='获取书评'></DropDownBtn>
 				<DropDownContainer>
 					<DropDownCaller id="getTextComment" value='纯文本'></DropDownCaller>

@@ -17,6 +17,7 @@
 	"explorerExclude.backup": null,
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [
+		"autoescape",
 		"BACKUPKEY",
 		"BACKUPNAME",
 		"bestbookmarks",

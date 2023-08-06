@@ -59,6 +59,9 @@ async function initNoteTab(url: string) {
 			case "removeAllMarks":
 				bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: true}});
 				break;
+			case "copyBookInfo":
+				bg.copyBookInfo();
+				break;
 			default:
 				break;
 		}

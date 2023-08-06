@@ -51,5 +51,8 @@
 	   "*://weread.qq.com/*",
 	   "*://i.weread.qq.com/*",
 	   "webRequest"
-	]
+	],
+	"sandbox": {
+		"pages": ["sandbox.html"]
+	}
  }

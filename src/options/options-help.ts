@@ -36,6 +36,10 @@ const helpContent: {[key: string]: any} = {
         title: '想法后缀',
         help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>`
     },
+    metaTemplate: {
+        title: '书本信息导出模板',
+        help: `设置导出书本信息时所用的模板。模板引擎为 <a href="https://nunjucks.bootcss.com/templating.html" target="_blank">nunjucks</a>。下面是一个模板例子：<p><span class="lineinline">[1] {{metaData.author}}.{{metaData.title}}.{% if metaData.translator %}{{metaData.translator}}，译.{% endif %}{{metaData.publisher}}，{{metaData.publishTime.slice(0, 4)}}</span>`
+    },
     thouMarkSuf: {
         title: '想法标注后缀',
         help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>`

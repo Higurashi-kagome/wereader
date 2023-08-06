@@ -1,5 +1,6 @@
 import { ShelfDataTypeJson } from '../../types/shelfTypes';
 import { BestMarksJson } from '../types/BestMarksJson';
+import { BookInfo } from '../types/BookInfo';
 import { ChapInfoJson } from '../types/ChapInfoJson';
 import { CommentsJson } from '../types/CommentsJson';
 import { MarksJson } from '../types/MarksJson';
@@ -13,6 +14,7 @@ export class Wereader{
 	static readonly indexUrl = `https://i.weread.qq.com`;
 	static readonly maiUrl: string = `https://weread.qq.com`;
 	private chapInfosUrl: string;
+	private bookInfosUrl: string;
 	private bookmarksUrl: string;
 	private bestBookmarksUrl: string;
 	private thoughtsUrl: string;
@@ -25,6 +27,7 @@ export class Wereader{
 
 	constructor(bookId?: string, userVid?: string){
 		this.chapInfosUrl = `${Wereader.indexUrl}/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
+		this.bookInfosUrl = `${Wereader.indexUrl}/book/info?bookId=${bookId}`;
 		this.bookmarksUrl = `${Wereader.indexUrl}/book/bookmarklist?bookId=${bookId}`;
 		this.bestBookmarksUrl = `${Wereader.indexUrl}/book/bestbookmarks?bookId=${bookId}`;
 		this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`;
@@ -44,6 +47,12 @@ export class Wereader{
 
 	async getChapInfos(): Promise<ChapInfoJson>{
 		const data = await getJson(this.chapInfosUrl);
+		console.log(data);
+		return data;
+	}
+
+	async getBookInfo(): Promise<BookInfo>{
+		const data = await getJson(this.bookInfosUrl);
 		console.log(data);
 		return data;
 	}

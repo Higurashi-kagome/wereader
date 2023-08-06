@@ -12,6 +12,7 @@ import {
 	copyContents,
 	copyThought,
 	createMpPage,
+	copyBookInfo,
 	getShelfData,
 	setBookId,
 	setShelfData,
@@ -51,6 +52,7 @@ export interface PopupApi {
 	setShelfData: Function;
 	puzzling: Function;
 	createMpPage: Function;
+	copyBookInfo: Function;
 	Wereader: typeof Wereader;
 }
 
@@ -80,5 +82,6 @@ export function initPopupApi() {
 	window.popupApi.setShelfData = setShelfData;
 	window.popupApi.puzzling = puzzling;
 	window.popupApi.createMpPage = createMpPage;
+	window.popupApi.copyBookInfo = copyBookInfo;
 	window.popupApi.Wereader = Wereader;
 }

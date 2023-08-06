@@ -3,6 +3,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const fs = require('fs')
 
 const cssLoaders = [
 	"style-loader", // 用来将 css 引入到代码中
@@ -68,6 +69,8 @@ module.exports = {
 		statistics: path.resolve(__dirname, "..", "src/statistics/", "statistics.ts"),
 		// 公众号阅读页脚本
 		mp: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
+		// 沙箱脚本
+		sandbox: path.resolve(__dirname, "..", "src/background", "sandbox.ts")
 	},
 
 	// 配置输出
@@ -111,6 +114,18 @@ module.exports = {
 			{
 				test: /\.css$/i,
 				use: cssLoaders
+			},
+
+			// 设置替换字符串 https://www.npmjs.com/package/string-replace-loader
+			{
+				test: /bg-vars.ts$/,
+				loader: 'string-replace-loader',
+				options: {
+					search: /__metaTemplate__/ig,
+					replace: ()=>{
+						return fs.readFileSync(path.resolve(__dirname, '../public/template/notebookTemplate.njk'))
+					}
+				}
 			}
 		]
 	},
@@ -183,6 +198,16 @@ module.exports = {
 				collapseWhitespace: true
 			},
 			chunks: ['background']
+		}),
+		new HTMLWebpackPlugin({
+			filename: 'sandbox.html',
+			template: 'src/background/sandbox.html',
+			inject: 'body',
+			minify: {
+				removeComments: true,
+				collapseWhitespace: true
+			},
+			chunks: ['sandbox']
 		}),
 	]
 }

@@ -1,4 +1,5 @@
 /* 该文件中包含提供给 popup 调用或间接调用的大部分函数 */
+import { getSyncStorage } from '../../common/utils';
 import { responseType } from '../../content/modules/content-getChapters';
 import { Code } from '../../content/types/Code';
 import { Footnote } from '../../content/types/Footnote';
@@ -31,6 +32,36 @@ import {
     mpTempData,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
+
+window.addEventListener('message', function(event){
+	const message = event.data
+	if (message) {
+		switch (message.command) {
+			// 接收来自 iframe 的渲染结果
+			case 'render':
+				if(message.error){
+					console.error(message.error);
+					sendAlertMsg({icon: 'error', title: '获取出错'});
+				} else {
+					copy(message.result);
+				}
+			break;
+		}
+	}
+})
+
+export async function copyBookInfo() {
+	const wereader = new Wereader(window.bookId);
+	const data = await wereader.getBookInfo();
+	// 发送渲染请求到 iframe
+	const iframe = document.getElementById('theFrame') as HTMLIFrameElement ;
+	const message = {
+		command: 'render',
+		context: data,
+		templateStr: await getSyncStorage('metaTemplate')
+	};
+	iframe?.contentWindow?.postMessage(message, '*');
+}
 
 // 获取书评
 export async function copyComment(userVid: string, isHtml: boolean) {

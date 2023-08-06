@@ -58,6 +58,11 @@ export function getTest(){
 		logAndCopy(data, 'chapInfosInServer');
 	}
 
+	let logBookInfosInServer = async ()=>{
+		const data = await wereader.getBookInfo();
+		logAndCopy(data, 'logBookInfosInServer');
+	}
+
 	let logFuncGetShelfData = async ()=>{
 		const shelfData = await getShelfData();
 		logAndCopy(shelfData, 'shelfData');
@@ -81,17 +86,18 @@ export function getTest(){
 	}
 
 	let functions = {
-		'logBookmarksJson': logBookmarksJson,
-		'logStorage': logStorage,
-		'logConfig': logConfig,
-		'logGetBookMarks': logGetBookMarks,
-		'logBestBookMarks': logBestBookMarks,
-		'logGetChapters': logGetChapters,
-		'logChapInfosInServer': logChapInfosInServer,
-		'logFuncGetShelfData': logFuncGetShelfData,
-		'logFuncWereaderGetShelfData': logFuncWereaderGetShelfData,
-		'logReadDetail': logReadDetail,
-		'logThoughtJson': logThoughtJson
+		logBookInfosInServer,
+		logBookmarksJson,
+		logStorage,
+		logConfig,
+		logGetBookMarks,
+		logBestBookMarks,
+		logGetChapters,
+		logChapInfosInServer,
+		logFuncGetShelfData,
+		logFuncWereaderGetShelfData,
+		logReadDetail,
+		logThoughtJson
 	}
 
 	return functions;
