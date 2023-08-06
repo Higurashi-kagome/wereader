@@ -214,17 +214,23 @@ export async function copyThought(isAll?: boolean) {
 	let thoughts = await getMyThought();
 	function getTempRes(thoughtsInAChap: ThoughtsInAChap[], chapUid: number) {
 		let tempRes = `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level)}\n\n`;
+		let prevAbstract = ""; // 保存上一条想法对应标注文本
 		thoughtsInAChap.forEach((thou)=>{
 			// 想法
 			let thouContent = `${Config.thouPre}${thou.content}${Config.thouSuf}\n\n`;
 			// 想法所标注的内容
 			let thouAbstract = `${Config.thouMarkPre}${thou.abstract}${Config.thouMarkSuf}\n\n`;
+			// 当前标注文本和前一条标注文本内容相同、且配置去重时，不导出当前的标注
+			if(thou.abstract == prevAbstract && Config.distinctThouMarks){
+				thouAbstract = '';
+			}
 			// 是否将想法添加到对应标注之前
 			if (Config.thoughtFirst){
 				tempRes += (thouContent + thouAbstract);
 			} else {
 				tempRes += (thouAbstract + thouContent);
 			}
+			prevAbstract = thou.abstract
 		});
 		return tempRes;
 	}
