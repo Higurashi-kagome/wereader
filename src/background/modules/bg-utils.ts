@@ -79,6 +79,15 @@ async function sendMessageToContentScript(sendMsg: { tabId?: number; message: an
 	}).catch((error)=>{console.log(error);});
 }
 
+async function getCurTab(): Promise<chrome.tabs.Tab> {
+	return new Promise((res, rej)=>{
+		chrome.tabs.query({active: true, currentWindow: true}, (tabs)=>{
+			if(!tabs[0]) return rej('未找到当前 tab');
+			return res(tabs[0])
+		});
+	})
+}
+
 async function sendAlertMsg(msg: SweetAlertOptions, tabId: number | undefined = undefined) {
 	const response = await sendMessageToContentScript({tabId: tabId, message: {isAlertMsg: true, alertMsg: msg}});
 	return response;
@@ -198,4 +207,5 @@ export {
     sendAlertMsg,
     sendMessageToContentScript,
     updateStorageAreaInBg,
+	getCurTab
 };

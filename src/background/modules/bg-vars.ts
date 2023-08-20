@@ -4,6 +4,7 @@ import { reConfigCollectionType } from '../../options/options-utils';
 export {
 	BackupKey,
 	bookIds,
+	chapUids,
 	Config,
 	ConfigType,
 	DefaultBackupName,
@@ -25,6 +26,8 @@ declare global {
 window.bookId = undefined;
 // 所有已打开读书页的书本 id
 var bookIds = new Map<number, string>();
+// 所有正在阅读的章节 Uid
+var chapUids = new Map<number, number>();
 const DefaultBackupName = "默认设置";
 const StorageErrorMsg = "存储出错";
 const BackupKey = "backup";

@@ -50,6 +50,7 @@ window.addEventListener('message', function(event){
 	}
 })
 
+// 获取书本信息
 export async function copyBookInfo() {
 	const wereader = new Wereader(window.bookId);
 	const data = await wereader.getBookInfo();

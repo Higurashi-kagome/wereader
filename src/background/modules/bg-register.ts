@@ -10,6 +10,7 @@ import {
 } from './bg-utils';
 import {
 	bookIds,
+	chapUids,
 	Config,
 	mpTempData,
 } from './bg-vars';
@@ -134,6 +135,18 @@ export function initRegister() {
 		const bookId = url.replace(/(^.*bookId=|&type=1)/g,"");
 		bookIds.set(tabId, bookId);
 	}, {urls: ["*://weread.qq.com/web/book/*"]});
+
+	// 监听读书页阅读记录请求，获取章节 Uid
+	chrome.webRequest.onBeforeRequest.addListener(details => {
+		let raw = undefined;
+		if (details?.requestBody?.raw) {
+			raw = details.requestBody.raw[0];
+		}
+		const decoder = new TextDecoder("utf-8");
+		const requestBody = decoder.decode(raw?.bytes);
+		const jsonData = requestBody ? JSON.parse(requestBody) : {};
+		jsonData.ci && chapUids.set(details.tabId, jsonData.ci);
+	}, {urls: ["*://weread.qq.com/web/book/read"]}, ['requestBody']);
 
 	// 监听安装事件
 	chrome.runtime.onInstalled.addListener(function(details){

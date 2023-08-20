@@ -9,6 +9,7 @@ function initGetChapInfo() {
 	console.log('initGetChapInfo');
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
 		let response: responseType = {chapters: [], currentContent: ""};
+		console.log('收到请求', request);
 		if(!request.isGetChapters) return;
 		try{
 			/* 获取书本各章节标题 */
