@@ -1,117 +1,117 @@
-import { ShelfDataTypeJson } from '../../types/shelfTypes';
-import { BestMarksJson } from './BestMarksJson';
-import { BookInfo } from './BookInfo';
-import { ChapInfoJson } from './ChapInfoJson';
-import { CommentsJson } from './CommentsJson';
-import { MarksJson } from './MarksJson';
-import { ThoughtJson } from './ThoughtJson';
+import { ShelfDataTypeJson } from '../../types/shelfTypes'
+import { BestMarksJson } from './BestMarksJson'
+import { BookInfo } from './BookInfo'
+import { ChapInfoJson } from './ChapInfoJson'
+import { CommentsJson } from './CommentsJson'
+import { MarksJson } from './MarksJson'
+import { ThoughtJson } from './ThoughtJson'
 import {
 	getJson,
 	getText,
-} from '../worker-utils';
+} from '../worker-utils'
 
-export class Wereader{
-	static readonly indexUrl = `https://i.weread.qq.com`;
-	static readonly maiUrl: string = `https://weread.qq.com`;
-	private chapInfosUrl: string;
-	private bookInfosUrl: string;
-	private bookmarksUrl: string;
-	private bestBookmarksUrl: string;
-	private thoughtsUrl: string;
-	private commentsUrl: string;
-	private shelfDataUrl: string;
-	private removeBookmarkUrl: string;
-	private readDetailUrl: string;
-	private shelfRemoveBookUrl: string;
-	private shelfBookSecret: string;
+export class Wereader {
+	static readonly indexUrl = `https://i.weread.qq.com`
+	static readonly maiUrl: string = `https://weread.qq.com`
+	private chapInfosUrl: string
+	private bookInfosUrl: string
+	private bookmarksUrl: string
+	private bestBookmarksUrl: string
+	private thoughtsUrl: string
+	private commentsUrl: string
+	private shelfDataUrl: string
+	private removeBookmarkUrl: string
+	private readDetailUrl: string
+	private shelfRemoveBookUrl: string
+	private shelfBookSecret: string
 
-	constructor(bookId?: string, userVid?: string){
-		this.chapInfosUrl = `${Wereader.indexUrl}/book/chapterInfos?bookIds=${bookId}&synckeys=0`;
-		this.bookInfosUrl = `${Wereader.indexUrl}/book/info?bookId=${bookId}`;
-		this.bookmarksUrl = `${Wereader.indexUrl}/book/bookmarklist?bookId=${bookId}`;
-		this.bestBookmarksUrl = `${Wereader.indexUrl}/book/bestbookmarks?bookId=${bookId}`;
-		this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`;
-		this.commentsUrl = `${Wereader.indexUrl}/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`;
-		this.shelfDataUrl = `${Wereader.maiUrl}/web/shelf/sync`;
-		this.removeBookmarkUrl = `${Wereader.maiUrl}/web/book/removeBookmark`;
-		this.readDetailUrl = `${Wereader.indexUrl}/readdetail?`;
-		this.shelfRemoveBookUrl = `${Wereader.indexUrl}/shelf/delete`;
-		this.shelfBookSecret = `${Wereader.indexUrl}/book/secret`;
+	constructor(bookId?: string, userVid?: string) {
+		this.chapInfosUrl = `${Wereader.indexUrl}/book/chapterInfos?bookIds=${bookId}&synckeys=0`
+		this.bookInfosUrl = `${Wereader.indexUrl}/book/info?bookId=${bookId}`
+		this.bookmarksUrl = `${Wereader.indexUrl}/book/bookmarklist?bookId=${bookId}`
+		this.bestBookmarksUrl = `${Wereader.indexUrl}/book/bestbookmarks?bookId=${bookId}`
+		this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`
+		this.commentsUrl = `${Wereader.indexUrl}/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
+		this.shelfDataUrl = `${Wereader.maiUrl}/web/shelf/sync`
+		this.removeBookmarkUrl = `${Wereader.maiUrl}/web/book/removeBookmark`
+		this.readDetailUrl = `${Wereader.indexUrl}/readdetail?`
+		this.shelfRemoveBookUrl = `${Wereader.indexUrl}/shelf/delete`
+		this.shelfBookSecret = `${Wereader.indexUrl}/book/secret`
 	}
 
-	async getBookmarks(): Promise<MarksJson>{
-		const data = await getJson(this.bookmarksUrl);
-		console.log(data);
-		return data;
+	async getBookmarks(): Promise<MarksJson> {
+		const data = await getJson(this.bookmarksUrl)
+		console.log(data)
+		return data
 	}
 
-	async getChapInfos(): Promise<ChapInfoJson>{
-		const data = await getJson(this.chapInfosUrl);
-		console.log(data);
-		return data;
+	async getChapInfos(): Promise<ChapInfoJson> {
+		const data = await getJson(this.chapInfosUrl)
+		console.log(data)
+		return data
 	}
 
-	async getBookInfo(): Promise<BookInfo>{
-		const data = await getJson(this.bookInfosUrl);
-		console.log(data);
-		return data;
+	async getBookInfo(): Promise<BookInfo> {
+		const data = await getJson(this.bookInfosUrl)
+		console.log(data)
+		return data
 	}
 
-	async getBestBookmarks(): Promise<BestMarksJson>{
-		const data = await getJson(this.bestBookmarksUrl);
-		console.log(data);
-		return data;
+	async getBestBookmarks(): Promise<BestMarksJson> {
+		const data = await getJson(this.bestBookmarksUrl)
+		console.log(data)
+		return data
 	}
 
-	async getThoughts(): Promise<ThoughtJson>{
-		const data = await getJson(this.thoughtsUrl);
-		console.log(data);
-		return data;
+	async getThoughts(): Promise<ThoughtJson> {
+		const data = await getJson(this.thoughtsUrl)
+		console.log(data)
+		return data
 	}
 
-	async getComments(): Promise<CommentsJson>{
-		const data = await getJson(this.commentsUrl);
-		console.log(data);
-		return data;
+	async getComments(): Promise<CommentsJson> {
+		const data = await getJson(this.commentsUrl)
+		console.log(data)
+		return data
 	}
 
-	async getShelfData(): Promise<ShelfDataTypeJson>{
-		const data = await getJson(this.shelfDataUrl);
-		console.log(data);
-		return data;
+	async getShelfData(): Promise<ShelfDataTypeJson> {
+		const data = await getJson(this.shelfDataUrl)
+		console.log(data)
+		return data
 	}
 
-	async removeBookmarkById(bookmarkId: string){
+	async removeBookmarkById(bookmarkId: string) {
 		const resp = await fetch(this.removeBookmarkUrl, {
 			method: 'POST',
 			body: JSON.stringify({bookmarkId: bookmarkId}),
 			headers: {'Content-Type': 'application/json'},
 			credentials: "include",
 			cache: 'no-cache'
-		});
-		console.log('resp', resp);
-		const json = await resp.json();
-		return json;
+		})
+		console.log('resp', resp)
+		const json = await resp.json()
+		return json
 	}
 
-	async removeBookmarks(chapterUid?: number){
-		const data = await this.getBookmarks();
-		let bookmarks, succ = 0, fail = 0;
+	async removeBookmarks(chapterUid?: number) {
+		const data = await this.getBookmarks()
+		let bookmarks, succ = 0, fail = 0
 		if(chapterUid === undefined){
-			bookmarks = data.updated;
+			bookmarks = data.updated
 		}else{
-			bookmarks = data.updated.filter((mark)=>{return mark.chapterUid == chapterUid;});
+			bookmarks = data.updated.filter((mark) => {return mark.chapterUid == chapterUid})
 		}
 		for (const mark of bookmarks) {
-			let respJson = {succ: -1};
+			let respJson = {succ: -1}
 			try {
-				respJson = await this.removeBookmarkById(mark.bookmarkId);
+				respJson = await this.removeBookmarkById(mark.bookmarkId)
 			} catch (error) {
-				fail++;
-				continue;
+				fail++
+				continue
 			}
-			if(!respJson.succ) fail++;
-			else succ++;
+			if(!respJson.succ) fail++
+			else succ++
 		}
 		return {succ: succ, fail: fail}
 	}
@@ -122,20 +122,20 @@ export class Wereader{
 	 * type=1：获取月数据
 	 * type=0：获取周数据
 	 */
-	async getReadDetail(type=1, count=3, monthTimestamp?: number){
-		let url = this.readDetailUrl;
-		if(monthTimestamp) url = `${url}&baseTimestamp=${monthTimestamp}`;
-		if(count) url = `${url}&count=${count}`;
-		if([0,1].indexOf(type)>-1) url = `${url}&type=${type}`;
-		const respJson = await getJson(url);
-		console.log(respJson);
-		return respJson;
+	async getReadDetail(type=1, count=3, monthTimestamp?: number) {
+		let url = this.readDetailUrl
+		if(monthTimestamp) url = `${url}&baseTimestamp=${monthTimestamp}`
+		if(count) url = `${url}&count=${count}`
+		if([0,1].indexOf(type)>-1) url = `${url}&type=${type}`
+		const respJson = await getJson(url)
+		console.log(respJson)
+		return respJson
 	}
 
-	async isLogined(){
-		const text = await getText(Wereader.maiUrl);
-		if(text && text.indexOf('wr_avatar_img')>-1) return true;
-		else return false;
+	async isLogined() {
+		const text = await getText(Wereader.maiUrl)
+		if(text && text.indexOf('wr_avatar_img')>-1) return true
+		else return false
 	}
 
 	async shelfRemoveBook(bookIds: string[]) {
@@ -144,24 +144,24 @@ export class Wereader{
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {
-			'Content-Type': 'application/json',
+				'Content-Type': 'application/json',
 			}
-		});
-		console.log('resp', resp);
-		return resp;
+		})
+		console.log('resp', resp)
+		return resp
 	}
 
 	async shelfMakeBookPrivate(bookIds: string[]) {
-		const payload = {bookIds: bookIds, private: 1};
+		const payload = {bookIds: bookIds, private: 1}
 		const resp = await fetch(this.shelfBookSecret, {
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {
-			'Content-Type': 'application/json'
+				'Content-Type': 'application/json'
 			}
-		});
-		console.log('resp', resp);
-		return resp;
+		})
+		console.log('resp', resp)
+		return resp
 	}
 
 	async shelfMakeBookPublic(bookIds: string[]) {
@@ -170,10 +170,10 @@ export class Wereader{
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {
-			'Content-Type': 'application/json'
+				'Content-Type': 'application/json'
 			}
-		});
-		console.log('resp', resp);
-		return resp;
+		})
+		console.log('resp', resp)
+		return resp
 	}
 }

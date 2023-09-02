@@ -1,33 +1,33 @@
 /* 保存供其他 content.js 调用的函数 */
-import $ from 'jquery';
-import Swal, { SweetAlertOptions } from 'sweetalert2';
+import $ from 'jquery'
+import Swal, { SweetAlertOptions } from 'sweetalert2'
 
 /* 模拟点击 */
 function simulateClick(element: HTMLElement, init = {}): void {
-	const clientRect = element.getBoundingClientRect();
-	const clientX = clientRect.left;
-	const clientY = clientRect.top;
-	const position = { clientX: clientX, clientY: clientY };
-	Object.assign(init, position);
-	const mouseEvent = new MouseEvent("click", init);
-	element.dispatchEvent(mouseEvent);
+	const clientRect = element.getBoundingClientRect()
+	const clientX = clientRect.left
+	const clientY = clientRect.top
+	const position = { clientX: clientX, clientY: clientY }
+	Object.assign(init, position)
+	const mouseEvent = new MouseEvent("click", init)
+	element.dispatchEvent(mouseEvent)
 }
 
 /* 获取当前目录 */
 function getCurrentChapTitle(): string {
-    let currentChapTitle: string = '';
-    if($(".readerTopBar_title_chapter").length){
-        currentChapTitle = $(".readerTopBar_title_chapter").text();
-    }else{
-        currentChapTitle = $(".chapterItem.chapterItem_current").text();
-    }
-    currentChapTitle = currentChapTitle.replace(/^\s*|\s*$/,'');
-    return currentChapTitle;
+	let currentChapTitle: string = ''
+	if($(".readerTopBar_title_chapter").length){
+		currentChapTitle = $(".readerTopBar_title_chapter").text()
+	}else{
+		currentChapTitle = $(".chapterItem.chapterItem_current").text()
+	}
+	currentChapTitle = currentChapTitle.replace(/^\s*|\s*$/,'')
+	return currentChapTitle
 }
 
 /* sleep(millisecond) */
 function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 /** sweetAlert2 弹窗通知。
@@ -48,22 +48,22 @@ function mySweetAlert(msg: alertMsgType) {
 				toast.addEventListener('mouseenter', Swal.stopTimer)
 				toast.addEventListener('mouseleave', Swal.resumeTimer)
 			}
-		});
-		Toast.fire(msg.alertMsg);
+		})
+		Toast.fire(msg.alertMsg)
 	}else{//其他消息
-		Swal.fire(msg.alertMsg);
+		Swal.fire(msg.alertMsg)
 	}
 }
 
 /* 复制文本内容 */
 async function copy(targetText: string): Promise<void> {
 	try {
-		await navigator.clipboard.writeText(targetText);
-		mySweetAlert({alertMsg: {icon: 'success', title: '复制成功'}});
+		await navigator.clipboard.writeText(targetText)
+		mySweetAlert({alertMsg: {icon: 'success', title: '复制成功'}})
 	} catch (err) {
-		console.error('Failed to copy: ', err);
-		console.error("targetText", targetText);
-		mySweetAlert({alertMsg: {text: "复制出错", icon: 'warning'}});
+		console.error('Failed to copy: ', err)
+		console.error("targetText", targetText)
+		mySweetAlert({alertMsg: {text: "复制出错", icon: 'warning'}})
 	}
 }
 
@@ -75,24 +75,24 @@ async function copy(targetText: string): Promise<void> {
  */
 // ========== https://stackoverflow.com/a/19127555 ==========
 function loadCSS(file: string, elementId?: string | undefined) {
-	const filePath = chrome.runtime.getURL(file);
-	const link = document.createElement("link");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	link.href = filePath;
-	const extId = filePath.match(/(?<=\/\/)([^/]*)/)![0]!;
-	link.classList.add(extId);
+	const filePath = chrome.runtime.getURL(file)
+	const link = document.createElement("link")
+	link.type = "text/css"
+	link.rel = "stylesheet"
+	link.href = filePath
+	const extId = filePath.match(/(?<=\/\/)([^/]*)/)![0]!
+	link.classList.add(extId)
 	// 如果 id 存在，直接移除原元素
 	if(elementId) unloadCSS(elementId)
 	// 如果传入了 elementId，则将其设置为元素 id
-	if (elementId) link.id = elementId;
-	document.getElementsByTagName("head")[0].appendChild(link);
-	return link;
+	if (elementId) link.id = elementId
+	document.getElementsByTagName("head")[0].appendChild(link)
+	return link
 }
 
 function unloadCSS(elementId: string) {
 	// 如果 id 存在，直接移除原元素
-	if (elementId && document.getElementById(elementId)) $('#' + elementId).remove();
+	if (elementId && document.getElementById(elementId)) $('#' + elementId).remove()
 }
 
 export {
@@ -104,4 +104,4 @@ export {
 	mySweetAlert,
 	simulateClick,
 	sleep,
-};
+}

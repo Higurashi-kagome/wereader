@@ -1,7 +1,7 @@
-import { Archive } from './Archive';
-import { Book } from './Book';
-import { BookProgress } from './BookProgress';
-import { Mp } from './Mp';
+import { Archive } from './Archive'
+import { Book } from './Book'
+import { BookProgress } from './BookProgress'
+import { Mp } from './Mp'
 
 export interface ShelfJson {
 	synckey: number;

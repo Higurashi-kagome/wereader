@@ -1,5 +1,5 @@
-import $ from "jquery";
-import { getRegexpSet } from "./options-utils";
+import $ from "jquery"
+import { getRegexpSet } from "./options-utils"
 
 type regexpSetType = {
 	key?: string;
@@ -11,8 +11,8 @@ type regexpSetType = {
 }
 function initUnload() {
 	// 处理直接关闭设置页时 onchange 事件不触发的情况
-	$(function () {
-		window.onbeforeunload = function(){
+	$(function() {
+		window.onbeforeunload = function() {
 			const activeElement = document.activeElement
 			if(activeElement && (activeElement.nodeName == "INPUT" || activeElement.nodeName == "TEXTAREA")){
 				const regexpSet: regexpSetType = getRegexpSet()
@@ -24,4 +24,4 @@ function initUnload() {
 	})
 }
 
-export {initUnload, regexpSetType};
+export {initUnload, regexpSetType}

@@ -1,5 +1,5 @@
-import { Updated } from './Updated';
-import { ThoughtsInAChap } from './ThoughtsInAChap';
+import { Updated } from './Updated'
+import { ThoughtsInAChap } from './ThoughtsInAChap'
 
 // 获取标注数据
 export interface ChapAndMarks {

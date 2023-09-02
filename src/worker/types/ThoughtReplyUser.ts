@@ -1,4 +1,4 @@
-import { MedalInfo } from './ThoughtJson';
+import { MedalInfo } from './ThoughtJson'
 
 export interface ThoughtReplyUser {
 	userVid: number;

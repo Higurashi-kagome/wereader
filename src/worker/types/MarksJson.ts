@@ -1,5 +1,5 @@
-import { Book } from './Book';
-import { Updated } from './Updated';
+import { Book } from './Book'
+import { Updated } from './Updated'
 
 export interface MarksJson {
   synckey: number;

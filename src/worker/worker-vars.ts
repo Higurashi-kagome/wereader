@@ -1,6 +1,6 @@
-import { IMG_TAG } from '../common/constants';
-import { getLocalStorage } from '../common/utils';
-import { ConfigType } from './types/ConfigType';
+import { IMG_TAG } from '../common/constants'
+import { getLocalStorage } from '../common/utils'
+import { ConfigType } from './types/ConfigType'
 
 export {
 	BackupKey,
@@ -9,11 +9,11 @@ export {
 	DefaultBackupName,
 	DefaultRegexPattern,
 	StorageErrorMsg,
-};
-const DefaultBackupName = "默认设置";
-const StorageErrorMsg = "存储出错";
-const BackupKey = "backup";
-const DefaultRegexPattern = {replacePattern: '', checked: false};
+}
+const DefaultBackupName = "默认设置"
+const StorageErrorMsg = "存储出错"
+const BackupKey = "backup"
+const DefaultRegexPattern = {replacePattern: '', checked: false}
 
 // "想法所对应文本被标注时保留"选项
 export enum ThoughtTextOptions{
@@ -32,47 +32,47 @@ export enum SelectActionOptions{
 }
 
 const defaultConfig: ConfigType = {
-    s1Pre: "",
-    s1Suf: "",
-    s2Pre: "**",
-    s2Suf: "**",
-    s3Pre: "",
-    s3Suf: "",
-    imgTag: IMG_TAG,
+	s1Pre: "",
+	s1Suf: "",
+	s2Pre: "**",
+	s2Suf: "**",
+	s3Pre: "",
+	s3Suf: "",
+	imgTag: IMG_TAG,
 	scale: '0.97',
-    lev1Pre: "## ",
-    lev1Suf: "",
-    lev2Pre: "### ",
-    lev2Suf: "",
-    lev3Pre: "#### ",
-    lev3Suf: "",
-    thouPre: "==",
-    thouSuf: "==",
+	lev1Pre: "## ",
+	lev1Suf: "",
+	lev2Pre: "### ",
+	lev2Suf: "",
+	lev3Pre: "#### ",
+	lev3Suf: "",
+	thouPre: "==",
+	thouSuf: "==",
 	metaTemplate: `__metaTemplate__`,
-    thouMarkPre: "> ",
-    thouMarkSuf: "",
-    codePre: "```",
-    codeSuf: "```",
-    displayN: false,
-    mpShrink: false,
-    mpContent: false,
-    mpAutoLoad: true,
-    allTitles: false,
-    addThoughts: true,
+	thouMarkPre: "> ",
+	thouMarkSuf: "",
+	codePre: "```",
+	codeSuf: "```",
+	displayN: false,
+	mpShrink: false,
+	mpContent: false,
+	mpAutoLoad: true,
+	allTitles: false,
+	addThoughts: true,
 	thoughtFirst: false,
-    enableDevelop: false,
+	enableDevelop: false,
 	distinctThouMarks: true,
-    enableStatistics: false,
-    enableOption: true,
+	enableStatistics: false,
+	enableOption: true,
 	enableCopyImgs: true,
-    enableFancybox: true,
+	enableFancybox: true,
 	enableThoughtEsc: true,
-    backupName: DefaultBackupName,
-    selectAction: SelectActionOptions.None,
+	backupName: DefaultBackupName,
+	selectAction: SelectActionOptions.None,
 	thoughtTextOptions: ThoughtTextOptions.JustThought,
-    //如果不设置默认值，则在设置页初始化时需要考虑到 
-    re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
-    flag: 0
+	//如果不设置默认值，则在设置页初始化时需要考虑到 
+	re: {re1:DefaultRegexPattern,re2:DefaultRegexPattern,re3:DefaultRegexPattern,re4:DefaultRegexPattern,re5:DefaultRegexPattern},
+	flag: 0
 }
 /**
  * 获取当前读书页的书本 id

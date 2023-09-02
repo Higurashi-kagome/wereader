@@ -1,4 +1,4 @@
-import { reConfigCollectionType } from '../../options/options-utils';
+import { reConfigCollectionType } from '../../options/options-utils'
 
 //用于检查格式并保存当前配置
 export interface ConfigType {

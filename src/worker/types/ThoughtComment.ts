@@ -1,5 +1,5 @@
-import { Author } from './Author';
-import { ThoughtReplyUser } from './ThoughtReplyUser';
+import { Author } from './Author'
+import { ThoughtReplyUser } from './ThoughtReplyUser'
 
 export interface ThoughtComment {
 	content: string;

@@ -64,4 +64,4 @@ interface MpInfo {
   inner: number;
 }
 
-export {mpTypeJson};
+export {mpTypeJson}

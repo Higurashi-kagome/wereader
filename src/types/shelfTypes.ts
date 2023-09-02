@@ -96,4 +96,4 @@ interface BookProgress {
 	synckey?: number;
 }
 
-export {ShelfDataType as ShelfDataTypeJson, ShelfErrorDataType, Book, Archive};
+export {ShelfDataType as ShelfDataTypeJson, ShelfErrorDataType, Book, Archive}

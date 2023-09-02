@@ -1,5 +1,5 @@
-import { Sender } from "../common/sender";
-import { commandCopy } from "../common/utils";
+import { Sender } from "../common/sender"
+import { commandCopy } from "../common/utils"
 
 /**
  * 复制文本
@@ -14,7 +14,7 @@ export async function copy(text: string) {
  * @param text 待复制内容
  */
 export async function workerCopy(text: string) {
-	await new Sender('copy', text).sendToWorker().catch(()=>chrome.runtime.lastError)
+	await new Sender('copy', text).sendToWorker().catch(() => chrome.runtime.lastError)
 }
 
 /**

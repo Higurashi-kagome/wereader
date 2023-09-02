@@ -18,6 +18,20 @@ module.exports = {
 	rules: {
 		// 添加你的规则
 		"@typescript-eslint/ban-types": "warn",
-		"no-case-declarations": "off"
+		"no-case-declarations": "off",
+		'indent': ['error', 'tab'],
+		"no-mixed-spaces-and-tabs": "error",
+		'space-before-function-paren': ['error', {
+			"anonymous": "never",
+			"named": "never",
+			"asyncArrow": "always"
+		}],
+		"space-before-blocks": ['error', {
+				'functions': 'always',
+				"classes": "always"
+			}
+		],
+		'arrow-spacing': ['error', { 'before': true, 'after': true }],
+		'semi': ['error', 'never']
 	}
 };

@@ -37,4 +37,4 @@ interface TimeMeta {
   totalCount: number;
 }
 
-export {readDetailJson, readDetailData};
+export {readDetailJson, readDetailData}

@@ -1,9 +1,9 @@
-import { getSyncStorage } from '../../common/utils';
+import { getSyncStorage } from '../../common/utils'
 import {
 	ShelfDataTypeJson,
 	ShelfErrorDataType,
-} from '../../types/shelfTypes';
-import { ConfigType } from './ConfigType';
+} from '../../types/shelfTypes'
+import { ConfigType } from './ConfigType'
 
 export interface ShelfForPopupType{
 	shelfData: ShelfDataTypeJson | ShelfErrorDataType
@@ -11,12 +11,12 @@ export interface ShelfForPopupType{
 
 export class PopupApi {
 	async Config(): Promise<ConfigType> {
-		return await getSyncStorage(null) as ConfigType;
+		return await getSyncStorage(null) as ConfigType
 	}
 	async setBookId(): Promise<string> {
 		return await chrome.runtime.sendMessage({target: 'worker', type: 'set-book-id'})
 	}
-	notify(msg: string){
+	notify(msg: string) {
 		chrome.runtime.sendMessage({target: 'worker', type: 'notify', data: msg})
 	}
 	async getUserVid(): Promise<string> {
@@ -37,13 +37,13 @@ export class PopupApi {
 	copyThought(isAll: boolean) {
 		chrome.runtime.sendMessage({target: 'worker', type: 'copy-thought', data: isAll})
 	}
-	sendMessageToContentScript(data: object){
+	sendMessageToContentScript(data: object) {
 		chrome.runtime.sendMessage({target: 'worker', type: 'send-message-to-content-script', data})
 	}
-	async shelfForPopup(): Promise<ShelfForPopupType>{
+	async shelfForPopup(): Promise<ShelfForPopupType> {
 		return await chrome.runtime.sendMessage({target: 'worker', type: 'shelf-for-popup'})
 	}
-	async getShelfData(): Promise<ShelfDataTypeJson | ShelfErrorDataType>{
+	async getShelfData(): Promise<ShelfDataTypeJson | ShelfErrorDataType> {
 		return await chrome.runtime.sendMessage({target: 'worker', type: 'get-shelf-data'})
 	}
 	async createTab(data: object) {

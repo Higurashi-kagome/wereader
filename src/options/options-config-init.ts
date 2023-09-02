@@ -1,10 +1,10 @@
-import $ from 'jquery';
+import $ from 'jquery'
 
-import { updateStorageArea } from './options-utils';
+import { updateStorageArea } from './options-utils'
 import {
 	CheckBoxIds,
 	InputIds,
-} from './options-var';
+} from './options-var'
 
 /********************* 当前设置初始化 *********************/
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,7 +18,7 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 		const element = document.getElementById(id)! as HTMLInputElement
 		const isInput = InputIds.indexOf(id) > -1
 		isInput ? element.value = setting[id] : element.checked = setting[id]
-		$(element).on('change', function(){
+		$(element).on('change', function() {
 			const key = this.id
 			const value = isInput ? this.value : this.checked
 			updateStorageArea({key: key, value: value})
@@ -27,10 +27,10 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 	/* "自动标注"选项 */
 	const targetOption = document.getElementById(setting.selectAction) as HTMLOptionElement
 	if(setting.selectAction && targetOption){
-		targetOption.selected =true;
+		targetOption.selected =true
 	}
-	const selectActionOptions = $("#selectActionOptions") as JQuery<HTMLSelectElement>;
-	selectActionOptions.on('change', function(){
+	const selectActionOptions = $("#selectActionOptions") as JQuery<HTMLSelectElement>
+	selectActionOptions.on('change', function() {
 		const options = this.options
 		for (let i=0; i<options.length; i++){
 			if(options[i].selected == true){
@@ -41,17 +41,17 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 	/* "想法所对应文本被标注时保留"选项 */
 	const targetThouOption = document.getElementById(setting.thoughtTextOptions) as HTMLOptionElement
 	if(setting.thoughtTextOptions && targetThouOption){
-		targetThouOption.selected =true;
+		targetThouOption.selected =true
 	}
-	const thoughtTextOptions = $("#thoughtTextOptions") as JQuery<HTMLSelectElement>;
-	thoughtTextOptions.on('change', function(){
+	const thoughtTextOptions = $("#thoughtTextOptions") as JQuery<HTMLSelectElement>
+	thoughtTextOptions.on('change', function() {
 		const options = this.options
 		for (let i=0; i<options.length; i++){
 			if(options[i].selected == true){
-				updateStorageArea({key:"thoughtTextOptions", value: options[i].id});
+				updateStorageArea({key:"thoughtTextOptions", value: options[i].id})
 			}
 		}
 	})
 }
 
-export { initCurrentConfig };
+export { initCurrentConfig }

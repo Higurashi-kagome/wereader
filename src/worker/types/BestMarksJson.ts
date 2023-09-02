@@ -1,5 +1,5 @@
-import { Chapter } from './Chapter';
-import { User } from './User';
+import { Chapter } from './Chapter'
+import { User } from './User'
 
 /**
  * 为方便处理而生成的数据

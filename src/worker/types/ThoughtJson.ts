@@ -1,6 +1,6 @@
-import { Author } from './Author';
-import { ThoughtComment } from './ThoughtComment';
-import { ThoughtReview } from './ThoughtReview';
+import { Author } from './Author'
+import { ThoughtComment } from './ThoughtComment'
+import { ThoughtReview } from './ThoughtReview'
 
 /**
  * 从服务器获取到的 json 数据

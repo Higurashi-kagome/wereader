@@ -1,5 +1,5 @@
-import * as nunjucks from 'nunjucks';
-import { Sender } from './sender';
+import * as nunjucks from 'nunjucks'
+import { Sender } from './sender'
 export class Renderer {
 	constructor() {
 		nunjucks.configure({autoescape: true})
@@ -7,10 +7,10 @@ export class Renderer {
 
 	validate(templateStr: string): boolean {
 		try {
-			nunjucks.renderString(templateStr, {});
-			return true;
+			nunjucks.renderString(templateStr, {})
+			return true
 		} catch (error) {
-			return false;
+			return false
 		}
 	}
 
@@ -19,7 +19,7 @@ export class Renderer {
 			const config = await new Sender('get-config').sendToWorker()
 			templateStr = config.metaTemplate
 		}
-		const content = nunjucks.renderString(templateStr, {metaData: entry});
-		return content;
+		const content = nunjucks.renderString(templateStr, {metaData: entry})
+		return content
 	}
 }

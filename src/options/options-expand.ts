@@ -1,10 +1,10 @@
-import $ from "jquery";
+import $ from "jquery"
 /* 全部展开 */
 function initExpandBtn() {
 	const expandAllButton = $("#expandAllButton")
-	expandAllButton.on('click', function(){
+	expandAllButton.on('click', function() {
 		if (expandAllButton.attr('class')) {
-			expandAllButton.removeClass();
+			expandAllButton.removeClass()
 		} else {
 			expandAllButton.addClass("opened")
 		}
@@ -14,4 +14,4 @@ function initExpandBtn() {
 	})
 }
 
-export {initExpandBtn};
+export {initExpandBtn}

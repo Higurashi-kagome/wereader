@@ -1,4 +1,4 @@
-import { CommentReview } from './CommentReview';
+import { CommentReview } from './CommentReview'
 
 export interface CommentsJson {
 	synckey: number;

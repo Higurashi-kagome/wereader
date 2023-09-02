@@ -11,4 +11,4 @@ export function createOffset(url: string = 'offscreen.html') {
 	})
 }
 
-createOffset().catch(()=>chrome.runtime.lastError)
+createOffset().catch(() => chrome.runtime.lastError)

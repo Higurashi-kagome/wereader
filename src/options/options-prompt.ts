@@ -1,8 +1,8 @@
-import $ from "jquery";
+import $ from "jquery"
 /* prompt 弹窗初始化 */
 function initPrompt() {
 	// prompt 取消
-	$("#promptCancelButton")[0].onclick = function(){
+	$("#promptCancelButton")[0].onclick = function() {
 		$("#promptInput").val('').attr('placeholder', '')
 		$("#promptContainer").css('display', 'none')
 	}
@@ -10,7 +10,7 @@ function initPrompt() {
 	$("#promptInput")[0].onkeyup = event => {
 		// Enter 确定
 		if (event.code == "Enter") {
-			console.log('#promptInput Enter keyup');
+			console.log('#promptInput Enter keyup')
 			$("#promptConfirmButton").trigger('click')
 			return false
 		}
@@ -18,7 +18,7 @@ function initPrompt() {
 		if (event.code == "Escape") {
 			$("#promptCancelButton").trigger('click')
 		}
-	};
+	}
 }
 
-export {initPrompt};
+export {initPrompt}

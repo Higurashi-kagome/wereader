@@ -1,4 +1,4 @@
-import { readDetailJson } from '../../types/readDetailTypes';
+import { readDetailJson } from '../../types/readDetailTypes'
 
 export class StatApi {
 	async getReadDetail(type=1, count=3, monthTimestamp?: number): Promise<readDetailJson> {
