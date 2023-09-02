@@ -10,7 +10,7 @@ import {
 } from './bg-utils';
 import {
 	bookIds,
-	chapUids,
+	chapIdx,
 	Config,
 	mpTempData,
 } from './bg-vars';
@@ -145,7 +145,7 @@ export function initRegister() {
 		const decoder = new TextDecoder("utf-8");
 		const requestBody = decoder.decode(raw?.bytes);
 		const jsonData = requestBody ? JSON.parse(requestBody) : {};
-		jsonData.ci && chapUids.set(details.tabId, jsonData.ci);
+		jsonData.ci && chapIdx.set(details.tabId, jsonData.ci);
 	}, {urls: ["*://weread.qq.com/web/book/read"]}, ['requestBody']);
 
 	// 监听安装事件

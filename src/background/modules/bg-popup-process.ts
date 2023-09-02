@@ -17,7 +17,7 @@ import {
 import {
     Config,
     ThoughtTextOptions,
-	chapUids,
+	chapIdx,
 } from './bg-vars';
 import { Wereader } from './bg-wereader-api';
 
@@ -257,7 +257,7 @@ export async function getChapters(){
 			else chapInServer.level = 1;
 		}
 		if(curTab.id){
-			chapInServer.isCurrent = chapInServer.chapterUid == chapUids.get(curTab.id)
+			chapInServer.isCurrent = chapInServer.chapterIdx == chapIdx.get(curTab.id)
 		}else{
 			console.warn('未找到当前标签页，无法获取当前章节 Uid');
 			// 章节名称重复的情况下，会导致错误导出前一个同名章节内的内容：https://github.com/Higurashi-kagome/wereader/issues/103
