@@ -111,7 +111,7 @@ async function getJson(url: string){
 		const json = await resp.json();
 		return json;
 	} catch (error) {
-		sendAlertMsg({title: "获取失败:", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
+		sendAlertMsg({title: "获取失败：", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
 	}
 }
 
@@ -122,7 +122,7 @@ async function getText(url: string){
 		const text = await resp.text();
 		return text;
 	} catch (error) {
-		sendAlertMsg({title: "获取失败:", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
+		sendAlertMsg({title: "获取失败：", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'});
 	}
 }
 

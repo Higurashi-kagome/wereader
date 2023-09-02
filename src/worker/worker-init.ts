@@ -15,9 +15,8 @@ chrome.storage.sync.get(function (configInSync) {
 		unusedKeysInSync.push(key);
 	}
 	for(const key in defaultConfig){
-		//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
-		if(configInSync[key] === undefined
-			|| configInSync[key].constructor != defaultConfig[key as keyType]?.constructor){
+		//如果 Config 中的某个键在 syncSetting 中不存在，则使用 Config 初始化 syncSetting
+		if(configInSync[key] === undefined){
 			configInSync[key] = defaultConfig[key as keyType];
 		}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
 			defaultConfig[key as keyType] = configInSync[key] as never;

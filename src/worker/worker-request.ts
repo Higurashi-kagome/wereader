@@ -1,11 +1,11 @@
-import { getLocalStorage } from "../common/utils";
+import { getBookIds, getChapIdx } from "./worker-vars";
 
 // 监听读书页请求，由请求得到 bookId
 chrome.webRequest.onBeforeRequest.addListener(details => {
 	const {tabId, url} = details;
 	if(url.indexOf("bookmarklist?bookId=") < 0) return;
 	const bookId = url.replace(/(^.*bookId=|&type=1)/g,"");
-	getLocalStorage('bookIds').then(bookIds=>{
+	getBookIds().then(bookIds=>{
 		bookIds = bookIds || {}
 		bookIds[tabId] = bookId
 		chrome.storage.local.set({bookIds})
@@ -22,7 +22,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 	const requestBody = decoder.decode(raw?.bytes);
 	const jsonData = requestBody ? JSON.parse(requestBody) : {};
 	if(jsonData.ci){
-		getLocalStorage('chapIdx').then(chapIdx=>{
+		getChapIdx().then(chapIdx=>{
 			chapIdx = chapIdx || {}
 			chapIdx[details.tabId] = jsonData.ci
 			console.log('chapIdx', chapIdx);

@@ -28,5 +28,5 @@ export interface ChapInfoUpdated {
   files: string[];
   tar?: string;
   isCurrent?: boolean;
-  anchors: unknown;
+  anchors: undefined | {title: string, level: number}[];
 }

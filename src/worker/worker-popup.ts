@@ -161,7 +161,7 @@ export async function copyBestBookMarks() {
 			// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
 			const anchors = curChapAndBestMarks.anchors
 			if(anchors && anchors[0].title != title){
-				anchors.forEach((anchor: {title: string, level: number})=>{
+				anchors.forEach((anchor)=>{
 					tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
 				});
 			}

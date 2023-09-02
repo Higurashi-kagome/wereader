@@ -7,7 +7,8 @@ chrome.runtime.onMessage.addListener(function(msg: Message){
 	}
 	console.log('content onMessage: ', msg);
 	// 消息类型
-	const data = msg.data
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const data = msg.data as any
 	switch (msg.type) {
 		case 'copy':
 			copy(data)

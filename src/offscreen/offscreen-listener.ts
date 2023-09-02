@@ -35,7 +35,8 @@ function handleMessages(msg: Message) {
 	}
 	console.log('offscreen onMessage: ', msg);
 	// 消息数据
-	const data = msg.data
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const data = msg.data as any
 	// 消息类型
 	switch (msg.type) {
 		case 'copy':

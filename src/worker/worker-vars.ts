@@ -95,3 +95,10 @@ export async function getBookIds(): Promise<{[key: number]: string}> {
 export async function initBookIds() {
 	return await chrome.storage.local.set({bookIds: {}})
 }
+/**
+ * 获取已打开读书页及对应书本正在阅读的章节索引
+ * @returns tabId: chapterIdx 键值对
+ */
+export async function getChapIdx(): Promise<{[key: number]: string}> {
+	return await getLocalStorage('chapIdx') as {[key: number]: string}
+}
