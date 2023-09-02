@@ -58,12 +58,12 @@ function mySweetAlert(msg: alertMsgType) {
 async function copy(targetText: string): Promise<void> {
 	try {
 		await navigator.clipboard.writeText(targetText);
+		mySweetAlert({alertMsg: {icon: 'success', title: '复制成功'}});
 	} catch (err) {
-		console.log('Failed to copy: ', err);
-		console.log("targetText", targetText);
+		console.error('Failed to copy: ', err);
+		console.error("targetText", targetText);
 		mySweetAlert({alertMsg: {text: "复制出错", icon: 'warning'}});
 	}
-	mySweetAlert({alertMsg: {icon: 'success', title: '复制成功'}});
 }
 
 /**
@@ -74,7 +74,7 @@ async function copy(targetText: string): Promise<void> {
  */
 // ========== https://stackoverflow.com/a/19127555 ==========
 function loadCSS(file: string, elementId?: string | undefined) {
-	const filePath = chrome.extension.getURL(file);
+	const filePath = chrome.runtime.getURL(file);
 	let link = document.createElement("link");
 	link.type = "text/css";
 	link.rel = "stylesheet";

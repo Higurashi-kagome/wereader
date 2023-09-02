@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { Config } from '../background/modules/bg-vars';
+import { Sender } from './sender';
 export class Renderer {
 	constructor() {
 		nunjucks.configure({autoescape: true})
@@ -14,7 +14,11 @@ export class Renderer {
 		}
 	}
 
-	render(entry: object, templateStr = Config.metaTemplate): string {
+	async render(entry: object, templateStr = ''): Promise<string> {
+		if (!templateStr) {
+			const config = await new Sender('get-config').sendToWorker()
+			templateStr = config.metaTemplate
+		}
 		const content = nunjucks.renderString(templateStr, {metaData: entry});
 		return content;
 	}

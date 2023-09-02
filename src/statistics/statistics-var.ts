@@ -1,4 +1,6 @@
-const bg: any = chrome.extension.getBackgroundPage()?.statisticsApi;
+import { StatApi } from "../worker/types/StatApi";
+
+const statApi = new StatApi();
 
 /**
  * @description: 将整数数组中的整数由秒转为小时
@@ -13,4 +15,4 @@ const bg: any = chrome.extension.getBackgroundPage()?.statisticsApi;
     return convertedTime;
 }
 
-export { bg, convertTime };
+export { statApi as bg, convertTime };

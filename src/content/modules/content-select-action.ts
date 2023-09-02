@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { SelectActionOptions } from '../../background/modules/bg-vars';
+import { SelectActionOptions } from '../../worker/worker-vars';
 import { hideToolbar, hideSelection } from './content-hide';
 
 function initSelectAction() {

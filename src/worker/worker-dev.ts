@@ -1,8 +1,9 @@
-import { getReadDetail, getShelfData } from "./bg-popup";
-import { getBookMarks, getBestBookMarks, getChapters } from "./bg-popup-process";
-import { copy } from "./bg-utils";
-import { Config } from "./bg-vars";
-import { Wereader } from "./bg-wereader-api";
+import { getReadDetail, getShelfData } from "./worker-popup";
+import { getBookMarks, getBestBookMarks, getChapters } from "./worker-popup-process";
+import { copy } from "./worker-utils";
+import { getBookId } from "./worker-vars";
+import { Wereader } from "./types/Wereader";
+import { getSyncStorage } from "../common/utils";
 
 function logAndCopy(data: object, msg = '') {
 	console.log(msg, data);
@@ -10,9 +11,9 @@ function logAndCopy(data: object, msg = '') {
 }
 
 /* 用于测试 */
-export function getTest(){
+export async function getTest(){
 
-	let wereader = new Wereader(window.bookId);
+	let wereader = new Wereader(await getBookId());
 
 	let logBookmarksJson = async ()=>{
 		const data = await wereader.getBookmarks();
@@ -34,8 +35,8 @@ export function getTest(){
 		
 	}
 
-	let logConfig = ()=>{
-		logAndCopy(Config, 'Config');
+	let logConfig = async ()=>{
+		logAndCopy(await getSyncStorage(), 'Config');
 	}
 
 	let logGetBookMarks = async ()=>{

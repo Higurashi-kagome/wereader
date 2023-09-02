@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { tabClickEvent } from './popup-tabs';
 import {
-	bg,
+	popupApi,
 	dropdownClickEvent,
 	readPageRegexp,
 } from './popup-utils';
@@ -11,13 +11,13 @@ import {
 async function initNoteTab(url: string) {
 	// 在读书页时才显示笔记
 	if(!readPageRegexp.test(url)) return;
-	let bookId = await bg.setBookId();
+	let bookId = await popupApi.setBookId();
 	if(!bookId) return window.close();
-	const userVid = await bg.getUserVid();
+	const userVid = await popupApi.getUserVid();
 	console.log('bookId', bookId);
 	console.log('userVid', userVid);
 	if (!userVid) {
-		bg.alert('信息获取失败，请确保正常登陆后刷新重试');
+		popupApi.notify('信息获取失败，请确保正常登陆后刷新重试');
 		return window.close();
 	}
 	$(`<button class="tabLinks" id="noteBtn">笔记</button>`).prependTo($('.tab')).on('click', tabClickEvent);
@@ -30,37 +30,37 @@ async function initNoteTab(url: string) {
 		let targetEl = event.target;
 		switch(targetEl.id){
 			case "getTextComment":
-				bg.copyComment(userVid, false)
+				popupApi.copyComment(userVid, false)
 				break;
 			case "getHtmlComment":
-				bg.copyComment(userVid, true)
+				popupApi.copyComment(userVid, true)
 				break;
 			case "getMarksInCurChap":
-				bg.copyBookMarks(false)
+				popupApi.copyBookMarks(false)
 				break;
 			case "getAllMarks":
-				bg.copyBookMarks(true)
+				popupApi.copyBookMarks(true)
 				break;
 			case "getContents":
-				bg.copyContents()
+				popupApi.copyContents()
 				break;
 			case "getBestBookMarks":
-				bg.copyBestBookMarks()
+				popupApi.copyBestBookMarks()
 				break;
 			case "getMyThoughtsInCurChap":
-				bg.copyThought(false)
+				popupApi.copyThought(false)
 				break;
 			case "getAllMyThoughts":
-				bg.copyThought(true)
+				popupApi.copyThought(true)
 				break;
 			case "removeMarksInCurChap":
-				bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: false}});
+				popupApi.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: false}});
 				break;
 			case "removeAllMarks":
-				bg.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: true}});
+				popupApi.sendMessageToContentScript({message:{deleteBookmarks:true, isAll: true}});
 				break;
 			case "copyBookInfo":
-				bg.copyBookInfo();
+				popupApi.copyBookInfo();
 				break;
 			default:
 				break;

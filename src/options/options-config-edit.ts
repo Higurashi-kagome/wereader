@@ -11,7 +11,7 @@ function renameProfile(){
 	let input = $("#promptInput")
 	//确认
 	$("#promptConfirmButton")[0].onclick = function(){
-		//修改local数据
+		//修改 local 数据
 		chrome.storage.local.get(function(settings){
 			console.log('#promptInput val: ' + input.val());
 			if(input.val() == ""){

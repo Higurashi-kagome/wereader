@@ -144,7 +144,7 @@ const helpContent: {[key: string]: any} = {
         help: `<p>（用直线/马克笔/波浪线）标注了某段内容，同时又在这段文本上发布了想法，则在获取随带想法的标注时该段内容会出现两次。在这里可以设置如何保留这段内容。</p>`
     },
     enableDevelop: {
-        title: '开发者选项',
+        title: '开发者选项（停用）',
         help: `<p>选中该选项之后，将会在 popup 中添加名为“开发者选项”的按钮，点击该按钮可调用用于测试的某些函数。</p>`
     },
     distinctThouMarks: {

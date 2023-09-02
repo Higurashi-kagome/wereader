@@ -1,73 +1,53 @@
 /* 用于处理中间过程 */
-import { responseType } from '../../content/modules/content-getChapters';
-import { Code } from '../../content/types/Code';
-import { Footnote } from '../../content/types/Footnote';
-import { Img } from '../../content/types/Img';
-import { reConfigCollectionType } from '../../options/options-utils';
-import { Item } from '../types/BestMarksJson';
-import { ChapInfoUpdated } from '../types/ChapInfoJson';
-import { Updated } from '../types/Updated';
+import { responseType } from '../content/modules/content-getChapters';
+import { Code } from '../content/types/Code';
+import { Footnote } from '../content/types/Footnote';
+import { Img } from '../content/types/Img';
+import { reConfigCollectionType } from '../options/options-utils';
+import { Item } from './types/BestMarksJson';
+import { ChapInfoUpdated } from './types/ChapInfoJson';
+import { Updated } from './types/Updated';
+import { ChapAndMarks } from './types/ChapAndMarks';
 import {
 	getCurTab,
     getIndexes,
     sendAlertMsg,
     sendMessageToContentScript,
-    sortByKey,
-} from './bg-utils';
+} from './worker-utils';
 import {
-    Config,
+    ConfigType,
     ThoughtTextOptions,
-	chapUids,
-} from './bg-vars';
-import { Wereader } from './bg-wereader-api';
-
-const escapeRegExp = require('lodash.escaperegexp');
+	getBookId,
+} from './worker-vars';
+import { Wereader } from './types/Wereader';
+import { ThoughtsInAChap } from './types/ThoughtsInAChap';
+import { getLocalStorage, getSyncStorage, sortByKey } from '../common/utils';
+import { notify } from './worker-notification';
 
 export { getBookMarks, getTitleAddedPreAndSuf };
 
 // 给标题添加前后缀
-function getTitleAddedPreAndSuf(title: string, level: number) {
+function getTitleAddedPreAndSuf(title: string, level: number, config: {[key: string] : any}) {
 	let newTitle = '';
 	switch (level) {
 		case 1:
 		case 2:
 		case 3:
-			newTitle = Config[`lev${level}Pre`] + title + Config[`lev${level}Suf`];
+			newTitle = config[`lev${level}Pre`] + title + config[`lev${level}Suf`];
 			break;
 		case 4: //添加 4 5 6 级及 default 是为了处理特别的书（如导入的书籍）
 		case 5:
 		case 6:
 		default:
-			const {lev3Pre, lev3Suf} = Config;
+			const {lev3Pre, lev3Suf} = config;
 			newTitle = `${lev3Pre}${title}${lev3Suf}`;
 			break;
 	}
 	return newTitle;
 }
 
-// 获取标注数据
-interface ChapAndMarks{
-	isCurrent: unknown;
-	marks: Array<Updated | ThoughtsInAChap>;
-	title: string;
-	level: number;
-	anchors?: {
-		title: string;
-		level: number;
-		[key: string]: any
-	}[];
-	bookId?: string;
-	bookVersion?: number;
-	chapterUid?: number;
-	markText?: string;
-	range?: string;
-	style?: number;
-	type?: number;
-	createTime?: number;
-	bookmarkId?: string;
-}
 async function getBookMarks(isAddThou?: boolean) {
-	const wereader = new Wereader(window.bookId);
+	const wereader = new Wereader(await getBookId());
 	const {updated: marks} = await wereader.getBookmarks();
 	if(!marks.length) return;
 	/* 请求得到 chapters 方便导出不含标注的章节的标题，
@@ -89,13 +69,15 @@ async function getBookMarks(isAddThou?: boolean) {
 		return chapAndMarks;
 	});
 	// addThoughts 参数用于显式指明不包含想法
-	if(isAddThou !== false && Config.addThoughts) chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
+	if(isAddThou !== false && await getSyncStorage('addThoughts')) {
+		chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters);
+	}
 	return chaptersAndMarks;
 }
 
 // 给某一条标注添加图片等内容
 // TODO：换掉 any 类型
-function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
+function addMarkedData(mark: any, markedData: any, footnoteContent: string, config: ConfigType) {
 	let abstract = mark.abstract;
 	let markText = abstract ? abstract : mark.markText;
 	for (const markedDataIdx of mark.markedDataIdxes) { // 遍历索引，逐个替换
@@ -109,9 +91,9 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 		/* 生成替换字符串 */
 		if(imgSrc) { // 图片
 			let insert1 = '', insert2 = ''; // 非行内图片单独占行（即使它与文字一起标注）
-			if(!isInlineImg && markText.indexOf(Config.imgTag) > 0) // 不为行内图片且 Config.imgTag 前有内容
+			if(!isInlineImg && markText.indexOf(config.imgTag) > 0) // 不为行内图片且 imgTag 前有内容
 				insert1 = '\n\n'
-			if(!isInlineImg && markText.indexOf(Config.imgTag) != (markText.length - Config.imgTag.length)) // 不为行内图片且 Config.imgTag 后有内容
+			if(!isInlineImg && markText.indexOf(config.imgTag) != (markText.length - config.imgTag.length)) // 不为行内图片且 imgTag 后有内容
 				insert2 = '\n\n'
 			replacement = `${insert1}![${alt}](${imgSrc})${insert2}`
 		}else if (footnote) { //注释
@@ -121,14 +103,14 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 			footnoteContent += `<p id="${footnoteId}">${footnoteNum}. ${footnote}<a href="#${footnoteId}-ref">&#8617;</a></p>\n`;
 		}else if (code) { //代码块
 			let insert1 = '', insert2 = ''
-			if(markText.indexOf(Config.imgTag) > 0) //Config.imgTag 前有内容
+			if(markText.indexOf(config.imgTag) > 0) //imgTag 前有内容
 				insert1 = '\n\n'
-			if(markText.indexOf(Config.imgTag) != (markText.length - Config.imgTag.length)) //Config.imgTag 后有内容
+			if(markText.indexOf(config.imgTag) != (markText.length - config.imgTag.length)) //imgTag 后有内容
 				insert2 = '\n\n'
-			replacement = `${insert1}${Config.codePre}\n${code}\n${Config.codeSuf}${insert2}`
+			replacement = `${insert1}${config.codePre}\n${code}\n${config.codeSuf}${insert2}`
 		}
 		if (replacement) { // 替换
-			markText = markText.replace(Config.imgTag, replacement);
+			markText = markText.replace(config.imgTag, replacement);
 			if (abstract) mark.abstract = markText; // 新字符串赋值回 mark
 			else mark.markText = markText;
 		} else console.log(mark, markedData);
@@ -137,29 +119,29 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string) {
 	return [mark, footnoteContent];
 }
 
-// 在 marks 中添加替换数据索引（每一个 Config.imgTag 用哪个位置的 markedData 替换）
-export function addRangeIndexST(marks: any, markedDataLength: number) {
-    // Config.imgTag 的 range 作为键，该 Config.imgTag 所对应的数据在 markedData 中的索引作为值
+// 在 marks 中添加替换数据索引（每一个 imgTag 用哪个位置的 markedData 替换）
+export function addRangeIndexST(marks: any, markedDataLength: number, config: ConfigType) {
+    // imgTag 的 range 作为键，该 imgTag 所对应的数据在 markedData 中的索引作为值
 	let used: {[key: string]: number} = {};
     // markedData 索引
 	let markedDataIdx = 0;
-    // 不重复的 Config.imgTag 的个数，正常情况下，应该与 markedData 的长度相等
+    // 不重复的 imgTag 的个数，正常情况下，应该与 markedData 的长度相等
     let targetCnt = 0;
 	for (let i = 0; i < marks.length; i++) {
 		let {abstract, range: markRange} = marks[i];
 		let markText = abstract ? abstract : marks[i].markText;
-        // 获取当前标注中的 Config.imgTag 位置
-		let indexes = getIndexes(markText, Config.imgTag);
+        // 获取当前标注中的 imgTag 位置
+		let indexes = getIndexes(markText, config.imgTag);
 		let markedDataIdxes = [];
-        // 遍历当前标注中的 Config.imgTag 位置
+        // 遍历当前标注中的 imgTag 位置
 		for (const idx of indexes) {
-            // 计算某个 Config.imgTag 在本章标注中的唯一位置
+            // 计算某个 imgTag 在本章标注中的唯一位置
 			let imgRange = markRange + idx;
-			if (used[imgRange] === undefined) { // 该 Config.imgTag 没有记录过
+			if (used[imgRange] === undefined) { // 该 imgTag 没有记录过
                 targetCnt++;
-				used[imgRange] = markedDataIdx; // 记录某个位置的 Config.imgTag 所对应的替换数据
+				used[imgRange] = markedDataIdx; // 记录某个位置的 imgTag 所对应的替换数据
 				markedDataIdxes.push(markedDataIdx++);
-			} else { // Config.imgTag 被记录过（同一个 Config.imgTag 多次出现）
+			} else { // imgTag 被记录过（同一个 imgTag 多次出现）
 				markedDataIdxes.push(used[imgRange]);
 			}
 		}
@@ -171,7 +153,7 @@ export function addRangeIndexST(marks: any, markedDataLength: number) {
 }
 
 // 处理章内标注
-export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: Array<Img|Footnote|Code> = []) {
+export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: Array<Img|Footnote|Code> = [], config: ConfigType) {
 	function isThought(mark: Updated | ThoughtsInAChap): mark is ThoughtsInAChap {
 		return ('abstract' in mark && 'content' in mark);
 	}
@@ -184,29 +166,31 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 	let res: string[] = [], footnoteContent = "";
 	for (let j = 0; j < marks.length; j++) { // 遍历章内标注
 		let mark = marks[j];
-		if (markedData.length) [marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent);
+		if (markedData.length) {
+			[marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent, config);
+		}
 		if(isThought(mark)){ // 如果为想法
 			// 想法
-			let thouContent = `${Config.thouPre}${mark.content}${Config.thouSuf}\n\n`;
+			let thouContent = `${config.thouPre}${mark.content}${config.thouSuf}\n\n`;
 			// 想法所标注的内容
 			const abstract = mark.abstract;
-			let thouAbstract = `${Config.thouMarkPre}${abstract}${Config.thouMarkSuf}\n\n`;
+			let thouAbstract = `${config.thouMarkPre}${abstract}${config.thouMarkSuf}\n\n`;
 			// 想法所对应文本与上一条标注相同时
 			if (abstract === prevMarkText) {
 				if (prevMarkType == '0') {
 					// 如果只保留标注文本，则 thouAbstract 设为空
-					if (Config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
+					if (config.thoughtTextOptions === ThoughtTextOptions.JustMark) thouAbstract = '';
 					// 如果只保留想法所对应的文本，将上一次追加得到的标注文本删掉
-					else if (Config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
+					else if (config.thoughtTextOptions === ThoughtTextOptions.JustThought) {
 						res.pop();
 					}
 				} else {
 					// 多个想法对应相同的标注时，不重复记录标注内容
-					if(Config.distinctThouMarks) thouAbstract = '';
+					if(config.distinctThouMarks) thouAbstract = '';
 				}
 			}
 			// 是否将想法添加到对应标注之前
-			if (Config.thoughtFirst){
+			if (config.thoughtFirst){
 				res.push(thouContent + thouAbstract);
 			} else {
 				res.push(thouAbstract + thouContent);
@@ -217,8 +201,8 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 			// 则进行正则匹配
 			prevMarkText = mark.markText;
 			prevMarkType = '0'
-			tempRes = regexpReplace(prevMarkText);
-			tempRes = `${addMarkPreAndSuf(tempRes, mark.style)}\n\n`;
+			tempRes = regexpReplace(prevMarkText, config.re);
+			tempRes = `${addMarkPreAndSuf(tempRes, mark.style, config)}\n\n`;
 			res.push(tempRes);
 		}
 	}
@@ -229,12 +213,12 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 }
 
 export async function getChapters(){
-	const wereader = new Wereader(window.bookId);
+	const wereader = new Wereader(await getBookId());
 	const chapInfos = await wereader.getChapInfos();
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}}) as responseType;
 	const curTab = await getCurTab();
 	if(!response || !chapInfos) {
-		alert("获取目录出错。");
+		notify("获取目录出错。");
 		return;
 	}
 	const chapsInServer = chapInfos.data[0].updated;
@@ -242,6 +226,7 @@ export async function getChapters(){
 	// https://github.com/Higurashi-kagome/wereader/issues/76 start
 	checkIsInServer(chapsInServer, response, chapsFromDom);
 	// https://github.com/Higurashi-kagome/wereader/issues/76 end
+	const chapIdx = await getLocalStorage('chapIdx');
 	let checkedChaps = chapsInServer.map((chapInServer)=>{
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
 		if(chapsFromDom.length === chapsInServer.length &&
@@ -257,7 +242,7 @@ export async function getChapters(){
 			else chapInServer.level = 1;
 		}
 		if(curTab.id){
-			chapInServer.isCurrent = chapInServer.chapterUid == chapUids.get(curTab.id)
+			chapInServer.isCurrent = chapInServer.chapterIdx == chapIdx[curTab.id]
 		}else{
 			console.warn('未找到当前标签页，无法获取当前章节 Uid');
 			// 章节名称重复的情况下，会导致错误导出前一个同名章节内的内容：https://github.com/Higurashi-kagome/wereader/issues/103
@@ -293,7 +278,7 @@ function checkIsInServer(chapsInServer: ChapInfoUpdated[], response: responseTyp
 
 // 获取热门标注数据
 export async function getBestBookMarks() {
-	const wereader = new Wereader(window.bookId);
+	const wereader = new Wereader(await getBookId());
 	let {items: bestMarksData} = await wereader.getBestBookmarks();
 	//处理书本无热门标注的情况
 	if(!bestMarksData || !bestMarksData.length){
@@ -322,14 +307,8 @@ export async function getBestBookMarks() {
 	return bestMarks;
 }
 
-// 获取想法
-export interface ThoughtsInAChap{
-	range: string;
-	abstract: string;
-	content: string
-}
 export async function getMyThought() {
-	const wereader = new Wereader(window.bookId);
+	const wereader = new Wereader(await getBookId());
 	let data = await wereader.getThoughts();
 	//获取 chapterUid 并去重、排序
 	let chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))).map((uid)=>{
@@ -403,8 +382,7 @@ async function addThoughts(chaptersAndMarks: ChapAndMarks[], chapters: ChapInfoU
 }
 
 // 给 markText 进行正则替换
-function regexpReplace(markText: string){
-	let regexpConfig = Config.re
+function regexpReplace(markText: string, regexpConfig: reConfigCollectionType){
 	for(let reId in regexpConfig){
 		let replaceMsg = regexpConfig[reId as keyof reConfigCollectionType].replacePattern.match(/^s\/(.+?)\/(.*?)\/(\w*)$/)
 		if(!regexpConfig[reId as keyof reConfigCollectionType].checked
@@ -426,16 +404,16 @@ function regexpReplace(markText: string){
 }
 
 // 根据标注类型获取前后缀
-function addMarkPreAndSuf(markText: string, style: number){
+function addMarkPreAndSuf(markText: string, style: number, config: ConfigType){
 
-	const pre = (style == 0) ? Config["s1Pre"]
-	: (style == 1) ? Config["s2Pre"]
-	: (style == 2) ? Config["s3Pre"]
+	const pre = (style == 0) ? config["s1Pre"]
+	: (style == 1) ? config["s2Pre"]
+	: (style == 2) ? config["s3Pre"]
 	: ""
 
-	const suf = (style == 0) ? Config["s1Suf"]
-	: (style == 1) ? Config["s2Suf"]
-	: (style == 2) ? Config["s3Suf"]
+	const suf = (style == 0) ? config["s1Suf"]
+	: (style == 1) ? config["s2Suf"]
+	: (style == 2) ? config["s3Suf"]
 	: ""
 	
 	return pre + markText + suf

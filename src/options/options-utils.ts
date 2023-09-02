@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { DefaultRegexPattern } from "../background/modules/bg-vars";
+import { DefaultRegexPattern } from "../worker/worker-vars";
 import { BACKUPKEY, RegexpInputClassName, STORAGE_ERRORMSG } from "./options-var";
 //错误捕捉函数
 function catchErr(sender: string) {

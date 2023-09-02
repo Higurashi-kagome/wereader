@@ -1,10 +1,11 @@
 import $ from "jquery";
-import { bg } from "./popup-utils";
+import { popupApi } from "./popup-utils";
 
 // 统计按钮点击事件
-function initStatisticsTab() {
+async function initStatisticsTab() {
 	let statistic = $('#statisticBtn');
-	if(bg.Config.enableStatistics){
+	const config = await popupApi.Config()
+	if(config.enableStatistics){
 		// 新创建
 		if (!statistic.length) {
 			statistic = $(`<button class="tabLinks" id="statisticBtn">统计</button>`);

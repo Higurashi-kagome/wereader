@@ -1,7 +1,7 @@
 import { Chart, ChartConfiguration } from "chart.js";
 import $ from "jquery";
 import { readDetailData } from "../types/readDetailTypes";
-import { bg, convertTime } from "./statistics-var";
+import { bg as statApi, convertTime } from "./statistics-var";
 
 
 let weekConfig: ChartConfiguration = {
@@ -78,7 +78,7 @@ function initWeekStatistics() {
 	window.addEventListener('load', async ()=>{
 		let readDetail;
 		try {
-			readDetail = await bg.getReadDetail(0);
+			readDetail = await statApi.getReadDetail(0);
 			updateWeekConfig(readDetail.datas[0]);
 			let canvas = document.getElementById('week-canvas') as HTMLCanvasElement;
 			let ctx = canvas.getContext('2d')!;
@@ -97,7 +97,7 @@ function initWeekStatistics() {
 		}else{
 			let readDetail;
 			try {
-				readDetail = await bg.getReadDetail(0, 3, curWeekBaseTimestamp);
+				readDetail = await statApi.getReadDetail(0, 3, curWeekBaseTimestamp);
 				updateWeekConfig(readDetail.datas[1]);
 			} catch (error) {
 				return console.log(error, readDetail);

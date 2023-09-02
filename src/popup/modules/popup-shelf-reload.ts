@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import { bg } from './popup-utils';
+import { popupApi } from './popup-utils';
 
 /* 绑定书架刷新按钮点击事件 */
 export function initShelfReload(){
@@ -9,7 +9,7 @@ export function initShelfReload(){
 	$('#reload').on('click', async (e)=>{
 		e.stopPropagation();
 		$('#shelf').html(`<a>正在加载...</a>`);
-		await bg.setShelfData();
+		await popupApi.setShelfData();
 		e.target.parentElement!.click();
 	});
 }

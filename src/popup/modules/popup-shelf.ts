@@ -10,32 +10,34 @@ import { initShelfReload } from './popup-shelf-reload';
 import { createSearchInput } from './popup-shelf-search';
 import { tabClickEvent } from './popup-tabs';
 import {
-	bg,
 	dropdownClickEvent,
 	partSort,
 } from './popup-utils';
-
+import { puzzling } from '../../worker/worker-utils';
+import { PopupApi } from '../../worker/types/PopupApi';
+const popupApi = new PopupApi();
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
-function initShelfTab() {
+async function initShelfTab() {
 	/* 绑定书架 tab 按钮点击事件 */
 	$('#shelfBtn').on('click', async function(){
 		console.log('call: #shelfBtn.onclick');
-		let shelfData = bg.shelfForPopup.shelfData;
+		let res = await popupApi.shelfForPopup()
+		let shelfData = res.shelfData
 		// 从背景页获取数据无效
 		if(Object.keys(shelfData).length === 0 || shelfData.errMsg){
-			const resp: ShelfDataTypeJson | ShelfErrorDataType = await bg.getShelfData();
+			const resp: ShelfDataTypeJson | ShelfErrorDataType = await popupApi.getShelfData();
 			if(resp.errMsg){	// 从服务端获取数据失败
 				$('#shelf').html(`<a>正在加载...</a>`);
-				let tab = await bg.createTab({url: bg.Wereader.maiUrl, active: false});
+				let tab = await popupApi.createTab({url: `https://weread.qq.com`, active: false});
 				if(tab){
-					shelfData = await bg.setShelfData();
+					shelfData = await popupApi.setShelfData();
 					if(shelfData.errMsg){
 						return $('#shelf').html(`<a>加载失败，请先登陆。</a>`);
 					}else $(this).trigger("click");
 				}
 			} else {	// 从服务端获取数据成功，保存数据到背景页
 				shelfData = resp;
-				bg.setShelfData(shelfData);
+				popupApi.setShelfData(shelfData);
 			}
 		}
 		console.log('call: #shelfBtn.onclick var shelfData\n', shelfData);
@@ -141,14 +143,14 @@ function createShelf(shelfData: ShelfDataTypeJson){
 		if(!books.length) continue;
 		let booksContainer = $(`<div class='dropdown-container'></div>`);//章内书本容器
 		for (const {bookId, title} of books) {
-			const href = `https://weread.qq.com/web/reader/${bg.puzzling(bookId)}`;
+			const href = `https://weread.qq.com/web/reader/${puzzling(bookId)}`;
 			let bookEl = $(`<a target='_blank' href='${href}'>${title}</a>`);
 			// 为微信公众号绑定事件
 			if(bookId && bookId.startsWith('MP_WXS_')){
 				bookEl.on('click', async function(e){
 					e.preventDefault();
 					if (!bookId) return;
-					let resp = await bg.createMpPage(bookId);
+					let resp = await popupApi.createMpPage(bookId);
 					if(resp && resp.errmsg) {
 						console.log('mpOnclick', resp.errmsg);
 						chrome.tabs.create({url: href});

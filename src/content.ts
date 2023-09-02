@@ -1,4 +1,4 @@
-/* 导入各个 content 脚本，调用其中的各个主函数，是 content 脚本的入口 */
+/* content 脚本入口 */
 
 import './content/static/css/rankChapter.css';
 
@@ -18,6 +18,7 @@ import { initSelectAction } from './content/modules/content-select-action';
 import { initTheme } from './content/modules/content-theme';
 import { initThoughtEdit } from './content/modules/content-thought-edit';
 import { initFancyBox } from './content/modules/fancybox';
+import './content/modules/content-copy'
 
 initAlert();
 initDeleteMarksNotification();

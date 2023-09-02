@@ -1,9 +1,9 @@
 import $ from 'jquery';
 
-import { PopupApi } from '../../background/modules/bg-popup-api';
+import { PopupApi } from '../../worker/types/PopupApi';
 
 // 背景页
-const bg: PopupApi = chrome.extension.getBackgroundPage()!.popupApi;
+const popupApi = new PopupApi();
 // 测试 url 是否为阅读页的正则表达式 /:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/
 const readPageRegexp = /:\/\/weread\.qq\.com\/web\/reader\/[^\s]*/;
 
@@ -32,4 +32,4 @@ function partSort(arr: Array<any>, a: number, b: number, fun = function(a: any, 
 	}
 }
 
-export { bg, dropdownClickEvent, partSort, readPageRegexp };
+export { popupApi, dropdownClickEvent, partSort, readPageRegexp };

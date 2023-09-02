@@ -55,8 +55,8 @@ const babelLoader = {
 module.exports = {
 	// 配置入口
 	entry: {
-		// 背景页脚本
-		background: path.resolve(__dirname, "..", "src", "background.ts"),
+		// offscreen 脚本
+		offscreen: path.resolve(__dirname, "..", "src", "offscreen.ts"),
 		// 内容注入脚本
 		content: path.resolve(__dirname, "..", "src", "content.ts"),
 		// 窗口页面
@@ -70,7 +70,9 @@ module.exports = {
 		// 公众号阅读页脚本
 		mp: path.resolve(__dirname, "..", "src/mpwx/", "mp.ts"),
 		// 沙箱脚本
-		sandbox: path.resolve(__dirname, "..", "src/background", "sandbox.ts")
+		sandbox: path.resolve(__dirname, "..", "src/sandbox", "sandbox.ts"),
+		// service worker
+		worker: path.resolve(__dirname, "..", "src", "worker.ts")
 	},
 
 	// 配置输出
@@ -118,7 +120,7 @@ module.exports = {
 
 			// 设置替换字符串 https://www.npmjs.com/package/string-replace-loader
 			{
-				test: /bg-vars.ts$/,
+				test: /worker-vars.ts$/,
 				loader: 'string-replace-loader',
 				options: {
 					search: /__metaTemplate__/ig,
@@ -190,18 +192,18 @@ module.exports = {
 			chunks: ['options']
 		}),
 		new HTMLWebpackPlugin({
-			filename: 'bg.html',
-			template: 'src/background/bg.html',
+			filename: 'offscreen.html',
+			template: 'src/offscreen/offscreen.html',
 			inject: 'body',
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true
 			},
-			chunks: ['background']
+			chunks: ['offscreen']
 		}),
 		new HTMLWebpackPlugin({
 			filename: 'sandbox.html',
-			template: 'src/background/sandbox.html',
+			template: 'src/sandbox/sandbox.html',
 			inject: 'body',
 			minify: {
 				removeComments: true,

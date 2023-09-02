@@ -1,14 +1,14 @@
 import { ShelfDataTypeJson } from '../../types/shelfTypes';
-import { BestMarksJson } from '../types/BestMarksJson';
-import { BookInfo } from '../types/BookInfo';
-import { ChapInfoJson } from '../types/ChapInfoJson';
-import { CommentsJson } from '../types/CommentsJson';
-import { MarksJson } from '../types/MarksJson';
-import { ThoughtJson } from '../types/ThoughtJson';
+import { BestMarksJson } from './BestMarksJson';
+import { BookInfo } from './BookInfo';
+import { ChapInfoJson } from './ChapInfoJson';
+import { CommentsJson } from './CommentsJson';
+import { MarksJson } from './MarksJson';
+import { ThoughtJson } from './ThoughtJson';
 import {
 	getJson,
 	getText,
-} from './bg-utils';
+} from '../worker-utils';
 
 export class Wereader{
 	static readonly indexUrl = `https://i.weread.qq.com`;

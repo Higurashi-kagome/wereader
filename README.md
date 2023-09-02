@@ -39,7 +39,6 @@
 | [wereader](https://github.com/arry-lee/wereader)             | 此项目为该扩展的起源，我先是在 [pythontools/wereader](https://github.com/liuhao326/pythontools/tree/master/wereader) 中完善了该项目，然后才基于 pythontools/wereader 实现了该扩展。 |
 | [examples-of-web-crawlers](https://github.com/shengqiangzhang/examples-of-web-crawlers) | 编写 pythontools/wereader 的过程中参考了该项目中的[一键导出微信读书的书籍和笔记](https://github.com/shengqiangzhang/examples-of-web-crawlers/tree/master/12.%E4%B8%80%E9%94%AE%E5%AF%BC%E5%87%BA%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%9A%84%E4%B9%A6%E7%B1%8D%E5%92%8C%E7%AC%94%E8%AE%B0)。 |
 | [jquery/jquery: jQuery JavaScript Library](https://github.com/jquery/jquery) | 简化代码。                                                   |
-| [clipboard.js](https://github.com/zenorocha/clipboard.js)    | 实现复制文本。                                               |
 | [sweetalert2](https://github.com/sweetalert2/sweetalert2)    | 实现弹窗。                                                   |
 | [HbnLg](https://www.iconfont.cn/user/detail?spm=a313x.7781069.1998910419.dcc7d6115&userViewType=collections&uid=4451423) | 图标来源于 [iconfont](https://www.iconfont.cn/collections/index?spm=a313x.7781069.1998910419.3)，图库显示 Hbnlg 为图标作者。 |
 | [SingleFile](https://github.com/gildas-lormeau/SingleFile)   | 设置页模仿自该扩展。                                         |

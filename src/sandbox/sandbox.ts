@@ -9,7 +9,7 @@ window.addEventListener('message', async function (event) {
 		switch (message.command) {
 			case 'render':
 				try {
-					result = new Renderer().render(message.context, message.templateStr);
+					result = await new Renderer().render(message.context, message.templateStr);
 				} catch (error) {
 					event.source?.postMessage({ error, command: message.command }, event.origin as WindowPostMessageOptions);
 					return;

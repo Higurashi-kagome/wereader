@@ -1,5 +1,5 @@
 {
-	"include":["./src/**/*", "src/background.ts"],
+	"include":["./src/**/*", "src/offscreen.ts"],
 	"exclude": [
         "node_modules"
     ],

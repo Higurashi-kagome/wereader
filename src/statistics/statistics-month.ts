@@ -9,9 +9,10 @@ import {
 	readDetailJson,
 } from '../types/readDetailTypes';
 import {
-	bg,
+	bg as statApi,
 	convertTime,
 } from './statistics-var';
+import { Wereader } from '../worker/types/Wereader';
 
 let monthConfig: ChartConfiguration = {
     type: 'line',
@@ -112,14 +113,14 @@ function initMonthStatistics() {
 	window.addEventListener('load', async ()=>{
 		let readDetail: readDetailJson;
 		try {
-			readDetail = await bg.getReadDetail();
+			readDetail = await statApi.getReadDetail();
 			updateMonthConfig(readDetail.datas[0]);
 			monthConfig.data!.datasets![0].label = `${curYear}-${curMonth}`;
 			let canvas = document.getElementById('month-canvas') as HTMLCanvasElement;
 			let ctx = canvas.getContext('2d')!;
 			monthLine = new Chart(ctx, monthConfig);
 		} catch (error) {
-			chrome.tabs.create({url: bg.Wereader.maiUrl, active: false});
+			chrome.tabs.create({url: Wereader.maiUrl, active: false});
 			alert('获取数据失败，默认打开微信读书网页，请在确保正常登陆后刷新该页面重新获取统计');
 			return console.log(error, readDetail!);
 		}
@@ -134,7 +135,7 @@ function initMonthStatistics() {
 		}else{
 			let readDetail;
 			try {
-				readDetail = await bg.getReadDetail(1, 3, curMonthBaseTimestamp);
+				readDetail = await statApi.getReadDetail(1, 3, curMonthBaseTimestamp);
 				updateMonthConfig(readDetail.datas[1]);
 			} catch (error) {
 				return console.log(error, readDetail);

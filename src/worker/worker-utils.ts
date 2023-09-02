@@ -1,13 +1,23 @@
-import ClipboardJS from 'clipboard';
-import $ from 'jquery';
 import { SweetAlertOptions } from 'sweetalert2';
 
-import { regexpSetType } from '../../options/options-unload';
+import { regexpSetType } from '../options/options-unload';
 import {
     BackupKey,
     StorageErrorMsg,
-} from './bg-vars';
-import { Wereader } from './bg-wereader-api';
+} from './worker-vars';
+import { Wereader } from './types/Wereader';
+import { Sender } from '../common/sender';
+
+export async function hasOffscreenDocument(offscreenUrl: string) {
+    // @ts-ignore
+    const matchedClients = await clients.matchAll();
+    for (const client of matchedClients) {
+      if (client.url === offscreenUrl) {
+        return true;
+      }
+    }
+    return false;
+}
 
 // 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
 export function getIndexes(str: string, subStr: string){
@@ -18,20 +28,6 @@ export function getIndexes(str: string, subStr: string){
         idx = str.indexOf(subStr, idx+1);
     }
     return indexes;
-}
-
-/* 说明：
-util.js 是从 background.js 分离出来的，这里的所有函数最初都放在 background.js 中被调用。
-现在之所以单独放在这个文件中纯粹是为了缩减 background.js 的代码量，从而使结构清晰
-*/
-
-// 排序（只处理整数键）
-export function sortByKey(array: {[key: string]: any}[], key: string) {
-	return array.sort((a, b) => {
-		let x = parseInt(a[key]);
-		let y = parseInt(b[key]);
-		return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-	});
 }
 
 // 报错捕捉函数
@@ -93,25 +89,27 @@ async function sendAlertMsg(msg: SweetAlertOptions, tabId: number | undefined = 
 	return response;
 }
 
+/**
+ * 复制文本（发消息给 content，由 content 处理）
+ * @param text 待复制内容
+ */
 function copy(text: string) {
-	//添加这个变量是因为发现存在一次复制成功激活多次 clipboard.on('success', function (e) {})的现象
-	let count = 0;
-	let inputText = $(`<textarea id='formatted_text'></textarea>`).prependTo($(document.body));
-	let copyBtn = $(`<button class="btn" id="btn_copy" data-clipboard-target="#formatted_text">copy</button>`).prependTo($(document.body));
-	let clipboard = new ClipboardJS('.btn');
-	clipboard.on('success', function (e) {
-		if(count !== 0) return;//进行检查而确保一次复制成功只调用一次sendAlertMsg()
-		sendAlertMsg({icon: 'success',title: '复制成功'});
-		count = count + 1;
-	});
-	clipboard.on('error', function (e) {
-		sendAlertMsg({title: "复制出错", text: JSON.stringify(e), confirmButtonText: '确定',icon: "error"});
-	});
-	inputText.val(text);
-	copyBtn.trigger('click');
-	clipboard.destroy();
-	inputText.remove();
-	copyBtn.remove();
+	new Sender('copy', text).sendToOffscreen()
+}
+
+/**
+ * 复制文本内容
+ * @param text 待复制文本
+ */
+export async function navCopy(text: string) {
+	try {
+		await navigator.clipboard.writeText(text);
+		sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: {icon: 'success', title: '复制成功'}}})
+	} catch (err) {
+		console.error('复制失败：', err);
+		console.error("待复制文本", text);
+		sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: {text: "复制出错", icon: 'warning'}}})
+	}
 }
 
 async function getJson(url: string){
