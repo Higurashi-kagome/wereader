@@ -28,7 +28,7 @@ export function initListener() {
 	})
 }
  
-function handleMessages(msg: Message, sender: chrome.runtime.MessageSender, sendResponse: Function) {
+function handleMessages(msg: Message) {
 	// 消息目标
 	if (msg.target !== 'offscreen') {
 		return;

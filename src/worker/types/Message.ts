@@ -2,5 +2,5 @@
 export interface Message{
 	target: string,
 	type: string,
-	data: any
+	data: unknown
 }

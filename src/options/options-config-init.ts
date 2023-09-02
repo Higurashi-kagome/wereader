@@ -7,19 +7,20 @@ import {
 } from './options-var';
 
 /********************* 当前设置初始化 *********************/
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 	/** "标注、标题、想法、代码块" input 事件，
 	 * "是否显示热门标注人数"、"标注添加想法" CheckBox 点击事件
 	 */
 	const inputAndCheckBoxIds = InputIds.concat(CheckBoxIds)
 	for(let i=0;i<inputAndCheckBoxIds.length;i++){
-		let id = inputAndCheckBoxIds[i]
-		let element = document.getElementById(id)! as HTMLInputElement
-		let isInput = InputIds.indexOf(id) > -1
+		const id = inputAndCheckBoxIds[i]
+		const element = document.getElementById(id)! as HTMLInputElement
+		const isInput = InputIds.indexOf(id) > -1
 		isInput ? element.value = setting[id] : element.checked = setting[id]
 		$(element).on('change', function(){
-			let key = this.id
-			let value = isInput ? this.value : this.checked
+			const key = this.id
+			const value = isInput ? this.value : this.checked
 			updateStorageArea({key: key, value: value})
 		})
 	}
@@ -30,7 +31,7 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 	}
 	const selectActionOptions = $("#selectActionOptions") as JQuery<HTMLSelectElement>;
 	selectActionOptions.on('change', function(){
-		let options = this.options
+		const options = this.options
 		for (let i=0; i<options.length; i++){
 			if(options[i].selected == true){
 				updateStorageArea({key:"selectAction",value:options[i].id})
@@ -44,7 +45,7 @@ function initCurrentConfig(setting: { [x: string]: any; selectAction?: any }) {
 	}
 	const thoughtTextOptions = $("#thoughtTextOptions") as JQuery<HTMLSelectElement>;
 	thoughtTextOptions.on('change', function(){
-		let options = this.options
+		const options = this.options
 		for (let i=0; i<options.length; i++){
 			if(options[i].selected == true){
 				updateStorageArea({key:"thoughtTextOptions", value: options[i].id});

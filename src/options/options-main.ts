@@ -21,7 +21,7 @@ function main(){
 }
 
 //初始化
-function initialize(setting: { [key: string]: any}, settings: { [key: string]: any}){
+function initialize(setting: { [key: string]: unknown}, settings: { [key: string]: unknown}){
 	initExpandBtn();
 	initPrompt();
 	initConfigSelect(setting, settings);

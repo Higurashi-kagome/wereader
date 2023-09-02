@@ -1,7 +1,7 @@
 import $ from "jquery";
 /* 全部展开 */
 function initExpandBtn() {
-	let expandAllButton = $("#expandAllButton")
+	const expandAllButton = $("#expandAllButton")
 	expandAllButton.on('click', function(){
 		if (expandAllButton.attr('class')) {
 			expandAllButton.removeClass();

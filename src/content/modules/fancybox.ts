@@ -9,8 +9,8 @@ function initFancyBox() {
 	loadCSS('content/static/css/fancybox.css', 'wereader-fancybox-style-el');
 	// 图片等内容是动态加载的，所以监听 dom 的变化并随时重新为图片/代码块绑定点击事件
 	function fancyboxTargetObserver(){
-		let observer = new MutationObserver(bindFancyBox);
-		let target = document.getElementById('renderTargetContent')!.children[0];
+		const observer = new MutationObserver(bindFancyBox);
+		const target = document.getElementById('renderTargetContent')!.children[0];
 		if(!target){
 			window.setTimeout(fancyboxTargetObserver,500);
 			return;
@@ -21,10 +21,10 @@ function initFancyBox() {
 	// 绑定点击事件
 	function bindFancyBox(){
 		// 清除原点击事件
-		let imgs = document.querySelectorAll("img.wr_readerImage_opacity");
+		const imgs = document.querySelectorAll("img.wr_readerImage_opacity");
 		for (let i = 0; i < imgs.length; i++) {
-			let img = imgs[i];
-			let imgClone = img.cloneNode(true);
+			const img = imgs[i];
+			const imgClone = img.cloneNode(true);
 			img.parentNode!.replaceChild(imgClone, img);
 		}
 		// 绑定新事件
@@ -42,12 +42,12 @@ function initFancyBox() {
 	// fancybox 移动
 	function bindMouseMove() {
 		let [mousedownX,mousedownY,elLeft,elRight,elTop,elBottom,isMousedown] = [0,0,0,0,0,0,false];
-		let view = $('.fancybox-image,.fancybox-pre');
+		const view = $('.fancybox-image,.fancybox-pre');
 		view.on('mousedown',function(e) {
 			// 客户端区域坐标。例如，客户端区域的左上角的 clientY 值为 0 ，这一值与页面是否有垂直滚动无关
 			mousedownX = e.clientX; // （向右为正，越靠右越大）
 			mousedownY = e.clientY; // （向下为正，越靠下越大）
-			let wrap = view.parent().parent();
+			const wrap = view.parent().parent();
 			// 页面坐标
 			elLeft = parseFloat(wrap.css('left'));
 			elRight = parseFloat(wrap.css('right'));
@@ -58,7 +58,7 @@ function initFancyBox() {
 		// 加了动画，移动时可能超出 fancybox，所以绑定到 document
 		$(document).on('mousemove', function(e) {
 			if (isMousedown) {
-				let wrap = view.parent().parent();
+				const wrap = view.parent().parent();
 				wrap.css('top', elTop + e.clientY - mousedownY + 'px'); // 元素原 top 值加鼠标 Y 方向偏移距离
 				if (view.is('.fancybox-image')) wrap.css('bottom', elBottom + mousedownY - e.clientY + 'px'); // 代码块用 resize 缩放
 				wrap.css('left',elLeft + e.clientX - mousedownX + 'px'); // 元素原 left 值加鼠标 X 方向偏移距离
@@ -73,30 +73,30 @@ function initFancyBox() {
 	// fancybox 滚轮缩放
 	function bindMouseWheel() {
 		let [elLeft,elRight,elTop,elBottom] = [0,0,0,0];
-		let img = $('.fancybox-image');
+		const img = $('.fancybox-image');
 		img.on('mousewheel', function(e) {
 			e.preventDefault();
 			// 获取 wrap 位置
-			let wrap = img.parent().parent();
+			const wrap = img.parent().parent();
 			elLeft = parseFloat(wrap.css('left'));
 			elRight = parseFloat(wrap.css('right'));
 			elTop = parseFloat(wrap.css('top'));
 			elBottom = parseFloat(wrap.css('bottom'));
-			let height = parseFloat(wrap.css('height'));
-			let rate = parseFloat(wrap.css('width')) / height;
+			const height = parseFloat(wrap.css('height'));
+			const rate = parseFloat(wrap.css('width')) / height;
 			const totalPx = 20; // top 和 bottom 的总改变量
 			// 获取定点缩放数据
-			let mousedownX = e.clientX; // （向右为正，越靠右越大）
-			let mousedownY = e.clientY; // （向下为正，越靠下越大）
-			let imgRect = img[0].getBoundingClientRect(); // https://javascript.info/coordinates
-			let leftDist = mousedownX - imgRect.left;
-			let rightDist = imgRect.width - leftDist;
-			let topDist = mousedownY - imgRect.top;
-			let bottomDist = imgRect.height - topDist;
-			let topPx = totalPx * topDist / imgRect.height;
-			let bottomPx = totalPx * bottomDist / imgRect.height;
-			let leftPx = totalPx * rate * leftDist / imgRect.width;
-			let rightPx = totalPx * rate * rightDist / imgRect.width;
+			const mousedownX = e.clientX; // （向右为正，越靠右越大）
+			const mousedownY = e.clientY; // （向下为正，越靠下越大）
+			const imgRect = img[0].getBoundingClientRect(); // https://javascript.info/coordinates
+			const leftDist = mousedownX - imgRect.left;
+			const rightDist = imgRect.width - leftDist;
+			const topDist = mousedownY - imgRect.top;
+			const bottomDist = imgRect.height - topDist;
+			const topPx = totalPx * topDist / imgRect.height;
+			const bottomPx = totalPx * bottomDist / imgRect.height;
+			const leftPx = totalPx * rate * leftDist / imgRect.width;
+			const rightPx = totalPx * rate * rightDist / imgRect.width;
 			// 缩放
 			if (e.deltaY < 0) {
 				wrap.css('top', elTop + topPx + 'px');

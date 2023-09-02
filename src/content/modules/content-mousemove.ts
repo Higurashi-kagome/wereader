@@ -2,9 +2,9 @@
 
 import $ from "jquery";
 
-var mousePagePosition = {};
-var mouseClientPosition = {};
-var mouseMoveTarget: HTMLElement;
+let mousePagePosition = {};
+let mouseClientPosition = {};
+let mouseMoveTarget: HTMLElement;
 
 // 鼠标移动事件 handler：获取鼠标位置、鼠标下的元素
 function documentMouseMove(event: JQuery.MouseMoveEvent): void {

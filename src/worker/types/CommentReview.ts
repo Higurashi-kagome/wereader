@@ -3,7 +3,7 @@ import { Book } from './Book';
 
 export interface CommentReview {
 	abstract: string;
-	atUserVids: any[];
+	atUserVids: unknown[];
 	bookId: string;
 	bookVersion: number;
 	content: string;
@@ -17,7 +17,7 @@ export interface CommentReview {
 	type: number;
 	reviewId: string;
 	userVid: number;
-	topics: any[];
+	topics: unknown[];
 	createTime: number;
 	newRatingLevel: number;
 	isLike: number;

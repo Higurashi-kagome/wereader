@@ -14,7 +14,7 @@ import {
 } from './statistics-var';
 import { Wereader } from '../worker/types/Wereader';
 
-let monthConfig: ChartConfiguration = {
+const monthConfig: ChartConfiguration = {
     type: 'line',
     data: {
         labels: [],
@@ -72,12 +72,11 @@ let monthConfig: ChartConfiguration = {
         }
     }
 };
-let loadedMonthData: readDetailData[] = [];
+const loadedMonthData: readDetailData[] = [];
 let curMonthBaseTimestamp: number;
-let curDate = new Date();
+const curDate = new Date();
 let curYear = curDate.getFullYear();
 let curMonth = curDate.getMonth() + 1;
-let curDay = curDate.getDate();
 
 /**
  * @description: 返回数组，用于初始化 config.labels 数组
@@ -85,7 +84,7 @@ let curDay = curDate.getDate();
  * @return 一个长度为 totalCount，元素为 1 至 totalCount 的数组
  */
 function initArray(totalCount: number): number[]{
-    let arr = [];
+    const arr = [];
     for (let i = 0; i < totalCount; i++) {
         arr[i] = i + 1;
     }
@@ -97,7 +96,7 @@ function initArray(totalCount: number): number[]{
  * @param {*} data 月阅读数据
  */
 function updateMonthConfig(data: readDetailData){
-    let {timeMeta, readMeta, baseTimestamp} = data;
+    const {timeMeta, baseTimestamp} = data;
     if(loadedMonthData.indexOf(data)<0) loadedMonthData.push(data);
     curMonthBaseTimestamp = baseTimestamp;
     monthConfig.data!.datasets![0].data = convertTime(timeMeta.readTimeList) as unknown as number[];
@@ -116,8 +115,8 @@ function initMonthStatistics() {
 			readDetail = await statApi.getReadDetail();
 			updateMonthConfig(readDetail.datas[0]);
 			monthConfig.data!.datasets![0].label = `${curYear}-${curMonth}`;
-			let canvas = document.getElementById('month-canvas') as HTMLCanvasElement;
-			let ctx = canvas.getContext('2d')!;
+			const canvas = document.getElementById('month-canvas') as HTMLCanvasElement;
+			const ctx = canvas.getContext('2d')!;
 			monthLine = new Chart(ctx, monthConfig);
 		} catch (error) {
 			chrome.tabs.create({url: Wereader.maiUrl, active: false});
@@ -128,8 +127,8 @@ function initMonthStatistics() {
 	
 	/* 上月 */
 	$('#previousMonth').on('click', async ()=>{
-		let curData = loadedMonthData.filter(data=>data.baseTimestamp == curMonthBaseTimestamp)[0];
-		let previousIndex = loadedMonthData.indexOf(curData) + 1;
+		const curData = loadedMonthData.filter(data=>data.baseTimestamp == curMonthBaseTimestamp)[0];
+		const previousIndex = loadedMonthData.indexOf(curData) + 1;
 		if(previousIndex<loadedMonthData.length) {
 			updateMonthConfig(loadedMonthData[previousIndex]);
 		}else{
@@ -152,8 +151,8 @@ function initMonthStatistics() {
 	
 	/* 下月 */
 	$('#nextMonth').on('click', async ()=>{
-		let curData = loadedMonthData.filter(data=>data.baseTimestamp == curMonthBaseTimestamp)[0];
-		let nextIndex = loadedMonthData.indexOf(curData) - 1;
+		const curData = loadedMonthData.filter(data=>data.baseTimestamp == curMonthBaseTimestamp)[0];
+		const nextIndex = loadedMonthData.indexOf(curData) - 1;
 		if(nextIndex > -1) {
 			updateMonthConfig(loadedMonthData[nextIndex]);
 			curMonth++;

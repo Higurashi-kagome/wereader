@@ -6,18 +6,18 @@ import { getLocalStorage } from "../common/utils";
 // 初始化设置
 //获取 syncSetting
 chrome.storage.sync.get(function (configInSync) {
-	let unusedKeysInSync: string[] = []
+	const unusedKeysInSync: string[] = []
 	type keyType = keyof ConfigType;
-	for(let key in configInSync){
+	for(const key in configInSync){
 		if(defaultConfig[key as keyType] !== undefined) continue;
 		//如果 syncSetting 中的某个键在 Config 中不存在，则删除该键
 		delete configInSync[key];
 		unusedKeysInSync.push(key);
 	}
-	for(let key in defaultConfig){
+	for(const key in defaultConfig){
 		//如果 Config 中的某个键在 syncSetting 中不存在（或者类型不同），则使用 Config 初始化 syncSetting
 		if(configInSync[key] === undefined
-			|| configInSync[key].constructor != defaultConfig[key as keyType].constructor){
+			|| configInSync[key].constructor != defaultConfig[key as keyType]?.constructor){
 			configInSync[key] = defaultConfig[key as keyType];
 		}else{//如果 Config 中的某个键在 syncSetting 中存在（并且类型相同），则使用 syncSetting 初始化 Config
 			defaultConfig[key as keyType] = configInSync[key] as never;
@@ -34,7 +34,7 @@ chrome.storage.sync.get(function (configInSync) {
 	//获取 localSetting
 	chrome.storage.local.get([BackupKey], function(result) {
 		let configsInLocal = result[BackupKey];
-		let configNameInSyncStorage = configInSync.backupName;
+		const configNameInSyncStorage = configInSync.backupName;
 		delete configInSync.backupName
 		if(configsInLocal === undefined){//如果本地无设置
 			configsInLocal = {};
@@ -46,17 +46,18 @@ chrome.storage.sync.get(function (configInSync) {
 		//将 syncSetting 更新至 localSetting
 		configsInLocal[configNameInSyncStorage] = configInSync;
 		//遍历 localSetting 检查格式
-		let formatOfConfigInLocal: {[key: string]: any} = defaultConfig;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const formatOfConfigInLocal: {[key: string]: any} = defaultConfig;
 		delete formatOfConfigInLocal.backupName;
-		for(let configName in configsInLocal){
-			let localConfig = configsInLocal[configName];
-			for(let keyOfLocalConfig in localConfig){//遍历单个配置
+		for(const configName in configsInLocal){
+			const localConfig = configsInLocal[configName];
+			for(const keyOfLocalConfig in localConfig){//遍历单个配置
 				//如果配置中的某个键在 formatOfConfigInLocal 中不存在，则删除该键
 				if(formatOfConfigInLocal[keyOfLocalConfig] === undefined){
 					delete configsInLocal[configName][keyOfLocalConfig];
 				}
 				//如果 formatOfConfigInLocal 中的某个键在配置中不存在（或者类型不同），则使用 formatOfConfigInLocal 初始化配置
-				for(let keyOfFormat in formatOfConfigInLocal){
+				for(const keyOfFormat in formatOfConfigInLocal){
 					if(localConfig[keyOfFormat]===undefined||formatOfConfigInLocal[keyOfFormat].constructor!=localConfig[keyOfFormat].constructor){
 						configsInLocal[configName][keyOfFormat] = formatOfConfigInLocal[keyOfFormat];
 					}

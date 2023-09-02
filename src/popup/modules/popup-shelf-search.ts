@@ -8,8 +8,8 @@ function createSearchInput() {
 		const val: string = $(this).val() as string;
 		const filter = val.toUpperCase();
 		$(".dropdown-container > a").each((index, el)=>{
-			let a = $(el);
-			let text = a.text().toUpperCase();
+			const a = $(el);
+			const text = a.text().toUpperCase();
 			if (text.indexOf(filter) > -1) {
 				a.css('display', 'block');
 			} else {

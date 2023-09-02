@@ -9,16 +9,16 @@ function initScrollBar() {
 		//添加进度查看按钮并绑定点击事件
 		function addProgressBtn(){
 			//设置按钮
-			var progressBtn = document.createElement("button");
-			var btnDiv = document.getElementsByClassName("readerControls readerControls")[0];
-			var appCode = document.getElementsByClassName("readerControls_item download")[0] as HTMLElement;
+			const progressBtn = document.createElement("button");
+			const btnDiv = document.getElementsByClassName("readerControls readerControls")[0];
+			const appCode = document.getElementsByClassName("readerControls_item download")[0] as HTMLElement;
 			if(!appCode || !btnDiv) return;
 			btnDiv.insertBefore(progressBtn, appCode);
 			appCode.style.display = "none";
 			progressBtn.setAttribute("title", "进度");
 			progressBtn.setAttribute("class","readerControls_item download");
 			//设置按钮文字
-			var progressText = document.createElement("span");
+			const progressText = document.createElement("span");
 			progressText.textContent = "进度";
 			progressText.id = "progressText";
 			progressBtn.appendChild(progressText);
@@ -27,11 +27,11 @@ function initScrollBar() {
 			loadCSS("content/static/css/content-hideScroll.css", 'wereader-scrollbar-style-el')
 
 			//绑定点击事件
-			var count = -1;
+			let count = -1;
 			progressBtn.addEventListener('click', function(){
 				try {
 					//切换滚筒条显隐
-					let cssFile = (count === -1) ? "content/static/css/showScroll.css" : "content/static/css/content-hideScroll.css";
+					const cssFile = (count === -1) ? "content/static/css/showScroll.css" : "content/static/css/content-hideScroll.css";
 					loadCSS(cssFile, 'wereader-scrollbar-style-el');
 					count = count * (-1);
 				} catch (error) {

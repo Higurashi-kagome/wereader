@@ -24,12 +24,13 @@ import { getSyncStorage } from '../../common/utils';
 import { scaleStorageKey } from '../../common/constants';
 
 /* 原检查 el 是否 被 mask 覆盖的思路 */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function originTest(mask: HTMLElement, el: HTMLElement, curChapTitle: string) {
-    let {footnote,height,top,left,width} = getTargetObj(el, curChapTitle);
-    let maskTop = parseFloat(mask.style.top);
-    let maskHeight = parseFloat(mask.style.height);
-    let maskLeft = parseFloat(mask.style.left);
-    let maskWidth = parseFloat(mask.style.width);
+    const {footnote,height,top,left,width} = getTargetObj(el, curChapTitle);
+    const maskTop = parseFloat(mask.style.top);
+    const maskHeight = parseFloat(mask.style.height);
+    const maskLeft = parseFloat(mask.style.left);
+    const maskWidth = parseFloat(mask.style.width);
     if (top==undefined || left==undefined) return false;
     // 原图片/代码块没被标注没被标注的检测条件
     if (!footnote && (left - maskLeft < -1 || Math.abs(top + height - maskTop - maskHeight) > 0.2))
@@ -47,12 +48,12 @@ function originTest(mask: HTMLElement, el: HTMLElement, curChapTitle: string) {
  */
 function getCurrentMarkedChap() {
 	/* 检查本章是否有标注 */
-	let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight'; // 三种标注线
-	let masks = document.querySelectorAll<HTMLElement>(masksSelector);
+	const masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight'; // 三种标注线
+	const masks = document.querySelectorAll<HTMLElement>(masksSelector);
 	if (!masks.length) return "";
 	/* 确定本章标注所在章节的标题 */
 	const curChapTitle = getCurrentChapTitle();
-	let section_titles = document.getElementsByClassName('sectionListItem_title'); // 标注面板中的标题
+	const section_titles = document.getElementsByClassName('sectionListItem_title'); // 标注面板中的标题
 	for (let i = 0; i < section_titles.length; i++) {
 		const s_title = section_titles[i]; // 标题
 		// 在标注面板中找到 curChapTitle
@@ -62,7 +63,7 @@ function getCurrentMarkedChap() {
 	}
 	// 此时确定 curChapTitle 不是本章标注所在章节
 	// 向前找标题
-	let menu_titles = document.getElementsByClassName('chapterItem_text'); // 菜单中的标题
+	const menu_titles = document.getElementsByClassName('chapterItem_text'); // 菜单中的标题
 	let tmp_title = "";
 	// 遍历目录标题
 	for (let i = 0; i < menu_titles.length; i++) {
@@ -87,11 +88,11 @@ function countTargets() {
 	if (!curChapTitle) return 0;
 	let targetCnt = 0;
 	// 遍历标注、检查是否存在 IMG_TAG
-	let sectionListItems = document.getElementsByClassName('sectionListItem');
+	const sectionListItems = document.getElementsByClassName('sectionListItem');
 	let foundChap = false;
 	for (let i = 0; i < sectionListItems.length; i++) {
 		const element = sectionListItems[i];
-		let sectionListItem_title = element.getElementsByClassName('sectionListItem_title')[0]; // 标题
+		const sectionListItem_title = element.getElementsByClassName('sectionListItem_title')[0]; // 标题
 		// 第一次找到本章内容
 		if(sectionListItem_title && sectionListItem_title.textContent == curChapTitle){
 			console.log("找到当前章节的标注");
@@ -113,10 +114,10 @@ function countTargets() {
 
 // 从 DOM 对象获取图片/代码/脚注对象
 function getTargetObj(el: HTMLElement, curChapTitle: string) {
-    let imgSrc = el.getAttribute("data-src");
-    let footnote = el.getAttribute("data-wr-footernote");
+    const imgSrc = el.getAttribute("data-src");
+    const footnote = el.getAttribute("data-wr-footernote");
     let height = parseFloat(el.style.height);
-    let width = parseFloat(el.style.width);
+    const width = parseFloat(el.style.width);
     let top;
     let left;
     const match = el.style.transform.match(/translate\(\s*(\d*)px,\s*(\d*)px/)
@@ -154,8 +155,8 @@ function isCovered(el1: HTMLElement, el2: HTMLElement, scale?: number) {
 	let {right: r2Right, left: r2Left, top: r2Top, bottom: r2Bottom} = el2.getBoundingClientRect();
 	scale = scale || .97
 	if(scale){
-		let subWidth = (1 - scale) * (r2Right - r2Left)
-		let subHeight = (1 - scale) * (r2Bottom - r2Top)
+		const subWidth = (1 - scale) * (r2Right - r2Left)
+		const subHeight = (1 - scale) * (r2Bottom - r2Top)
 		r2Right = r2Right - subWidth/2
 		r2Left = r2Left + subWidth/2
 		r2Top = r2Top + subHeight/2
@@ -180,23 +181,23 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
     let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight'; // 三种标注线
     if(addThoughts) masksSelector = `${masksSelector},.wr_underline_thought`; // 获取想法时加上想法标注线
     // 遍历标注
-    let masks = document.querySelectorAll<HTMLElement>(masksSelector);
+    const masks = document.querySelectorAll<HTMLElement>(masksSelector);
     let notesCounter = 1;
     const curChapTitle = getCurrentChapTitle();
-	const scale = await getSyncStorage(scaleStorageKey);
+	const scale = await getSyncStorage(scaleStorageKey) as string
 	console.log(`缩放比例：${scale}`);
     for (const mask of masks) {
         mask.scrollIntoView({block: 'center'}); // 滚动到视图，加载图片
         mask.style.background = '#ffff0085'; // 高亮
         await sleep(50); // 扫描间隔
-        let ImgsSelector = "img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre"; // 图片之类
+        const ImgsSelector = "img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre"; // 图片之类
         // 遍历图片之类，检查是否被当前标注遮盖
-		let targetEls = $(ImgsSelector).get();
+		const targetEls = $(ImgsSelector).get();
 		// #99
         targetEls.sort((x, y)=>x.getBoundingClientRect().left - y.getBoundingClientRect().left);
 		targetEls.forEach((el): false | void => {
             if(!isCovered(mask, el, parseFloat(scale))) return;
-            let {imgSrc,alt,isInlineImg,footnote,currentChapTitle,code} = getTargetObj(el, curChapTitle);
+            const {imgSrc,alt,isInlineImg,footnote,currentChapTitle,code} = getTargetObj(el, curChapTitle);
             if(imgSrc && alt !== undefined && isInlineImg !== undefined){
                 markedData.push({alt: alt, imgSrc: imgSrc, isInlineImg: isInlineImg});
             }else if(footnote){
@@ -221,10 +222,10 @@ async function getMarkedData(addThoughts: boolean, markedData: Array<Img|Footnot
         markedData = await getMarkedData(addThoughts, markedData, false);
     }
     return markedData;
-};
+}
 
 /* 初始化 */
-var IMG_TAG = ""
+let IMG_TAG = ""
 async function initMarkedDateGetter(){
     console.log('initMarkedDateGetter');
     /* 监听背景页通知 */

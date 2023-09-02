@@ -9,10 +9,10 @@ export interface ThoughtJson {
   synckey: number;
   totalCount: number;
   reviews: ReviewData[];
-  removed: any[];
-  atUsers: any[];
-  refUsers: any[];
-  columns: any[];
+  removed: unknown[];
+  atUsers: unknown[];
+  refUsers: unknown[];
+  columns: unknown[];
   hasMore: number;
 }
 

@@ -1,7 +1,7 @@
 import { Message } from "../../worker/types/Message";
 import { copy } from "./content-utils";
 
-chrome.runtime.onMessage.addListener(function(msg: Message, sender, sendResponse){
+chrome.runtime.onMessage.addListener(function(msg: Message){
 	if (msg.target !== 'content') {
 		return;
 	}

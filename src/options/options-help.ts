@@ -157,19 +157,19 @@ function insertHelpContent(){
 	/* 插入帮助按钮 */
     const helpIcon = `<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABIUlEQVQ4y+2TsarCMBSGvxTBRdqiUZAWOrhJB9EXcPKFfCvfQYfulUKHDqXg4CYUJSioYO4mSDX3ttzt3n87fMlHTpIjlsulxpDZbEYYhgghSNOUOI5Ny2mZYBAELBYLer0eAJ7ncTweKYri4x7LJJRS0u12n7XrukgpjSc0CpVSXK/XZ32/31FKNW85z3PW6zXT6RSAJEnIsqy5UGvNZrNhu90CcDqd+C6tT6J+v//2Th+PB2VZ1hN2Oh3G4zGTyQTbtl/YbrdjtVpxu91+Ljyfz0RRhG3bzOfzF+Y4TvNXvlwuaK2pE4tfzr/wzwsty0IIURlL0998KxRCMBqN8H2/wlzXJQxD2u12vVkeDoeUZUkURRU+GAw4HA7s9/sK+wK6CWHasQ/S/wAAAABJRU5ErkJggg==" tabindex="0"></img>`;
     for (const id in helpContent) {
-        let target = $(`#${id}`);
+        const target = $(`#${id}`);
         if(helpContent[id].help){
             target.before(`<label for='${id}' id='${id}Label'>${helpContent[id].title}<span class="help-icon">${helpIcon}</span></label>`)
             target.parent().after(`<div class='help-content' hidden=''>${helpContent[id].help}</div>`)
         }
     }
 	/* 帮助按钮点击事件 */
-	let helpIcons = document.getElementsByClassName("help-icon")
-	let helpContents = document.getElementsByClassName("help-content")
+	const helpIcons = document.getElementsByClassName("help-icon")
+	const helpContents = document.getElementsByClassName("help-content")
 	for (let index = 0; index < helpIcons.length; index++) {
-		let helpIcon = helpIcons[index] as HTMLElement
+		const helpIcon = helpIcons[index] as HTMLElement
 		helpIcon.onclick = function(){
-			let help = helpContents[index] as HTMLElement
+			const help = helpContents[index] as HTMLElement
 			help.hidden = !help.hidden
 			return false
 		}

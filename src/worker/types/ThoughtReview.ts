@@ -3,7 +3,7 @@ import { Book } from './Book';
 
 export interface ThoughtReview {
 	abstract: string;
-	atUserVids?: any[];
+	atUserVids?: unknown[];
 	bookId: string;
 	bookVersion: number;
 	chapterUid: number;
@@ -17,7 +17,7 @@ export interface ThoughtReview {
 	type: number;
 	reviewId: string;
 	userVid: number;
-	topics: any[];
+	topics: unknown[];
 	isLike: number;
 	isReposted: number;
 	book: Book;

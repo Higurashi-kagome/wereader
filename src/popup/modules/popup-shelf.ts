@@ -21,14 +21,14 @@ async function initShelfTab() {
 	/* 绑定书架 tab 按钮点击事件 */
 	$('#shelfBtn').on('click', async function(){
 		console.log('call: #shelfBtn.onclick');
-		let res = await popupApi.shelfForPopup()
+		const res = await popupApi.shelfForPopup()
 		let shelfData = res.shelfData
 		// 从背景页获取数据无效
 		if(Object.keys(shelfData).length === 0 || shelfData.errMsg){
 			const resp: ShelfDataTypeJson | ShelfErrorDataType = await popupApi.getShelfData();
 			if(resp.errMsg){	// 从服务端获取数据失败
 				$('#shelf').html(`<a>正在加载...</a>`);
-				let tab = await popupApi.createTab({url: `https://weread.qq.com`, active: false});
+				const tab = await popupApi.createTab({url: `https://weread.qq.com`, active: false});
 				if(tab){
 					shelfData = await popupApi.setShelfData();
 					if(shelfData.errMsg){
@@ -49,15 +49,15 @@ async function initShelfTab() {
 
 
 function getShelf(shelfData: ShelfDataTypeJson) {
-	let {books, archive: categoryObjs} = shelfData;
-	let bookId_book = books!.reduce((tempMap: {[propName: string]: Book}, curBook: Book)=>{
+	const {books, archive: categoryObjs} = shelfData;
+	const bookId_book = books!.reduce((tempMap: {[propName: string]: Book}, curBook: Book)=>{
 		tempMap[curBook.bookId] = curBook;
 		return tempMap;
 	},{});
-	let shelf = categoryObjs!.reduce((
+	const shelf = categoryObjs!.reduce((
 		tempShelf: {cateName: string, books: Book[], isTop?: boolean}[],
 		curCate: Archive)=>{
-		let cate: {cateName: string, books: Book[], isTop?: boolean} = {
+		const cate: {cateName: string, books: Book[], isTop?: boolean} = {
 			cateName: "",
 			books: []
 		};
@@ -74,8 +74,8 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 	},[]);
 	//将书架中未分类的书籍归为 "未分类书籍"
 	// TODO: 不应该将未分类的书籍分类
-	let extraCate: {cateName: string, books: Book[]} = {cateName: '未分类', books: []};
-	for(let bookId in bookId_book){
+	const extraCate: {cateName: string, books: Book[]} = {cateName: '未分类', books: []};
+	for(const bookId in bookId_book){
 		extraCate.books.push(bookId_book[bookId]);
 	}
 	if(extraCate.books.length) shelf.push(extraCate);
@@ -85,13 +85,13 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 			return (x.readUpdateTime > y.readUpdateTime) ? -1 : 1;
 		});
 		// 书本顶置
-		let topBookIdx = [];
+		const topBookIdx = [];
 		for (let i = 0; i < cate.books.length; i++) {
-			let book = cate.books[i];
+			const book = cate.books[i];
 			if (book && book.isTop) topBookIdx.push(i);
 		}
 		for (let i = 0; i < topBookIdx.length; i++) {
-			let book = cate.books.splice(topBookIdx[i], 1)[0];
+			const book = cate.books.splice(topBookIdx[i], 1)[0];
 			cate.books.unshift(book);
 		}
 		// 顶置书本排序
@@ -111,7 +111,7 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 		}
 	});
 	// 分类顶置
-	let idx = [];
+	const idx = [];
 	for (let i = 0; i < shelf.length; i++) {
 		const item = shelf[i]
 		if (item && item.isTop) idx.push(i);
@@ -134,23 +134,23 @@ function getShelf(shelfData: ShelfDataTypeJson) {
 }
 
 function createShelf(shelfData: ShelfDataTypeJson){
-	let shelf = getShelf(shelfData);
+	const shelf = getShelf(shelfData);
 	console.log('call: createShelf var shelf\n', shelf);
-	let shelfContainer = $('#shelf').html('');
+	const shelfContainer = $('#shelf').html('');
 	/*创建目录*/
 	for (const {cateName, books} of shelf) {
 		// 遍历某一分类下的书本
 		if(!books.length) continue;
-		let booksContainer = $(`<div class='dropdown-container'></div>`);//章内书本容器
+		const booksContainer = $(`<div class='dropdown-container'></div>`);//章内书本容器
 		for (const {bookId, title} of books) {
 			const href = `https://weread.qq.com/web/reader/${puzzling(bookId)}`;
-			let bookEl = $(`<a target='_blank' href='${href}'>${title}</a>`);
+			const bookEl = $(`<a target='_blank' href='${href}'>${title}</a>`);
 			// 为微信公众号绑定事件
 			if(bookId && bookId.startsWith('MP_WXS_')){
 				bookEl.on('click', async function(e){
 					e.preventDefault();
 					if (!bookId) return;
-					let resp = await popupApi.createMpPage(bookId);
+					const resp = await popupApi.createMpPage(bookId);
 					if(resp && resp.errmsg) {
 						console.log('mpOnclick', resp.errmsg);
 						chrome.tabs.create({url: href});
@@ -160,7 +160,7 @@ function createShelf(shelfData: ShelfDataTypeJson){
 			booksContainer.append(bookEl);
 		}
 		// 某一分类元素
-		let cateEl = $(`<button class='dropdown-btn'>${cateName}</button>`); 
+		const cateEl = $(`<button class='dropdown-btn'>${cateName}</button>`); 
 		shelfContainer.append(cateEl, booksContainer);
 		cateEl.on('click', dropdownClickEvent);
 	}

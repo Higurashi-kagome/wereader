@@ -9,7 +9,7 @@ interface Datum {
   soldOut: number;
   clearAll: number;
   updated: ChapInfoUpdated[];
-  removed: any[];
+  removed: unknown[];
   synckey: number;
   book: Book;
 }
@@ -28,5 +28,5 @@ export interface ChapInfoUpdated {
   files: string[];
   tar?: string;
   isCurrent?: boolean;
-  anchors: any;
+  anchors: unknown;
 }

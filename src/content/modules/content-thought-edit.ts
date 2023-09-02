@@ -5,14 +5,14 @@ function initThoughtEdit() {
 	console.log('initThoughtEdit');
 	window.addEventListener('load', ()=>{
 		$('.app_content')[0].arrive('.writeReview_submit_button.wr_btn.wr_btn_Big', {onceOnly: true}, function(btn) {
-			let $btn = $(btn);
-			let textarea = $('#WriteBookReview');
+			const $btn = $(btn);
+			const textarea = $('#WriteBookReview');
 			// 按键替代，实现字符替换
-			let btnClone = $(btn.cloneNode(true)).on("click", ()=>{
+			const btnClone = $(btn.cloneNode(true)).on("click", ()=>{
 				chrome.storage.sync.get(['enableThoughtEsc'], function(result){
 					if(result.enableThoughtEsc) {
-						let text = textarea.val() as string;
-						let newText = text.replace(/</g, '＜').replace(/>/g, '＞');
+						const text = textarea.val() as string;
+						const newText = text.replace(/</g, '＜').replace(/>/g, '＞');
 						textarea.val(newText);
 					}
 					$btn.trigger("click");

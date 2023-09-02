@@ -15,7 +15,7 @@ function initNotesMenu() {
 			if ($(title_scroll_selector).length) { // 如果已经创建目录
 				$(`${title_scroll_selector} a.current`).removeClass('current'); // 删除之前章节标注
 				$(`${title_scroll_selector} a`).each((idx, el)=>{ // 标记当前章节
-					let title = $(el);
+					const title = $(el);
 					if (title.text() == curChapTitle) title.addClass('current');
 				});
 			}
@@ -23,18 +23,18 @@ function initNotesMenu() {
 		document.querySelector('.note')!.addEventListener('click', ()=>{
 			if ($(title_scroll_selector).length) return; // 已经创建则不需要重新创建
 			// 开始创建
-			let btn = $(`<button class='notesMenuBtn'>目录</button>`).prependTo('#noteTools'); // #noteTools 在 searchNote 中创建
-			let ul = $(`<ul id='${title_scroll_selector.replace("#", "")}'></ul>`).prependTo('#noteTools');
+			const btn = $(`<button class='notesMenuBtn'>目录</button>`).prependTo('#noteTools'); // #noteTools 在 searchNote 中创建
+			const ul = $(`<ul id='${title_scroll_selector.replace("#", "")}'></ul>`).prependTo('#noteTools');
 			const curChapTitle = getCurrentChapTitle();
 			$('.sectionListItem_title').each((idx, titleEl)=>{
 				// 标记当前章节
 				const titleText = titleEl.textContent;
 				const className = (titleText == curChapTitle) ? 'current' : '';
 				// 生成目录
-				let li = $(`<li><a class='${className}'>${titleText}</a></li>`).click(()=>{
+				const li = $(`<li><a class='${className}'>${titleText}</a></li>`).click(()=>{
 					// 标题被搜索框排除时也能够跳转
-					let titleParent = $(titleEl.parentElement!);
-					let isHide = titleParent.css('display') == 'none';
+					const titleParent = $(titleEl.parentElement!);
+					const isHide = titleParent.css('display') == 'none';
 					if (isHide) titleParent.css('display', 'block');
 					titleEl.parentElement!.scrollIntoView({behavior: "smooth"});
 					if (isHide) titleParent.css('display', 'none');

@@ -133,14 +133,14 @@ export class Wereader{
 	}
 
 	async isLogined(){
-		let text = await getText(Wereader.maiUrl);
+		const text = await getText(Wereader.maiUrl);
 		if(text && text.indexOf('wr_avatar_img')>-1) return true;
 		else return false;
 	}
 
 	async shelfRemoveBook(bookIds: string[]) {
-		let payload = {bookIds: bookIds, private: 1}
-		let resp = await fetch(this.shelfRemoveBookUrl, {
+		const payload = {bookIds: bookIds, private: 1}
+		const resp = await fetch(this.shelfRemoveBookUrl, {
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {
@@ -152,8 +152,8 @@ export class Wereader{
 	}
 
 	async shelfMakeBookPrivate(bookIds: string[]) {
-		let payload = {bookIds: bookIds, private: 1};
-		let resp = await fetch(this.shelfBookSecret, {
+		const payload = {bookIds: bookIds, private: 1};
+		const resp = await fetch(this.shelfBookSecret, {
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {
@@ -165,8 +165,8 @@ export class Wereader{
 	}
 
 	async shelfMakeBookPublic(bookIds: string[]) {
-		let payload = {bookIds: bookIds, private: 0}
-		let resp = await fetch(`${Wereader.indexUrl}/book/secret`, {
+		const payload = {bookIds: bookIds, private: 0}
+		const resp = await fetch(`${Wereader.indexUrl}/book/secret`, {
 			method: 'POST',
 			body: JSON.stringify(payload),
 			headers: {

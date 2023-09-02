@@ -8,16 +8,16 @@ export type responseType = {chapters: {title: string, level: number}[], currentC
 function initGetChapInfo() {
 	console.log('initGetChapInfo');
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
-		let response: responseType = {chapters: [], currentContent: ""};
+		const response: responseType = {chapters: [], currentContent: ""};
 		console.log('收到请求', request);
 		if(!request.isGetChapters) return;
 		try{
 			/* 获取书本各章节标题 */
 			$('.chapterItem>:first-child').each((idx, el)=>{
-				let $el = $(el);
-				let className: string = $el.attr('class')!;
-				let level: number = parseInt(className.charAt(className.length - 1));
-				let chapTitle: string = $el.find('.chapterItem_text').text();
+				const $el = $(el);
+				const className: string = $el.attr('class')!;
+				const level: number = parseInt(className.charAt(className.length - 1));
+				const chapTitle: string = $el.find('.chapterItem_text').text();
 				// 获取目录
 				response.chapters.push({title: chapTitle, level: level});
 			});

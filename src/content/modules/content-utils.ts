@@ -9,7 +9,7 @@ function simulateClick(element: HTMLElement, init = {}): void {
 	const clientY = clientRect.top;
 	const position = { clientX: clientX, clientY: clientY };
 	Object.assign(init, position);
-	let mouseEvent = new MouseEvent("click", init);
+	const mouseEvent = new MouseEvent("click", init);
 	element.dispatchEvent(mouseEvent);
 }
 
@@ -28,7 +28,7 @@ function getCurrentChapTitle(): string {
 /* sleep(millisecond) */
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
-};
+}
 
 /** sweetAlert2 弹窗通知。
  * msg.alertMsg.icon 为 success 或 warning 类型时，比如 msg={icon: 'success',title: '复制成功'}
@@ -43,6 +43,7 @@ function mySweetAlert(msg: alertMsgType) {
 			position: 'top-end',
 			showConfirmButton: false,
 			timer: 1500,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			onOpen: (toast: { addEventListener: (arg0: string, arg1: any) => void; }) => {
 				toast.addEventListener('mouseenter', Swal.stopTimer)
 				toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -75,11 +76,11 @@ async function copy(targetText: string): Promise<void> {
 // ========== https://stackoverflow.com/a/19127555 ==========
 function loadCSS(file: string, elementId?: string | undefined) {
 	const filePath = chrome.runtime.getURL(file);
-	let link = document.createElement("link");
+	const link = document.createElement("link");
 	link.type = "text/css";
 	link.rel = "stylesheet";
 	link.href = filePath;
-	const extId = filePath.match(/(?<=\/\/)([^\/]*)/)![0]!;
+	const extId = filePath.match(/(?<=\/\/)([^/]*)/)![0]!;
 	link.classList.add(extId);
 	// 如果 id 存在，直接移除原元素
 	if(elementId) unloadCSS(elementId)

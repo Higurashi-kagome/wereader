@@ -6,13 +6,13 @@ import { Mp } from './Mp';
 export interface ShelfJson {
 	synckey: number;
 	bookProgress: BookProgress[];
-	removed: any[];
-	removedArchive: any[];
-	lectureRemoved: any[];
+	removed: unknown[];
+	removedArchive: unknown[];
+	lectureRemoved: unknown[];
 	archive: Archive[];
 	books: Book[];
-	lectureBooks: any[];
+	lectureBooks: unknown[];
 	lectureSynckey: number;
-	lectureUpdate: any[];
+	lectureUpdate: unknown[];
 	mp: Mp;
 }

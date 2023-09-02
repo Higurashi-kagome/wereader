@@ -1,6 +1,8 @@
-export function getLocalStorage(key: string | null = null): Promise<any> {
+import { ConfigType } from "../worker/worker-vars";
+
+export function getLocalStorage(key: string | null = null): Promise<unknown> {
 	return new Promise((res, rej)=>{
-		function onReceive(local: {[key: string]: any}) {
+		function onReceive(local: {[key: string]: unknown}) {
 			if(chrome.runtime.lastError){
 				rej(chrome.runtime.lastError.message)
 			}else{
@@ -15,7 +17,7 @@ export function getLocalStorage(key: string | null = null): Promise<any> {
 	})
 }
 
-export function getSyncStorage(key: string | null | string[] = null): Promise<any> {
+export function getSyncStorage(key: string | null | string[] = null): Promise<ConfigType | unknown> {
 	return new Promise((res, rej)=>{
 		let keys = null
 		if(typeof key == "string"){
@@ -38,10 +40,12 @@ export function getSyncStorage(key: string | null | string[] = null): Promise<an
 }
 
 // 排序（只处理整数键）
+/* eslint-disable */
 export function sortByKey(array: {[key: string]: any}[], key: string) {
+/* eslint-enable */
 	return array.sort((a, b) => {
-		let x = parseInt(a[key]);
-		let y = parseInt(b[key]);
+		const x = parseInt(a[key]);
+		const y = parseInt(b[key]);
 		return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 	});
 }

@@ -11,7 +11,7 @@ import {
 async function initNoteTab(url: string) {
 	// 在读书页时才显示笔记
 	if(!readPageRegexp.test(url)) return;
-	let bookId = await popupApi.setBookId();
+	const bookId = await popupApi.setBookId();
 	if(!bookId) return window.close();
 	const userVid = await popupApi.getUserVid();
 	console.log('bookId', bookId);
@@ -27,7 +27,7 @@ async function initNoteTab(url: string) {
 	$('.vertical-menu[data-for="noteBtn"] .dropdown-btn').on('click', dropdownClickEvent);
 	// 点击调用该函数
 	function listener(event: JQuery.ClickEvent){
-		let targetEl = event.target;
+		const targetEl = event.target;
 		switch(targetEl.id){
 			case "getTextComment":
 				popupApi.copyComment(userVid, false)

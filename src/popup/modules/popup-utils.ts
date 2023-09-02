@@ -14,13 +14,14 @@ const dropdownClickEvent = function(this: HTMLElement){
 }
 
 // https://www.geeksforgeeks.org/sort-the-array-in-a-given-index-range/
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function partSort(arr: Array<any>, a: number, b: number, fun = function(a: any, b: any){return a - b})
 {
 	// Variables to store start and end of the index range
-	let l = Math.min(a, b);
-	let r = Math.max(a, b);
+	const l = Math.min(a, b);
+	const r = Math.max(a, b);
 	// Temporary array
-	let temp = new Array(r - l + 1);
+	const temp = new Array(r - l + 1);
 	for (let i = l, j = 0; i <= r; i++, j++) {
 		temp[j] = arr[i];
 	}

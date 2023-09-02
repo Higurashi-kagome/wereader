@@ -23,7 +23,7 @@ interface InnerReview {
   mpInfo: MpInfo;
   score: number;
   mpRank: number;
-  topics: any[];
+  topics: unknown[];
   isLike: number;
   isReposted: number;
   book: MpBook;

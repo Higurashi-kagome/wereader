@@ -27,7 +27,7 @@ import { notify } from './worker-notification';
 export { getBookMarks, getTitleAddedPreAndSuf };
 
 // 给标题添加前后缀
-function getTitleAddedPreAndSuf(title: string, level: number, config: {[key: string] : any}) {
+function getTitleAddedPreAndSuf(title: string, level: number, config: {[key: string] : unknown}) {
 	let newTitle = '';
 	switch (level) {
 		case 1:
@@ -39,8 +39,7 @@ function getTitleAddedPreAndSuf(title: string, level: number, config: {[key: str
 		case 5:
 		case 6:
 		default:
-			const {lev3Pre, lev3Suf} = config;
-			newTitle = `${lev3Pre}${title}${lev3Suf}`;
+			newTitle = `${config.lev3Pre}${title}${config.lev3Suf}`;
 			break;
 	}
 	return newTitle;
@@ -52,10 +51,10 @@ async function getBookMarks(isAddThou?: boolean) {
 	if(!marks.length) return;
 	/* 请求得到 chapters 方便导出不含标注的章节的标题，
 	另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
-	let chapters = await getChapters() || [];
+	const chapters = await getChapters() || [];
 	/* 生成标注数据 */
 	let chaptersAndMarks: ChapAndMarks[] = chapters.map((chap)=>{
-		let chapAndMarks: ChapAndMarks = chap as unknown as ChapAndMarks;
+		const chapAndMarks: ChapAndMarks = chap as unknown as ChapAndMarks;
 		//取得章内标注并初始化 range
 		let marksInAChap = marks.filter((mark)=>mark.chapterUid == chapAndMarks.chapterUid);
 		marksInAChap = marksInAChap.map((curMark)=>{
@@ -77,8 +76,9 @@ async function getBookMarks(isAddThou?: boolean) {
 
 // 给某一条标注添加图片等内容
 // TODO：换掉 any 类型
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function addMarkedData(mark: any, markedData: any, footnoteContent: string, config: ConfigType) {
-	let abstract = mark.abstract;
+	const abstract = mark.abstract;
 	let markText = abstract ? abstract : mark.markText;
 	for (const markedDataIdx of mark.markedDataIdxes) { // 遍历索引，逐个替换
         // 数据缺失
@@ -120,23 +120,24 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string, conf
 }
 
 // 在 marks 中添加替换数据索引（每一个 imgTag 用哪个位置的 markedData 替换）
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function addRangeIndexST(marks: any, markedDataLength: number, config: ConfigType) {
     // imgTag 的 range 作为键，该 imgTag 所对应的数据在 markedData 中的索引作为值
-	let used: {[key: string]: number} = {};
+	const used: {[key: string]: number} = {};
     // markedData 索引
 	let markedDataIdx = 0;
     // 不重复的 imgTag 的个数，正常情况下，应该与 markedData 的长度相等
     let targetCnt = 0;
 	for (let i = 0; i < marks.length; i++) {
-		let {abstract, range: markRange} = marks[i];
-		let markText = abstract ? abstract : marks[i].markText;
+		const {abstract, range: markRange} = marks[i];
+		const markText = abstract ? abstract : marks[i].markText;
         // 获取当前标注中的 imgTag 位置
-		let indexes = getIndexes(markText, config.imgTag);
-		let markedDataIdxes = [];
+		const indexes = getIndexes(markText, config.imgTag);
+		const markedDataIdxes = [];
         // 遍历当前标注中的 imgTag 位置
 		for (const idx of indexes) {
             // 计算某个 imgTag 在本章标注中的唯一位置
-			let imgRange = markRange + idx;
+			const imgRange = markRange + idx;
 			if (used[imgRange] === undefined) { // 该 imgTag 没有记录过
                 targetCnt++;
 				used[imgRange] = markedDataIdx; // 记录某个位置的 imgTag 所对应的替换数据
@@ -163,15 +164,16 @@ export function traverseMarks(marks: (Updated | ThoughtsInAChap)[], markedData: 
 	let prevMarkText = ""; // 保存上一条标注文本
 	let prevMarkType = ""; // 保存上一次标注类型（0 标注 1 想法）
 	let tempRes = ""; // 保存上一条处理后追加到 res 的标注文本
-	let res: string[] = [], footnoteContent = "";
+	const res: string[] = []
+	let footnoteContent = ""
 	for (let j = 0; j < marks.length; j++) { // 遍历章内标注
-		let mark = marks[j];
+		const mark = marks[j];
 		if (markedData.length) {
 			[marks[j], footnoteContent] = addMarkedData(marks[j], markedData, footnoteContent, config);
 		}
 		if(isThought(mark)){ // 如果为想法
 			// 想法
-			let thouContent = `${config.thouPre}${mark.content}${config.thouSuf}\n\n`;
+			const thouContent = `${config.thouPre}${mark.content}${config.thouSuf}\n\n`;
 			// 想法所标注的内容
 			const abstract = mark.abstract;
 			let thouAbstract = `${config.thouMarkPre}${abstract}${config.thouMarkSuf}\n\n`;
@@ -226,8 +228,8 @@ export async function getChapters(){
 	// https://github.com/Higurashi-kagome/wereader/issues/76 start
 	checkIsInServer(chapsInServer, response, chapsFromDom);
 	// https://github.com/Higurashi-kagome/wereader/issues/76 end
-	const chapIdx = await getLocalStorage('chapIdx');
-	let checkedChaps = chapsInServer.map((chapInServer)=>{
+	const chapIdx = await getLocalStorage('chapIdx') as {[key: string]: number};
+	const checkedChaps = chapsInServer.map((chapInServer)=>{
 		//某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
 		if(chapsFromDom.length === chapsInServer.length &&
 			!chapsFromDom.filter(chap => chap.title===chapInServer.title).length){
@@ -237,7 +239,7 @@ export async function getChapters(){
 		}
 		//某些书没有目录级别
 		if(!chapInServer.level){
-			let targetChapFromDom = chapsFromDom.filter(chap => chap.title===chapInServer.title);
+			const targetChapFromDom = chapsFromDom.filter(chap => chap.title===chapInServer.title);
 			if(targetChapFromDom.length) chapInServer.level = targetChapFromDom[0].level;
 			else chapInServer.level = 1;
 		}
@@ -255,7 +257,7 @@ export async function getChapters(){
 
 /* 判断从 DOM 获取的当前章节是否存在于 server 中（从 DOM 获取到的章节数可能多于 server 中的章节数，且当前章节为不存在于 server 中的某些子标题） */
 function checkIsInServer(chapsInServer: ChapInfoUpdated[], response: responseType, chapsFromDom: { title: string; level: number; }[]) {
-	let isInServer = chapsInServer.filter(chap => {
+	const isInServer = chapsInServer.filter(chap => {
 		return (chap.title === response.currentContent || response.currentContent.indexOf(chap.title) > -1);
 	}).length > 0;
 	/* 不存在于 server 则在从 DOM 获取到的章节信息中向前找，找到一个存在于 server 中的目录，则将其作为当前目录 */
@@ -279,21 +281,22 @@ function checkIsInServer(chapsInServer: ChapInfoUpdated[], response: responseTyp
 // 获取热门标注数据
 export async function getBestBookMarks() {
 	const wereader = new Wereader(await getBookId());
-	let {items: bestMarksData} = await wereader.getBestBookmarks();
+	const {items: bestMarksData} = await wereader.getBestBookmarks();
 	//处理书本无热门标注的情况
 	if(!bestMarksData || !bestMarksData.length){
 		sendAlertMsg({text: "该书无热门标注",icon:'warning'});
 		return;
 	}
 	//查找每章节热门标注
-	let chapters = await getChapters() || [];
-	let bestMarks = chapters.map((chap)=>{
+	const chapters = await getChapters() || [];
+	const bestMarks = chapters.map((chap)=>{
 		interface ChapInfoUpdatedExtra extends ChapInfoUpdated{
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			bestMarks?: any
 		}
-		let tempChap: ChapInfoUpdatedExtra = chap;
+		const tempChap: ChapInfoUpdatedExtra = chap;
 		//取得章内热门标注并初始化 range
-		let bestMarksInAChap = 
+		const bestMarksInAChap = 
 			bestMarksData.filter((bestMark)=>bestMark.chapterUid == tempChap.chapterUid)
 			.reduce((tempBestMarksInAChap: Item[], curBestMark)=>{
 				curBestMark.range = parseInt(curBestMark.range.toString().replace(/(\d*)-\d*/, "$1"));
@@ -301,7 +304,7 @@ export async function getBestBookMarks() {
 				return tempBestMarksInAChap;
 		},[]);
 		//排序章内标注并加入到章节内
-		tempChap.bestMarks = sortByKey(bestMarksInAChap, "range");;
+		tempChap.bestMarks = sortByKey(bestMarksInAChap, "range");
 		return tempChap;
 	});
 	return bestMarks;
@@ -309,17 +312,17 @@ export async function getBestBookMarks() {
 
 export async function getMyThought() {
 	const wereader = new Wereader(await getBookId());
-	let data = await wereader.getThoughts();
+	const data = await wereader.getThoughts();
 	//获取 chapterUid 并去重、排序
-	let chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))).map((uid)=>{
+	const chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))).map((uid)=>{
 		return parseInt(uid);
 	});
 	chapterUidArr.sort()
 	//查找每章节标注并总结好
-	let thoughtsMap: Map<number, ThoughtsInAChap[]> = new Map<number, ThoughtsInAChap[]>();
+	const thoughtsMap: Map<number, ThoughtsInAChap[]> = new Map<number, ThoughtsInAChap[]>();
 	//遍历章节
 	chapterUidArr.forEach(chapterUid=>{
-		let thoughtsInAChap: ThoughtsInAChap[] = [];
+		const thoughtsInAChap: ThoughtsInAChap[] = [];
 		//遍历所有想法，将章内想法放入一个数组
 		for (const item of data.reviews) {
 			//处理有书评的情况
@@ -327,7 +330,7 @@ export async function getMyThought() {
 			//找到指定章节的想法
 			let abstract = item.review.abstract
 			//替换想法前后空字符
-			let content = item.review.content?.replace(/(^\s*|\s*$)/g,'') ?? '';
+			const content = item.review.content?.replace(/(^\s*|\s*$)/g,'') ?? '';
 			let range = item.review.range
 			//如果没有发生替换（为章末想法时发生）
 			if(range == null || typeof range.valueOf() !== 'string' || range.indexOf('-') < 0){
@@ -345,12 +348,12 @@ export async function getMyThought() {
 
 // 在标注中添加想法
 async function addThoughts(chaptersAndMarks: ChapAndMarks[], chapters: ChapInfoUpdated[]){
-	let chapsMap = chapters.reduce((tempChapsMap, aChap)=>{
+	const chapsMap = chapters.reduce((tempChapsMap, aChap)=>{
 		// 整理格式
 		tempChapsMap.set(aChap.chapterUid, aChap);
 		return tempChapsMap;
 	}, new Map<number, ChapInfoUpdated>());
-	let thoughtsMap = await getMyThought();
+	const thoughtsMap = await getMyThought();
 	// 遍历各章节想法
 	thoughtsMap.forEach((thoughtsInAChap, chapterUid) => {
 		// 遍历章节依次将各章节章内想法添加进 marks
@@ -359,14 +362,14 @@ async function addThoughts(chaptersAndMarks: ChapAndMarks[], chapters: ChapInfoU
 			if(chaptersAndMarks[i].chapterUid != chapterUid) continue;
 			// 找到想法所在章节
 			// 想法与标注合并后按 range 排序
-			let marks = chaptersAndMarks[i].marks.concat(thoughtsInAChap);
+			const marks = chaptersAndMarks[i].marks.concat(thoughtsInAChap);
 			chaptersAndMarks[i].marks = sortByKey(marks, "range") as Updated[];
 			addedToMarks = true;
 			break;
 		}
 		// 如果想法未被成功添加进标注（想法所在章节不存在标注的情况下发生）
 		if(!addedToMarks) {
-			let m = chapsMap.get(chapterUid);
+			const m = chapsMap.get(chapterUid);
 			chaptersAndMarks.push({
 				isCurrent: m !== undefined && m.isCurrent,
 				level: m === undefined ? 0 : m.level ,
@@ -377,23 +380,23 @@ async function addThoughts(chaptersAndMarks: ChapAndMarks[], chapters: ChapInfoU
 		}
 	});
 	// 章节排序
-	let sorted = sortByKey(chaptersAndMarks, "chapterUid") as ChapAndMarks[];
+	const sorted = sortByKey(chaptersAndMarks, "chapterUid") as ChapAndMarks[];
 	return sorted;
 }
 
 // 给 markText 进行正则替换
 function regexpReplace(markText: string, regexpConfig: reConfigCollectionType){
-	for(let reId in regexpConfig){
-		let replaceMsg = regexpConfig[reId as keyof reConfigCollectionType].replacePattern.match(/^s\/(.+?)\/(.*?)\/(\w*)$/)
+	for(const reId in regexpConfig){
+		const replaceMsg = regexpConfig[reId as keyof reConfigCollectionType].replacePattern.match(/^s\/(.+?)\/(.*?)\/(\w*)$/)
 		if(!regexpConfig[reId as keyof reConfigCollectionType].checked
 			|| replaceMsg == null
 			|| replaceMsg.length < 4){//检查是否选中以及是否满足格式
 			continue
 		}
-		let pattern = replaceMsg[1]
-		let replacement = replaceMsg[2]
-		let flag = replaceMsg[3]
-		let regexpObj = new RegExp(pattern, flag)
+		const pattern = replaceMsg[1]
+		const replacement = replaceMsg[2]
+		const flag = replaceMsg[3]
+		const regexpObj = new RegExp(pattern, flag)
 		if(regexpObj.test(markText)){
 			markText = markText.replace(regexpObj, replacement)
 			//匹配一次后结束匹配

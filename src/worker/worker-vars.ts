@@ -31,7 +31,7 @@ export enum SelectActionOptions{
 	HandWrite = "underlineHandWrite"
 }
 
-var defaultConfig: ConfigType = {
+const defaultConfig: ConfigType = {
     s1Pre: "",
     s1Suf: "",
     s2Pre: "**",
@@ -79,14 +79,14 @@ var defaultConfig: ConfigType = {
  * @returns 当前读书页的书本 id
  */
 export async function getBookId(): Promise<string> {
-	return await getLocalStorage('bookId')
+	return await getLocalStorage('bookId') as string
 }
 /**
  * 获取已打开读书页及对应书本 id
  * @returns tabId: bookId 键值对
  */
-export async function getBookIds(): Promise<{[key: number]: any}> {
-	return await getLocalStorage('bookIds')
+export async function getBookIds(): Promise<{[key: number]: string}> {
+	return await getLocalStorage('bookIds') as {[key: number]: string}
 }
 
 /**

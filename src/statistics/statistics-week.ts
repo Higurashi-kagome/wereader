@@ -4,7 +4,7 @@ import { readDetailData } from "../types/readDetailTypes";
 import { bg as statApi, convertTime } from "./statistics-var";
 
 
-let weekConfig: ChartConfiguration = {
+const weekConfig: ChartConfiguration = {
     type: 'line',
     data: {
         labels: ['一','二','三','四','五','六','日'],
@@ -62,11 +62,11 @@ let weekConfig: ChartConfiguration = {
         }
     }
 };
-let loadedWeekDatas: readDetailData[] = [];
+const loadedWeekDatas: readDetailData[] = [];
 let curWeekBaseTimestamp: number;
 
 function updateWeekConfig(data: readDetailData){
-    let {timeMeta, readMeta, baseTimestamp} = data;
+    const {timeMeta, baseTimestamp} = data;
     if(loadedWeekDatas.indexOf(data)<0) loadedWeekDatas.push(data);
     curWeekBaseTimestamp = baseTimestamp;
 	weekConfig.data!.datasets![0].data = convertTime(timeMeta.readTimeList) as unknown as number[];
@@ -80,8 +80,8 @@ function initWeekStatistics() {
 		try {
 			readDetail = await statApi.getReadDetail(0);
 			updateWeekConfig(readDetail.datas[0]);
-			let canvas = document.getElementById('week-canvas') as HTMLCanvasElement;
-			let ctx = canvas.getContext('2d')!;
+			const canvas = document.getElementById('week-canvas') as HTMLCanvasElement;
+			const ctx = canvas.getContext('2d')!;
 			weekLine = new Chart(ctx, weekConfig);
 		} catch (error) {
 			return console.log(error, readDetail);
@@ -90,8 +90,8 @@ function initWeekStatistics() {
 	
 	/* 上周 */
 	$('#previousWeek').on('click', async ()=>{
-		let curData = loadedWeekDatas.filter(data=>data.baseTimestamp == curWeekBaseTimestamp)[0];
-		let previousIndex = loadedWeekDatas.indexOf(curData) + 1;
+		const curData = loadedWeekDatas.filter(data=>data.baseTimestamp == curWeekBaseTimestamp)[0];
+		const previousIndex = loadedWeekDatas.indexOf(curData) + 1;
 		if(previousIndex<loadedWeekDatas.length) {
 			updateWeekConfig(loadedWeekDatas[previousIndex]);
 		}else{
@@ -108,8 +108,8 @@ function initWeekStatistics() {
 	
 	/* 下周 */
 	$('#nextWeek').on('click', async ()=>{
-		let curData = loadedWeekDatas.filter(data=>data.baseTimestamp == curWeekBaseTimestamp)[0];
-		let nextIndex = loadedWeekDatas.indexOf(curData) - 1;
+		const curData = loadedWeekDatas.filter(data=>data.baseTimestamp == curWeekBaseTimestamp)[0];
+		const nextIndex = loadedWeekDatas.indexOf(curData) - 1;
 		if(nextIndex > -1) {
 			updateWeekConfig(loadedWeekDatas[nextIndex]);
 			weekLine.update();

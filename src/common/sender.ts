@@ -1,10 +1,9 @@
 import { SweetAlertOptions } from "sweetalert2"
 import { getCurTab } from "../worker/worker-utils"
-import { createOffset } from "../worker/worker-offscreen"
 
 export class Sender{
 	private _type: string
-	private _data: any
+	private _data: unknown
 	public static readonly worker = 'worker'
 	public static readonly popup = 'popup'
 	public static readonly offscreen = 'offscreen'
@@ -15,7 +14,7 @@ export class Sender{
 	 * @param type 消息类型
 	 * @param data 消息数据
 	 */
-	constructor(type: string = '', data: any = undefined) {
+	constructor(type: string = '', data: unknown = undefined) {
 		this._type = type
 		this._data = data
 	}
@@ -24,7 +23,7 @@ export class Sender{
 		this.type = type
 	}
 
-	public set data(data: any) {
+	public set data(data: unknown) {
 		this._data = data
 	}
 
@@ -43,7 +42,7 @@ export class Sender{
 	 * 发送页面通知消息（发消息给 worker，worker 再发给 content）
 	 * @param data 通知消息
 	 */
-	async sendAlertMsg(data: SweetAlertOptions = this._data){
+	async sendAlertMsg(data: SweetAlertOptions = this._data as SweetAlertOptions){
 		this._type = 'send-alert-msg'
 		this._data = data
 		return await this.sendTo(Sender.worker)

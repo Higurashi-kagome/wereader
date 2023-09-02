@@ -1,21 +1,21 @@
 interface ShelfDataType {
 	synckey?: number;
 	bookProgress?: BookProgress[];
-	removed?: any[];
-	removedArchive?: any[];
-	lectureRemoved?: any[];
+	removed?: unknown[];
+	removedArchive?: unknown[];
+	lectureRemoved?: unknown[];
 	archive?: Archive[];
 	books?: Book[];
-	lectureBooks?: any[];
+	lectureBooks?: unknown[];
 	lectureSynckey?: number;
-	lectureUpdate?: any[];
+	lectureUpdate?: unknown[];
 	mp?: Mp;
 	errMsg?: string
 }
 
 interface ShelfErrorDataType {
 	errMsg: string,
-	[propName: string]: any
+	[propName: string]: unknown
 }
 
 interface Mp {
@@ -79,9 +79,9 @@ interface Archive {
 	archiveId: number;
 	name: string;
 	bookIds: string[];
-	removed: any[];
-	lectureBookIds: any[];
-	lectureRemoved: any[];
+	removed: unknown[];
+	lectureBookIds: unknown[];
+	lectureRemoved: unknown[];
 	isTop?: boolean;
 }
 

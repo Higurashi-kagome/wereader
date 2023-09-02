@@ -6,7 +6,7 @@ import { getLocalStorage, getSyncStorage } from "../common/utils";
 import { ShelfForPopupType } from "./types/PopupApi";
 import { notify } from "./worker-notification";
 
-chrome.runtime.onMessage.addListener(function(msg: Message, sender: chrome.runtime.MessageSender, sendResponse: Function){
+chrome.runtime.onMessage.addListener(function(msg: Message, sender: chrome.runtime.MessageSender, sendResponse: (x: unknown)=>unknown){
 	// https://stackoverflow.com/a/46628145
 	(async ()=> {// 消息目标
 	if (msg.target !== 'worker') {
@@ -14,7 +14,8 @@ chrome.runtime.onMessage.addListener(function(msg: Message, sender: chrome.runti
 	}
 	console.log('handleMessages onMessage: ', msg);
 	// 消息类型
-	const data = msg.data
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const data = msg.data as any
 	switch (msg.type) {
 		case 'get-config':
 			sendResponse(await getSyncStorage())
@@ -47,7 +48,7 @@ chrome.runtime.onMessage.addListener(function(msg: Message, sender: chrome.runti
 			sendResponse(await sendMessageToContentScript(data))
 			break;
 		case 'shelf-for-popup':
-			let shelfForPopup: ShelfForPopupType = await getLocalStorage('shelfForPopup')
+			let shelfForPopup: ShelfForPopupType = await getLocalStorage('shelfForPopup') as ShelfForPopupType
 			if(!shelfForPopup){
 				shelfForPopup = { shelfData: {} }
 				chrome.storage.local.set({shelfForPopup})
@@ -87,10 +88,11 @@ chrome.runtime.onMessage.addListener(function(msg: Message, sender: chrome.runti
 
 // 监听消息
 // TODO 消息使用规定的格式
-chrome.runtime.onMessage.addListener(function others(msg: any, sender: chrome.runtime.MessageSender, sendResponse: Function){
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+chrome.runtime.onMessage.addListener(function others(msg: any, sender: chrome.runtime.MessageSender, sendResponse: (x: unknown)=>unknown){
 	(async ()=> {
-	let tabId: number | undefined;
-	if (sender && sender.tab) tabId = sender.tab.id;
+	let tabId: number | undefined
+	if (sender && sender.tab) tabId = sender.tab.id
 	switch(msg.type){
 		case "getShelf":
 			getShelfData().then(data=>{
@@ -109,11 +111,12 @@ chrome.runtime.onMessage.addListener(function others(msg: any, sender: chrome.ru
 					if(alertResp && !(alertResp as {succ: number}).succ) notify(deleteMsg);
 				});
 			});
+			break;
 		case 'fetch':
 			if(!msg.url) return;
 			fetch(msg.url, msg.init).then(resp=>{
 				console.log('resp', resp);
-				let contentType = msg.init.headers['content-type'];
+				const contentType = msg.init.headers['content-type'];
 				if(contentType === undefined || contentType === 'application/json')
 					return resp.json();
 				else if(contentType === 'text/plain')
@@ -123,8 +126,8 @@ chrome.runtime.onMessage.addListener(function others(msg: any, sender: chrome.ru
 			});
 			break;
 		case 'mploadmore':
-			let index = msg.offset / 10;
-			const mpTempData = await getLocalStorage('mpTempData')
+			const index = msg.offset / 10;
+			const mpTempData = await getLocalStorage('mpTempData')  as {[key: string]: unknown[]}
 			if(mpTempData[msg.bookId] && mpTempData[msg.bookId][index]){
 				sendResponse({data: mpTempData[msg.bookId][index]});
 				return true;
@@ -150,7 +153,7 @@ chrome.runtime.onMessage.addListener(function others(msg: any, sender: chrome.ru
 			});
 			break;
 		case 'Wereader':
-			let wereader = new Wereader();
+			const wereader = new Wereader();
 			switch(msg.func){
 				case 'shelfRemoveBook':
 					wereader.shelfRemoveBook(msg.bookIds).then(resp=>{

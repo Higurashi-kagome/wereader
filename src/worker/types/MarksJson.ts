@@ -4,7 +4,7 @@ import { Updated } from './Updated';
 export interface MarksJson {
   synckey: number;
   updated: Updated[];
-  removed: any[];
+  removed: unknown[];
   chapters: Chapter[];
   book: Book;
 }

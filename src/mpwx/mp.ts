@@ -7,23 +7,24 @@ import { timeConverter } from './mp-utils';
 
 $(function(){
     /* 插入容器 */
-    let _mpBox = $(`<div id="webook_mp_scroll"><div><div id="webook_mp_list"></div>
+    const _mpBox = $(`<div id="webook_mp_scroll"><div><div id="webook_mp_list"></div>
     <div id="webook_mp_load_more">加载更多</div></div></div>`)
     $('body').append(_mpBox)
-    function getHtml(data: mpTypeJson, sync: { [key: string]: any}) {
-        let {mpShrink, mpContent} = sync
-        let html = '', tempEl = document.createElement('div')
+    function getHtml(data: mpTypeJson, sync: { [key: string]: unknown}) {
+        const {mpShrink, mpContent} = sync
+        let html = ''
+		const tempEl = document.createElement('div')
         data.reviews.forEach(function(curr, index) {
             if (curr.review && curr.review.mpInfo) {
-                let mpInfo = curr.review.mpInfo
-                let prev = data.reviews[index-1]
+                const mpInfo = curr.review.mpInfo
+                const prev = data.reviews[index-1]
                 if(mpShrink && prev && prev.review && prev.review.mpInfo
                     && prev.review.mpInfo.time === mpInfo.time){
                     tempEl.innerHTML = html
-                    let lastEl = tempEl.querySelector('.webook_mp_item:last-child')!
+                    const lastEl = tempEl.querySelector('.webook_mp_item:last-child')!
                     let content = ''
                     if(!mpContent){
-                        let contentEl = lastEl.querySelector('.mpContent')
+                        const contentEl = lastEl.querySelector('.mpContent')
                         if(contentEl) contentEl.remove()
                     } else if (mpInfo.content) {
                         content = `<div class='mpContent'>${mpInfo.content}</div>`
@@ -55,7 +56,7 @@ $(function(){
     }
     /* 获取数据初始化内容 */
     chrome.runtime.sendMessage({type: "mpInit"}, (resp: {data: mpTypeJson, bookId: string}) => {
-        let {data, bookId} = resp
+        const {data, bookId} = resp
         if (!data.reviews) return
         // favicon
         let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
@@ -79,22 +80,22 @@ $(function(){
 
     /* 公众号内容“加载更多”点击事件 */
     $('#webook_mp_load_more').on('click', function() {
-        let bookId = $(this).data('bookid')
-        let offset = $(this).data('offset')
+        const bookId = $(this).data('bookid')
+        const offset = $(this).data('offset')
         if (!bookId || !offset) return
         chrome.runtime.sendMessage({
             type:'mploadmore',
             bookId: bookId,
             offset: offset
         }, resp => {
-            let {data} = resp
+            const {data} = resp
             if (!data.reviews || data.reviews.length == 0) {
                 $('#webook_mp_load_more').remove()
                 return alert('已加载全部')
             }
             chrome.storage.sync.get(function(sync){
                 $('#webook_mp_list').append(getHtml(data, sync.mpShrink))
-                let loadMore = $('#webook_mp_load_more')
+                const loadMore = $('#webook_mp_load_more')
                 loadMore.data('bookid', bookId)
                 loadMore.data('offset', Number.parseInt(offset)+10)
                 if(loadMore.hasClass('loading')){
@@ -114,7 +115,7 @@ window.onscroll = function() {
 		const windowHeight = $(this).height()!;
         const positionValue = (scrollTop + windowHeight) - scrollHeight
         if (Math.abs(positionValue)<=0.9) {
-            let loadMore = $('#webook_mp_load_more')
+            const loadMore = $('#webook_mp_load_more')
             if(!loadMore.hasClass('loading')){
                 loadMore.trigger('click');
                 loadMore.addClass('loading');

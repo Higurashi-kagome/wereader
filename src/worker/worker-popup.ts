@@ -27,6 +27,7 @@ import {
     sendMessageToContentScript,
 } from './worker-utils';
 import {
+	ConfigType,
     getBookId,
 } from './worker-vars';
 import { Wereader } from './types/Wereader';
@@ -48,7 +49,7 @@ export async function copyBookInfo() {
 // 获取书评
 export async function copyComment(userVid: string, isHtml: boolean) {
 	const wereader = new Wereader(await getBookId(), userVid);
-	let data = await wereader.getComments();
+	const data = await wereader.getComments();
 	//遍历书评
 	let title = '', content = '', htmlContent = '';
 	for (const item of data.reviews) {
@@ -72,8 +73,8 @@ export async function copyComment(userVid: string, isHtml: boolean) {
 // 获取目录
 export async function copyContents(){
 	const response = await sendMessageToContentScript({message: {isGetChapters: true}}) as responseType;
-	const config = await getSyncStorage()
-	let chapText  = response.chapters.reduce((tempText: string, item)=>{
+	const config = await getSyncStorage() as ConfigType
+	const chapText  = response.chapters.reduce((tempText: string, item)=>{
 		tempText += `${getTitleAddedPreAndSuf(item.title, item.level, config)}\n\n`;
 		return tempText;
 	},'');
@@ -85,17 +86,17 @@ export async function copyBookMarks(isAll: boolean) {
 	// 通知生成遮盖
 	await sendMessageToContentScript({message: {isAddMask: true}});
 	// 得到 res
-	var res = "";
-	const config = await getSyncStorage()
+	let res = "";
+	const config = await getSyncStorage() as ConfigType
 	if (isAll) { // 获取全书标注
 		const chapsAndMarks = await getBookMarks();
 		if(chapsAndMarks === undefined) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 		res = chapsAndMarks.reduce((tempRes, curChapAndMarks)=>{
-			let {title, level, marks} = curChapAndMarks;
+			const {title, level, marks} = curChapAndMarks;
 			if(config.allTitles || marks.length){
 				tempRes += `${getTitleAddedPreAndSuf(title, level, config)}\n\n`;
 				// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
-				let anchors = curChapAndMarks.anchors
+				const anchors = curChapAndMarks.anchors
 				if(anchors && anchors[0].title != title){
 					anchors.forEach((anchor)=>{
 						tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
@@ -112,11 +113,12 @@ export async function copyBookMarks(isAll: boolean) {
 		const chapsAndMarks = await getBookMarks();
 		if(chapsAndMarks === undefined) return sendAlertMsg({text: "该书无标注",icon:'warning'});
 		// 遍历目录
-		let targetChapAndMarks = chapsAndMarks.filter((item)=>{return item.isCurrent})[0];
+		const targetChapAndMarks = chapsAndMarks.filter((item)=>{return item.isCurrent})[0];
+		// eslint-disable-next-line prefer-const
 		let {title, level, marks} = targetChapAndMarks;
 		res += `${getTitleAddedPreAndSuf(title, level, config)}\n\n`;
 		// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
-		let anchors = targetChapAndMarks.anchors
+		const anchors = targetChapAndMarks.anchors
 		if(anchors && anchors[0].title != title){
 			anchors.forEach((anchor)=>{
 				res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
@@ -137,7 +139,7 @@ export async function copyBookMarks(isAll: boolean) {
 			console.log('标注不匹配', markedData, marks);
 			markedData = [];
 		}
-        let str = traverseMarks(marks, markedData, config);
+        const str = traverseMarks(marks, markedData, config);
 		res += str;
 		if(str) copy(res);
 		else sendAlertMsg({text: "该章节无标注",icon:'warning'});
@@ -148,24 +150,25 @@ export async function copyBookMarks(isAll: boolean) {
 
 // 获取热门标注
 export async function copyBestBookMarks() {
-	let bestMarks = await getBestBookMarks();
+	const bestMarks = await getBestBookMarks();
 	if(!bestMarks) return; // 无热门标注
 	//遍历 bestMark
-	const config = await getSyncStorage()
-	let res = bestMarks.reduce((tempRes: string, curChapAndBestMarks)=>{
-		let {title, level, bestMarks} = curChapAndBestMarks;
+	const config = await getSyncStorage() as ConfigType
+	const res = bestMarks.reduce((tempRes: string, curChapAndBestMarks)=>{
+		const {title, level, bestMarks} = curChapAndBestMarks;
 		if(config.allTitles || bestMarks.length){
 			tempRes += `${getTitleAddedPreAndSuf(title, level, config)}\n\n`;
 			// 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
-			let anchors = curChapAndBestMarks.anchors
+			const anchors = curChapAndBestMarks.anchors
 			if(anchors && anchors[0].title != title){
-				anchors.forEach((anchor: any)=>{
+				anchors.forEach((anchor: {title: string, level: number})=>{
 					tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
 				});
 			}
 		}
 		if(!bestMarks.length) return tempRes;
-		bestMarks.forEach((bestMark: any)=>{
+		bestMarks.forEach((bestMark: { markText: unknown; totalCount: unknown; })=>{
+			// eslint-disable-next-line prefer-const
 			let {markText, totalCount} = bestMark;
 			if(config.displayN) totalCount = `  <u>${totalCount}</u>`;
 			else totalCount = '';
@@ -178,12 +181,12 @@ export async function copyBestBookMarks() {
 
 // 获取想法
 export async function copyThought(isAll?: boolean) {
-	let chaps = await getChapters();
+	const chaps = await getChapters();
 	if (chaps === undefined) {
 		notify('获取想法出错')
 		return;
 	}
-	let contents = chaps.reduce((tempContents, aChap)=>{
+	const contents = chaps.reduce((tempContents, aChap)=>{
 		//整理格式
 		tempContents.set(aChap.chapterUid, aChap);
 		return tempContents;
@@ -196,14 +199,14 @@ export async function copyThought(isAll?: boolean) {
 			break;
 		}
 	}
-	let thoughts = await getMyThought();
-	const config = await getSyncStorage()
+	const thoughts = await getMyThought();
+	const config = await getSyncStorage() as ConfigType
 	function getTempRes(thoughtsInAChap: ThoughtsInAChap[], chapUid: number) {
 		let tempRes = `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level, config)}\n\n`;
 		let prevAbstract = ""; // 保存上一条想法对应标注文本
 		thoughtsInAChap.forEach((thou)=>{
 			// 想法
-			let thouContent = `${config.thouPre}${thou.content}${config.thouSuf}\n\n`;
+			const thouContent = `${config.thouPre}${thou.content}${config.thouSuf}\n\n`;
 			// 想法所标注的内容
 			let thouAbstract = `${config.thouMarkPre}${thou.abstract}${config.thouMarkSuf}\n\n`;
 			// 当前标注文本和前一条标注文本内容相同、且配置去重时，不导出当前的标注
@@ -226,8 +229,8 @@ export async function copyThought(isAll?: boolean) {
 			res += getTempRes(thoughtsInAChap, chapUid);
 		})
 	} else {
-		let chapUid = curChapUid;
-		let thoughtsInAChap = thoughts.get(chapUid)!;
+		const chapUid = curChapUid;
+		const thoughtsInAChap = thoughts.get(chapUid)!;
 		res += res += getTempRes(thoughtsInAChap, chapUid);
 	}
 	if(!res) sendAlertMsg({text: "该书无想法",icon:'warning'});
@@ -236,7 +239,7 @@ export async function copyThought(isAll?: boolean) {
 
 // 获取当前读书页的 bookId
 export async function setBookId(){
-	const bookIds = await getLocalStorage('bookIds')
+	const bookIds = await getLocalStorage('bookIds') as {[key: string]: number}
 	return new Promise((res, rej)=>{
 		chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 			if(catchErr('setBookId')) {
@@ -255,7 +258,7 @@ export async function setBookId(){
 			}
 			return res(true);
 		})
-	}).catch(err=>{});
+	}).catch(()=>{});
 }
 
 // 获取书架 json 数据
@@ -267,14 +270,14 @@ export async function getShelfData(){
 }
 
 // 创建微信公众号浏览页面
-var sendMpMsg: {data: any, bookId: string} | undefined = undefined;
+let sendMpMsg: {data: unknown, bookId: string} | undefined = undefined;
 export async function createMpPage(bookId: string){
 	let json = undefined;
-	const mpTempData = await getLocalStorage('mpTempData')
+	const mpTempData = await getLocalStorage('mpTempData') as {[key: string]: unknown[]}
 	if(mpTempData[bookId] && mpTempData[bookId][0]){
 		json = mpTempData[bookId][0];
 	}else{
-		let resp = await fetch(`https://i.weread.qq.com/book/articles?bookId=${bookId}&count=10&offset=0`);
+		const resp = await fetch(`https://i.weread.qq.com/book/articles?bookId=${bookId}&count=10&offset=0`);
 		console.log('resp', resp);
 		json = await resp.json();
 		if(json.errmsg) return json;
@@ -297,7 +300,7 @@ export async function setShelfData(shelfData: ShelfDataTypeJson | ShelfErrorData
 		chrome.storage.local.set({shelfData})
 	}
 	return shelfData
-};
+}
 
 // 删除标注
 export async function deleteBookmarks(isAll=false){
@@ -306,7 +309,7 @@ export async function deleteBookmarks(isAll=false){
 	if (chaps === undefined){
 		return { succ: 0, fail: 'all' };
 	}
-	const curChap = chaps.filter((chap: any)=>{return chap.isCurrent;})[0];
+	const curChap = chaps.filter((chap)=>{return chap.isCurrent;})[0];
     const respJson = await wereader.removeBookmarks(isAll ? undefined : curChap.chapterUid);
 	return respJson;
 }

@@ -3,9 +3,9 @@ import { hideToolbar, hideSelection } from "./content-hide";
 
 /* esc 按下事件 handler */
 function documentEscDown(event: JQuery.KeyDownEvent) {
-	let fancybox = $('.fancybox-overlay'); // fancybox
-	let thoughtPanel = $('.readerWriteReviewPanel'); // 想法发布面板
-	let thoughtReview = $('#readerReviewDetailPanel'); // 想法浏览面板
+	const fancybox = $('.fancybox-overlay'); // fancybox
+	const thoughtPanel = $('.readerWriteReviewPanel'); // 想法发布面板
+	const thoughtReview = $('#readerReviewDetailPanel'); // 想法浏览面板
 	if (event.keyCode == 27) {
 		if (fancybox.length) fancybox.remove();
 		if (thoughtPanel.length && thoughtPanel.css('display') !== 'none') $('.closeButton').trigger("click");

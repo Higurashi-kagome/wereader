@@ -57,6 +57,7 @@ function changeTheme(curFlag: number, event?: JQuery.ClickEvent){
 	switch (curFlag) {
 		case 0:
 			//设置绿色主题
+		// eslint-disable-next-line no-fallthrough
 		case 1:
 			//设置橙色主题
 			if(darkOrWhite == 'dark') event && event.stopPropagation();

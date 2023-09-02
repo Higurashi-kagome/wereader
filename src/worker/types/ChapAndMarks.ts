@@ -10,7 +10,7 @@ export interface ChapAndMarks {
 	anchors?: {
 		title: string;
 		level: number;
-		[key: string]: any;
+		[key: string]: unknown;
 	}[];
 	bookId?: string;
 	bookVersion?: number;

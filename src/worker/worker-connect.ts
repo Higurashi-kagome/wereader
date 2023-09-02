@@ -8,10 +8,5 @@ chrome.runtime.onConnect.addListener(function(port) {
 			return;
 		}
 		console.log('connect onMessage: ', msg);
-		// 消息类型
-		const data = msg.data
-		switch (msg.type) {
-			
-		}
 	});
 });

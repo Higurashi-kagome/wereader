@@ -22,7 +22,7 @@ function documentCtrlDown(event: JQuery.KeyDownEvent) {
 	window.pressedKeys.set(event.keyCode, true);
 	if(window.pressedKeys.get(17)) {
 		if (/wr_(myNote|underline)(?!_wrapper)/.test(mouseMoveTarget.className)) {
-			let parent = mouseMoveTarget.parentElement!
+			const parent = mouseMoveTarget.parentElement!
 			if (parent.className.indexOf(noteClassName) > -1) {
 				parent.style.display = 'none'
 			}

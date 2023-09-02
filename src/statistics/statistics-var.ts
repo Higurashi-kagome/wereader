@@ -8,7 +8,7 @@ const statApi = new StatApi();
  * @return {*} 单位为小时的数组
  */
  function convertTime(readTimeList: number[]): string[]{
-    let convertedTime: string[] = [];
+    const convertedTime: string[] = [];
     for (let i = 0; i < readTimeList.length; i++) {
         convertedTime.push((readTimeList[i]/3600).toFixed(2));
     }
