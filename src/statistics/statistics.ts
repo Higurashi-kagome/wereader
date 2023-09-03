@@ -1,5 +1,5 @@
-import { initMonthStatistics } from "./statistics-month"
-import { initWeekStatistics } from "./statistics-week"
+import { initMonthStatistics } from './statistics-month'
+import { initWeekStatistics } from './statistics-week'
 
 initWeekStatistics()
 initMonthStatistics()

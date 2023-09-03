@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"lint": "eslint src --ext .ts",
-		"lint-fix": "eslint src --fix --ext .ts",
+    "lint": "eslint src --ext .ts",
+    "lint-fix": "eslint src --fix --ext .ts",
     "build-dev": "webpack --config webpack/webpack.config.dev.js && node scripts/zip.js",
     "build": "webpack --config webpack/webpack.config.production.js && node scripts/zip.js",
     "pack-zip": "node scripts/zip.js"
@@ -49,7 +49,9 @@
     "core-js": "^3.22.5",
     "css-loader": "^6.7.1",
     "dot-json": "^1.2.0",
-    "eslint": "^8.48.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
     "html-webpack-plugin": "^5.5.0",
     "jquery": "^3.6.0",
     "jquery-mousewheel": "^3.1.13",
@@ -75,7 +77,6 @@
   },
   "dependencies": {
     "@types/nunjucks": "^3.2.3",
-    "handlebars": "^4.7.8",
     "nunjucks": "^3.2.4"
   }
 }

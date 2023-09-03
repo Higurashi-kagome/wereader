@@ -1,33 +1,33 @@
 /* 笔记目录 */
 
 #noteTools ul {
-	display: none;
-	margin: 0;
-	padding: 0;
-	width: 200px;
-	max-height: 500px;
-	overflow: auto;
-	width: 100%;
+    display: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    max-height: 500px;
+    overflow: auto;
+    width: 100%;
 }
 
 #noteTools li a {
-	display: block;
-	padding: 5px 16px;
-	text-decoration: none;
+    display: block;
+    padding: 5px 16px;
+    text-decoration: none;
 }
 
 /* 标注目录按钮 */
 .notesMenuBtn {
-	font-size: 16px;
-	padding: 12px 20px 12px 40px;
-	border:1px groove;
-	border-bottom: none;
-	text-align: left;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border:1px groove;
+    border-bottom: none;
+    text-align: left;
 }
 
 /* 标注目录中的当前目录 */
 #sectionListItem_title_scroll a.current::after {
-	content: ' ←';
+    content: ' ←';
 }
 
 /* 鼠标移动到选项上修改背景颜色 */

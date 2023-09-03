@@ -1,6 +1,17 @@
 import { Chapter } from './Chapter'
 import { User } from './User'
 
+interface BestMark {
+    bookId: string;
+    userVid: number;
+    bookmarkId: string;
+    chapterUid: number;
+    range: number;
+    markText: string;
+    totalCount: number;
+    users: User[];
+}
+
 /**
  * 为方便处理而生成的数据
  */
@@ -21,15 +32,15 @@ export interface BestMarksData {
   tar?: string;
 }
 
-interface BestMark {
-  bookId: string;
-  userVid: number;
-  bookmarkId: string;
-  chapterUid: number;
-  range: number;
-  markText: string;
-  totalCount: number;
-  users: User[];
+export interface Item {
+    bookId: string;
+    userVid: number;
+    bookmarkId: string;
+    chapterUid: number;
+    range: number;
+    markText: string;
+    totalCount: number;
+    users: User[];
 }
 
 /**
@@ -40,15 +51,4 @@ export interface BestMarksJson {
   totalCount: number;
   items: Item[];
   chapters: Chapter[];
-}
-
-export interface Item {
-  bookId: string;
-  userVid: number;
-  bookmarkId: string;
-  chapterUid: number;
-  range: number;
-  markText: string;
-  totalCount: number;
-  users: User[];
 }

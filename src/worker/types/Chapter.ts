@@ -1,6 +1,6 @@
 export interface Chapter {
-	bookId: string;
-	chapterUid: number;
-	chapterIdx: number;
-	title: string;
+    bookId: string;
+    chapterUid: number;
+    chapterIdx: number;
+    title: string;
 }

@@ -51,6 +51,7 @@
 	"homepage_url": "https://github.com/Higurashi-kagome/wereader",
 	"permissions": [
 		"tabs",
+    "activeTab",
 		"cookies",
 		"storage",
 		"contextMenus",

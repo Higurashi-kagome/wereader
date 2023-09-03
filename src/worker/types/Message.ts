@@ -1,6 +1,6 @@
 // 扩展页面间消息格式
 export interface Message{
-	target: string,
-	type: string,
-	data: unknown
+    target: string,
+    type: string,
+    data: unknown
 }

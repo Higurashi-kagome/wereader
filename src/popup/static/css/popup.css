@@ -4,9 +4,9 @@ body{
 
 /* reload */
 #reload {
-	font-family: Lucida Sans Unicode;
-	transition: transform 500ms;
-	margin-left: 5px;
+    font-family: Lucida Sans Unicode;
+    transition: transform 500ms;
+    margin-left: 5px;
 }
 #reload:hover{
     transform: rotate(360deg);

@@ -125,7 +125,7 @@ module.exports = {
 				options: {
 					search: /__metaTemplate__/ig,
 					replace: ()=>{
-						return fs.readFileSync(path.resolve(__dirname, '../public/template/notebookTemplate.njk'))
+						return fs.readFileSync(path.resolve(__dirname, '../public/template/notebookTemplate.njk')).toString('utf8')
 					}
 				}
 			}

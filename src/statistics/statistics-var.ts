@@ -1,4 +1,4 @@
-import { StatApi } from "../worker/types/StatApi"
+import { StatApi } from '../worker/types/StatApi'
 
 const statApi = new StatApi()
 
@@ -8,11 +8,11 @@ const statApi = new StatApi()
  * @return {*} 单位为小时的数组
  */
 function convertTime(readTimeList: number[]): string[] {
-	const convertedTime: string[] = []
-	for (let i = 0; i < readTimeList.length; i++) {
-		convertedTime.push((readTimeList[i]/3600).toFixed(2))
-	}
-	return convertedTime
+    const convertedTime: string[] = []
+    for (let i = 0; i < readTimeList.length; i++) {
+        convertedTime.push((readTimeList[i] / 3600).toFixed(2))
+    }
+    return convertedTime
 }
 
 export { statApi as bg, convertTime }

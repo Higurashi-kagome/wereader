@@ -20,7 +20,7 @@ body {
 
 textarea,input[type=text]{
     font-family:auto;
-	max-width: -webkit-fill-available;
+    max-width: -webkit-fill-available;
 }
 
 label,h3,a,details>summary{

@@ -1,61 +1,97 @@
-import { getSyncStorage } from '../../common/utils'
+import { Sender } from '../../common/sender'
 import {
-	ShelfDataTypeJson,
-	ShelfErrorDataType,
+    ShelfDataTypeJson,
+    ShelfErrorDataType
 } from '../../types/shelfTypes'
-import { ConfigType } from './ConfigType'
 
 export interface ShelfForPopupType{
-	shelfData: ShelfDataTypeJson | ShelfErrorDataType
+    shelfData: ShelfDataTypeJson | ShelfErrorDataType
 }
 
 export class PopupApi {
-	async Config(): Promise<ConfigType> {
-		return await getSyncStorage(null) as ConfigType
-	}
-	async setBookId(): Promise<string> {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'set-book-id'})
-	}
-	notify(msg: string) {
-		chrome.runtime.sendMessage({target: 'worker', type: 'notify', data: msg})
-	}
-	async getUserVid(): Promise<string> {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'get-user-vid'})
-	}
-	copyComment(userVid: string, isAll: boolean) {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-comment', data: {userVid, isAll}})
-	}
-	copyContents() {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-contents'})
-	}
-	copyBookMarks(isAll: boolean) {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-book-marks', data: isAll})
-	}
-	copyBestBookMarks() {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-best-book-marks'})
-	}
-	copyThought(isAll: boolean) {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-thought', data: isAll})
-	}
-	sendMessageToContentScript(data: object) {
-		chrome.runtime.sendMessage({target: 'worker', type: 'send-message-to-content-script', data})
-	}
-	async shelfForPopup(): Promise<ShelfForPopupType> {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'shelf-for-popup'})
-	}
-	async getShelfData(): Promise<ShelfDataTypeJson | ShelfErrorDataType> {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'get-shelf-data'})
-	}
-	async createTab(data: object) {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'create-tab', data})
-	}
-	async setShelfData(data?: ShelfDataTypeJson | ShelfErrorDataType): Promise<ShelfDataTypeJson | ShelfErrorDataType> {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'set-shelf-data', data})
-	}
-	async createMpPage(bookId: string) {
-		return await chrome.runtime.sendMessage({target: 'worker', type: 'create-mp-page', data: bookId})
-	}
-	copyBookInfo() {
-		chrome.runtime.sendMessage({target: 'worker', type: 'copy-book-info'})
-	}
+    private sender = new Sender()
+
+    async setBookId(): Promise<string> {
+        this.sender.type = 'set-book-id'
+        return this.sender.sendToWorker()
+    }
+
+    notify(msg: string) {
+        this.sender.type = 'notify'
+        this.sender.data = msg
+        return this.sender.sendToWorker()
+    }
+
+    async getUserVid(): Promise<string> {
+        this.sender.type = 'get-user-vid'
+        return this.sender.sendToWorker()
+    }
+
+    copyComment(userVid: string, isAll: boolean) {
+        this.sender.type = 'copy-comment'
+        this.sender.data = { userVid, isAll }
+        return this.sender.sendToWorker()
+    }
+
+    copyContents() {
+        this.sender.type = 'copy-contents'
+        return this.sender.sendToWorker()
+    }
+
+    copyBookMarks(isAll: boolean) {
+        this.sender.type = 'copy-book-marks'
+        this.sender.data = isAll
+        return this.sender.sendToWorker()
+    }
+
+    copyBestBookMarks() {
+        this.sender.type = 'copy-best-book-marks'
+        return this.sender.sendToWorker()
+    }
+
+    copyThought(isAll: boolean) {
+        this.sender.type = 'copy-thought'
+        this.sender.data = isAll
+        return this.sender.sendToWorker()
+    }
+
+    sendMessageToContentScript(data: object) {
+        this.sender.type = 'send-message-to-content-script'
+        this.sender.data = data
+        return this.sender.sendToWorker()
+    }
+
+    async shelfForPopup(): Promise<ShelfForPopupType> {
+        this.sender.type = 'shelf-for-popup'
+        return this.sender.sendToWorker()
+    }
+
+    async getShelfData(): Promise<ShelfDataTypeJson | ShelfErrorDataType> {
+        this.sender.type = 'get-shelf-data'
+        return this.sender.sendToWorker()
+    }
+
+    async createTab(data: object) {
+        this.sender.type = 'create-tab'
+        this.sender.data = data
+        return this.sender.sendToWorker()
+    }
+
+    async setShelfData(data?: ShelfDataTypeJson | ShelfErrorDataType)
+        : Promise<ShelfDataTypeJson | ShelfErrorDataType> {
+        this.sender.type = 'set-shelf-data'
+        this.sender.data = data
+        return this.sender.sendToWorker()
+    }
+
+    async createMpPage(bookId: string) {
+        this.sender.type = 'create-mp-page'
+        this.sender.data = bookId
+        return this.sender.sendToWorker()
+    }
+
+    copyBookInfo() {
+        this.sender.type = 'copy-book-info'
+        return this.sender.sendToWorker()
+    }
 }

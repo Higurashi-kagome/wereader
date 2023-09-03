@@ -2,80 +2,83 @@ import { SweetAlertOptions } from 'sweetalert2'
 
 import { regexpSetType } from '../options/options-unload'
 import {
-	BackupKey,
-	StorageErrorMsg,
+    BackupKey,
+    StorageErrorMsg
 } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { Sender } from '../common/sender'
 
 // 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
 export function getIndexes(str: string, subStr: string) {
-	const indexes  = []
-	let idx = str.indexOf(subStr)
-	while(idx > -1){
-		indexes.push(idx)
-		idx = str.indexOf(subStr, idx+1)
-	}
-	return indexes
+    const indexes = []
+    let idx = str.indexOf(subStr)
+    while (idx > -1) {
+        indexes.push(idx)
+        idx = str.indexOf(subStr, idx + 1)
+    }
+    return indexes
 }
 
 // 报错捕捉函数
 function catchErr(...sender: unknown[]) {
-	if(!chrome.runtime.lastError)return false
-	console.log(`${sender.join('=>')}=>chrome.runtime.lastError`, chrome.runtime.lastError.message)
-	return true
+    if (!chrome.runtime.lastError) return false
+    console.log(`${sender.join('=>')}=>chrome.runtime.lastError`, chrome.runtime.lastError.message)
+    return true
 }
 
 // 更新 sync 和 local ——处理设置页 onchange 不生效的问题
-function updateStorageAreaInBg(configMsg: regexpSetType = {},callback=function() {}) {
-	//存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
-	if(configMsg.key === undefined) return
-	const config: {[key: string]: unknown} = {}
-	const {key, value} = configMsg
-	config[key] = value
-	chrome.storage.sync.set(config, function() {
-		if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
-		chrome.storage.local.get(function(settings) {
-			const currentProfile = configMsg.currentProfile!
-			settings[BackupKey][currentProfile][key] = value
-			chrome.storage.local.set(settings,function() {
-				if(catchErr("bg.updateSyncAndLocal"))console.error(StorageErrorMsg)
-				callback()
-			})
-		})
-	})
-}
-
-async function sendMessageToContentScript(sendMsg: { tabId?: number; message: unknown; }) {
-	return new Promise((res, rej) => {
-		const callbackHandler = (response: unknown) => {
-			if(chrome.runtime.lastError) return rej()
-			if(response) return res(response)
-		}
-	
-		if(sendMsg.tabId != undefined){
-			chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callbackHandler)
-		}else{
-			chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-				if(!tabs[0]) return rej()
-				chrome.tabs.sendMessage(tabs[0].id!, sendMsg.message, callbackHandler)
-			})
-		}
-	}).catch((error) => {console.log(error)})
+function updateStorageAreaInBg(configMsg: regexpSetType = {}, callback = function () {}) {
+    // 存在异步问题，故设置用于处理短时间内需要进行多次设置的情况
+    if (configMsg.key === undefined) return
+    const config: {[key: string]: unknown} = {}
+    const { key, value } = configMsg
+    config[key] = value
+    chrome.storage.sync.set(config, function () {
+        if (catchErr('bg.updateSyncAndLocal'))console.error(StorageErrorMsg)
+        chrome.storage.local.get(function (settings) {
+            const currentProfile = configMsg.currentProfile!
+            settings[BackupKey][currentProfile][key] = value
+            chrome.storage.local.set(settings, function () {
+                if (catchErr('bg.updateSyncAndLocal'))console.error(StorageErrorMsg)
+                callback()
+            })
+        })
+    })
 }
 
 async function getCurTab(): Promise<chrome.tabs.Tab> {
-	return new Promise((res, rej) => {
-		chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-			if(!tabs[0]) return rej('未找到当前 tab')
-			return res(tabs[0])
-		})
-	})
+    return new Promise((res, rej) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs[0]) rej(new Error('未找到当前 tab'))
+            res(tabs[0])
+        })
+    })
+}
+
+async function sendMessageToContentScript(sendMsg: { tabId?: number; message: unknown; }) {
+    return new Promise((res, rej) => {
+        const callbackHandler = (response: unknown) => {
+            if (chrome.runtime.lastError) return rej(new Error(chrome.runtime.lastError.message))
+            if (response) return res(response)
+            return rej()
+        }
+
+        if (sendMsg.tabId !== undefined) {
+            chrome.tabs.sendMessage(sendMsg.tabId, sendMsg.message, callbackHandler)
+        } else {
+            getCurTab().then(tab=>{
+                chrome.tabs.sendMessage(tab.id!, sendMsg.message, callbackHandler)
+            })
+        }
+    }).catch((error) => { console.log(error) })
 }
 
 async function sendAlertMsg(msg: SweetAlertOptions, tabId: number | undefined = undefined) {
-	const response = await sendMessageToContentScript({tabId: tabId, message: {isAlertMsg: true, alertMsg: msg}})
-	return response
+    const response = await sendMessageToContentScript({
+        tabId: tabId,
+        message: { isAlertMsg: true, alertMsg: msg }
+    })
+    return response
 }
 
 /**
@@ -83,7 +86,7 @@ async function sendAlertMsg(msg: SweetAlertOptions, tabId: number | undefined = 
  * @param text 待复制内容
  */
 function copy(text: string) {
-	new Sender('copy', text).sendToOffscreen()
+    new Sender('copy', text).sendToOffscreen()
 }
 
 /**
@@ -91,39 +94,44 @@ function copy(text: string) {
  * @param text 待复制文本
  */
 export async function navCopy(text: string) {
-	try {
-		await navigator.clipboard.writeText(text)
-		sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: {icon: 'success', title: '复制成功'}}})
-	} catch (err) {
-		console.error('复制失败：', err)
-		console.error("待复制文本", text)
-		sendMessageToContentScript({message: {isAlertMsg: true, alertMsg: {text: "复制出错", icon: 'warning'}}})
-	}
+    try {
+        await navigator.clipboard.writeText(text)
+        sendMessageToContentScript({ message: { isAlertMsg: true, alertMsg: { icon: 'success', title: '复制成功' } } })
+    } catch (err) {
+        console.error('复制失败：', err)
+        console.error('待复制文本', text)
+        sendMessageToContentScript({ message: { isAlertMsg: true, alertMsg: { text: '复制出错', icon: 'warning' } } })
+    }
 }
 
 async function getJson(url: string) {
-	try {
-		const resp = await fetch(url, {
-			credentials: "include", 
-			cache: 'no-cache'
-		})
-		console.log('resp', resp)
-		const json = await resp.json()
-		return json
-	} catch (error) {
-		sendAlertMsg({title: "获取失败：", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'})
-	}
+    try {
+        const resp = await fetch(url, {
+            credentials: 'include',
+            cache: 'no-cache'
+        })
+        const json = await resp.json()
+        return json
+    } catch (error) {
+        sendAlertMsg({
+            title: '获取失败：', text: JSON.stringify(error), icon: 'error', confirmButtonText: '确定'
+        })
+    }
+    return null
 }
 
 async function getText(url: string) {
-	try {
-		const resp = await fetch(url, {credentials:'include', cache: 'no-cache'})
-		console.log('resp', resp)
-		const text = await resp.text()
-		return text
-	} catch (error) {
-		sendAlertMsg({title: "获取失败：", text: JSON.stringify(error), icon: "error", confirmButtonText: '确定'})
-	}
+    try {
+        const resp = await fetch(url, { credentials: 'include', cache: 'no-cache' })
+        console.log('resp', resp)
+        const text = await resp.text()
+        return text
+    } catch (error) {
+        sendAlertMsg({
+            title: '获取失败：', text: JSON.stringify(error), icon: 'error', confirmButtonText: '确定'
+        })
+    }
+    return null
 }
 
 /* eslint-disable */
@@ -163,38 +171,38 @@ function puzzling(t: string | number) {
 /* eslint-enable */
 
 function createTab(obj: chrome.tabs.CreateProperties) {
-	return new Promise(resolve => {
-		chrome.tabs.create(obj, async tab => {
-			chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
-				if (info.status === 'complete' && tabId === tab.id) {
-					chrome.tabs.onUpdated.removeListener(listener)
-					resolve(tab)
-				}
-			})
-		})
-	})
+    return new Promise(resolve => {
+        chrome.tabs.create(obj, async tab => {
+            chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+                if (info.status === 'complete' && tabId === tab.id) {
+                    chrome.tabs.onUpdated.removeListener(listener)
+                    resolve(tab)
+                }
+            })
+        })
+    })
 }
 
 async function getUserVid(url?: string) {
-	return new Promise((res, rej) => {
-		if(!url) url = Wereader.maiUrl
-		chrome.cookies.get({url: url, name: 'wr_vid'}, (cookie) => {
-			if(catchErr('getUserVid') || !cookie) return rej(null)
-			return res(cookie.value.toString())
-		})
-	}).catch(() => { })
+    return new Promise((res, rej) => {
+        if (!url) url = Wereader.maiUrl
+        chrome.cookies.get({ url: url, name: 'wr_vid' }, (cookie) => {
+            if (catchErr('getUserVid') || !cookie) return rej()
+            return res(cookie.value.toString())
+        })
+    }).catch(() => { })
 }
 
 export {
-	catchErr,
-	copy,
-	createTab,
-	getJson,
-	getText,
-	getUserVid,
-	puzzling,
-	sendAlertMsg,
-	sendMessageToContentScript,
-	updateStorageAreaInBg,
-	getCurTab
+    catchErr,
+    copy,
+    createTab,
+    getJson,
+    getText,
+    getUserVid,
+    puzzling,
+    sendAlertMsg,
+    sendMessageToContentScript,
+    updateStorageAreaInBg,
+    getCurTab
 }

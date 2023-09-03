@@ -1,3 +1,3 @@
 export interface Code {
-	code: string;
+    code: string;
 }

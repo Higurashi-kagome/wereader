@@ -1,13 +1,13 @@
 /* 笔记目录 */
 #noteTools button {
-	color: #eef0f4 !important;
+    color: #eef0f4 !important;
 }
 
 #noteTools li a {
-	color:  white !important;
+    color:  white !important;
 }
 
 /* 主题按钮、进度按钮 */
 .readerControls_item.theme, #progressText {
-	color: rgb(190,190,190) !important;
+    color: rgb(190,190,190) !important;
 }

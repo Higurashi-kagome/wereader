@@ -4,7 +4,7 @@ import './content/static/css/rankChapter.css'
 
 import { initAlert } from './content/modules/content-alert'
 import {
-	initDeleteMarksNotification,
+    initDeleteMarksNotification
 } from './content/modules/content-deleteBookmarks'
 import { initGetChapInfo } from './content/modules/content-getChapters'
 import { initKeyBind } from './content/modules/content-keyBind'

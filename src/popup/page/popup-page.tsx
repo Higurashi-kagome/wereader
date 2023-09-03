@@ -15,17 +15,17 @@ interface IProps{
  * popup 全部内容
  */
 export const Popup: FC<IProps> = () => {
-	return (
-		<div>
-			<TabBtnContainer>
-				<TabBtn id='shelfBtn' value='书架'></TabBtn>
-			</TabBtnContainer>
-			<NoteTabContent/>
-			<TabContent for='shelfBtn' id='shelf'>
-				<a>...</a>
-			</TabContent>
-		</div>
-	);
+    return (
+        <div>
+            <TabBtnContainer>
+                <TabBtn id='shelfBtn' value='书架'></TabBtn>
+            </TabBtnContainer>
+            <NoteTabContent/>
+            <TabContent for='shelfBtn' id='shelf'>
+                <a>...</a>
+            </TabContent>
+        </div>
+    );
 }
 
 createRoot(document.getElementById('popup-container')!).render(<Popup/>);

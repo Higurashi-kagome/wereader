@@ -1,4 +1,4 @@
 export interface Footnote {
-	footnoteName: string;
-	footnote: string;
+    footnoteName: string;
+    footnote: string;
 }

@@ -9,14 +9,14 @@ import { initOptionsTab } from './popup/modules/popup-options'
 import { initShelfTab } from './popup/modules/popup-shelf'
 import { initStatisticsTab } from './popup/modules/popup-statistic'
 import './popup/modules/popup-listener'
-import "./popup/modules/popup-connect"
+import './popup/modules/popup-connect'
 
 chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
-	initShelfTab()
-	initStatisticsTab()
-	initOptionsTab()
-	const url = tabs[0].url!
-	await initNoteTab(url)
-	// 默认点击第一个 tab
-	$('.tabLinks').eq(0).trigger('click')
+    initShelfTab()
+    initStatisticsTab()
+    initOptionsTab()
+    const url = tabs[0].url!
+    await initNoteTab(url)
+    // 默认点击第一个 tab
+    $('.tabLinks').eq(0).trigger('click')
 })
