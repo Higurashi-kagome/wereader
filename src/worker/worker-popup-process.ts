@@ -256,9 +256,8 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string, conf
     const abstract = mark.abstract
     let markText = abstract || mark.markText
     // 遍历索引，逐个替换
-    const keys = Object.keys(mark.markedDataIdxes)
-    for (let i = 0; i < keys.length; i++) {
-        const markedDataIdx = keys[i]
+    for (let i = 0; i < mark.markedDataIdxes.length; i++) {
+        const markedDataIdx = mark.markedDataIdxes[i]
         // 数据缺失
         if (markedData[markedDataIdx] === undefined) {
             console.log(mark, markedData)
