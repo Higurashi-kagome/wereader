@@ -178,12 +178,11 @@
 - TODO
   - 可以通过直接跳转到插图所在位置来获取插图，而不是遍历所有标注
   - 黑色主题下标注过滤框字体颜色
+  - 书架每次都会更新
   - 初次安装后主题色不正确
   - 标注导出后跳转回原阅读位置
   - 删除想法复制后的空格
-  - 迁移到 V3
-    - https://developer.chrome.com/blog/mv2-transition/
-    - https://blog.shahednasser.com/chrome-extension-tutorial-migrating-to-manifest-v3-from-v2/
+  - 自动划线有时候失效（切换到浏览器外的窗口）
   - 支持 Firefox（使用框架、工具之类）
   - 书摘功能：
     - https://github.com/niklasvh/html2canvas

@@ -43,5 +43,7 @@ export interface ConfigType {
     // 如果不设置默认值，则在设置页初始化时需要考虑到
     re: reConfigCollectionType;
     flag: 0;
+    footSupTemp: string;
+    footNoteTemp: string;
     [key: string]: unknown;
 }

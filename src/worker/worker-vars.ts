@@ -74,7 +74,11 @@ const defaultConfig: ConfigType = {
         re4: DefaultRegexPattern,
         re5: DefaultRegexPattern
     },
-    flag: 0
+    flag: 0,
+    // eslint-disable-next-line no-template-curly-in-string
+    footSupTemp: '<sup><a id="{{metaData.footnoteId}}-ref" href="#{{metaData.footnoteId}}">{{metaData.footnoteNum}}</a></sup>',
+    // eslint-disable-next-line no-template-curly-in-string
+    footNoteTemp: '<p id="{{metaData.footnoteId}}">{{metaData.footnoteNum}}. {{metaData.footnote}}<a href="#{{metaData.footnoteId}}-ref">&#8617;</a></p>\n'
 }
 /**
  * 获取当前读书页的书本 id

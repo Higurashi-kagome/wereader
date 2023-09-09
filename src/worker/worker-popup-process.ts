@@ -252,7 +252,12 @@ function regexpReplace(markText: string, regexpConfig: reConfigCollectionType) {
 // 给某一条标注添加图片等内容
 // TODO：换掉 any 类型
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function addMarkedData(mark: any, markedData: any, footnoteContent: string, config: ConfigType) {
+function addMarkedData(
+    mark: any,
+    markedData: any,
+    footnoteContent: string,
+    config: ConfigType
+) {
     const abstract = mark.abstract
     let markText = abstract || mark.markText
     // 遍历索引，逐个替换
@@ -264,8 +269,9 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string, conf
             break
         }
         const {
-            imgSrc, alt, isInlineImg, footnote, footnoteName, code
+            imgSrc, alt, isInlineImg, footnoteName, code
         } = markedData[markedDataIdx]
+        const footnote: string = markedData[markedDataIdx].footnote
         let replacement = ''
         /* 生成替换字符串 */
         if (imgSrc) { // 图片
@@ -282,10 +288,15 @@ function addMarkedData(mark: any, markedData: any, footnoteContent: string, conf
             }
             replacement = `${insert1}![${alt}](${imgSrc})${insert2}`
         } else if (footnote) { // 注释
-            const footnoteId = footnoteName.replace(/[\s<>"]/, '-')
-            const footnoteNum = footnoteName.match(/(?<=注)(\d)*$/)[0]
-            replacement = `<sup><a id="${footnoteId}-ref" href="#${footnoteId}">${footnoteNum}</a></sup>`
-            footnoteContent += `<p id="${footnoteId}">${footnoteNum}. ${footnote}<a href="#${footnoteId}-ref">&#8617;</a></p>\n`
+            const footnoteId: string = footnoteName.replace(/[\s<>"]/, '-')
+            const footnoteNum: string = footnoteName.match(/(?<=注)(\d)*$/)[0]
+            const data = { footnoteId, footnoteNum, footnote }
+            replacement = config.footSupTemp.replace(/{{metaData\.(.*?)}}/g, (match, key: string) => {
+                return data[key.trim() as keyof typeof data] || ''
+            })
+            footnoteContent += config.footNoteTemp.replace(/{{metaData\.(.*?)}}/g, (match, key: string) => {
+                return data[key.trim() as keyof typeof data] || ''
+            })
         } else if (code) { // 代码块
             let insert1 = ''; let
                 insert2 = ''
@@ -378,6 +389,7 @@ export function traverseMarks(
     for (let j = 0; j < marks.length; j++) { // 遍历章内标注
         const mark = marks[j]
         if (markedData.length) {
+            // eslint-disable-next-line no-await-in-loop
             const data = addMarkedData(marks[j], markedData, footnoteContent, config)
             marks[j] = data[0]
             footnoteContent = data[1]
