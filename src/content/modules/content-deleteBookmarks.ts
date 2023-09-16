@@ -6,7 +6,7 @@ import Swal, { SweetAlertResult } from 'sweetalert2'
  */
 function initDeleteMarksNotification() {
     console.log('initDeleteMarksNotification')
-    chrome.runtime.onMessage.addListener((msg) => {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (!msg.deleteBookmarks) return
         let insertText = '本章'
         if (msg.isAll) insertText = '全书'
@@ -25,6 +25,7 @@ function initDeleteMarksNotification() {
                 isAll: msg.isAll
             })
         })
+        sendResponse(true)
     })
 }
 

@@ -27,18 +27,19 @@ chrome.runtime.onMessage.addListener((
         // 消息类型
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data = msg.data as any
+        let resp: unknown = true
         switch (msg.type) {
         case 'get-config':
-            sendResponse(await getSyncStorage())
+            resp = await getSyncStorage()
             break
         case 'set-book-id':
-            sendResponse(await setBookId())
+            resp = await setBookId()
             break
         case 'notify':
             notify(data)
             break
         case 'get-user-vid':
-            sendResponse(await getUserVid(data))
+            resp = await getUserVid(data)
             break
         case 'copy-comment':
             copyComment(data.userVid, data.isHtml)
@@ -56,7 +57,7 @@ chrome.runtime.onMessage.addListener((
             copyThought(data)
             break
         case 'send-message-to-content-script':
-            sendResponse(await sendMessageToContentScript(data))
+            resp = await sendMessageToContentScript(data)
             break
         case 'shelf-for-popup':
             let shelfForPopup: ShelfForPopupType = await getLocalStorage('shelfForPopup') as ShelfForPopupType
@@ -64,16 +65,16 @@ chrome.runtime.onMessage.addListener((
                 shelfForPopup = { shelfData: {} }
                 chrome.storage.local.set({ shelfForPopup })
             }
-            sendResponse(shelfForPopup)
+            resp = shelfForPopup
             break
         case 'get-shelf-data':
-            sendResponse(await getShelfData())
+            resp = await getShelfData()
             break
         case 'create-tab':
-            sendResponse(await createTab(data))
+            resp = await createTab(data)
             break
         case 'set-shelf-data':
-            sendResponse(await setShelfData(data))
+            resp = await setShelfData(data)
             break
         case 'create-mp-page':
             createMpPage(data)
@@ -82,13 +83,12 @@ chrome.runtime.onMessage.addListener((
             copyBookInfo()
             break
         case 'get-read-detail':
-            sendResponse(await getReadDetail(data.monthTimestamp, data.type, data.count))
+            resp = await getReadDetail(data.monthTimestamp, data.type, data.count)
             break
         case 'send-alert-msg':
-            const res = data.tabId
+            resp = data.tabId
                 ? await sendAlertMsg(data.data, data.tabId)
                 : await sendAlertMsg(data)
-            sendResponse(res)
             break
         case 'copy':
             copy(data)
@@ -96,6 +96,7 @@ chrome.runtime.onMessage.addListener((
         default:
             console.warn(`未知消息：'${msg.type}'`)
         }
+        sendResponse(resp)
     })()
     return true
 })
