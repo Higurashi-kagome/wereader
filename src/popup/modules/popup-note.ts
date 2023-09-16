@@ -20,51 +20,52 @@ async function initNoteTab(url: string) {
     console.log('bookId', bookId)
     console.log('userVid', userVid)
     if (!userVid) {
-        popupApi.notify('信息获取失败，请确保正常登陆后刷新重试')
+        await popupApi.notify('信息获取失败，请确保正常登陆后刷新重试')
         window.close()
         return
     }
     $('<button class="tabLinks" id="noteBtn">笔记</button>').prependTo($('.tab')).on('click', tabClickEvent)
     // 功能入口
-    $('.caller').on('click', function listener(event: JQuery.ClickEvent) {
+    $('.caller').on('click', async function listener(event: JQuery.ClickEvent) {
         const targetEl = event.target
+        console.log('click: ', targetEl.id)
         switch (targetEl.id) {
         case 'getTextComment':
-            popupApi.copyComment(userVid, false)
+            await popupApi.copyComment(userVid, false)
             break
         case 'getHtmlComment':
-            popupApi.copyComment(userVid, true)
+            await popupApi.copyComment(userVid, true)
             break
         case 'getMarksInCurChap':
-            popupApi.copyBookMarks(false)
+            await popupApi.copyBookMarks(false)
             break
         case 'getAllMarks':
-            popupApi.copyBookMarks(true)
+            await popupApi.copyBookMarks(true)
             break
         case 'getContents':
-            popupApi.copyContents()
+            await popupApi.copyContents()
             break
         case 'getBestBookMarks':
-            popupApi.copyBestBookMarks()
+            await popupApi.copyBestBookMarks()
             break
         case 'getMyThoughtsInCurChap':
-            popupApi.copyThought(false)
+            await popupApi.copyThought(false)
             break
         case 'getAllMyThoughts':
-            popupApi.copyThought(true)
+            await popupApi.copyThought(true)
             break
         case 'removeMarksInCurChap':
-            popupApi.sendMessageToContentScript({
+            await popupApi.sendMessageToContentScript({
                 message: { deleteBookmarks: true, isAll: false }
             })
             break
         case 'removeAllMarks':
-            popupApi.sendMessageToContentScript({
+            await popupApi.sendMessageToContentScript({
                 message: { deleteBookmarks: true, isAll: true }
             })
             break
         case 'copyBookInfo':
-            popupApi.copyBookInfo()
+            await popupApi.copyBookInfo()
             break
         default:
             break

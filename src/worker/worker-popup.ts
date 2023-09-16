@@ -21,13 +21,15 @@ import {
 import { ThoughtsInAChap } from './types/ThoughtsInAChap'
 import {
     copy,
+    getCurTab,
     getUserVid,
     sendAlertMsg,
     sendMessageToContentScript
 } from './worker-utils'
 import {
     ConfigType,
-    getBookId
+    getBookId,
+    getBookIds
 } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { Sender } from '../common/sender'
@@ -254,27 +256,25 @@ export async function copyThought(isAll?: boolean) {
 
 // 获取当前读书页的 bookId
 export async function setBookId() {
-    const bookIds = await getLocalStorage('bookIds') as {[key: string]: number}
-    return new Promise((res, rej) => {
-        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-            if (chrome.runtime.lastError) {
-                notify('bookId 获取出错，请刷新后重试。')
-                return rej(new Error(chrome.runtime.lastError.message))
+    try {
+        const tab = await getCurTab()
+        if (tab && tab.url && tab.url.indexOf('//weread.qq.com/web/reader/') < 0) {
+            notify('不是读书页')
+            return null
+        }
+        if (tab.id) {
+            const bookIds = await getBookIds()
+            if (!bookIds || !bookIds[tab.id]) {
+                notify('信息缺失，请先刷新')
+                return null
             }
-            const tab = tabs[0]
-            if (tab.url && tab.url.indexOf('//weread.qq.com/web/reader/') < 0) {
-                return rej(new Error('不是读书页'))
-            }
-            if (tab.id) {
-                if (!bookIds || !bookIds[tab.id]) {
-                    notify('信息缺失，请先刷新。')
-                    return rej(new Error('信息缺失'))
-                }
-                chrome.storage.local.set({ bookId: bookIds[tab.id] })
-            }
-            return res(true)
-        })
-    }).catch(() => {})
+            chrome.storage.local.set({ bookId: bookIds[tab.id] })
+            return bookIds[tab.id]
+        }
+    } catch (e) {
+        notify('bookId 获取出错，请刷新后重试。')
+    }
+    return null
 }
 
 // 获取书架 json 数据

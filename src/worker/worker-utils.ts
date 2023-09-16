@@ -49,8 +49,9 @@ function updateStorageAreaInBg(configMsg: regexpSetType = {}, callback = functio
 async function getCurTab(): Promise<chrome.tabs.Tab> {
     return new Promise((res, rej) => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-            if (!tabs[0]) rej(new Error('未找到当前 tab'))
-            res(tabs[0])
+            const tab = tabs[0]
+            if (tab) res(tab)
+            else rej(new Error('未找到当前标签页'))
         })
     })
 }
