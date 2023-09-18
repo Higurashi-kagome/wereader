@@ -64,7 +64,7 @@ export async function getMyThought() {
         for (let i = 0; i < data.reviews.length; i++) {
             const item = data.reviews[i]
             // 处理有书评的情况
-            if (item.review.chapterUid !== undefined && item.review.chapterUid !== chapterUid) {
+            if (item.review.chapterUid !== undefined && item.review.chapterUid === chapterUid) {
                 // 找到指定章节的想法
                 let abstract = item.review.abstract
                 // 替换想法前后空字符
