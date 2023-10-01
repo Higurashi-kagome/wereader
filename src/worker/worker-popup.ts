@@ -198,6 +198,7 @@ export async function copyBestBookMarks() {
 // 获取想法
 export async function copyThought(isAll?: boolean) {
     const chaps = await getChapters()
+    console.log('chaps', chaps)
     if (!chaps) {
         notify('获取想法出错')
         return
@@ -217,6 +218,7 @@ export async function copyThought(isAll?: boolean) {
         }
     }
     const thoughts = await getMyThought()
+    console.log('thoughts', thoughts)
     const config = await getSyncStorage() as ConfigType
     function getTempRes(thoughtsInAChap: ThoughtsInAChap[], chapUid: number) {
         let tempRes = `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level, config)}\n\n`
