@@ -54,7 +54,7 @@ export async function getMyThought() {
     const chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))).map((uid) => {
         return parseInt(uid)
     })
-    chapterUidArr.sort()
+    chapterUidArr.sort((a, b) => a - b)
     // 查找每章节标注并总结好
     const thoughtsMap: Map<number, ThoughtsInAChap[]> = new Map<number, ThoughtsInAChap[]>()
     // 遍历章节
