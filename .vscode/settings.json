@@ -54,5 +54,5 @@
 		"**/dist": true
     },
     "editor.detectIndentation": false, // 不自动检测缩进
-    "editor.tabSize": 4,
+    "editor.tabSize": 4
 }

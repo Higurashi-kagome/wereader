@@ -40,7 +40,7 @@ const defaultConfig: ConfigType = {
     lev2Suf: '',
     lev3Pre: '#### ',
     lev3Suf: '',
-    thouPre: '==',
+    thouPre: '> {createTime}\n\n==',
     thouSuf: '==',
     /* eslint-disable */
     metaTemplate: '__metaTemplate__',

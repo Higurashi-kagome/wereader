@@ -21,7 +21,9 @@ import {
 } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { ThoughtsInAChap } from './types/ThoughtsInAChap'
-import { getLocalStorage, getSyncStorage, sortByKey } from '../common/utils'
+import {
+    formatTimestamp, getLocalStorage, getSyncStorage, sortByKey
+} from '../common/utils'
 import { notify } from './worker-notification'
 
 // 给标题添加前后缀
@@ -77,7 +79,12 @@ export async function getMyThought() {
                 } else {
                     range = range.replace(/(\d*)-\d*/, '$1')
                 }
-                thoughtsInAChap.push({ abstract: abstract, content: content, range: range })
+                thoughtsInAChap.push({
+                    abstract,
+                    content,
+                    range,
+                    createTime: item.review.createTime
+                })
             }
         }
         thoughtsMap.set(chapterUid, sortByKey(thoughtsInAChap, 'range') as ThoughtsInAChap[])
@@ -369,6 +376,27 @@ function addMarkPreAndSuf(markText: string, style: number, config: ConfigType) {
     return pre + markText + suf
 }
 
+/**
+ * 替换想法前后缀配置中的占位符
+ * @param mark 想法标注
+ * @param config 配置信息
+ * @returns 替换后的各前后缀
+ */
+export function getReplacedThoughtConfig(mark: ThoughtsInAChap, config: ConfigType) {
+    const re = /\{createTime}/g
+    const time = formatTimestamp(mark.createTime)
+    const thouPre = config.thouPre.replace(re, time)
+    const thouSuf = config.thouSuf.replace(re, time)
+    const thouMarkPre = config.thouMarkPre.replace(re, time)
+    const thouMarkSuf = config.thouMarkSuf.replace(re, time)
+    return {
+        thouPre,
+        thouSuf,
+        thouMarkPre,
+        thouMarkSuf
+    }
+}
+
 // 处理章内标注
 export function traverseMarks(
     marks: (Updated | ThoughtsInAChap)[],
@@ -395,11 +423,17 @@ export function traverseMarks(
             footnoteContent = data[1]
         }
         if (isThought(mark)) { // 如果为想法
+            const {
+                thouPre,
+                thouSuf,
+                thouMarkPre,
+                thouMarkSuf
+            } = getReplacedThoughtConfig(mark, config)
             // 想法
-            const thouContent = `${config.thouPre}${mark.content}${config.thouSuf}\n\n`
+            const thouContent = `${thouPre}${mark.content}${thouSuf}\n\n`
             // 想法所标注的内容
             const abstract = mark.abstract
-            let thouAbstract = `${config.thouMarkPre}${abstract}${config.thouMarkSuf}\n\n`
+            let thouAbstract = `${thouMarkPre}${abstract}${thouMarkSuf}\n\n`
             // 想法所对应文本与上一条标注相同时
             if (abstract === prevMarkText) {
                 if (prevMarkType === '0') {

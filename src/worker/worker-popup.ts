@@ -14,7 +14,7 @@ import {
     getBestBookMarks,
     getBookMarks,
     getChapters,
-    getMyThought,
+    getMyThought, getReplacedThoughtConfig,
     getTitleAddedPreAndSuf,
     traverseMarks
 } from './worker-popup-process'
@@ -224,10 +224,16 @@ export async function copyThought(isAll?: boolean) {
         let tempRes = `${getTitleAddedPreAndSuf(contents.get(chapUid)!.title, contents.get(chapUid)!.level, config)}\n\n`
         let prevAbstract = '' // 保存上一条想法对应标注文本
         thoughtsInAChap.forEach((thou) => {
+            const {
+                thouPre,
+                thouSuf,
+                thouMarkPre,
+                thouMarkSuf
+            } = getReplacedThoughtConfig(thou, config)
             // 想法
-            const thouContent = `${config.thouPre}${thou.content}${config.thouSuf}\n\n`
+            const thouContent = `${thouPre}${thou.content}${thouSuf}\n\n`
             // 想法所标注的内容
-            let thouAbstract = `${config.thouMarkPre}${thou.abstract}${config.thouMarkSuf}\n\n`
+            let thouAbstract = `${thouMarkPre}${thou.abstract}${thouMarkSuf}\n\n`
             // 当前标注文本和前一条标注文本内容相同、且配置去重时，不导出当前的标注
             if (thou.abstract === prevAbstract && config.distinctThouMarks) {
                 thouAbstract = ''
