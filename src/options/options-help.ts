@@ -34,7 +34,7 @@ const helpContent: {[key: string]: any} = {
     },
     thouSuf: {
         title: '想法后缀',
-        help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>`
+        help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。可使用<span class="lineinline">{createTime}</span>作为占位符导出想法创建时间。</p>`
     },
     metaTemplate: {
         title: '书本信息导出模板',
@@ -50,7 +50,7 @@ const helpContent: {[key: string]: any} = {
     },
     thouMarkSuf: {
         title: '想法标注后缀',
-        help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>`
+        help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。可使用<span class="lineinline">{createTime}</span>作为占位符导出想法创建时间。</p>`
     },
     codeSuf: {
         title: '代码块后缀',

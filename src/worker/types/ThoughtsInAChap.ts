@@ -4,4 +4,5 @@ export interface ThoughtsInAChap {
     range: string;
     abstract: string;
     content: string;
+    createTime: number
 }

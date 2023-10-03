@@ -1,4 +1,4 @@
-<h2 align="center"><img src="res/README/icon128.png" height="128"><br>Wereader</h2>
+<h2 align="center"><img src="res/README/icon128.png" height="100" alt="icon"><br>Wereader</h2>
 
 <p align="center"><strong>一个 Chrome / Firefox 扩展：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者比较有帮助。</strong></p>
 
@@ -53,3 +53,12 @@
 | [chrome-plugin-demo](https://github.com/sxei/chrome-plugin-demo)                | Chrome 扩展开发教程   |
 | [Extensions - Chrome Developers](https://developer.chrome.com/docs/extensions/) | Chrome 扩展官方文档   |
 
+## 其他
+
+<table>
+<tr>
+<td>
+<div align="center"><img src="res/README/wx-code.png" height="260" alt="wx-code"><br><strong>加微信进交流群（备注：wereader 交流群）</strong></div>
+</td>
+</tr>
+</table>
