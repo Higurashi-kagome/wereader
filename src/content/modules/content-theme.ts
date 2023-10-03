@@ -90,8 +90,6 @@ function changeTheme(currentFlag: number, event?: JQuery.ClickEvent) {
  * 添加主题切换按钮并绑定点击事件
  */
 function addThemeBtn() {
-    // 主题切换顺序
-    const themeOrder = [-1, 0, 1, 2]
     // 创建主题切换按钮
     const themeBtn = $('<button title=\'主题\' class=\'readerControls_item theme\'></button>')
     themeBtn.append($('<span>主题</span>'))
@@ -99,14 +97,48 @@ function addThemeBtn() {
     // 隐藏原主题切换按钮图标
     $('.readerControls_item.white > .icon,.readerControls_item.dark > .icon').css('display', 'none').before(themeBtn)
     // 主题切换按钮点击事件
-    themeBtn.on('click', (event) => {
+    themeBtn.on('click', function onClick(event) {
         try {
-            curFlag = themeOrder[(themeOrder.indexOf(curFlag) + 1) % themeOrder.length]
-            changeTheme(curFlag, event)
+            $('.readerControls_item.theme').css('display', 'none')
+            $('.theme_switcher').css('display', 'flex')
+            event.stopPropagation()
         } catch (error) {
             Swal.fire({
                 title: 'Oops...', text: '似乎出了点问题，刷新一下试试吧~', icon: 'error', confirmButtonText: 'OK'
             })
+        }
+    })
+}
+
+/**
+ * 添加主题切换
+ */
+function addThemeSwitcher() {
+    $('.readerControls_item.white > .icon,.readerControls_item.dark > .icon').before($(`<div class="readerControls_fontSize expand theme_switcher" style="
+        width: 160px; display: none; margin-top: 0;">
+    <div class="fontSizeLabel left theme-switch-left"><span>主题</span></div>
+    <div class="fontSizeSliderContainer theme-switch-container cursor-default">
+    <span style="background: #E8DDC2;" data-theme-index="1"></span>
+    <span style="background: #bee5c5;" data-theme-index="0"></span>
+    <span style="background: black;" data-theme-index="2"></span>
+    <span style="background: white;" data-theme-index="-1"></span></div></div>`))
+    // 不同主题按钮
+    const itemClass = 'theme-switch-item'
+    $('.theme-switch-container span').addClass([itemClass, 'cursor-pointer'])
+        .on('click', function onClick(e) {
+            const themeIndex = $(this).data('themeIndex')
+            changeTheme(themeIndex, e)
+        })
+    // 点击父元素时关闭冒泡
+    $('.theme-switch-container,.theme-switch-left').on('click', function handleClick(e) {
+        if (!$(e.target).is(`.${itemClass}`)) e.stopPropagation()
+    })
+    // 隐藏面板
+    $(document).add('.theme-switch-left').on('click', function handleHideSwitcher(e) {
+        // 不是点击切换选项时关闭切换面板
+        if (!$(e.target).is(`.${itemClass}`)) {
+            $('.theme_switcher').css('display', 'none')
+            $('.readerControls_item.theme').css('display', 'inline-block')
         }
     })
 }
@@ -141,6 +173,7 @@ function initTheme() {
             })
             observer.observe(themeSwitch, { attributes: true })
             addThemeBtn()
+            addThemeSwitcher()
         }
     })
 }

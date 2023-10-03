@@ -19,6 +19,8 @@ import { initTheme } from './content/modules/content-theme'
 import { initThoughtEdit } from './content/modules/content-thought-edit'
 import { initFancyBox } from './content/modules/fancybox'
 import './content/modules/content-copy'
+import './content/static/css/content-theme-switch.css'
+import './content/static/css/common.css'
 
 initAlert()
 initDeleteMarksNotification()

@@ -8,6 +8,6 @@
 }
 
 /* 主题按钮、进度按钮 */
-.readerControls_item.theme, #progressText {
+.readerControls_item.theme, .theme-switch-left, #progressText {
     color: rgb(190,190,190) !important;
 }

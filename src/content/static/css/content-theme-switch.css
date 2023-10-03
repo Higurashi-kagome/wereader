@@ -1,0 +1,7 @@
+/* 主题面板项 */
+.theme-switch-container span{
+    border: 2px solid grey;
+    border-radius: 3px;
+    padding: 6px;
+    margin: 3px;
+}
