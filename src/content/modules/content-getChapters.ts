@@ -13,11 +13,11 @@ function initGetChapInfo() {
         if (!request.isGetChapters) return
         try {
             /* 获取书本各章节标题 */
-            $('.chapterItem>:first-child').each((idx, el) => {
+            $('.readerCatalog_list_item>:first-child').each((idx, el) => {
                 const $el = $(el)
                 const className: string = $el.attr('class')!
                 const level: number = parseInt(className.charAt(className.length - 1))
-                const chapTitle: string = $el.find('.chapterItem_text').text()
+                const chapTitle: string = $el.find('.readerCatalog_list_item_title_text').text()
                 // 获取目录
                 response.chapters.push({ title: chapTitle, level: level })
             })
