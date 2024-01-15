@@ -2,6 +2,10 @@
 
 <p align="center"><strong>一个 Chrome / Firefox 扩展：主要用于微信读书做笔记，对常使用 Markdown 做笔记的读者比较有帮助。</strong></p>
 
+## 注意
+
+最近有人在 Issues 中反馈获取标注等信息有被封号的风险，所以插件先下架。
+
 ## 安装
 
 [![](https://img.shields.io/badge/-Chrome-brightgreen?logo=GoogleChrome)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/-Edge-brightgreen?logo=MicrosoftEdge)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: Firefox](https://img.shields.io/badge/-Firefox-brightgreen?logo=FirefoxBrowser)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
