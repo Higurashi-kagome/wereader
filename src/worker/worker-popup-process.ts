@@ -8,22 +8,11 @@ import { Item } from './types/BestMarksJson'
 import { ChapInfoUpdated } from './types/ChapInfoJson'
 import { Updated } from './types/Updated'
 import { ChapAndMarks } from './types/ChapAndMarks'
-import {
-    getCurTab,
-    getIndexes,
-    sendAlertMsg,
-    sendMessageToContentScript
-} from './worker-utils'
-import {
-    ConfigType,
-    ThoughtTxtOptions,
-    getBookId
-} from './worker-vars'
+import { getCurTab, getIndexes, sendAlertMsg, sendMessageToContentScript } from './worker-utils'
+import { ConfigType, getBookId, ThoughtTxtOptions } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { ThoughtsInAChap } from './types/ThoughtsInAChap'
-import {
-    formatTimestamp, getLocalStorage, getSyncStorage, sortByKey
-} from '../common/utils'
+import { formatTimestamp, getLocalStorage, getSyncStorage, sortByKey } from '../common/utils'
 import { notify } from './worker-notification'
 
 // 给标题添加前后缀
@@ -50,12 +39,11 @@ export function getTitleAddedPreAndSuf(
 }
 
 export async function getMyThought() {
-    const wereader = new Wereader(await getBookId())
-    const data = await wereader.getThoughts()
+    const data = await new Wereader(await getBookId()).getThoughts()
     // 获取 chapterUid 并去重、排序
-    const chapterUidArr = Array.from(new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))).map((uid) => {
-        return parseInt(uid)
-    })
+    const chapterUidArr = Array.from(
+        new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))
+    ).map((uid) => parseInt(uid))
     chapterUidArr.sort((a, b) => a - b)
     // 查找每章节标注并总结好
     const thoughtsMap: Map<number, ThoughtsInAChap[]> = new Map<number, ThoughtsInAChap[]>()
@@ -127,8 +115,7 @@ async function addThoughts(chaptersAndMarks: ChapAndMarks[], chapters: ChapInfoU
         }
     })
     // 章节排序
-    const sorted = sortByKey(chaptersAndMarks, 'chapterUid') as ChapAndMarks[]
-    return sorted
+    return sortByKey(chaptersAndMarks, 'chapterUid') as ChapAndMarks[]
 }
 
 /* 判断从 DOM 获取的当前章节是否存在于 server 中（从 DOM 获取到的章节数可能多于 server 中的章节数，且当前章节为不存在于 server 中的某些子标题） */
@@ -160,8 +147,7 @@ function checkIsInServer(
 }
 
 export async function getChapters() {
-    const wereader = new Wereader(await getBookId())
-    const chapInfos = await wereader.getChapInfos()
+    const chapInfos = await new Wereader(await getBookId()).getChapInfos()
     const response = await sendMessageToContentScript({
         message: { isGetChapters: true }
     }) as responseType
@@ -176,8 +162,8 @@ export async function getChapters() {
     checkIsInServer(chapsInServer, response, chapsFromDom)
     // https://github.com/Higurashi-kagome/wereader/issues/76 end
     const chapIdx = await getLocalStorage('chapIdx') as {[key: string]: number}
-    const checkedChaps = chapsInServer.map((chapInServer) => {
-    // 某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
+    return chapsInServer.map((chapInServer) => {
+        // 某些书没有标题，或者读书页标题与数据库标题不同（往往读书页标题多出章节信息）
         if (chapsFromDom.length === chapsInServer.length
             && !chapsFromDom.filter(chap => chap.title === chapInServer.title).length) {
             // 将 chapsFromDom 中的信息赋值给 chapsFromServer
@@ -197,11 +183,10 @@ export async function getChapters() {
             console.warn('未找到当前标签页，无法获取当前章节 Uid')
             // 章节名称重复的情况下，会导致错误导出前一个同名章节内的内容：https://github.com/Higurashi-kagome/wereader/issues/103
             chapInServer.isCurrent = (chapInServer.title === response.currentContent)
-            || (response.currentContent.indexOf(chapInServer.title) > -1)
+                || (response.currentContent.indexOf(chapInServer.title) > -1)
         }
         return chapInServer
     })
-    return checkedChaps
 }
 
 export async function getBookMarks(isAddThou?: boolean) {

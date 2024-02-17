@@ -49,6 +49,8 @@ chrome.runtime.onMessage.addListener((
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data = msg.data as any
         let resp: unknown = true
+        const tab = await getCurTab()
+        const tabId = tab.id
         switch (msg.type) {
         case 'get-config':
             resp = await getSyncStorage()
@@ -69,8 +71,6 @@ chrome.runtime.onMessage.addListener((
             await copyContents()
             break
         case 'copy-book-marks':
-            const tab = await getCurTab()
-            const tabId = tab.id
             if (tabId) {
                 await attachTab(
                     tabId,
@@ -84,10 +84,19 @@ chrome.runtime.onMessage.addListener((
             }
             break
         case 'copy-best-book-marks':
-            copyBestBookMarks()
+            await copyBestBookMarks()
             break
         case 'copy-thought':
-            copyThought(data)
+            if (tabId) {
+                await attachTab(
+                    tabId,
+                    (url) => chapInfoFilter(url) || reviewFilter(url),
+                    true,
+                    () => copyThought(data),
+                    onReceivedChapInfoResponse,
+                    onReceivedReviewResponse
+                )
+            }
             break
         case 'send-message-to-content-script':
             resp = await sendMessageToContentScript(data)

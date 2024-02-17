@@ -74,9 +74,10 @@ export class Wereader {
     }
 
     async getBestBookmarks(): Promise<BestMarksJson> {
-        const data = await getJson(this.bestBookmarksUrl)
+        // const data = await getJson(this.bestBookmarksUrl)
+        const data = await getCurBook()
         console.log(data)
-        return data
+        return data.bestBookMarks!
     }
 
     // eslint-disable-next-line class-methods-use-this

@@ -204,7 +204,7 @@ export async function copyThought(isAll?: boolean) {
         return
     }
     const contents = chaps.reduce((tempContents, aChap) => {
-    // 整理格式
+        // 整理格式
         tempContents.set(aChap.chapterUid, aChap)
         return tempContents
     }, new Map<number, ChapInfoUpdated>())
