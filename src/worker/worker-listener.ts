@@ -30,8 +30,14 @@ import { notify } from './worker-notification'
 import { attachTab } from '../debugger/debugger-network'
 import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
 import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
-import { bookmarksFilter, chapInfoFilter, reviewFilter } from '../debugger/debugger-filters'
+import {
+    bookInfoFilter,
+    bookmarksFilter,
+    chapInfoFilter,
+    reviewFilter
+} from '../debugger/debugger-filters'
 import { onReceivedReviewResponse } from '../debugger/handler/on-review'
+import { onReceivedBookInfoResponse } from '../debugger/handler/on-book-info'
 
 chrome.runtime.onMessage.addListener((
     msg: Message,
@@ -119,10 +125,18 @@ chrome.runtime.onMessage.addListener((
             resp = await setShelfData(data)
             break
         case 'create-mp-page':
-            createMpPage(data)
+            await createMpPage(data)
             break
         case 'copy-book-info':
-            copyBookInfo()
+            if (tabId) {
+                await attachTab(
+                    tabId,
+                    (url) => bookInfoFilter(url),
+                    true,
+                    () => copyBookInfo(),
+                    onReceivedBookInfoResponse
+                )
+            }
             break
         case 'get-read-detail':
             resp = await getReadDetail(data.monthTimestamp, data.type, data.count)

@@ -65,7 +65,7 @@ async function initNoteTab(url: string) {
             }) */
             break
         case 'copyBookInfo':
-            // await popupApi.copyBookInfo()
+            await popupApi.copyBookInfo()
             break
         default:
             break

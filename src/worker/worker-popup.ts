@@ -37,14 +37,13 @@ import { notify } from './worker-notification'
 
 // 获取书本信息
 export async function copyBookInfo() {
-    const wereader = new Wereader(await getBookId())
     // 发送渲染请求到 offscreen
     const data = {
         command: 'render',
-        context: await wereader.getBookInfo(),
+        context: await new Wereader(await getBookId()).getBookInfo(),
         templateStr: await getSyncStorage('metaTemplate')
     }
-    new Sender('render', data).sendToOffscreen()
+    await new Sender('render', data).sendToOffscreen()
 }
 
 // 获取书评

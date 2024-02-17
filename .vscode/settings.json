@@ -9,12 +9,12 @@
         "**/.history": true,
         "**/__pycache__": true,
         "**/node_modules": true,
-        "wereader-firefox": true,
+        "wereader-firefox": false,
         "package-lock.json": true,
         "wereader-chrome": false,
         "dist": false
     },
-	"explorerExclude.backup": null,
+	"explorerExclude.backup": {},
 	"editor.snippetSuggestions": "inline",
 	"cSpell.words": [
 		"autoescape",
