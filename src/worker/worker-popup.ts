@@ -29,7 +29,7 @@ import {
 import {
     ConfigType,
     getBookId,
-    getBookIds
+    getBookIds, getBooks
 } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { Sender } from '../common/sender'

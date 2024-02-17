@@ -31,41 +31,41 @@ async function initNoteTab(url: string) {
         console.log('click: ', targetEl.id)
         switch (targetEl.id) {
         case 'getTextComment':
-            await popupApi.copyComment(userVid, false)
+            // await popupApi.copyComment(userVid, false)
             break
         case 'getHtmlComment':
-            await popupApi.copyComment(userVid, true)
+            // await popupApi.copyComment(userVid, true)
             break
         case 'getMarksInCurChap':
-            await popupApi.copyBookMarks(false)
+            popupApi.copyBookMarks(false).then()
             break
         case 'getAllMarks':
-            await popupApi.copyBookMarks(true)
+            // await popupApi.copyBookMarks(true)
             break
         case 'getContents':
-            await popupApi.copyContents()
+            // await popupApi.copyContents()
             break
         case 'getBestBookMarks':
-            await popupApi.copyBestBookMarks()
+            // await popupApi.copyBestBookMarks()
             break
         case 'getMyThoughtsInCurChap':
-            await popupApi.copyThought(false)
+            // await popupApi.copyThought(false)
             break
         case 'getAllMyThoughts':
-            await popupApi.copyThought(true)
+            // await popupApi.copyThought(true)
             break
         case 'removeMarksInCurChap':
-            await popupApi.sendMessageToContentScript({
+            /* await popupApi.sendMessageToContentScript({
                 message: { deleteBookmarks: true, isAll: false }
-            })
+            }) */
             break
         case 'removeAllMarks':
-            await popupApi.sendMessageToContentScript({
+            /* await popupApi.sendMessageToContentScript({
                 message: { deleteBookmarks: true, isAll: true }
-            })
+            }) */
             break
         case 'copyBookInfo':
-            await popupApi.copyBookInfo()
+            // await popupApi.copyBookInfo()
             break
         default:
             break

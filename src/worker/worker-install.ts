@@ -1,9 +1,10 @@
 import { notify } from './worker-notification'
-import { initBookIds } from './worker-vars'
+import { initBookIds, initBooks } from './worker-vars'
 
 // 监听安装事件
 chrome.runtime.onInstalled.addListener(function (details) {
     initBookIds()
+    initBooks()
     const onUpdated = false
     const onInstall = false
     if (details.reason === 'install' && onInstall) {

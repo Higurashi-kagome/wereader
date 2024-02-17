@@ -5,10 +5,8 @@ import { ChapInfoJson } from './ChapInfoJson'
 import { CommentsJson } from './CommentsJson'
 import { MarksJson } from './MarksJson'
 import { ThoughtJson } from './ThoughtJson'
-import {
-    getJson,
-    getText
-} from '../worker-utils'
+import { getJson, getText } from '../worker-utils'
+import { getBooks, getCurBook } from '../worker-vars'
 
 export class Wereader {
     static readonly indexUrl = 'https://i.weread.qq.com'
@@ -54,22 +52,25 @@ export class Wereader {
         this.shelfBookSecret = `${Wereader.indexUrl}/book/secret`
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async getBookmarks(): Promise<MarksJson> {
-        const data = await getJson(this.bookmarksUrl)
-        console.log(data)
-        return data
+        // const data = await getJson(this.bookmarksUrl)
+        const data = await getCurBook()
+        return data.bookmarks!
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async getChapInfos(): Promise<ChapInfoJson> {
-        const data = await getJson(this.chapInfosUrl)
-        console.log(data)
-        return data
+        // const data = await getJson(this.chapInfosUrl)
+        const data = await getCurBook()
+        return data.chapInfo!
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async getBookInfo(): Promise<BookInfo> {
-        const data = await getJson(this.bookInfosUrl)
-        console.log(data)
-        return data
+        // const data = await getJson(this.bookInfosUrl)
+        const data = await getCurBook()
+        return data.bookInfo!
     }
 
     async getBestBookmarks(): Promise<BestMarksJson> {
@@ -78,10 +79,11 @@ export class Wereader {
         return data
     }
 
+    // eslint-disable-next-line class-methods-use-this
     async getThoughts(): Promise<ThoughtJson> {
-        const data = await getJson(this.thoughtsUrl)
-        console.log(data)
-        return data
+        // const data = await getJson(this.thoughtsUrl)
+        const data = await getCurBook()
+        return data.review!
     }
 
     async getComments(): Promise<CommentsJson> {
@@ -91,7 +93,8 @@ export class Wereader {
     }
 
     async getShelfData(): Promise<ShelfDataTypeJson> {
-        const data = await getJson(this.shelfDataUrl)
+        // const data = await getJson(this.shelfDataUrl)
+        const data = Promise.resolve({ errMsg: '123', shelfDataUrl: this.shelfDataUrl })
         console.log(data)
         return data
     }

@@ -1,6 +1,7 @@
 import { IMG_TAG } from '../common/constants'
 import { getLocalStorage } from '../common/utils'
 import { ConfigType } from './types/ConfigType'
+import { BookData } from '../types/bookData'
 
 const DefaultBackupName = '默认设置'
 const StorageErrorMsg = '存储出错'
@@ -88,6 +89,20 @@ export async function getBookId(): Promise<string> {
     return await getLocalStorage('bookId') as string
 }
 /**
+ * 获取各书本信息
+ * @returns bookId 为键，书本相关信息为值的对象
+ */
+export async function getBooks(): Promise<{[key: string]: BookData}> {
+    return await getLocalStorage('books') as {[key: string]: BookData}
+}
+/**
+ * 获取当前书本信息
+ */
+export async function getCurBook(): Promise<BookData> {
+    const books = await getBooks()
+    return books[await getBookId()]
+}
+/**
  * 获取已打开读书页及对应书本 id
  * @returns tabId: bookId 键值对
  */
@@ -100,6 +115,21 @@ export async function getBookIds(): Promise<{[key: number]: string}> {
  */
 export async function initBookIds() {
     return chrome.storage.local.set({ bookIds: {} })
+}
+/**
+ * 初始化 books
+ */
+export async function initBooks() {
+    return chrome.storage.local.set({ books: {} })
+}
+/**
+ * 添加信息到当前 book
+ */
+export async function addToCurBook(data: BookData) {
+    const bookId = await getBookId()
+    const books = await getBooks()
+    books[bookId] = { ...books[bookId], ...data }
+    return chrome.storage.local.set({ books })
 }
 /**
  * 获取已打开读书页及对应书本正在阅读的章节索引

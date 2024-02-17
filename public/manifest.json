@@ -1,70 +1,73 @@
 {
-	"manifest_version": 3,
-	"name": "微信读书笔记助手",
-	"version": "0.0.0",
-	"description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用 Markdown 做笔记的用户比较有帮助。",
-	"background": {
-		"service_worker": "worker.js"
-	},
-	"icons": {
-		"16": "icons/extension-icons/icon16.png",
-		"48": "icons/extension-icons/icon48.png",
-		"128": "icons/extension-icons/icon128.png"
-	},
-	"action": {
-		"default_icon": {
-			"16": "icons/extension-icons/icon16.png",
-			"24": "icons/extension-icons/icon24.png",
-			"32": "icons/extension-icons/icon32.png"
-		},
-		"default_popup": "popup.html",
-		"default_title": "wereader"
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"*://weread.qq.com/web/reader/*"
-			],
-			"js": [
-				"content.js"
-			],
-			"css": [],
-			"run_at": "document_idle"
-		}
-	],
-	"web_accessible_resources": [
-		 {
-			"resources": [
-				"content/static/css/theme/*.css",
-		 		"content/static/css/*.css"
-			],
-			"matches": [
-				"*://weread.qq.com/*"
-			]
-		 }
-	],
-	"options_page": "options.html",
-	"options_ui": {
-		"page": "options.html",
-		"open_in_tab": true
-	},
-	"homepage_url": "https://github.com/Higurashi-kagome/wereader",
-	"permissions": [
-		"tabs",
-    "activeTab",
-		"cookies",
-		"storage",
-		"contextMenus",
-		"webRequest",
-		"offscreen",
-		"notifications",
-		"clipboardWrite"
-	],
-	"host_permissions": [
-		"*://weread.qq.com/*",
-		"*://i.weread.qq.com/*"
-  ],
-	"sandbox": {
-		"pages": ["sandbox.html"]
-	}
+    "manifest_version": 3,
+    "name": "微信读书笔记助手",
+    "version": "0.0.0",
+    "description": "一个还不错的微信读书笔记工具，方便你导出书本标注等内容，对常使用 Markdown 做笔记的用户比较有帮助。",
+    "background": {
+        "service_worker": "worker.js"
+    },
+    "icons": {
+        "16": "icons/extension-icons/icon16.png",
+        "48": "icons/extension-icons/icon48.png",
+        "128": "icons/extension-icons/icon128.png"
+    },
+    "action": {
+        "default_icon": {
+            "16": "icons/extension-icons/icon16.png",
+            "24": "icons/extension-icons/icon24.png",
+            "32": "icons/extension-icons/icon32.png"
+        },
+        "default_popup": "popup.html",
+        "default_title": "wereader"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://weread.qq.com/web/reader/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [],
+            "run_at": "document_idle"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "content/static/css/theme/*.css",
+                "content/static/css/*.css"
+            ],
+            "matches": [
+                "*://weread.qq.com/*"
+            ]
+        }
+    ],
+    "options_page": "options.html",
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": true
+    },
+    "homepage_url": "https://github.com/Higurashi-kagome/wereader",
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "cookies",
+        "storage",
+        "debugger",
+        "contextMenus",
+        "webRequest",
+        "offscreen",
+        "notifications",
+        "clipboardWrite"
+    ],
+    "host_permissions": [
+        "*://weread.qq.com/*",
+        "*://i.weread.qq.com/*"
+    ],
+    "sandbox": {
+        "pages": [
+            "sandbox.html"
+        ]
+    }
 }

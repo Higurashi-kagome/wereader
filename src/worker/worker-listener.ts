@@ -1,16 +1,37 @@
 import {
-    copyBestBookMarks, copyBookInfo, copyBookMarks, copyComment,
-    copyContents, copyThought, createMpPage, deleteBookmarks,
-    getReadDetail, getShelfData, sendMpMsg, setBookId, setShelfData
+    copyBestBookMarks,
+    copyBookInfo,
+    copyBookMarks,
+    copyComment,
+    copyContents,
+    copyThought,
+    createMpPage,
+    deleteBookmarks,
+    getReadDetail,
+    getShelfData,
+    sendMpMsg,
+    setBookId,
+    setShelfData
 } from './worker-popup'
 import {
-    copy, createTab, getUserVid, sendAlertMsg, sendMessageToContentScript, updateStorageAreaInBg
+    copy,
+    createTab,
+    getCurTab,
+    getUserVid,
+    sendAlertMsg,
+    sendMessageToContentScript,
+    updateStorageAreaInBg
 } from './worker-utils'
 import { Wereader } from './types/Wereader'
 import { Message } from './types/Message'
 import { getLocalStorage, getSyncStorage } from '../common/utils'
 import { ShelfForPopupType } from './types/PopupApi'
 import { notify } from './worker-notification'
+import { attachTab } from '../debugger/debugger-network'
+import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
+import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
+import { bookmarksFilter, chapInfoFilter, reviewFilter } from '../debugger/debugger-filters'
+import { onReceivedReviewResponse } from '../debugger/handler/on-review'
 
 chrome.runtime.onMessage.addListener((
     msg: Message,
@@ -48,7 +69,19 @@ chrome.runtime.onMessage.addListener((
             copyContents()
             break
         case 'copy-book-marks':
-            copyBookMarks(data)
+            const tab = await getCurTab()
+            const tabId = tab.id
+            if (tabId) {
+                await attachTab(
+                    tabId,
+                    (url) => bookmarksFilter(url) || chapInfoFilter(url) || reviewFilter(url),
+                    true,
+                    () => copyBookMarks(data),
+                    onReceivedBookMarksResponse,
+                    onReceivedChapInfoResponse,
+                    onReceivedReviewResponse
+                )
+            }
             break
         case 'copy-best-book-marks':
             copyBestBookMarks()

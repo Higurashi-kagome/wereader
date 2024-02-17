@@ -12,7 +12,7 @@ import './popup/modules/popup-listener'
 import './popup/modules/popup-connect'
 
 chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
-    initShelfTab()
+    // initShelfTab()
     initStatisticsTab()
     initOptionsTab()
     const url = tabs[0].url!
