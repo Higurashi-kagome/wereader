@@ -21,7 +21,7 @@ async function initShelfTab() {
     /* 绑定书架 tab 按钮点击事件 */
     $('#shelfBtn').on('click', async function () {
         console.log('call: #shelfBtn.onclick')
-        const res = await popupApi.shelfForPopup()
+        /* const res = await popupApi.shelfForPopup()
         let shelfData = res.shelfData
         // 从背景页获取数据无效
         if (Object.keys(shelfData).length === 0 || shelfData.errMsg) {
@@ -44,7 +44,7 @@ async function initShelfTab() {
         console.log('call: #shelfBtn.onclick var shelfData\n', shelfData)
         // eslint-disable-next-line no-use-before-define
         createShelf(shelfData)
-        createSearchInput()
+        createSearchInput() */
     }).on('click', tabClickEvent).hide()
     initShelfReload()
 }

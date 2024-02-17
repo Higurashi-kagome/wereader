@@ -101,6 +101,9 @@ function addThemeBtn() {
         try {
             $('.readerControls_item.theme').css('display', 'none')
             $('.theme_switcher').css('display', 'flex')
+            const selector = '.readerControls_item.white,.readerControls_item.dark'
+            $(selector).css('width', 'max-content')
+            $('.theme-switch-left').hide()
             event.stopPropagation()
         } catch (error) {
             Swal.fire({

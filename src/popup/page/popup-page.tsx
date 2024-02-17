@@ -22,7 +22,7 @@ export const Popup: FC<IProps> = () => {
             </TabBtnContainer>
             <NoteTabContent/>
             <TabContent for='shelfBtn' id='shelf'>
-                <a>...</a>
+                <a>请在读书页使用</a>
             </TabContent>
         </div>
     );
