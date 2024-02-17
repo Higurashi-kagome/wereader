@@ -7,12 +7,13 @@ async function initStatisticsTab() {
     let statistic = $('#statisticBtn')
     const config = await getSyncStorage() as ConfigType
     if (config.enableStatistics) {
-    // 新创建
+        statistic.hide()
+        // 新创建
         if (!statistic.length) {
-            statistic = $('<button class="tabLinks" id="statisticBtn">统计</button>')
+            /* statistic = $('<button class="tabLinks" id="statisticBtn">统计</button>')
             statistic.appendTo('.tab').on('click', () => {
                 chrome.tabs.create({ url: chrome.runtime.getURL('statistics.html') })
-            })
+            }) */
         }
     } else {
         statistic.hide()

@@ -45,7 +45,7 @@ async function initShelfTab() {
         // eslint-disable-next-line no-use-before-define
         createShelf(shelfData)
         createSearchInput()
-    }).on('click', tabClickEvent)
+    }).on('click', tabClickEvent).hide()
     initShelfReload()
 }
 

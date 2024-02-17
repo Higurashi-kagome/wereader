@@ -12,9 +12,9 @@ import './popup/modules/popup-listener'
 import './popup/modules/popup-connect'
 
 chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
-    // initShelfTab()
-    initStatisticsTab()
-    initOptionsTab()
+    await initShelfTab()
+    await initStatisticsTab()
+    await initOptionsTab()
     const url = tabs[0].url!
     await initNoteTab(url)
     // 默认点击第一个 tab
