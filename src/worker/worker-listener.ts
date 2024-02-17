@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener((
             copyComment(data.userVid, data.isHtml)
             break
         case 'copy-contents':
-            copyContents()
+            await copyContents()
             break
         case 'copy-book-marks':
             const tab = await getCurTab()

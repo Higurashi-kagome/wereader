@@ -40,10 +40,10 @@ async function initNoteTab(url: string) {
             popupApi.copyBookMarks(false).then()
             break
         case 'getAllMarks':
-            // await popupApi.copyBookMarks(true)
+            await popupApi.copyBookMarks(true)
             break
         case 'getContents':
-            // await popupApi.copyContents()
+            await popupApi.copyContents()
             break
         case 'getBestBookMarks':
             // await popupApi.copyBestBookMarks()
