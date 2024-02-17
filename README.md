@@ -4,11 +4,15 @@
 
 ## 注意
 
-最近有人在 Issues 中反馈获取标注等信息有被封号的风险，所以插件先下架。
+之前有人在 Issues 中反馈获取标注等信息有被封号的风险，v4.0.0 调整了标注获取方式，通过 debug 方式获取页面返回的数据（而不主动发起请求），调整后问题应该不大，但请酌情使用。
+
+本扩展仅供学习交流使用，请勿侵犯微信读书和作者权益。
 
 ## 安装
 
-[![](https://img.shields.io/badge/-Chrome-brightgreen?logo=GoogleChrome)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/-Edge-brightgreen?logo=MicrosoftEdge)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) [![Mozilla add\-on: Firefox](https://img.shields.io/badge/-Firefox-brightgreen?logo=FirefoxBrowser)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/)
+[![](https://img.shields.io/badge/-Chrome-brightgreen?logo=GoogleChrome)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/-Edge-brightgreen?logo=MicrosoftEdge)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) 
+
+<!-- [![Mozilla add\-on: Firefox](https://img.shields.io/badge/-Firefox-brightgreen?logo=FirefoxBrowser)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/) -->
 
 不能访问 Chrome 网上应用店时按如下操作在 Chrome 上手动安装（注意：手动安装的扩展不会自动更新）：
 
@@ -22,18 +26,14 @@
 
 ## 功能
 
-1. 一键导出标注、热门标注、书评、想法、目录；
+1. 一键导出标注、想法、目录；
 2. 导出格式自定义；
 3. 一键复制图片、注释、代码块；
 4. 护眼色主题；
-5. 书架分类、书架搜索；
 6. 标注搜索、标注目录；
 7. 借助正则匹配对标注进行处理；
 8. 选中后自动标注、自动复制或自动查询；
 9. 解除右键限制；
-10. 一键删除标注；
-11. 统计周、月阅读时间；
-12. 浏览公众号；
 13. 读书页图片、代码块放大。
 
 ## 致谢
