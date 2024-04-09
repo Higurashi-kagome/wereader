@@ -12,7 +12,6 @@ import { initNotesMenu } from './content/modules/content-notesMenu'
 import { initRightClick } from './content/modules/content-rightClick'
 import { initScrollBar } from './content/modules/content-scroll-bar'
 import { initSearchNote } from './content/modules/content-searchNote'
-import { initSelectAction } from './content/modules/content-select-action'
 import { initTheme } from './content/modules/content-theme'
 import { initThoughtEdit } from './content/modules/content-thought-edit'
 import { initFancyBox } from './content/modules/fancybox'
@@ -31,7 +30,6 @@ initTheme()
 initScrollBar()
 initSearchNote()
 initNotesMenu()
-initSelectAction()
 initRightClick()
 initThoughtEdit()
 initFancyBox()
