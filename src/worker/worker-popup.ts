@@ -254,10 +254,12 @@ export async function copyThought(isAll?: boolean) {
         })
     } else {
         const chapUid = curChapUid
-        const thoughtsInAChap = thoughts.get(chapUid)!
-        res += getTempRes(thoughtsInAChap, chapUid)
+        const thoughtsInAChap = thoughts.get(chapUid)
+        if (thoughtsInAChap) {
+            res += getTempRes(thoughtsInAChap, chapUid)
+        }
     }
-    if (!res) sendAlertMsg({ text: '该书无想法', icon: 'warning' })
+    if (!res) sendAlertMsg({ text: '未找到想法', icon: 'warning' })
     else copy(res)
 }
 
