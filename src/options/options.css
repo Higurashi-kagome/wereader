@@ -1,5 +1,4 @@
 body {
-    background-color: #fff;
     font-family: sans-serif;
     font-size: 12px;
     max-width: 500px;
@@ -177,6 +176,18 @@ img{
 
 .help-content li {
     margin: 2px;
+}
+
+/* 提示信息 */
+
+.help-content .warning {
+    font-weight: bold;
+    color: #ed0000;
+}
+
+.help-content.notify {
+    margin-left: 0;
+    margin-bottom: 10px;
 }
 
 /* 显示进度条 */

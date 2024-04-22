@@ -177,7 +177,8 @@ function insertHelpContent(){
     for (let index = 0; index < helpIcons.length; index++) {
         const helpIcon = helpIcons[index] as HTMLElement
         helpIcon.onclick = function(){
-            const help = helpContents[index] as HTMLElement
+            // 第一项是注意事项，总是展示
+            const help = helpContents[index + 1] as HTMLElement
             help.hidden = !help.hidden
             return false
         }
