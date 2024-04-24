@@ -38,6 +38,39 @@ function loadDarkWhiteCSS(title: string) {
 }
 
 /**
+ * 按主题号获取主题名称
+ * @param currentFlag 当前主题号
+ */
+function getThemeName(currentFlag: number) {
+    const themeMap = new Map<number, string>()
+    themeMap.set(0, 'green')
+    themeMap.set(1, 'orange')
+    themeMap.set(2, 'dark')
+    themeMap.set(-1, 'white')
+    return themeMap.get(currentFlag)
+}
+
+/**
+ * 更新水平阅读模式下的样式
+ */
+function updateHorizontalStyle() {
+    const otherThemeStyleId = 'wereader-other-theme-style-el'
+    const theme = getThemeName(curFlag)
+    if (theme && ['dark', 'white'].includes(theme)) {
+        unloadCSS(otherThemeStyleId)
+        return
+    }
+    const horizontalReader = $('.isHorizontalReader')
+    if (horizontalReader.length) {
+        if (theme && ['green', 'orange'].includes(theme)) {
+            loadCSS(`content/static/css/theme/${theme}-two.css`, otherThemeStyleId)
+        }
+    } else {
+        unloadCSS(otherThemeStyleId)
+    }
+}
+
+/**
  * 传入主题对应数值，切换到相应主题
  * @param currentFlag 所需要切换到的主题所对应的数值
  * @param event 点击事件，用来控制冒泡或阻止冒泡，进而控制切换黑白色主题
@@ -47,12 +80,8 @@ function changeTheme(currentFlag: number, event?: JQuery.ClickEvent) {
     const white = $('.readerControls_item.white')
     const dark = $('.readerControls_item.dark')
     // 数值与主题对应关系
-    const themeMap = new Map()
-    themeMap.set(0, 'green')
-    themeMap.set(1, 'orange')
-    themeMap.set(2, 'dark')
-    themeMap.set(-1, 'white')
-    console.log(tag, '切换主题 - ', themeMap.get(currentFlag))
+    const theme = getThemeName(currentFlag)
+    console.log(tag, '切换主题 - ', theme)
     const darkOrWhite = getDarkOrWhite()
     switch (currentFlag) {
     case 0:
@@ -61,7 +90,7 @@ function changeTheme(currentFlag: number, event?: JQuery.ClickEvent) {
     case 1:
         // 设置橙色主题
         if (darkOrWhite === 'dark' && event) event.stopPropagation()
-        loadCSS(`content/static/css/theme/${themeMap.get(currentFlag)}.css`, themeStyleId)
+        loadCSS(`content/static/css/theme/${theme}.css`, themeStyleId)
         break
     case 2:
         // 设置黑色主题
@@ -81,6 +110,8 @@ function changeTheme(currentFlag: number, event?: JQuery.ClickEvent) {
         }
         break
     }
+    curFlag = currentFlag
+    updateHorizontalStyle()
     chrome.storage.sync.set({ flag: currentFlag }, function () {
         if (chrome.runtime.lastError) alert('存储出错')
     })
@@ -177,6 +208,8 @@ function initTheme() {
             observer.observe(themeSwitch, { attributes: true })
             addThemeBtn()
             addThemeSwitcher()
+            // 绑定水平阅读按钮点击事件，点击后更新样式
+            $('.readerControls_item.isHorizontalReader').on('click', updateHorizontalStyle)
         }
     })
 }

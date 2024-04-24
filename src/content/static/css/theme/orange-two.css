@@ -1,0 +1,20 @@
+/*双栏阅读下的额外样式*/
+.wr_canvasContainer {
+    background: transparent !important;
+}
+
+.readerChapterContent_container {
+    background-color: #E8DDC2 !important;
+}
+
+.wr_whiteTheme .wr_horizontalReader .readerChapterContent {
+    background-color: #F1E5C9;
+}
+
+div.readerTopBar {
+    background-color: #E8DDC2 !important;
+}
+
+#searchNoteInput {
+    border-radius: 16px;
+}
