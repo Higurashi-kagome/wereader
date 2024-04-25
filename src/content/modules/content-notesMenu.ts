@@ -9,7 +9,8 @@ function initNotesMenu() {
         const titleScrollSelector = '#sectionListItem_title_scroll'
         // 出现切换章节且已经创建目录，则重新标记当前章节（点击 .note 再处理比较慢，所以提前监听，加快处理目录的速度）
         // 后来发现好像和扩展也没多少关系，标注比较多时本来就比较慢...
-        $('.app_content')[0].arrive('.readerChapterContent', function () {
+        const content = $('.app_content')[0] || $('.wr_horizontalReader_app_content')[0]
+        content.arrive('.readerChapterContent', function () {
             const curChapTitle = getCurrentChapTitle()
             if ($(titleScrollSelector).length) { // 如果已经创建目录
                 $(`${titleScrollSelector} a.current`).removeClass('current') // 删除之前章节标注

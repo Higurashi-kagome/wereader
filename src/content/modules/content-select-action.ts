@@ -86,7 +86,8 @@ function initSelectAction() {
         }
         observeParent()
         // 处理切换章节后失效的问题
-        $('.app_content')[0].arrive('.readerChapterContent', () => {
+        const content = $('.app_content')[0] || $('.wr_horizontalReader_app_content')[0]
+        content.arrive('.readerChapterContent', () => {
             observeParent()
         })
     })

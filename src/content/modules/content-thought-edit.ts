@@ -4,7 +4,8 @@ import $ from 'jquery'
 function initThoughtEdit() {
     console.log('initThoughtEdit')
     window.addEventListener('load', () => {
-        $('.app_content')[0].arrive('.writeReview_submit_button.wr_btn.wr_btn_Big', { onceOnly: true }, function (btn) {
+        const content = $('.app_content')[0] || $('.wr_horizontalReader_app_content')[0]
+        content.arrive('.writeReview_submit_button.wr_btn.wr_btn_Big', { onceOnly: true }, function (btn) {
             const $btn = $(btn)
             const textarea = $('#WriteBookReview')
             // 按键替代，实现字符替换
