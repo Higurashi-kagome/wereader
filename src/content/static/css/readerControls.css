@@ -1,0 +1,4 @@
+/* 控制按钮字体大小 */
+.readerControls_item>span{
+    font-size: 12px;
+}

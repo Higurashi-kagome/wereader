@@ -1,6 +1,7 @@
 /* content 脚本入口 */
 
 import './content/static/css/rankChapter.css'
+import './content/static/css/readerControls.css'
 
 import { initAlert } from './content/modules/content-alert'
 import { initDeleteMarksNotification } from './content/modules/content-deleteBookmarks'
