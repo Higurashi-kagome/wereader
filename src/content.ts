@@ -17,6 +17,7 @@ import { initThoughtEdit } from './content/modules/content-thought-edit'
 import { initFancyBox } from './content/modules/fancybox'
 import { initConfirm } from './content/modules/content-confirm'
 import './content/modules/content-copy'
+import './content/modules/content-wereader-api'
 import './content/static/css/content-theme-switch.css'
 import './content/static/css/common.css'
 

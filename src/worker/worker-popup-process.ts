@@ -4,16 +4,36 @@ import { Code } from '../content/types/Code'
 import { Footnote } from '../content/types/Footnote'
 import { Img } from '../content/types/Img'
 import { reConfigCollectionType } from '../options/options-utils'
-import { Item } from './types/BestMarksJson'
-import { ChapInfoUpdated } from './types/ChapInfoJson'
+import { BestMarksJson, Item } from './types/BestMarksJson'
+import { ChapInfoJson, ChapInfoUpdated } from './types/ChapInfoJson'
 import { Updated } from './types/Updated'
 import { ChapAndMarks } from './types/ChapAndMarks'
-import { getCurTab, getIndexes, sendAlertMsg, sendMessageToContentScript } from './worker-utils'
+import {
+    getCurTab,
+    getIndexes,
+    getUserVid,
+    requestContentWereader,
+    sendAlertMsg,
+    sendMessageToContentScript
+} from './worker-utils'
 import { ConfigType, getBookId, ThoughtTxtOptions } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { ThoughtsInAChap } from './types/ThoughtsInAChap'
 import { formatTimestamp, getLocalStorage, getSyncStorage, sortByKey } from '../common/utils'
 import { notify } from './worker-notification'
+import { attachTab } from '../debugger/debugger-network'
+import {
+    bookInfoFilter,
+    bookmarksFilter,
+    chapInfoFilter,
+    reviewFilter
+} from '../debugger/debugger-filters'
+import { copyBookInfo, copyBookMarks, copyThought } from './worker-popup'
+import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
+import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
+import { onReceivedReviewResponse } from '../debugger/handler/on-review'
+import { ThoughtJson } from './types/ThoughtJson'
+import { onReceivedBookInfoResponse } from '../debugger/handler/on-book-info'
 
 // 给标题添加前后缀
 export function getTitleAddedPreAndSuf(
@@ -39,7 +59,9 @@ export function getTitleAddedPreAndSuf(
 }
 
 export async function getMyThought() {
-    const data = await new Wereader(await getBookId()).getThoughts()
+    const wereader = new Wereader(await getBookId(), await getUserVid())
+    const data = await requestContentWereader(wereader, 'getThoughts') as ThoughtJson
+    if (!data) return new Map()
     // 获取 chapterUid 并去重、排序
     const chapterUidArr = Array.from(
         new Set(JSON.stringify(data).match(/(?<="chapterUid":\s*)(\d*)(?=,)/g))
@@ -147,7 +169,9 @@ function checkIsInServer(
 }
 
 export async function getChapters() {
-    const chapInfos = await new Wereader(await getBookId()).getChapInfos()
+    const wereader = new Wereader(await getBookId())
+    const chapInfos = await requestContentWereader(wereader, 'getChapInfos') as ChapInfoJson
+    // 发请求到 content 脚本获取章节信息
     const response = await sendMessageToContentScript({
         message: { isGetChapters: true }
     }) as responseType
@@ -189,10 +213,60 @@ export async function getChapters() {
     })
 }
 
+/**
+ * 通过 DevTools 获取标注
+ * @param tabId tab id
+ * @param isAll 是否导出全书标注
+ */
+export async function copyBookMarksByDevTools(tabId: number, isAll: boolean) {
+    await attachTab(
+        tabId,
+        (url) => bookmarksFilter(url) || chapInfoFilter(url) || reviewFilter(url),
+        true,
+        () => copyBookMarks(isAll),
+        onReceivedBookMarksResponse,
+        onReceivedChapInfoResponse,
+        onReceivedReviewResponse
+    )
+}
+
+/**
+ * 通过 DevTools 获取想法
+ * @param tabId tab id
+ * @param isAll 是否导出全书标注
+ */
+export async function copyThoughtByDevTools(tabId: number, isAll: boolean) {
+    await attachTab(
+        tabId,
+        (url) => chapInfoFilter(url) || reviewFilter(url),
+        true,
+        () => copyThought(isAll),
+        onReceivedChapInfoResponse,
+        onReceivedReviewResponse
+    )
+}
+
+/**
+ * 通过 DevTools 获取书本信息
+ * @param tabId tab id
+ */
+export async function copyBookInfoByDevTools(tabId: number) {
+    await attachTab(
+        tabId,
+        (url) => bookInfoFilter(url),
+        true,
+        () => copyBookInfo(),
+        onReceivedBookInfoResponse
+    )
+}
+
 export async function getBookMarks(isAddThou?: boolean) {
     const wereader = new Wereader(await getBookId())
-    const { updated: marks } = await wereader.getBookmarks()
-    if (!marks.length) return null
+    // 发送消息到 content，由 content 调用方法
+    const { updated: marks } = await requestContentWereader(wereader, 'getBookmarks') as { updated: Updated[] } || { updated: [] }
+    if (!marks.length) {
+        return null
+    }
     /* 请求得到 chapters 方便导出不含标注的章节的标题，
     另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
     const chapters = await getChapters() || []
@@ -458,8 +532,17 @@ export function traverseMarks(
 
 // 获取热门标注数据
 export async function getBestBookMarks() {
-    const wereader = new Wereader(await getBookId())
-    const { items: bestMarksData } = await wereader.getBestBookmarks()
+    const res = await requestContentWereader(
+        new Wereader(),
+        'getBestBookmarks',
+        [],
+        true
+    ) as BestMarksJson
+    if (!res) {
+        sendAlertMsg({ text: '未获取到热门标注数据', icon: 'warning' })
+        return null
+    }
+    const { items: bestMarksData } = res
     // 处理书本无热门标注的情况
     if (!bestMarksData || !bestMarksData.length) {
         sendAlertMsg({ text: '该书无热门标注', icon: 'warning' })

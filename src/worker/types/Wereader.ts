@@ -5,8 +5,7 @@ import { ChapInfoJson } from './ChapInfoJson'
 import { CommentsJson } from './CommentsJson'
 import { MarksJson } from './MarksJson'
 import { ThoughtJson } from './ThoughtJson'
-import { getJson, getText } from '../worker-utils'
-import { getBooks, getCurBook } from '../worker-vars'
+import { getLocalStorage } from '../../common/utils'
 
 export class Wereader {
     static readonly indexUrl = 'https://i.weread.qq.com'
@@ -14,6 +13,8 @@ export class Wereader {
     static readonly maiUrl: string = 'https://weread.qq.com'
 
     private chapInfosUrl: string
+
+    private mainChapInfosUrl: string
 
     private bookInfosUrl: string
 
@@ -40,10 +41,11 @@ export class Wereader {
     constructor(bookId?: string, userVid?: string) {
         this.bookId = bookId
         this.chapInfosUrl = `${Wereader.indexUrl}/book/chapterInfos?bookIds=${bookId}&synckeys=0`
+        this.mainChapInfosUrl = `${Wereader.maiUrl}/web/book/chapterInfos`
         this.bookInfosUrl = `${Wereader.indexUrl}/book/info?bookId=${bookId}`
         this.bookmarksUrl = `${Wereader.indexUrl}/book/bookmarklist?bookId=${bookId}`
         this.bestBookmarksUrl = `${Wereader.indexUrl}/book/bestbookmarks?bookId=${bookId}`
-        this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&mine=1&synckey=0&listMode=0`
+        this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&maxIdx=0&count=0&listMode=2&synckey=0&userVid=${userVid}&mine=1`
         this.commentsUrl = `${Wereader.indexUrl}/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
         this.shelfDataUrl = `${Wereader.maiUrl}/web/shelf/sync`
         this.removeBookmarkUrl = `${Wereader.maiUrl}/web/book/removeBookmark`
@@ -53,51 +55,75 @@ export class Wereader {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getBookmarks(): Promise<MarksJson> {
-        // const data = await getJson(this.bookmarksUrl)
-        const data = await getCurBook()
-        return data.bookmarks!
+    async getBookmarks(): Promise<MarksJson | null> {
+        // 查找保存的 bookmark 请求 Options 并发起请求
+        const bookmarkFetchOptions = await getLocalStorage('bookmarkFetchOptions') as any
+        if (bookmarkFetchOptions) {
+            const response = await fetch(this.bookmarksUrl, bookmarkFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getChapInfos(): Promise<ChapInfoJson> {
-        // const data = await getJson(this.chapInfosUrl)
-        const data = await getCurBook()
-        return data.chapInfo!
+    async getChapInfos(): Promise<ChapInfoJson | null> {
+        // 查找保存的 chapInfos 请求 Options 并发起请求
+        const chapterInfosFetchOptions = await getLocalStorage('chapterInfosFetchOptions') as any
+            || await getLocalStorage('bookmarkFetchOptions') as any
+        if (chapterInfosFetchOptions) {
+            chapterInfosFetchOptions.headers['content-type'] = 'application/json;charset=UTF-8'
+            const response = await fetch(this.mainChapInfosUrl, chapterInfosFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    async getBookInfo(): Promise<BookInfo> {
-        // const data = await getJson(this.bookInfosUrl)
-        const data = await getCurBook()
-        return data.bookInfo!
+    async getBookInfo(): Promise<BookInfo | null> {
+        const bookInfoFetchOptions = await getLocalStorage('bookInfoFetchOptions') as any
+            || await getLocalStorage('bookmarkFetchOptions') as any
+        if (bookInfoFetchOptions) {
+            const response = await fetch(this.bookInfosUrl, bookInfoFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
-    async getBestBookmarks(): Promise<BestMarksJson> {
-        // const data = await getJson(this.bestBookmarksUrl)
-        const data = await getCurBook()
-        console.log(data)
-        return data.bestBookMarks!
+    async getBestBookmarks(): Promise<BestMarksJson | null> {
+        const bestBookmarksFetchOptions = await getLocalStorage('bestBookmarksFetchOptions') as any
+            || await getLocalStorage('bookmarkFetchOptions') as any
+        if (bestBookmarksFetchOptions) {
+            const response = await fetch(this.bestBookmarksUrl, bestBookmarksFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    async getThoughts(): Promise<ThoughtJson> {
-        // const data = await getJson(this.thoughtsUrl)
-        const data = await getCurBook()
-        return data.review!
+    async getThoughts(): Promise<ThoughtJson | null> {
+        // 查找保存的 review 请求 Options 并发起请求
+        const reviewFetchOptions = await getLocalStorage('reviewFetchOptions') as any
+            || await getLocalStorage('bookmarkFetchOptions') as any
+        if (reviewFetchOptions) {
+            const response = await fetch(this.thoughtsUrl, reviewFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
-    async getComments(): Promise<CommentsJson> {
-        const data = await getJson(this.commentsUrl)
-        console.log(data)
-        return data
+    async getComments(): Promise<CommentsJson | null> {
+        const reviewFetchOptions = await getLocalStorage('reviewFetchOptions') as any
+            || await getLocalStorage('bookmarkFetchOptions') as any
+        if (reviewFetchOptions) {
+            const response = await fetch(this.commentsUrl, reviewFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
     async getShelfData(): Promise<ShelfDataTypeJson> {
-        // const data = await getJson(this.shelfDataUrl)
-        const data = Promise.resolve({ errMsg: '123', shelfDataUrl: this.shelfDataUrl })
-        console.log(data)
-        return data
+        return Promise.resolve({
+            errMsg: '123',
+            shelfDataUrl: this.shelfDataUrl
+        })
     }
 
     async removeBookmarkById(bookmarkId: string) {
@@ -108,13 +134,12 @@ export class Wereader {
             credentials: 'include',
             cache: 'no-cache'
         })
-        console.log('resp', resp)
-        const json = await resp.json()
-        return json
+        return resp.json()
     }
 
     async removeBookmarks(chapterUid?: number) {
         const data = await this.getBookmarks()
+        if (data === null) return { succ: 0, fail: 0 }
         let bookmarks; let succ = 0; let
             fail = 0
         if (chapterUid === undefined) {
@@ -150,55 +175,44 @@ export class Wereader {
         if (monthTimestamp) url = `${url}&baseTimestamp=${monthTimestamp}`
         if (count) url = `${url}&count=${count}`
         if ([0, 1].indexOf(type) > -1) url = `${url}&type=${type}`
-        const respJson = await getJson(url)
-        console.log(respJson)
-        return respJson
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    async isLogined() {
-        const text = await getText(Wereader.maiUrl)
-        if (text && text.indexOf('wr_avatar_img') > -1) return true
-        return false
+        const chapterInfosFetchOptions = await getLocalStorage('chapterInfosFetchOptions') as any
+        if (chapterInfosFetchOptions) {
+            const response = await fetch(url, chapterInfosFetchOptions)
+            return response.json()
+        }
+        return null
     }
 
     async shelfRemoveBook(bookIds: string[]) {
         const payload = { bookIds: bookIds, private: 1 }
-        const resp = await fetch(this.shelfRemoveBookUrl, {
+        return fetch(this.shelfRemoveBookUrl, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        console.log('resp', resp)
-        return resp
     }
 
     async shelfMakeBookPrivate(bookIds: string[]) {
         const payload = { bookIds: bookIds, private: 1 }
-        const resp = await fetch(this.shelfBookSecret, {
+        return fetch(this.shelfBookSecret, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        console.log('resp', resp)
-        return resp
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    async shelfMakeBookPublic(bookIds: string[]) {
+    static async shelfMakeBookPublic(bookIds: string[]) {
         const payload = { bookIds: bookIds, private: 0 }
-        const resp = await fetch(`${Wereader.indexUrl}/book/secret`, {
+        return fetch(`${Wereader.indexUrl}/book/secret`, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        console.log('resp', resp)
-        return resp
     }
 }

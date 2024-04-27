@@ -1,11 +1,8 @@
 import $ from 'jquery'
 
 import { tabClickEvent } from './popup-tabs'
-import {
-    popupApi,
-    dropdownClickEvent,
-    readPageRegexp
-} from './popup-utils'
+import { dropdownClickEvent, popupApi, readPageRegexp } from './popup-utils'
+import { getLocalStorage } from '../../common/utils'
 
 /* 初始化笔记面板，为各个按钮绑定点击事件 */
 async function initNoteTab(url: string) {
@@ -27,6 +24,17 @@ async function initNoteTab(url: string) {
     $('<button class="tabLinks" id="noteBtn">笔记</button>').prependTo($('.tab')).on('click', tabClickEvent)
     // 功能入口
     $('.caller').on('click', async function listener(event: JQuery.ClickEvent) {
+        const prevRequestTime = await getLocalStorage('prevRequestTime') as number || -1
+        if (Date.now() - prevRequestTime < 10000) {
+            popupApi.sendAlertMsg({
+                text: ' 限制 10 秒内只能操作一次，请稍后再试',
+                icon: 'warning'
+            })
+            window.close()
+            return
+        } else {
+            chrome.storage.local.set({ prevRequestTime: Date.now() })
+        }
         const targetEl = event.target
         console.log('click: ', targetEl.id)
         switch (targetEl.id) {

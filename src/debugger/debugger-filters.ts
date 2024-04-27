@@ -7,6 +7,10 @@ export const reviewFilter = (url: string) => url?.indexOf('review/list?bookId=')
  */
 export const bookmarksFilter = (url: string) => url?.indexOf('bookmarklist?bookId=') > -1
 /**
+ * 热门标注
+ */
+export const bestBookmarksFilter = (url: string) => url?.indexOf('web/book/bookmarklist?bookId=') > -1
+/**
  * 章节信息
  */
 export const chapInfoFilter = (url: string) => url?.indexOf('web/book/chapterInfos') > -1

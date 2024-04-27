@@ -20,5 +20,6 @@ module.exports = {
         'no-alert': 'off', // alert
         'semi': ['error', 'never'], // 分号
         "no-shadow": "off",
+        "no-console": "off"
     }
 }
