@@ -190,6 +190,11 @@ img{
     margin-bottom: 10px;
 }
 
+.help-block {
+    border: 1px dashed;
+    margin: 10px;
+}
+
 /* 显示进度条 */
 
 ::-webkit-scrollbar {

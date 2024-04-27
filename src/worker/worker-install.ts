@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
     if (details.reason === 'install' && onInstall) {
         chrome.tabs.create({ url: 'https://github.com/Higurashi-kagome/wereader/issues/9' })
     } else if (details.reason === 'update' && onUpdated) {
-        notify('新版本加回选中后动作功能，请阅读注意事项。')
+        notify('扩展已更新，请阅读注意事项。')
         chrome.runtime.openOptionsPage()
     }
 })
