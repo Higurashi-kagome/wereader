@@ -19,6 +19,7 @@ import { initFancyBox } from './content/modules/fancybox'
 import { initConfirm } from './content/modules/content-confirm'
 import { initSelectAction } from './content/modules/content-select-action'
 import './content/modules/content-copy'
+import './content/modules/content-wereader-api'
 import './content/static/css/content-theme-switch.css'
 import './content/static/css/common.css'
 

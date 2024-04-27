@@ -21,5 +21,6 @@ module.exports = {
         'semi': ['error', 'never'], // 分号
         "no-shadow": "off",
         "linebreak-style": 0,
+        "no-console": "off"
     }
 }

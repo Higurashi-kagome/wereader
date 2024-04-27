@@ -16,28 +16,15 @@ import {
 import {
     copy,
     createTab,
-    getCurTab,
     getUserVid,
     sendAlertMsg,
     sendMessageToContentScript,
     updateStorageAreaInBg
 } from './worker-utils'
-import { Wereader } from './types/Wereader'
 import { Message } from './types/Message'
 import { getLocalStorage, getSyncStorage } from '../common/utils'
 import { ShelfForPopupType } from './types/PopupApi'
 import { notify } from './worker-notification'
-import { attachTab } from '../debugger/debugger-network'
-import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
-import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
-import {
-    bookInfoFilter,
-    bookmarksFilter,
-    chapInfoFilter,
-    reviewFilter
-} from '../debugger/debugger-filters'
-import { onReceivedReviewResponse } from '../debugger/handler/on-review'
-import { onReceivedBookInfoResponse } from '../debugger/handler/on-book-info'
 
 chrome.runtime.onMessage.addListener((
     msg: Message,
@@ -55,8 +42,6 @@ chrome.runtime.onMessage.addListener((
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data = msg.data as any
         let resp: unknown = true
-        const tab = await getCurTab()
-        const tabId = tab.id
         switch (msg.type) {
         case 'get-config':
             resp = await getSyncStorage()
@@ -77,32 +62,13 @@ chrome.runtime.onMessage.addListener((
             await copyContents()
             break
         case 'copy-book-marks':
-            if (tabId) {
-                await attachTab(
-                    tabId,
-                    (url) => bookmarksFilter(url) || chapInfoFilter(url) || reviewFilter(url),
-                    true,
-                    () => copyBookMarks(data),
-                    onReceivedBookMarksResponse,
-                    onReceivedChapInfoResponse,
-                    onReceivedReviewResponse
-                )
-            }
+            await copyBookMarks(data)
             break
         case 'copy-best-book-marks':
             await copyBestBookMarks()
             break
         case 'copy-thought':
-            if (tabId) {
-                await attachTab(
-                    tabId,
-                    (url) => chapInfoFilter(url) || reviewFilter(url),
-                    true,
-                    () => copyThought(data),
-                    onReceivedChapInfoResponse,
-                    onReceivedReviewResponse
-                )
-            }
+            await copyThought(data)
             break
         case 'send-message-to-content-script':
             resp = await sendMessageToContentScript(data)
@@ -128,15 +94,7 @@ chrome.runtime.onMessage.addListener((
             await createMpPage(data)
             break
         case 'copy-book-info':
-            if (tabId) {
-                await attachTab(
-                    tabId,
-                    (url) => bookInfoFilter(url),
-                    true,
-                    () => copyBookInfo(),
-                    onReceivedBookInfoResponse
-                )
-            }
+            await copyBookInfo()
             break
         case 'get-read-detail':
             resp = await getReadDetail(data.monthTimestamp, data.type, data.count)
@@ -181,6 +139,7 @@ chrome.runtime.onMessage.addListener(function others(
         case 'deleteBookmarks':
             if (!msg.confirm) return
             deleteBookmarks(msg.isAll).then(deleteResp => {
+                // @ts-ignore
                 const deleteMsg = `删除结束，${deleteResp.succ} 成功，${deleteResp.fail} 失败。请重新加载读书页。`
                 sendAlertMsg({ icon: 'info', text: deleteMsg }, tabId).then(alertResp => {
                     // 弹窗通知失败后使用 alert()
@@ -226,34 +185,6 @@ chrome.runtime.onMessage.addListener(function others(
             createMpPage(msg.bookId).then((resp) => {
                 sendResponse(resp)
             })
-            break
-        case 'Wereader':
-            const wereader = new Wereader()
-            switch (msg.func) {
-            case 'shelfRemoveBook':
-                wereader.shelfRemoveBook(msg.bookIds).then(resp => {
-                    return resp.json()
-                }).then(json => {
-                    sendResponse({ data: json, bookIds: msg.bookIds })
-                })
-                break
-            case 'shelfMakeBookPrivate':
-                wereader.shelfMakeBookPrivate(msg.bookIds).then(resp => {
-                    return resp.json()
-                }).then(json => {
-                    sendResponse({ data: json, bookIds: msg.bookIds })
-                })
-                break
-            case 'shelfMakeBookPublic':
-                wereader.shelfMakeBookPublic(msg.bookIds).then(resp => {
-                    return resp.json()
-                }).then(json => {
-                    sendResponse({ data: json, bookIds: msg.bookIds })
-                })
-                break
-            default:
-                break
-            }
             break
         default:
             break

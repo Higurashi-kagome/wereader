@@ -4,17 +4,15 @@ import { responseType } from '../content/modules/content-getChapters'
 import { Code } from '../content/types/Code'
 import { Footnote } from '../content/types/Footnote'
 import { Img } from '../content/types/Img'
-import {
-    ShelfDataTypeJson,
-    ShelfErrorDataType
-} from '../types/shelfTypes'
+import { ShelfDataTypeJson, ShelfErrorDataType } from '../types/shelfTypes'
 import { ChapInfoUpdated } from './types/ChapInfoJson'
 import {
     addRangeIndexST,
     getBestBookMarks,
     getBookMarks,
     getChapters,
-    getMyThought, getReplacedThoughtConfig,
+    getMyThought,
+    getReplacedThoughtConfig,
     getTitleAddedPreAndSuf,
     traverseMarks
 } from './worker-popup-process'
@@ -23,26 +21,26 @@ import {
     copy,
     getCurTab,
     getUserVid,
+    requestContentWereader,
     sendAlertMsg,
     sendMessageToContentScript
 } from './worker-utils'
-import {
-    ConfigType,
-    getBookId,
-    getBookIds, getBooks
-} from './worker-vars'
+import { ConfigType, getBookId, getBookIds } from './worker-vars'
 import { Wereader } from './types/Wereader'
 import { Sender } from '../common/sender'
 import { notify } from './worker-notification'
+import { CommentsJson } from './types/CommentsJson'
 
 // 获取书本信息
 export async function copyBookInfo() {
+    const wereader = new Wereader(await getBookId())
     // 发送渲染请求到 offscreen
     const data = {
         command: 'render',
-        context: await new Wereader(await getBookId()).getBookInfo(),
+        context: await requestContentWereader(wereader, 'getBookInfo'),
         templateStr: await getSyncStorage('metaTemplate')
     }
+    console.log('render data:', data)
     await new Sender('render', data).sendToOffscreen()
 }
 
@@ -50,7 +48,11 @@ export async function copyBookInfo() {
 export async function copyComment(userVid: string, isHtml: boolean) {
     const bookId = await getBookId()
     const wereader = new Wereader(bookId, userVid)
-    const data = await wereader.getComments()
+    const data = await requestContentWereader(wereader, 'getComments') as CommentsJson
+    if (!data) {
+        sendAlertMsg({ text: '获取书评失败', icon: 'warning' })
+        return
+    }
     // 遍历书评
     let title = ''
     let content = ''
@@ -290,8 +292,7 @@ export async function setBookId() {
 export async function getShelfData() {
     const userVid = await getUserVid() as string
     const wereader = new Wereader(await getBookId(), userVid)
-    const shelfData = await wereader.getShelfData()
-    return shelfData
+    return await requestContentWereader(wereader, 'getShelfData') as ShelfDataTypeJson
 }
 
 // 创建微信公众号浏览页面
@@ -335,14 +336,12 @@ export async function deleteBookmarks(isAll = false) {
         return { succ: 0, fail: 'all' }
     }
     const curChap = chaps.filter((chap) => { return chap.isCurrent })[0]
-    const respJson = await wereader.removeBookmarks(isAll ? undefined : curChap.chapterUid)
-    return respJson
+    return requestContentWereader(wereader, 'removeBookmarks', [isAll ? undefined : curChap.chapterUid])
 }
 
 export async function getReadDetail(monthTimestamp?: number, type = 1, count = 3) {
     const wereader = new Wereader(await getBookId())
-    const readDetail = await wereader.getReadDetail(monthTimestamp, type, count)
-    return readDetail
+    return requestContentWereader(wereader, 'getReadDetail', [monthTimestamp, type, count])
 }
 
 export { sendMpMsg }

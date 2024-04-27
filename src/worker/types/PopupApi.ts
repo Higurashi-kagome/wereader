@@ -3,6 +3,7 @@ import {
     ShelfDataTypeJson,
     ShelfErrorDataType
 } from '../../types/shelfTypes'
+import { SweetAlertOptions } from 'sweetalert2'
 
 export interface ShelfForPopupType{
     shelfData: ShelfDataTypeJson | ShelfErrorDataType
@@ -59,6 +60,12 @@ export class PopupApi {
         this.sender.type = 'send-message-to-content-script'
         this.sender.data = data
         return this.sender.sendToWorker()
+    }
+
+    sendAlertMsg (data: SweetAlertOptions) {
+        this.sender.type = 'send-alert-msg'
+        this.sender.data = data
+        return this.sender.sendAlertMsg()
     }
 
     async shelfForPopup(): Promise<ShelfForPopupType> {
