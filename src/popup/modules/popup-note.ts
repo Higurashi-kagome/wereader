@@ -39,10 +39,10 @@ async function initNoteTab(url: string) {
         console.log('click: ', targetEl.id)
         switch (targetEl.id) {
         case 'getTextComment':
-            // await popupApi.copyComment(userVid, false)
+            await popupApi.copyComment(userVid, false)
             break
         case 'getHtmlComment':
-            // await popupApi.copyComment(userVid, true)
+            await popupApi.copyComment(userVid, true)
             break
         case 'getMarksInCurChap':
             popupApi.copyBookMarks(false).then()
@@ -54,7 +54,7 @@ async function initNoteTab(url: string) {
             await popupApi.copyContents()
             break
         case 'getBestBookMarks':
-            // await popupApi.copyBestBookMarks()
+            await popupApi.copyBestBookMarks()
             break
         case 'getMyThoughtsInCurChap':
             await popupApi.copyThought(false)

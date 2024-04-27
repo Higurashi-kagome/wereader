@@ -18,18 +18,18 @@ export class NoteTabContent extends React.Component<IProps>{
         return (
             <TabContent for='noteBtn' >
                 <DropDownCaller id="copyBookInfo" value='获取书本信息'></DropDownCaller>
-                {/* <DropDownBtn value='获取书评'></DropDownBtn>
+                <DropDownBtn value='获取书评'></DropDownBtn>
                 <DropDownContainer>
                     <DropDownCaller id="getTextComment" value='纯文本'></DropDownCaller>
                     <DropDownCaller id="getHtmlComment" value='HTML'></DropDownCaller>
-                </DropDownContainer> */}
+                </DropDownContainer>
                 <DropDownBtn value='获取标注'></DropDownBtn>
                 <DropDownContainer>
                     <DropDownCaller id="getMarksInCurChap" value='本章'></DropDownCaller>
                     <DropDownCaller id="getAllMarks" value='全部'></DropDownCaller>
                 </DropDownContainer>
                 <DropDownCaller id="getContents" value='获取目录'></DropDownCaller>
-                {/* <DropDownCaller id="getBestBookMarks" value='获取热门标注'></DropDownCaller> */}
+                <DropDownCaller id="getBestBookMarks" value='获取热门标注'></DropDownCaller>
                 <DropDownBtn value='获取我的想法'></DropDownBtn>
                 <DropDownContainer>
                     <DropDownCaller id="getMyThoughtsInCurChap" value='本章'></DropDownCaller>

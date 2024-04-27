@@ -532,12 +532,8 @@ export function traverseMarks(
 
 // 获取热门标注数据
 export async function getBestBookMarks() {
-    const res = await requestContentWereader(
-        new Wereader(),
-        'getBestBookmarks',
-        [],
-        true
-    ) as BestMarksJson
+    const wereader = new Wereader(await getBookId())
+    const res = await requestContentWereader(wereader, 'getBestBookmarks') as BestMarksJson
     if (!res) {
         sendAlertMsg({ text: '未获取到热门标注数据', icon: 'warning' })
         return null
