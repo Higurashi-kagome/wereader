@@ -26,6 +26,10 @@
 }
 
 /* 标注目录中的当前目录 */
+#sectionListItem_title_scroll {
+  font-size: 12px;
+}
+
 #sectionListItem_title_scroll a.current::after {
     content: ' ←';
 }
