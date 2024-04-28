@@ -4,13 +4,13 @@
 
 ## 注意
 
-之前有人在 Issues 中反馈获取标注等信息有被封号的风险，v4.0.0 调整了标注获取方式，通过 debug 方式获取页面返回的数据（而不主动发起请求），调整后问题应该不大，但请酌情使用。
+之前有人在 Issues 中反馈获取标注等信息有被封号的风险（[#121](https://github.com/Higurashi-kagome/wereader/issues/121)），请酌情使用。
 
 本扩展仅供学习交流使用，请勿侵犯微信读书和作者权益。
 
 ## 安装
 
-[![](https://img.shields.io/badge/-Chrome-brightgreen?logo=GoogleChrome)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/-Edge-brightgreen?logo=MicrosoftEdge)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo) 
+[![](https://img.shields.io/badge/-Chrome-brightgreen?logo=GoogleChrome)](https://chrome.google.com/webstore/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/cmlenojlebcodibpdhmklglnbaghpdcg?hl=zh-CN) [![](https://img.shields.io/badge/-Edge-brightgreen?logo=MicrosoftEdge)](https://microsoftedge.microsoft.com/addons/detail/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/iblnlnnpkbhnempmcbioeholmemingmo)
 
 <!-- [![Mozilla add\-on: Firefox](https://img.shields.io/badge/-Firefox-brightgreen?logo=FirefoxBrowser)](https://addons.mozilla.org/zh-CN/firefox/addon/%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E5%8A%A9%E6%89%8B/) -->
 
