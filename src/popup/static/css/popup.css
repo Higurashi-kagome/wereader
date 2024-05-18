@@ -64,7 +64,7 @@ body{
     color: black;
     overflow-x: hidden;
 }
-  
+
 /* Style the sidenav links and the dropdown button */
 .vertical-menu a, .dropdown-btn {
     padding: 6px 16px 6px 16px;
@@ -88,13 +88,13 @@ body{
 .dropdown-container a:hover{
     color: black;
 }
-  
+
 /* Add an active class to the active dropdown button */
 .vertical-menu .active {
     background-color: gray;
     color: white;
 }
-  
+
 /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
 .dropdown-container {
     display: none;

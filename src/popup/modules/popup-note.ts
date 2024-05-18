@@ -32,9 +32,8 @@ async function initNoteTab(url: string) {
             })
             window.close()
             return
-        } else {
-            chrome.storage.local.set({ prevRequestTime: Date.now() })
         }
+        await chrome.storage.local.set({ prevRequestTime: Date.now() })
         const targetEl = event.target
         console.log('click: ', targetEl.id)
         switch (targetEl.id) {

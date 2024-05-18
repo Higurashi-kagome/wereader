@@ -18,10 +18,11 @@ import { PopupApi } from '../../worker/types/PopupApi'
 const popupApi = new PopupApi()
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
 async function initShelfTab() {
+    console.log('call: initShelfTab')
     /* 绑定书架 tab 按钮点击事件 */
     $('#shelfBtn').on('click', async function () {
         console.log('call: #shelfBtn.onclick')
-        /* const res = await popupApi.shelfForPopup()
+        const res = await popupApi.shelfForPopup()
         let shelfData = res.shelfData
         // 从背景页获取数据无效
         if (Object.keys(shelfData).length === 0 || shelfData.errMsg) {
@@ -44,8 +45,8 @@ async function initShelfTab() {
         console.log('call: #shelfBtn.onclick var shelfData\n', shelfData)
         // eslint-disable-next-line no-use-before-define
         createShelf(shelfData)
-        createSearchInput() */
-    }).on('click', tabClickEvent).hide()
+        createSearchInput()
+    }).on('click', tabClickEvent)
     initShelfReload()
 }
 

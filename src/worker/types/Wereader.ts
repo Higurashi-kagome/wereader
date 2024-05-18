@@ -120,10 +120,12 @@ export class Wereader {
     }
 
     async getShelfData(): Promise<ShelfDataTypeJson> {
-        return Promise.resolve({
-            errMsg: '123',
-            shelfDataUrl: this.shelfDataUrl
-        })
+        const options = await getLocalStorage('bookmarkFetchOptions') as any
+        const response = await fetch(this.shelfDataUrl, options)
+        const data = response.json()
+        // const data = Promise.resolve({ errMsg: '123', shelfDataUrl: this.shelfDataUrl })
+        console.log(data)
+        return data
     }
 
     async removeBookmarkById(bookmarkId: string) {

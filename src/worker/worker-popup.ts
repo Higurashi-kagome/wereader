@@ -292,7 +292,8 @@ export async function setBookId() {
 export async function getShelfData() {
     const userVid = await getUserVid() as string
     const wereader = new Wereader(await getBookId(), userVid)
-    return await requestContentWereader(wereader, 'getShelfData') as ShelfDataTypeJson
+    const shelfData = await wereader.getShelfData()
+    return shelfData as ShelfDataTypeJson
 }
 
 // 创建微信公众号浏览页面
