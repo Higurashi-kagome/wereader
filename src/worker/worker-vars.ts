@@ -55,6 +55,7 @@ const defaultConfig: ConfigType = {
     mpContent: false,
     mpAutoLoad: true,
     allTitles: false,
+    anchorTitle: true,
     addThoughts: true,
     thoughtFirst: false,
     enableDevelop: false,

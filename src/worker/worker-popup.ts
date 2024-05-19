@@ -110,7 +110,7 @@ export async function copyBookMarks(isAll: boolean) {
                 tempRes += `${getTitleAddedPreAndSuf(title, level, config)}\n\n`
                 // 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
                 const anchors = curChapAndMarks.anchors
-                if (anchors && anchors[0].title !== title) {
+                if (config.anchorTitle && anchors && anchors[0].title !== title) {
                     anchors.forEach((anchor) => {
                         tempRes += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
                     })
@@ -134,7 +134,7 @@ export async function copyBookMarks(isAll: boolean) {
         res += `${getTitleAddedPreAndSuf(title, level, config)}\n\n`
         // 存在锚点标题（且不与上级标题相同）则默认将追加到上级上级标题末尾
         const anchors = targetChapAndMarks.anchors
-        if (anchors && anchors[0].title !== title) {
+        if (config.anchorTitle && anchors && anchors[0].title !== title) {
             anchors.forEach((anchor) => {
                 res += `${getTitleAddedPreAndSuf(anchor.title, anchor.level, config)}\n\n`
             })

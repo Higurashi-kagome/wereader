@@ -28,6 +28,10 @@ export interface ConfigType {
     mpContent: boolean;
     mpAutoLoad: boolean;
     allTitles: boolean;
+    /**
+     * 是否导出锚点标题
+     */
+    anchorTitle: boolean;
     addThoughts: boolean;
     thoughtFirst: boolean;
     enableDevelop: boolean;
