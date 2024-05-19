@@ -292,7 +292,11 @@ export async function setBookId() {
 export async function getShelfData() {
     const userVid = await getUserVid() as string
     const wereader = new Wereader(await getBookId(), userVid)
-    const shelfData = await wereader.getShelfData()
+    let shelfData = await getLocalStorage('shelfData')
+    if (shelfData) {
+        return shelfData as ShelfDataTypeJson
+    }
+    shelfData = await wereader.getShelfData()
     return shelfData as ShelfDataTypeJson
 }
 
@@ -323,6 +327,7 @@ export async function setShelfData(shelfData: ShelfDataTypeJson | ShelfErrorData
     if (shelfData) {
         chrome.storage.local.set({ shelfData })
     } else {
+        chrome.storage.local.remove('shelfData')
         shelfData = await getShelfData()
         chrome.storage.local.set({ shelfData })
     }
