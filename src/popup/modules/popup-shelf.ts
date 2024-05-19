@@ -15,12 +15,13 @@ import {
 } from './popup-utils'
 import { puzzling } from '../../worker/worker-utils'
 import { PopupApi } from '../../worker/types/PopupApi'
+import { getConfig } from '../../common/utils'
 const popupApi = new PopupApi()
 /* 初始化书架面板，先尝试从背景页获取数据，获取失败则直接调用背景页函数请求数据，最后初始化书架内容 */
 async function initShelfTab() {
     console.log('call: initShelfTab')
     /* 绑定书架 tab 按钮点击事件 */
-    $('#shelfBtn').on('click', async function () {
+    const shelf = $('#shelfBtn').on('click', async function () {
         console.log('call: #shelfBtn.onclick')
         const res = await popupApi.shelfForPopup()
         let shelfData = res.shelfData
@@ -47,7 +48,12 @@ async function initShelfTab() {
         createShelf(shelfData)
         createSearchInput()
     }).on('click', tabClickEvent)
-    initShelfReload()
+    const config = await getConfig()
+    if (!config.enableShelf) {
+        shelf.hide()
+    } else {
+        initShelfReload()
+    }
 }
 
 function getShelf(shelfData: ShelfDataTypeJson) {

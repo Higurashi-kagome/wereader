@@ -36,6 +36,7 @@ export interface ConfigType {
     thoughtFirst: boolean;
     enableDevelop: boolean;
     distinctThouMarks: boolean;
+    enableShelf: boolean;
     enableStatistics: boolean;
     enableOption: boolean;
     enableCopyImgs: boolean;

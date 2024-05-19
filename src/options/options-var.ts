@@ -6,7 +6,11 @@ const STORAGE_ERRORMSG = '存储出错'
 const InputIds = ['s1Pre', 's1Suf', 's2Pre', 's2Suf', 's3Pre', 's3Suf', 'lev1Pre', 'lev1Suf', 'lev2Pre', 'lev2Suf', 'lev3Pre', 'lev3Suf',
     'thouPre', 'thouSuf', 'metaTemplate', 'footSupTemp', 'footNoteTemp', 'thouMarkPre', 'thouMarkSuf', 'codePre', 'codeSuf', 'imgTag', 'scale']
 // "其他" CheckBox id
-const CheckBoxIds = ['displayN', 'mpShrink', 'mpContent', 'mpAutoLoad', 'addThoughts', 'thoughtFirst', 'enableDevelop', 'distinctThouMarks', 'allTitles', 'anchorTitle', 'enableStatistics', 'enableOption', 'enableFancybox', 'enableCopyImgs', 'enableThoughtEsc']
+const CheckBoxIds = [
+    'displayN', 'mpShrink', 'mpContent', 'mpAutoLoad', 'addThoughts', 'thoughtFirst',
+    'enableDevelop', 'distinctThouMarks', 'allTitles', 'anchorTitle', 'enableShelf',
+    'enableStatistics', 'enableOption', 'enableFancybox', 'enableCopyImgs', 'enableThoughtEsc'
+]
 const RegexpInputClassName = 'regexpInput'
 
 export {

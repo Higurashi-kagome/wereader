@@ -60,6 +60,7 @@ const defaultConfig: ConfigType = {
     thoughtFirst: false,
     enableDevelop: false,
     distinctThouMarks: true,
+    enableShelf: true,
     enableStatistics: false,
     enableOption: true,
     enableCopyImgs: true,

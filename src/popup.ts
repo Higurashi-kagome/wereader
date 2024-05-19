@@ -18,5 +18,5 @@ chrome.tabs.query({ active: true, currentWindow: true }, async tabs => {
     const url = tabs[0].url!
     await initNoteTab(url)
     // 默认点击第一个 tab
-    $('.tabLinks').eq(0).trigger('click')
+    $('.tabLinks:visible').eq(0).trigger('click')
 })
