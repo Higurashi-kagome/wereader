@@ -195,6 +195,12 @@ img{
     margin: 10px;
 }
 
+/* 代码块 */
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 /* 显示进度条 */
 
 ::-webkit-scrollbar {

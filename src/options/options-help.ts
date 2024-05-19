@@ -38,7 +38,88 @@ const helpContent: {[key: string]: any} = {
     },
     metaTemplate: {
         title: '书本信息导出模板',
-        help: `设置导出书本信息时所用的模板。模板引擎为 <a href="https://nunjucks.bootcss.com/templating.html" target="_blank">nunjucks</a>。下面是一个模板例子：<p><span class="lineinline">[1] {{metaData.author}}.{{metaData.title}}.{% if metaData.translator %}{{metaData.translator}}，译.{% endif %}{{metaData.publisher}}，{{metaData.publishTime.slice(0, 4)}}</span>`
+        help: `设置导出书本信息时所用的模板。模板引擎为 <a href="https://nunjucks.bootcss.com/templating.html" target="_blank">nunjucks</a>。
+下面是一个模板例子：<p><span class="lineinline">[1] {{metaData.author}}.{{metaData.title}}.{% if metaData.translator %}{{metaData.translator}}，译.{% endif %}{{metaData.publisher}}，{{metaData.publishTime.slice(0, 4)}}</span></p>
+更多模板字段可参考书本信息响应数据：<pre>
+{
+    "bookId": "821366",
+    "title": "飞鸟集",
+    "author": "[印]泰戈尔",
+    "translator": "徐翰林",
+    "cover": "https://cdn.weread.qq.com/weread/cover/12/YueWen_821366/s_YueWen_821366.jpg",
+    "format": "epub",
+    "price": 8.99,
+    "originalPrice": 0,
+    "intro": "    翻阅《飞鸟集》，就仿佛打开了少年时封在樱花树下的彼此写下的密信，那些回忆如同潮水一般涌现，那些玩闹，那些小忧伤，那些豪言壮语，那些恶作剧，那些亲密无间，就仿佛黄昏中的晚霞，浸渍了醉人的红——年轻的读者们啊，这本《飞鸟集》就像是一本青春的日记，会将你们的回忆保存在里面。因为，它是能最大程度将“爱”提炼出来的作品。读《飞鸟集》，你会发现爱与被爱是何等的融洽为一；读《飞鸟集》，你会将烦恼和痛苦提炼为一种修行。年少的人读《飞鸟集》是有福的，因为，这就等于在你生命的陶罐中种下了爱的种子，不知何时，就会生根发芽。\\n",
+    "finished": 1,
+    "free": 0,
+    "publishTime": "2015-10-01 00:00:00",
+    "category": "文学-现代诗歌",
+    "categories": [
+        {
+            "categoryId": 300000,
+            "subCategoryId": 300010,
+            "categoryType": 0,
+            "title": "文学-现代诗歌"
+        }
+    ],
+    "language": "zh-CN",
+    "chapterSize": 13,
+    "updateTime": 1712036047,
+    "isbn": "9787538592313",
+    "publisher": "北方妇女儿童出版社",
+    "totalWords": 48227,
+    "secret": 0,
+    "finishReading": 0,
+    "star": 88,
+    "ratingCount": 8680,
+    "ratingDetail": {
+        "one": 123,
+        "two": 52,
+        "three": 521,
+        "four": 984,
+        "five": 6699,
+        "recent": 52
+    },
+    "newRating": 843,
+    "newRatingCount": 7658,
+    "newRatingDetail": {
+        "good": 6480,
+        "fair": 1090,
+        "poor": 88,
+        "recent": 50,
+        "myRating": "good",
+        "title": "脍炙人口"
+    },
+    "ranklist": {},
+    "copyrightInfo": {
+        "id": -35759,
+        "name": "华文天下",
+        "userVid": 15554510,
+        "role": 2,
+        "avatar": "https://res.weread.qq.com/wravatar/WV0006-V5mdDlngulfzqqr1gbYd5ab/0",
+        "cpType": 0
+    },
+    "authorSeg": [
+        {
+            "words": "[印]",
+            "highlight": 0
+        },
+        {
+            "words": "泰戈尔",
+            "highlight": 1,
+            "authorId": "134020"
+        }
+    ],
+    "translatorSeg": [
+        {
+            "words": "徐翰林",
+            "highlight": 1,
+            "authorId": "395234"
+        }
+    ]
+}
+</pre>`
     },
     footSupTemp: {
         title: '脚注参考格式化模板',
