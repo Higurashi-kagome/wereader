@@ -22,7 +22,10 @@ export enum SelectActionOptions{
     Copy = 'copy',
     Bg = 'underlineBg',
     Straight = 'underlineStraight',
-    HandWrite = 'underlineHandWrite'
+    HandWrite = 'underlineHandWrite',
+    BgCopy = 'underlineBg,.toolbarItem.copy',
+    StraightCopy = 'underlineStraight,.toolbarItem.copy',
+    HandWriteCopy = 'underlineHandWrite,.toolbarItem.copy'
 }
 /* eslint-enable */
 

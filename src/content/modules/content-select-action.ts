@@ -16,9 +16,9 @@ function initSelectAction() {
         }
         const storageKey = 'selectAction'
         chrome.storage.sync.get([storageKey], function (setting) {
-            const underlineBtn = document.getElementsByClassName(`toolbarItem ${setting[storageKey]}`)[0] as HTMLElement
-            if (setting[storageKey] !== SelectActionOptions.None && underlineBtn) {
-                underlineBtn.click()
+            const underlineBtn = $(`.toolbarItem.${setting[storageKey]}`)
+            if (setting[storageKey] !== SelectActionOptions.None && underlineBtn.length > 0) {
+                underlineBtn.trigger('click')
                 hideToolbar()
                 hideSelection()
             }
