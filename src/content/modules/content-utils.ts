@@ -3,7 +3,7 @@ import $ from 'jquery'
 import Swal, { SweetAlertOptions } from 'sweetalert2'
 
 /* 模拟点击 */
-function simulateClick(element: HTMLElement, init = {}): void {
+function simulateClick(element: Element, init = {}): void {
     const clientRect = element.getBoundingClientRect()
     const clientX = clientRect.left
     const clientY = clientRect.top

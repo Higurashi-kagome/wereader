@@ -15,13 +15,9 @@ import $ from 'jquery'
 import { Code } from '../types/Code'
 import { Footnote } from '../types/Footnote'
 import { Img } from '../types/Img'
-import {
-    getCurrentChapTitle,
-    simulateClick,
-    sleep
-} from './content-utils'
+import { getCurrentChapTitle, simulateClick, sleep } from './content-utils'
 import { getSyncStorage } from '../../common/utils'
-import { scaleStorageKey } from '../../common/constants'
+import { notesCounterKey, scaleStorageKey } from '../../common/constants'
 
 /*
 获取包含本章标注所在章节的标题。
@@ -64,13 +60,12 @@ function getCurrentMarkedChap() {
     return null
 }
 
-// 检查指定章节的标注内容中有多少个 IMG_TAG
-let IMG_TAG = ''
-function countTargets() {
+// 获取指定章节的标注内容中的 IMG_TAG 元素
+function getTargetTags(IMG_TAG: string) {
     const curChapTitle = getCurrentMarkedChap()
     console.log('当前章节', curChapTitle)
-    if (!curChapTitle) return 0
-    let targetCnt = 0
+    const tagElements: Element[] = []
+    if (!curChapTitle) return tagElements
     // 遍历标注、检查是否存在 IMG_TAG
     const sectionListItems = document.getElementsByClassName('sectionListItem')
     let foundChap = false
@@ -82,18 +77,18 @@ function countTargets() {
             console.log('找到当前章节的标注')
             foundChap = true
             if ($(element).text().indexOf(IMG_TAG) >= 0) {
-                targetCnt++
+                tagElements.push(element)
             }
         } else if (foundChap === true && sectionListItemTitle
             && sectionListItemTitle.textContent !== curChapTitle) {
             break // 不再属于当前章节，退出循环
         } else if (foundChap === true) { // 本章内的内容
             if ($(element).text().indexOf(IMG_TAG) >= 0) {
-                targetCnt++
+                tagElements.push(element)
             }
         }
     }
-    return targetCnt
+    return tagElements
 }
 
 // 从 DOM 对象获取图片/代码/脚注对象
@@ -172,26 +167,105 @@ function isCovered(el1: HTMLElement, el2: HTMLElement, scale?: number) {
     return overlap
 }
 
+/**
+ * 跳转到第一页
+ */
+function goToFirst() {
+    $('#routerView')[0].arrive('.readerCatalog', { onceOnly: true, fireOnAttributesModification: true }, function onshow() { // 目录等待
+        simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0])
+    })
+    simulateClick($('.readerControls_item.catalog')[0]) // 点击目录显示之后才能够正常获取 BoundingClientRect
+}
+
+/**
+ * 获取图片等需要获取的数据
+ */
+function selectTargetElements() {
+    const selector = 'img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre' // 图片之类
+    // 遍历图片之类，检查是否被当前标注遮盖（一个标注可能覆盖多个图片）
+    const targetEls = $(selector).get()
+    // #99
+    targetEls.sort((x, y) => x.getBoundingClientRect().left - y.getBoundingClientRect().left)
+    return targetEls
+}
+
+/**
+ * 检测被标注覆盖的图片等内容，将其加入 markedData
+ * @param mask 标注
+ * @param scale 缩放比例
+ * @param curChapTitle 当前章节标题
+ * @param markedData 标注数据
+ */
+function updateMarkedDateList(
+    mask: HTMLElement,
+    scale: string,
+    curChapTitle: string,
+    markedData: Array<Img | Footnote | Code>
+) {
+    const targetEls = selectTargetElements()
+    for (let j = 0; j < targetEls.length; j++) {
+        const el = targetEls[j]
+        if (isCovered(mask, el, parseFloat(scale))) {
+            const {
+                imgSrc,
+                alt,
+                isInlineImg,
+                footnote,
+                currentChapTitle,
+                code
+            } = getTargetObj(el, curChapTitle)
+            if (imgSrc && alt !== undefined && isInlineImg !== undefined) {
+                markedData.push({
+                    alt: alt,
+                    imgSrc: imgSrc,
+                    isInlineImg: isInlineImg
+                })
+            } else if (footnote) {
+                const notesCounter = localStorage.getItem(notesCounterKey) || '1'
+                markedData.push({
+                    footnoteName: `${currentChapTitle}-注${notesCounter}`,
+                    footnote: footnote
+                })
+                localStorage.setItem(notesCounterKey, (parseInt(notesCounter) + 1).toString())
+            } else if (code) {
+                markedData.push({ code: code })
+            }
+        }
+    }
+}
+
+/**
+ * 获取标注元素
+ * @param addThoughts 是否获取想法
+ * @returns {NodeListOf<HTMLElement>} 标注元素列表
+ */
+function getMasks(addThoughts: boolean) {
+    let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight' // 三种标注线
+    if (addThoughts) masksSelector = `${masksSelector},.wr_underline_thought` // 获取想法时加上想法标注线
+    return document.querySelectorAll<HTMLElement>(masksSelector)
+}
+
+/**
+ * 根据插图标注直接跳转到对应位置获取标注数据（原有实现，速度较慢）
+ * @param addThoughts 是否获取想法
+ * @param markedData 已有标注数据
+ * @param firstPage 是否为第一页
+ */
 async function getMarkedData(
     addThoughts: boolean,
     markedData: Array<Img|Footnote|Code> = [],
     firstPage = true
 ) {
     console.log('开始获取标注数据')
-    if (firstPage) { // 点击当前章节，切换到第一页
-        $('#routerView')[0].arrive('.readerCatalog', { onceOnly: true, fireOnAttributesModification: true }, function onshow() { // 目录等待
-            simulateClick($('.chapterItem.chapterItem_current>.chapterItem_link')[0])
-        })
-        simulateClick($('.readerControls_item.catalog')[0]) // 点击目录显示之后才能够正常获取 BoundingClientRect
+    // 点击当前章节，切换到第一页
+    if (firstPage) {
+        goToFirst()
         await sleep(1000) // 跳转等待
     }
-    let masksSelector = '.wr_underline.wr_underline_mark,.wr_underline.wr_underline_wave,.wr_underline.wr_underline_straight' // 三种标注线
-    if (addThoughts) masksSelector = `${masksSelector},.wr_underline_thought` // 获取想法时加上想法标注线
-    // 遍历标注
-    const masks = document.querySelectorAll<HTMLElement>(masksSelector)
-    let notesCounter = 1
+    const masks = getMasks(addThoughts)
     const curChapTitle = getCurrentChapTitle()
     const scale = await getSyncStorage(scaleStorageKey) as string
+    localStorage.setItem(notesCounterKey, '1')
     console.log(`缩放比例：${scale}`)
     for (let i = 0; i < masks.length; i++) {
         const mask = masks[i]
@@ -199,32 +273,13 @@ async function getMarkedData(
         mask.style.background = '#ffff0085' // 高亮
         // eslint-disable-next-line no-await-in-loop
         await sleep(50) // 扫描间隔
-        const ImgsSelector = 'img.wr_readerImage_opacity,.reader_footer_note.js_readerFooterNote.wr_absolute,pre' // 图片之类
-        // 遍历图片之类，检查是否被当前标注遮盖
-        const targetEls = $(ImgsSelector).get()
-        // #99
-        targetEls.sort((x, y) => x.getBoundingClientRect().left - y.getBoundingClientRect().left)
-        for (let j = 0; j < targetEls.length; j++) {
-            const el = targetEls[j]
-            if (isCovered(mask, el, parseFloat(scale))) {
-                const {
-                    imgSrc, alt, isInlineImg, footnote, currentChapTitle, code
-                } = getTargetObj(el, curChapTitle)
-                if (imgSrc && alt !== undefined && isInlineImg !== undefined) {
-                    markedData.push({ alt: alt, imgSrc: imgSrc, isInlineImg: isInlineImg })
-                } else if (footnote) {
-                    markedData.push({ footnoteName: `${currentChapTitle}-注${notesCounter++}`, footnote: footnote })
-                } else if (code) {
-                    markedData.push({ code: code })
-                }
-            }
-        }
+        updateMarkedDateList(mask, scale, curChapTitle, markedData)
         mask.style.background = ''
     }
     // 有多页时翻页继续查找
     const readerFooterBtn = $('.readerFooter_button')[0]
     if (readerFooterBtn.title === '下一页') {
-    // 点击下一页
+        // 点击下一页
         simulateClick(readerFooterBtn, { // 似乎需要这样配置才行
             bubbles: true,
             cancelable: true,
@@ -237,6 +292,28 @@ async function getMarkedData(
     return markedData
 }
 
+/**
+ * 根据插图标注直接跳转到对应位置获取标注数据
+ * @param addThoughts 是否获取想法
+ */
+// eslint-disable-next-line no-unused-vars
+async function getMarkedDataByTag(
+    addThoughts: boolean,
+    targetTags: Element[]
+) {
+    const markedData: Array<Img|Footnote|Code> = []
+    /* const masks = getMasks(addThoughts)
+    const curChapTitle = getCurrentChapTitle()
+    const scale = await getSyncStorage(scaleStorageKey) as string
+    localStorage.setItem(notesCounterKey, '1')
+    targetTags.forEach(tag => {
+        simulateClick($('.readerControls_item.catalog')[0])
+        simulateClick(tag)
+    }) */
+    // TODO
+    return markedData
+}
+
 /* 初始化 */
 async function initMarkedDateGetter() {
     console.log('initMarkedDateGetter')
@@ -245,10 +322,10 @@ async function initMarkedDateGetter() {
         if (!request.isGetMarkedData) return true
         chrome.storage.sync.get(['imgTag'], function (result) {
             if (result?.imgTag) {
-                IMG_TAG = result.imgTag
-                const targetCnt = countTargets()
-                console.log(`找到“${IMG_TAG}”数：`, targetCnt)
-                if (targetCnt === 0) sendResponse([]) // 没有 IMG_TAG 则不需要尝试获取图片
+                const IMG_TAG = result.imgTag
+                const targetTags = getTargetTags(IMG_TAG)
+                console.log(`找到“${IMG_TAG}”数：`, targetTags.length)
+                if (targetTags.length === 0) sendResponse([]) // 没有 IMG_TAG 则不需要尝试获取图片
                 else {
                     getMarkedData(request.addThoughts).then(markedData => {
                         console.log('获取到的 markedData', markedData)
