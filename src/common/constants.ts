@@ -3,3 +3,4 @@ export const noteSelector = '.' + noteClassName
 export const IMG_TAG = '[插图]'
 export const scaleStorageKey = 'scale'
 export const notesCounterKey = 'notesCounter'
+export const noteBtnClassName = 'wr_note'

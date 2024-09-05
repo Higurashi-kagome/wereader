@@ -76,6 +76,8 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "@types/lodash": "^4.17.7",
+    "lodash": "^4.17.21",
     "@types/nunjucks": "^3.2.3",
     "nunjucks": "^3.2.4"
   }
