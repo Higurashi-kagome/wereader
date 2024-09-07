@@ -1,7 +1,7 @@
 /* 给标注添加目录 */
 import $ from 'jquery'
-import { getCurrentChapTitle, loadCSS } from './content-utils'
-import { noteBtnClassName } from '../../common/constants'
+import {getCurrentChapTitle, loadCSS} from './content-utils'
+import {noteBtnClassName} from '../../common/constants'
 
 function initNotesMenu() {
     console.log('initNotesMenu')
@@ -28,21 +28,26 @@ function initNotesMenu() {
             const ul = $(`<ul id='${titleScrollSelector.replace('#', '')}'></ul>`).prependTo('#noteTools')
             const curChapTitle = getCurrentChapTitle()
             $('.sectionListItem_title').each((idx, titleEl) => {
-            // 标记当前章节
+                // 标记当前章节
                 const titleText = titleEl.textContent
                 const className = (titleText === curChapTitle) ? 'current' : ''
                 // 生成目录
-                const li = $(`<li><a class='${className}'>${titleText}</a></li>`).click(() => {
+                const li = $(`<li><a class='${className}'>${titleText}</a></li>`).on('click', () => {
+                    console.log('click titleText', titleText)
+                    console.log('click element into view', titleEl.parentElement)
                     // 标题被搜索框排除时也能够跳转
                     const titleParent = $(titleEl.parentElement!)
                     const isHide = titleParent.css('display') === 'none'
                     if (isHide) titleParent.css('display', 'block')
-                    titleEl.parentElement!.scrollIntoView({ behavior: 'smooth' })
+                    titleEl.parentElement!.scrollIntoView()
                     if (isHide) titleParent.css('display', 'none')
                     ul.toggle()
                 })
                 ul.append(li)
             })
+            // 处理滚动不生效
+            ul.get(0)?.addEventListener('mousewheel', e => e.stopPropagation())
+            ul.get(0)?.addEventListener('DOMMouseScroll', e => e.stopPropagation())
             btn.on('click', () => { // “目录”按钮点击事件
                 $(titleScrollSelector).toggle()
             })
@@ -50,4 +55,4 @@ function initNotesMenu() {
     })
 }
 
-export { initNotesMenu }
+export {initNotesMenu}
