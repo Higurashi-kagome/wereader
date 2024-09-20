@@ -1,6 +1,7 @@
 import { ConfigType } from '../worker/worker-vars'
 import $ from 'jquery'
 import { copy } from './offscreen-utils'
+import { reviewDetailSelector, reviewSelector } from '../common/constants'
 
 /**
  * 解析右键菜单传来的内容并复制
@@ -40,7 +41,7 @@ export async function onReceiveDom(
     } else if (clickedEl.is('.reader_footerNote_text,.chapterItem_text')) { // 脚注、目录
         copy(clickedEl.text())
     } else if (clickedEl.is('.content')) { // 想法
-    // let thought = clickedEl[0].outerText; // 不能正确换行，原因未知
+        // let thought = clickedEl[0].outerText; // 不能正确换行，原因未知
         const thought = data.clickedElText
         if (thought) copy(thought)
     } else if (clickedEl.is('.sectionListItem_content.noteItem_content,.text,.abstract')) { // 标注、想法
@@ -50,6 +51,10 @@ export async function onReceiveDom(
             const mdText = config.thouMarkPre + abstract + config.thouMarkSuf + '\n\n' + config.thouPre + thought + config.thouSuf
             copy(mdText)
         } else copy(clickedEl.text())
+    } else if (clickedEl.is(`${reviewSelector},${reviewDetailSelector}`)) {
+        // 复制他人发表的想法
+        const review = clickedEl.text()
+        if (review) copy(review)
     } else { // 标签页的 Markdown 链接
         copy(`[${tab.title}](${tab.url})`)
     }

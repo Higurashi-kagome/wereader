@@ -1,4 +1,4 @@
-import { noteSelector } from '../../common/constants'
+import { noteSelector, reviewDetailSelector, reviewSelector } from '../../common/constants'
 import { mouseMoveTarget } from './content-mousemove'
 import $ from 'jquery'
 
@@ -12,7 +12,7 @@ function initRightClick() {
     // 鼠标按下事件：点击右键时保存光标下的当前元素
     let clickedEl: HTMLElement
     $(document).on('mousedown', (event) => {
-    // 右键为 3
+        // 右键为 3
         if (event.which === 3) clickedEl = mouseMoveTarget // mouseMoveTarget 在 keyBind 中获取到
     })
     // 鼠标按下事件：点击右键后更新标注
@@ -29,7 +29,10 @@ function initRightClick() {
             // 不知道为什么，测试时直接传 mouseMoveTarget 过去常常为 {}，所以选择转成 html 字符串传
             const data = { clickedEl: clickedEl.outerHTML, originClickedEl: clickedEl }
             // 想法包含换行时，换行符在背景页不能正确获取，所以直接传文本
-            if ($(clickedEl).is('.readerReviewDetail_item>.content')) Object.assign(data, { copy: true, clickedElText: clickedEl.outerText })
+            if ($(clickedEl).is(`.readerReviewDetail_item>.content,${reviewSelector},${reviewDetailSelector}`)) {
+                Object.assign(data, { copy: true, clickedElText: clickedEl.outerText })
+            }
+            console.log(data)
             sendResponse(data)
         }
     })
