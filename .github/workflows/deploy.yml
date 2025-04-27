@@ -5,12 +5,17 @@ name: Upload Extension
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: true
+        type: string
   push:
     tags:
       - v*.*.*
 
 env:
-  PACK_NAME: chrome-extension-${{ github.ref_name }}
+  PACK_NAME: chrome-extension-${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
 
 jobs:
   build-extension:
@@ -31,16 +36,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Sub version
-        uses: bhowell2/github-substring-action@v1.0.0
+      - name: Get version
         id: getVersion
-        with:
-          value: ${{ github.ref_name }}
-          index_of_str: "v"
-          output_name: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Update extension version
-        run: npx dot-json dist/manifest.json version ${{ steps.getVersion.outputs.version }}
+        run: npx dot-json dist/manifest.json version "${{ steps.getVersion.outputs.version }}"
 
       - name: Zip
         run: zip -r ${{ env.PACK_NAME }}.zip dist
@@ -55,9 +61,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: >
-            await github.request(`POST /repos/${{ github.repository
-            }}/releases`, {
-              tag_name: "${{ github.ref_name }}",
+            await github.request(`POST /repos/${{ github.repository }}/releases`, {
+              tag_name: "${{ steps.getVersion.outputs.version }}",
               generate_release_notes: true
             });
 
