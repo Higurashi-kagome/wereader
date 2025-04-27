@@ -4,6 +4,7 @@
 name: Upload Extension
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - v*.*.*
@@ -26,7 +27,7 @@ jobs:
 
       - name: Install
         run: npm ci || npm install
-        
+
       - name: Build
         run: npm run build
 
@@ -45,7 +46,7 @@ jobs:
         run: zip -r ${{ env.PACK_NAME }}.zip dist
 
       - name: Archive chrome-extension artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-pages-artifact@v2
         with:
           name: ${{ env.PACK_NAME }}
           path: ${{ env.PACK_NAME }}.zip
