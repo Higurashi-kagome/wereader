@@ -1,11 +1,11 @@
+import { getLocalStorage } from '../../common/utils'
 import { ShelfDataTypeJson } from '../../types/shelfTypes'
-import { BestMarksJson } from './BestMarksJson'
+import { BestMarksJsonResponse } from './BestMarksJson'
 import { BookInfo } from './BookInfo'
 import { ChapInfoJson } from './ChapInfoJson'
 import { CommentsJson } from './CommentsJson'
 import { MarksJson } from './MarksJson'
 import { ThoughtJson } from './ThoughtJson'
-import { getLocalStorage } from '../../common/utils'
 
 export class Wereader {
     static readonly indexUrl = 'https://i.weread.qq.com'
@@ -42,11 +42,11 @@ export class Wereader {
         this.bookId = bookId
         this.chapInfosUrl = `${Wereader.indexUrl}/book/chapterInfos?bookIds=${bookId}&synckeys=0`
         this.mainChapInfosUrl = `${Wereader.maiUrl}/web/book/chapterInfos`
-        this.bookInfosUrl = `${Wereader.indexUrl}/book/info?bookId=${bookId}`
-        this.bookmarksUrl = `${Wereader.indexUrl}/book/bookmarklist?bookId=${bookId}`
-        this.bestBookmarksUrl = `${Wereader.indexUrl}/book/bestbookmarks?bookId=${bookId}`
-        this.thoughtsUrl = `${Wereader.indexUrl}/review/list?bookId=${bookId}&listType=11&maxIdx=0&count=0&listMode=2&synckey=0&userVid=${userVid}&mine=1`
-        this.commentsUrl = `${Wereader.indexUrl}/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
+        this.bookInfosUrl = `${Wereader.maiUrl}/web/book/info?bookId=${bookId}`
+        this.bookmarksUrl = `${Wereader.maiUrl}/web/book/bookmarklist?bookId=${bookId}`
+        this.bestBookmarksUrl = `${Wereader.maiUrl}/web/book/bestbookmarks?bookId=${bookId}`
+        this.thoughtsUrl = `${Wereader.maiUrl}/web/review/list?bookId=${bookId}&listType=11&maxIdx=0&count=0&listMode=2&synckey=0&userVid=${userVid}&mine=1`
+        this.commentsUrl = `${Wereader.maiUrl}/web/review/list?listType=6&userVid=${userVid}&rangeType=2&mine=1&listMode=1`
         this.shelfDataUrl = `${Wereader.maiUrl}/web/shelf/sync`
         this.removeBookmarkUrl = `${Wereader.maiUrl}/web/book/removeBookmark`
         this.readDetailUrl = `${Wereader.indexUrl}/readdetail?`
@@ -54,12 +54,25 @@ export class Wereader {
         this.shelfBookSecret = `${Wereader.indexUrl}/book/secret`
     }
 
-    // eslint-disable-next-line class-methods-use-this
     async getBookmarks(): Promise<MarksJson | null> {
         // 查找保存的 bookmark 请求 Options 并发起请求
         const bookmarkFetchOptions = await getLocalStorage('bookmarkFetchOptions') as any
+        console.log('bookmarkFetchOptions', bookmarkFetchOptions)
         if (bookmarkFetchOptions) {
-            const response = await fetch(this.bookmarksUrl, bookmarkFetchOptions)
+            // 重新构建 Headers 对象
+            const headers = new Headers()
+            if (bookmarkFetchOptions.headers) {
+                Object.entries(bookmarkFetchOptions.headers).forEach(([key, value]) => {
+                    headers.append(key, value as string)
+                })
+            }
+
+            const options = {
+                ...bookmarkFetchOptions,
+                headers
+            }
+
+            const response = await fetch(this.bookmarksUrl, options)
             return response.json()
         }
         return null
@@ -88,7 +101,7 @@ export class Wereader {
         return null
     }
 
-    async getBestBookmarks(): Promise<BestMarksJson | null> {
+    async getBestBookmarks(): Promise<BestMarksJsonResponse | null> {
         const bestBookmarksFetchOptions = await getLocalStorage('bestBookmarksFetchOptions') as any
             || await getLocalStorage('bookmarkFetchOptions') as any
         if (bestBookmarksFetchOptions) {

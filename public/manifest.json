@@ -57,6 +57,8 @@
         "debugger",
         "contextMenus",
         "webRequest",
+        "webRequestBlocking",
+        "extraHeaders",
         "offscreen",
         "notifications",
         "clipboardWrite"

@@ -43,12 +43,16 @@ export interface Item {
     users: User[];
 }
 
-/**
- * 从服务器获取到的 json 数据
- */
 export interface BestMarksJson {
   synckey: number;
   totalCount: number;
   items: Item[];
   chapters: Chapter[];
+}
+
+/**
+ * 从服务器获取到的 json 数据
+ */
+export interface BestMarksJsonResponse {
+    bestBookMarks: BestMarksJson
 }

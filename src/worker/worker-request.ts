@@ -1,5 +1,3 @@
-import { getBookId, getBookIds, getChapIdx } from './worker-vars'
-import { getCurTab } from './worker-utils'
 import {
     bestBookmarksFilter,
     bookInfoFilter,
@@ -7,6 +5,12 @@ import {
     chapInfoFilter,
     reviewFilter
 } from '../debugger/debugger-filters'
+import { getCurTab } from './worker-utils'
+import {
+    getBookId,
+    getBookIds,
+    getChapIdx
+} from './worker-vars'
 
 // 监听读书页请求，由请求得到 bookId
 chrome.webRequest.onBeforeRequest.addListener(details => {
@@ -61,6 +65,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
     // 保存请求配置
     getCurTab().then(tab => {
         // 基础配置
+        const baseHeaders = {
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin'
+        }
         const params = {
             referrer: tab.url,
             referrerPolicy: 'strict-origin-when-cross-origin',
@@ -68,12 +77,17 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
             credentials: 'include'
         }
         const headers = getHeaders(requestHeaders)
+        // 合并请求头
+        const mergedHeaders: Record<string, string> = { ...baseHeaders }
+        headers.forEach((value, key) => {
+            mergedHeaders[key] = value
+        })
         // 保存章节请求 Options
         if (chapInfoFilter(url)) {
             getBookId().then(bookId => {
                 chrome.storage.local.set({
                     chapterInfosFetchOptions: {
-                        headers,
+                        headers: mergedHeaders,
                         ...params,
                         method: 'POST',
                         body: `{"bookIds":["${bookId}"]}`
@@ -85,7 +99,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
         if (reviewFilter(url)) {
             chrome.storage.local.set({
                 reviewFetchOptions: {
-                    headers,
+                    headers: mergedHeaders,
                     ...params,
                     method: 'GET',
                     body: null
@@ -96,7 +110,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
         if (bookmarksFilter(url)) {
             chrome.storage.local.set({
                 bookmarkFetchOptions: {
-                    headers,
+                    headers: mergedHeaders,
                     ...params,
                     method: 'GET',
                     body: null
@@ -107,7 +121,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
         if (bookInfoFilter(url)) {
             chrome.storage.local.set({
                 bookInfoFetchOptions: {
-                    headers,
+                    headers: mergedHeaders,
                     ...params,
                     method: 'GET',
                     body: null
@@ -118,7 +132,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
         if (bestBookmarksFilter(url)) {
             chrome.storage.local.set({
                 bestBookmarksFetchOptions: {
-                    headers,
+                    headers: mergedHeaders,
                     ...params,
                     method: 'GET',
                     body: null
@@ -126,4 +140,4 @@ chrome.webRequest.onBeforeSendHeaders.addListener(details => {
             })
         }
     })
-}, { urls: ['*://weread.qq.com/web/book/*'] }, ['requestHeaders'])
+}, { urls: ['*://weread.qq.com/web/book/*'] }, ['requestHeaders', 'extraHeaders'])

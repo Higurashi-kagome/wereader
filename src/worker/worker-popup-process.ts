@@ -1,13 +1,45 @@
+import {
+    formatTimestamp,
+    getLocalStorage,
+    getSyncStorage,
+    sortByKey
+} from '../common/utils'
 /* 用于处理中间过程 */
 import { responseType } from '../content/modules/content-getChapters'
 import { Code } from '../content/types/Code'
 import { Footnote } from '../content/types/Footnote'
 import { Img } from '../content/types/Img'
+import {
+    bookInfoFilter,
+    bookmarksFilter,
+    chapInfoFilter,
+    reviewFilter
+} from '../debugger/debugger-filters'
+import { attachTab } from '../debugger/debugger-network'
+import { onReceivedBookInfoResponse } from '../debugger/handler/on-book-info'
+import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
+import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
+import { onReceivedReviewResponse } from '../debugger/handler/on-review'
 import { reConfigCollectionType } from '../options/options-utils'
-import { BestMarksJson, Item } from './types/BestMarksJson'
-import { ChapInfoJson, ChapInfoUpdated } from './types/ChapInfoJson'
-import { Updated } from './types/Updated'
+import {
+    BestMarksJsonResponse,
+    Item
+} from './types/BestMarksJson'
 import { ChapAndMarks } from './types/ChapAndMarks'
+import {
+    ChapInfoJson,
+    ChapInfoUpdated
+} from './types/ChapInfoJson'
+import { ThoughtJson } from './types/ThoughtJson'
+import { ThoughtsInAChap } from './types/ThoughtsInAChap'
+import { Updated } from './types/Updated'
+import { Wereader } from './types/Wereader'
+import { notify } from './worker-notification'
+import {
+    copyBookInfo,
+    copyBookMarks,
+    copyThought
+} from './worker-popup'
 import {
     getCurTab,
     getIndexes,
@@ -16,24 +48,11 @@ import {
     sendAlertMsg,
     sendMessageToContentScript
 } from './worker-utils'
-import { ConfigType, getBookId, ThoughtTxtOptions } from './worker-vars'
-import { Wereader } from './types/Wereader'
-import { ThoughtsInAChap } from './types/ThoughtsInAChap'
-import { formatTimestamp, getLocalStorage, getSyncStorage, sortByKey } from '../common/utils'
-import { notify } from './worker-notification'
-import { attachTab } from '../debugger/debugger-network'
 import {
-    bookInfoFilter,
-    bookmarksFilter,
-    chapInfoFilter,
-    reviewFilter
-} from '../debugger/debugger-filters'
-import { copyBookInfo, copyBookMarks, copyThought } from './worker-popup'
-import { onReceivedBookMarksResponse } from '../debugger/handler/on-bookmarks'
-import { onReceivedChapInfoResponse } from '../debugger/handler/on-chap-info'
-import { onReceivedReviewResponse } from '../debugger/handler/on-review'
-import { ThoughtJson } from './types/ThoughtJson'
-import { onReceivedBookInfoResponse } from '../debugger/handler/on-book-info'
+    ConfigType,
+    getBookId,
+    ThoughtTxtOptions
+} from './worker-vars'
 
 // 给标题添加前后缀
 export function getTitleAddedPreAndSuf(
@@ -533,14 +552,14 @@ export function traverseMarks(
 // 获取热门标注数据
 export async function getBestBookMarks() {
     const wereader = new Wereader(await getBookId())
-    const res = await requestContentWereader(wereader, 'getBestBookmarks') as BestMarksJson
+    const res = await requestContentWereader(wereader, 'getBestBookmarks') as BestMarksJsonResponse
     if (!res) {
         sendAlertMsg({ text: '未获取到热门标注数据', icon: 'warning' })
         return null
     }
-    const { items: bestMarksData } = res
+    const bestMarksData = res?.bestBookMarks?.items
     // 处理书本无热门标注的情况
-    if (!bestMarksData || !bestMarksData.length) {
+    if (!bestMarksData?.length) {
         sendAlertMsg({ text: '该书无热门标注', icon: 'warning' })
         return null
     }

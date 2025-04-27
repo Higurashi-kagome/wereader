@@ -1,9 +1,12 @@
 import { SweetAlertOptions } from 'sweetalert2'
 
-import { regexpSetType } from '../options/options-unload'
-import { BackupKey, StorageErrorMsg } from './worker-vars'
-import { Wereader } from './types/Wereader'
 import { Sender } from '../common/sender'
+import { regexpSetType } from '../options/options-unload'
+import { Wereader } from './types/Wereader'
+import {
+    BackupKey,
+    StorageErrorMsg
+} from './worker-vars'
 
 // 获得 str 中子字符串 subStr 出现的所有位置（返回 index 数组）
 export function getIndexes(str: string, subStr: string) {
@@ -224,13 +227,13 @@ export {
     catchErr,
     copy,
     createTab,
+    getCurTab,
     getJson,
     getText,
     getUserVid,
     puzzling,
+    requestContentWereader,
     sendAlertMsg,
     sendMessageToContentScript,
-    updateStorageAreaInBg,
-    getCurTab,
-    requestContentWereader
+    updateStorageAreaInBg
 }

@@ -213,7 +213,7 @@ const helpContent: {[key: string]: any} = {
         help: `<p>选中该选项之后，将会在 popup 中添加名为“书架”的按钮，点击该按钮可查看书架。</p>`
     },
     enableStatistics: {
-        title: '开启统计',
+        title: '开启统计（停用）',
         help: `<p>选中该选项之后，将会在 popup 中添加名为“统计”的按钮，点击该按钮可查看周、月阅读时长统计图。</p>`
     },
     enableOption: {
