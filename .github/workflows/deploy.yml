@@ -52,7 +52,7 @@ jobs:
         run: zip -r ${{ env.PACK_NAME }}.zip dist
 
       - name: Archive chrome-extension artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           name: ${{ env.PACK_NAME }}
           path: ${{ env.PACK_NAME }}.zip
