@@ -1,11 +1,22 @@
+import { Sender } from '../common/sender'
 /* 该文件中包含提供给 popup 调用或间接调用的大部分函数 */
-import { getLocalStorage, getSyncStorage } from '../common/utils'
+import {
+    getLocalStorage,
+    getSyncStorage
+} from '../common/utils'
 import { responseType } from '../content/modules/content-getChapters'
 import { Code } from '../content/types/Code'
 import { Footnote } from '../content/types/Footnote'
 import { Img } from '../content/types/Img'
-import { ShelfDataTypeJson, ShelfErrorDataType } from '../types/shelfTypes'
+import {
+    ShelfDataTypeJson,
+    ShelfErrorDataType
+} from '../types/shelfTypes'
 import { ChapInfoUpdated } from './types/ChapInfoJson'
+import { CommentsJson } from './types/CommentsJson'
+import { ThoughtsInAChap } from './types/ThoughtsInAChap'
+import { Wereader } from './types/Wereader'
+import { notify } from './worker-notification'
 import {
     addRangeIndexST,
     getBestBookMarks,
@@ -16,7 +27,6 @@ import {
     getTitleAddedPreAndSuf,
     traverseMarks
 } from './worker-popup-process'
-import { ThoughtsInAChap } from './types/ThoughtsInAChap'
 import {
     copy,
     getCurTab,
@@ -25,11 +35,11 @@ import {
     sendAlertMsg,
     sendMessageToContentScript
 } from './worker-utils'
-import { ConfigType, getBookId, getBookIds } from './worker-vars'
-import { Wereader } from './types/Wereader'
-import { Sender } from '../common/sender'
-import { notify } from './worker-notification'
-import { CommentsJson } from './types/CommentsJson'
+import {
+    ConfigType,
+    getBookId,
+    getBookIds
+} from './worker-vars'
 
 // 获取书本信息
 export async function copyBookInfo() {
@@ -140,12 +150,17 @@ export async function copyBookMarks(isAll: boolean) {
             })
         }
         // 请求需要追加到文本中的图片 Markdown 文本，并添加索引数据到 marks
-        let markedData: Array<Img|Footnote|Code> = []
+        let markedData: Array<Img|Footnote|Code|boolean> = []
         if (config.enableCopyImgs) {
             markedData = await sendMessageToContentScript({
                 message: { isGetMarkedData: true, addThoughts: config.addThoughts }
-            }) as Array<Img|Footnote|Code>
+            }) as Array<Img|Footnote|Code|boolean>
             console.log('获取到的 markedData', markedData)
+            if (markedData.length && markedData[0] === false) {
+                sendAlertMsg({ text: '需要导出图片时请切换为竖屏阅读后使用', icon: 'warning' })
+                sendMessageToContentScript({ message: { isRemoveMask: true } })
+                return
+            }
         }
         let isMatched = false // marks 传给 addRangeIndexST 方法后是否被更新（更新说明 marks 与 markedData 匹配）
         if (markedData && markedData.length > 0) {
@@ -156,6 +171,7 @@ export async function copyBookMarks(isAll: boolean) {
             console.log('标注不匹配', markedData, marks)
             markedData = []
         }
+        // @ts-ignore
         const str = traverseMarks(marks, config, markedData)
         res += str
         if (str) copy(res)

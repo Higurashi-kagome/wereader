@@ -12,12 +12,19 @@ import 'arrive'
  */
 import $ from 'jquery'
 
+import {
+    notesCounterKey,
+    scaleStorageKey
+} from '../../common/constants'
+import { getSyncStorage } from '../../common/utils'
 import { Code } from '../types/Code'
 import { Footnote } from '../types/Footnote'
 import { Img } from '../types/Img'
-import { getCurrentChapTitle, simulateClick, sleep } from './content-utils'
-import { getSyncStorage } from '../../common/utils'
-import { notesCounterKey, scaleStorageKey } from '../../common/constants'
+import {
+    getCurrentChapTitle,
+    simulateClick,
+    sleep
+} from './content-utils'
 
 /*
 获取包含本章标注所在章节的标题。
@@ -31,7 +38,8 @@ function getCurrentMarkedChap() {
     if (!masks.length) return ''
     /* 确定本章标注所在章节的标题 */
     const curChapTitle = getCurrentChapTitle()
-    const sectionTitles = document.getElementsByClassName('sectionListItem_title') // 标注面板中的标题
+    const menuTitleSelector = '.readerCatalog_list_item.readerCatalog_list_item_selected  .readerCatalog_list_item_title_text'
+    const sectionTitles = document.querySelectorAll<HTMLElement>(menuTitleSelector) // 标注面板中的标题
     for (let i = 0; i < sectionTitles.length; i++) {
         const sTitle = sectionTitles[i] // 标题
         // 在标注面板中找到 curChapTitle
@@ -66,25 +74,23 @@ function getTargetTags(IMG_TAG: string) {
     console.log('当前章节', curChapTitle)
     const tagElements: Element[] = []
     if (!curChapTitle) return tagElements
-    // 遍历标注、检查是否存在 IMG_TAG
-    const sectionListItems = document.getElementsByClassName('sectionListItem')
-    let foundChap = false
-    for (let i = 0; i < sectionListItems.length; i++) {
-        const element = sectionListItems[i]
-        const sectionListItemTitle = element.getElementsByClassName('sectionListItem_title')[0] // 标题
-        // 第一次找到本章内容
-        if (sectionListItemTitle && sectionListItemTitle.textContent === curChapTitle) {
+    // 遍历章节标注、检查是否存在 IMG_TAG
+    const readerNoteList = document.querySelectorAll('.wr_reader_note_panel_chapter_wrapper')
+    for (let i = 0; i < readerNoteList.length; i++) {
+        const chapNotes = readerNoteList[i]
+        const sectionListItemTitle = chapNotes.querySelector<HTMLElement>('.wr_reader_note_panel_chapter_title') // 标题
+        // 有可点击元素（有标注，区分于书评，书评不可点击）
+        const clickable = chapNotes.querySelector<HTMLElement>('.clickable')
+        // 找到本章内容
+        const isCurChap = sectionListItemTitle && sectionListItemTitle.textContent === curChapTitle
+        if (isCurChap && clickable) {
             console.log('找到当前章节的标注')
-            foundChap = true
-            if ($(element).text().indexOf(IMG_TAG) >= 0) {
-                tagElements.push(element)
-            }
-        } else if (foundChap === true && sectionListItemTitle
-            && sectionListItemTitle.textContent !== curChapTitle) {
-            break // 不再属于当前章节，退出循环
-        } else if (foundChap === true) { // 本章内的内容
-            if ($(element).text().indexOf(IMG_TAG) >= 0) {
-                tagElements.push(element)
+            const noteItems = chapNotes.querySelectorAll('.wr_reader_note_panel_item_cell_content_text')
+            for (let j = 0; j < noteItems.length; j++) {
+                const noteItem = noteItems[j]
+                if (noteItem.textContent && noteItem.textContent.indexOf(IMG_TAG) >= 0) {
+                    tagElements.push(noteItem)
+                }
             }
         }
     }
@@ -320,6 +326,11 @@ async function initMarkedDateGetter() {
     /* 监听背景页通知 */
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (!request.isGetMarkedData) return true
+        const isNormalReader = document.querySelector('.readerControls_item.isNormalReader')
+        if (!isNormalReader) {
+            sendResponse([false])
+            return true
+        }
         chrome.storage.sync.get(['imgTag'], function (result) {
             if (result?.imgTag) {
                 const IMG_TAG = result.imgTag
