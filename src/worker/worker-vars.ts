@@ -1,7 +1,7 @@
 import { IMG_TAG } from '../common/constants'
 import { getLocalStorage } from '../common/utils'
-import { ConfigType } from './types/ConfigType'
 import { BookData } from '../types/bookData'
+import { ConfigType } from './types/ConfigType'
 
 const DefaultBackupName = '默认设置'
 const StorageErrorMsg = '存储出错'
@@ -19,13 +19,13 @@ export enum ThoughtTxtOptions{
 // "选中后动作"选项
 export enum SelectActionOptions{
     None = 'underlineNone',
-    Copy = 'copy',
+    Copy = 'wr_copy',
     Bg = 'underlineBg',
     Straight = 'underlineStraight',
     HandWrite = 'underlineHandWrite',
-    BgCopy = 'underlineBg,.toolbarItem.copy',
-    StraightCopy = 'underlineStraight,.toolbarItem.copy',
-    HandWriteCopy = 'underlineHandWrite,.toolbarItem.copy'
+    BgCopy = 'underlineBg,.toolbarItem.wr_copy',
+    StraightCopy = 'underlineStraight,.toolbarItem.wr_copy',
+    HandWriteCopy = 'underlineHandWrite,.toolbarItem.wr_copy'
 }
 /* eslint-enable */
 
@@ -146,9 +146,9 @@ export async function getChapIdx(): Promise<{[key: number]: string}> {
 
 export {
     BackupKey,
-    defaultConfig,
     ConfigType,
     DefaultBackupName,
+    defaultConfig,
     DefaultRegexPattern,
     StorageErrorMsg
 }
