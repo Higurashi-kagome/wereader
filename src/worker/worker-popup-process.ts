@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import {
     formatTimestamp,
     getLocalStorage,
@@ -112,7 +114,7 @@ export async function getMyThought() {
                     abstract,
                     content,
                     range,
-                    createTime: item.review.createTime
+                    review: item.review
                 })
             }
         }
@@ -461,12 +463,26 @@ function addMarkPreAndSuf(markText: string, style: number, config: ConfigType) {
  * @returns 替换后的各前后缀
  */
 export function getReplacedThoughtConfig(mark: ThoughtsInAChap, config: ConfigType) {
-    const re = /\{createTime}/g
-    const time = formatTimestamp(mark.createTime)
-    const thouPre = config.thouPre.replace(re, time)
-    const thouSuf = config.thouSuf.replace(re, time)
-    const thouMarkPre = config.thouMarkPre.replace(re, time)
-    const thouMarkSuf = config.thouMarkSuf.replace(re, time)
+    // 替换时间
+    const time = formatTimestamp(mark.review.createTime)
+    // 替换 JSON 表达式
+    const replaceJsonExpr = (text: string) => {
+        return text.replace(/\{([^}]+)}/g, (match, expr) => {
+            // 特殊处理 createTime
+            if (expr === 'createTime') {
+                return time
+            }
+            // 使用 Lodash 的 get 方法获取嵌套值
+            const value = _.get(mark.review, expr)
+            return value || ''
+        })
+    }
+
+    const thouPre = replaceJsonExpr(config.thouPre)
+    const thouSuf = replaceJsonExpr(config.thouSuf)
+    const thouMarkPre = replaceJsonExpr(config.thouMarkPre)
+    const thouMarkSuf = replaceJsonExpr(config.thouMarkSuf)
+
     return {
         thouPre,
         thouSuf,

@@ -34,7 +34,66 @@ const helpContent: {[key: string]: any} = {
     },
     thouSuf: {
         title: '想法后缀',
-        help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。可使用<span class="lineinline">{createTime}</span>作为占位符导出想法创建时间。</p>`
+        help: `<p><span class="lineinline">想法</span>也就是你平时阅读时在书中发表的想法。当你将前后缀设置为两个星号(**)时，导出的想法在 Markdown 中将会被加粗。</p>
+        <p>可使用以下占位符：</p>
+        <ul>
+            <li><span class="lineinline">{book.title}</span> - 书本标题</li>
+            <li><span class="lineinline">{createTime}</span> - 想法创建时间</li>
+            <li><span class="lineinline">{chapterTitle}</span> - 章节标题</li>
+            <li><span class="lineinline">{author.name}</span> - 作者名称</li>
+            <li><span class="lineinline">{author.avatar}</span> - 作者头像URL</li>
+        </ul>
+        <p>更多占位符可参考响应数据：<pre>
+{
+    "type": 1,
+    "bookId": "821366",
+    "chapterUid": 18,
+    // 想法内容
+    "content": "这是想法内容",
+    "bookVersion": 1157657665,
+    "isPrivate": 1,
+    // 想法摘要
+    "abstract": "这是想法摘要（被标注的文本）",
+    "range": "453-512",
+    "reviewId": "000000_000000",
+    "userVid": 000000,
+    "topics": [],
+    "createTime": 1714228339,
+    "isLike": 0,
+    "isReposted": 0,
+    "book": {
+        "bookId": "821366",
+        "format": "epub",
+        "version": 1157657665,
+        "soldout": 0,
+        "bookStatus": 1,
+        "type": 0,
+        "cover": "https://cdn.weread.qq.com/weread/cover/12/YueWen_821366/s_YueWen_821366.jpg",
+        "title": "飞鸟集",
+        "author": "[印]泰戈尔",
+        "translator": "徐翰林",
+        "payType": 4097
+    },
+    "chapterIdx": 6,
+    "chapterTitle": "神的尘埃 Dust of gods",
+    "author": {
+        "userVid": 000000,
+        "name": "ming",
+        "avatar": "https://wx.qlogo.cn/mmhead/DibUv4iaTasZSn4uDIwEiatyKao5jaXfqPVd1xW8AvPnLfWpibFJTV1nNld3kkFa2tibcUG8zAqqaPE4/0",
+        "isFollowing": 1,
+        "isFollower": 1,
+        "isBlacking": 0,
+        "isBlackBy": 0,
+        "isHide": 0,
+        "isV": 0,
+        "roleTags": [],
+        "followPromote": "",
+        "isDeepV": false,
+        "deepVTitle": "",
+        "signature": ""
+    }
+}
+        </pre></p>`
     },
     metaTemplate: {
         title: '书本信息导出模板',
@@ -131,7 +190,16 @@ const helpContent: {[key: string]: any} = {
     },
     thouMarkSuf: {
         title: '想法标注后缀',
-        help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。可使用<span class="lineinline">{createTime}</span>作为占位符导出想法创建时间。</p>`
+        help: `<p><span class="lineinline">想法标注</span>即想法所对应的书本内容。当你将想法标注前后缀设置为两个星号(**)时，导出的想法标注在 Markdown 中将会被加粗。</p>
+        <p>可使用以下占位符：</p>
+        <ul>
+            <li><span class="lineinline">{book.title}</span> - 书本标题</li>
+            <li><span class="lineinline">{createTime}</span> - 想法创建时间</li>
+            <li><span class="lineinline">{chapterTitle}</span> - 章节标题</li>
+            <li><span class="lineinline">{author.name}</span> - 作者名称</li>
+            <li><span class="lineinline">{author.avatar}</span> - 作者头像URL</li>
+        </ul>
+        <p>更多占位符参考想法后缀说明中介绍的响应数据。</p>`
     },
     codeSuf: {
         title: '代码块后缀',
