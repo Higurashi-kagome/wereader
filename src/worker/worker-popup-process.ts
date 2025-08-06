@@ -27,11 +27,13 @@ import {
     BestMarksJsonResponse,
     Item
 } from './types/BestMarksJson'
+import { Book } from './types/Book'
 import { ChapAndMarks } from './types/ChapAndMarks'
 import {
     ChapInfoJson,
     ChapInfoUpdated
 } from './types/ChapInfoJson'
+import { MarksJson } from './types/MarksJson'
 import { ThoughtJson } from './types/ThoughtJson'
 import { ThoughtsInAChap } from './types/ThoughtsInAChap'
 import { Updated } from './types/Updated'
@@ -284,9 +286,9 @@ export async function copyBookInfoByDevTools(tabId: number) {
 export async function getBookMarks(isAddThou?: boolean) {
     const wereader = new Wereader(await getBookId())
     // 发送消息到 content，由 content 调用方法
-    const { updated: marks } = await requestContentWereader(wereader, 'getBookmarks') as { updated: Updated[] } || { updated: [] }
+    const { updated: marks, book } = await requestContentWereader(wereader, 'getBookmarks') as MarksJson
     if (!marks.length) {
-        return null
+        return { chaptersAndMarks: [], book }
     }
     /* 请求得到 chapters 方便导出不含标注的章节的标题，
     另外，某些书包含标注但标注数据中没有章节记录（一般发生在导入书籍中），此时则必须使用请求获取章节信息 */
@@ -310,7 +312,7 @@ export async function getBookMarks(isAddThou?: boolean) {
     if (isAddThou !== false && await getSyncStorage('addThoughts')) {
         chaptersAndMarks = await addThoughts(chaptersAndMarks, chapters)
     }
-    return chaptersAndMarks
+    return { chaptersAndMarks, book }
 }
 
 // 给 markText 进行正则替换
@@ -334,6 +336,38 @@ function regexpReplace(markText: string, regexpConfig: reConfigCollectionType) {
         }
     }
     return markText
+}
+
+/**
+ * 通用的占位符替换函数
+ * @param text 需要替换的文本
+ * @param context 上下文信息
+ * @returns 替换后的文本
+ */
+function replaceMarkPlaceholders(text: string, context: {
+    mark?: Updated | ThoughtsInAChap;
+    chapter?: ChapInfoUpdated;
+    book?: Book;
+}): string {
+    return text.replace(/\{([^}]+)}/g, (match, expr) => {
+        // 特殊处理 createTime
+        if (expr === 'createTime' && context.mark) {
+            if ('review' in context.mark) {
+                return formatTimestamp(context.mark.review.createTime)
+            }
+            return formatTimestamp((context.mark as Updated).createTime)
+        }
+        // 特殊处理 chapterTitle
+        if (expr === 'chapterTitle' && context.chapter) {
+            return context.chapter.title ?? ''
+        }
+        const [prefix, ...rest] = expr.split('.')
+        if (context[prefix as keyof typeof context]) {
+            const value = _.get(context[prefix as keyof typeof context], rest.join('.'))
+            return value ?? ''
+        }
+        return match // 未匹配到则返回原文本
+    })
 }
 
 // 给某一条标注添加图片等内容
@@ -441,7 +475,11 @@ export function addRangeIndexST(marks: any, markedDataLength: number, config: Co
 }
 
 // 根据标注类型获取前后缀
-function addMarkPreAndSuf(markText: string, style: number, config: ConfigType) {
+function addMarkPreAndSuf(markText: string, style: number, config: ConfigType, context?: {
+    mark?: Updated | ThoughtsInAChap;
+    chapter?: ChapInfoUpdated;
+    book?: Book;
+}) {
     /* eslint-disable */
     const pre = (style == 0) ? config.s1Pre
         : (style == 1) ? config.s2Pre
@@ -453,6 +491,14 @@ function addMarkPreAndSuf(markText: string, style: number, config: ConfigType) {
             : (style == 2) ? config.s3Suf
                 : ''
     /* eslint-enable */
+
+    // 如果有上下文信息，进行占位符替换
+    if (context) {
+        const replacedPre = replaceMarkPlaceholders(pre, context)
+        const replacedSuf = replaceMarkPlaceholders(suf, context)
+        return replacedPre + markText + replacedSuf
+    }
+
     return pre + markText + suf
 }
 
@@ -495,6 +541,10 @@ export function getReplacedThoughtConfig(mark: ThoughtsInAChap, config: ConfigTy
 export function traverseMarks(
     marks: (Updated | ThoughtsInAChap)[],
     config: ConfigType,
+    context?: {
+        chapter?: ChapInfoUpdated;
+        book?: Book;
+    },
     markedData: Array<Img|Footnote|Code> = []
 ) {
     function isThought(mark: Updated | ThoughtsInAChap): mark is ThoughtsInAChap {
@@ -555,7 +605,13 @@ export function traverseMarks(
             prevMarkText = mark.markText
             prevMarkType = '0'
             tempRes = regexpReplace(prevMarkText, config.re)
-            tempRes = `${addMarkPreAndSuf(tempRes, mark.style, config)}\n\n`
+            // 传递上下文信息给 addMarkPreAndSuf
+            const markContext = {
+                mark,
+                chapter: context?.chapter,
+                book: context?.book
+            }
+            tempRes = `${addMarkPreAndSuf(tempRes, mark.style, config, markContext)}\n\n`
             res.push(tempRes)
         }
     }

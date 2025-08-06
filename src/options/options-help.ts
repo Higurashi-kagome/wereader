@@ -9,21 +9,62 @@ const helpContent: {[key: string]: any} = {
         <img src="./icons/options-icons/markstyle1.png">
         <p>“直线标注前缀”中的内容将会被添加到直线标注的前面。</p>
         <p>同样，下方的“直线标注后缀”中的内容将会被添加到直线标注的后面。</p>
-        <p>所以，当“直线标注前缀”和“直线标注后缀”分别被设置为<span class="lineinline">**\`</span>和<span class="lineinline">\`**</span>时，上图中的标注将会被导出为<span class="lineinline">**\`我是个冒险的游侠骑士，名叫堂吉诃德·台·拉·曼却\`**</span>。</p>`
+        <p>所以，当“直线标注前缀”和“直线标注后缀”分别被设置为<span class="lineinline">**\`</span>和<span
+        class="lineinline">\`**</span>时，上图中的标注将会被导出为<span class="lineinline">**\`我是个冒险的游侠骑士，名叫堂吉
+        诃德·台·拉·曼却\`**</span>。</p>
+        <p>可使用以下占位符：</p>
+        <ul>
+            <li><span class="lineinline">{book.title}</span> - 书本标题</li>
+            <li><span class="lineinline">{createTime}</span> - 标注创建时间</li>
+            <li><span class="lineinline">{chapterTitle}</span> - 章节标题</li>
+            <li><span class="lineinline">{mark.markText}</span> - 标注文本</li>
+        </ul>`
+        + `<p>更多占位符可参考以下数据：<pre>
+{
+    "mark": {
+        "markText": "The figures we used to admired the most were merely dust of",
+        "createTime": 1714044535
+    },
+    "chapter": {
+        "title": "神的尘埃 Dust of gods"
+    },
+    "book": {
+        "format": "epub",
+        "cover": "https://cdn.weread.qq.com/weread/cover/12/YueWen_821366/s_YueWen_821366.jpg",
+        "title": "飞鸟集",
+        "author": "[印]泰戈尔"
+    }
+}
+</pre></p>`
     },
     s2Pre: {
         title: '马克笔标注前缀',
         help: `<p><span class="lineinline">马克笔标注</span>是指被马克笔标注的文本：</p>
         <img src="./icons/options-icons/markstyle2.png">
         <p>“马克笔标注前缀”中的内容将会被添加到马克笔标注的前面。</p>
-        <p>下方的“马克笔标注后缀”中的内容将会被添加到马克笔标注的后面。</p>`
+        <p>下方的“马克笔标注后缀”中的内容将会被添加到马克笔标注的后面。</p>
+        <p>可使用以下占位符：</p>
+        <ul>
+            <li><span class="lineinline">{book.title}</span> - 书本标题</li>
+            <li><span class="lineinline">{createTime}</span> - 标注创建时间</li>
+            <li><span class="lineinline">{chapter.title}</span> - 章节标题</li>
+            <li><span class="lineinline">{mark.markText}</span> - 标注文本</li>
+        </ul>`
     },
     s3Pre: {
         title: '波浪线标注前缀',
         help: `<p><span class="lineinline">波浪线标注</span>是指被波浪线标注的文本：</p>
         <img src="./icons/options-icons/markstyle3.png">
         <p>“波浪线标注前缀”中的内容将会被添加到波浪线标注的前面。</p>
-        <p>下方的“波浪线标注后缀”中的内容将会被添加到波浪线标注的后面。</p>`
+        <p>下方的“波浪线标注后缀”中的内容将会被添加到波浪线标注的后面。</p>
+        <p>下方的"波浪线标注后缀"中的内容将会被添加到波浪线标注的后面。</p>
+        <p>可使用以下占位符：</p>
+        <ul>
+            <li><span class="lineinline">{book.title}</span> - 书本标题</li>
+            <li><span class="lineinline">{createTime}</span> - 标注创建时间</li>
+            <li><span class="lineinline">{chapter.title}</span> - 章节标题</li>
+            <li><span class="lineinline">{mark.markText}</span> - 标注文本</li>
+        </ul>`
     },
     lev1Pre: {
         title: '一级标题前缀',
