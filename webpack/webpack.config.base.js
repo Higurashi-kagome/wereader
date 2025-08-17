@@ -143,6 +143,7 @@ module.exports = {
 				// to 相对于编译文件夹
 				{from: "manifest.json", to: ".", context: "public"},
 				{from: "extension-icons", to: "./icons/extension-icons", context: "public"},
+				{from: "donate", to: "./icons/donate", context: "public"},
 				{from: "content/static/css", to: "./content/static/css", context: "src"},
 				{from: "options.css", to: ".", context: "src/options"},
 				{from: "statistics.css", to: ".", context: "src/statistics"},

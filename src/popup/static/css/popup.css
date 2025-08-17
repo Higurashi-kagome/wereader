@@ -130,3 +130,47 @@ body{
 ::-webkit-scrollbar-track {
     background: #dddddd00;
 }
+
+/* 捐助页面样式 */
+#donateBtn {
+    font-size: 18px;
+    color: #e74c3c;
+    transition: all 0.3s ease;
+}
+
+#donateBtn:hover {
+    background-color: #ffe6e6 !important;
+    transform: scale(1.1);
+}
+
+#donateContent {
+    min-width: 300px;
+    min-height: 400px;
+}
+
+#donateContent h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#donateContent h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+#donateContent p {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+#wechatQR, #alipayQR {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#wechatQR img, #alipayQR img {
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
