@@ -84,6 +84,9 @@ export class Wereader {
         const chapterInfosFetchOptions = await getLocalStorage('chapterInfosFetchOptions') as any
             || await getLocalStorage('bookmarkFetchOptions') as any
         if (chapterInfosFetchOptions) {
+            if (this.bookId) {
+                chapterInfosFetchOptions.body = `{"bookIds":["${this.bookId}"]}`
+            }
             chapterInfosFetchOptions.headers['content-type'] = 'application/json;charset=UTF-8'
             const response = await fetch(this.mainChapInfosUrl, chapterInfosFetchOptions)
             return response.json()

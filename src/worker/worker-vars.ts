@@ -2,6 +2,8 @@ import { IMG_TAG } from '../common/constants'
 import { getLocalStorage } from '../common/utils'
 import { BookData } from '../types/bookData'
 import { ConfigType } from './types/ConfigType'
+// eslint-disable-next-line no-undef
+import Tab = chrome.tabs.Tab
 
 const DefaultBackupName = '默认设置'
 const StorageErrorMsg = '存储出错'
@@ -113,6 +115,42 @@ export async function getCurBook(): Promise<BookData> {
  */
 export async function getBookIds(): Promise<{[key: number]: string}> {
     return await getLocalStorage('bookIds') as {[key: number]: string}
+}
+
+/**
+ * 获取记录的 tab 信息
+ * @returns tabId: Tab 键值对
+ */
+export async function getTabs(): Promise<{[key: number]: Tab}> {
+    return await getLocalStorage('tabs') as {[key: number]: Tab} || {}
+}
+
+/**
+ * 获取指定 tabId 的 tab 信息
+ */
+export async function getTab(tabId: number): Promise<Tab | null> {
+    const tabs = await getTabs()
+    return tabs[tabId]
+}
+
+/**
+ * 保存 tab 信息
+ */
+export async function saveTab(tab: Tab) {
+    const tabs = await getTabs() || {}
+    if (tab.id) {
+        tabs[tab.id] = tab
+    }
+    chrome.storage.local.set({ tabs }).then().catch()
+}
+
+/**
+ * 删除指定 tabId 的 tab 信息
+ */
+export async function deleteTab(tabId: number) {
+    const tabs = await getTabs()
+    delete tabs[tabId]
+    chrome.storage.local.set({ tabs }).then().catch()
 }
 
 /**

@@ -57,6 +57,7 @@ import {
     getBookId,
     ThoughtTxtOptions
 } from './worker-vars'
+import { logger } from '../common/logger'
 
 // 给标题添加前后缀
 export function getTitleAddedPreAndSuf(
@@ -192,7 +193,8 @@ function checkIsInServer(
 }
 
 export async function getChapters() {
-    const wereader = new Wereader(await getBookId())
+    const bookId = await getBookId()
+    const wereader = new Wereader(bookId)
     const chapInfos = await requestContentWereader(wereader, 'getChapInfos') as ChapInfoJson
     // 发请求到 content 脚本获取章节信息
     const response = await sendMessageToContentScript({

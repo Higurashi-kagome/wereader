@@ -9,7 +9,7 @@ import { getCurTab } from './worker-utils'
 import {
     getBookId,
     getBookIds,
-    getChapIdx
+    getChapIdx, getTabs
 } from './worker-vars'
 
 // 监听读书页请求，由请求得到 bookId
@@ -17,9 +17,11 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
     const { tabId, url } = details
     if (url.indexOf('bookmarklist?bookId=') < 0) return
     const bookId = url.replace(/(^.*bookId=|&type=1)/g, '')
-    getBookIds().then(bookIds => {
+    getBookIds().then(async bookIds => {
         bookIds = bookIds || {}
+        const tabs = await getTabs()
         bookIds[tabId] = bookId
+        // 获取 tabId 对应标签页
         chrome.storage.local.set({ bookIds })
     })
 }, { urls: ['*://weread.qq.com/web/book/*'] })
@@ -37,7 +39,6 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
         getChapIdx().then(chapIdx => {
             chapIdx = chapIdx || {}
             chapIdx[details.tabId] = jsonData.ci
-            console.log('chapIdx', chapIdx)
             chrome.storage.local.set({ chapIdx })
         })
     }
