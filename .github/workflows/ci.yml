@@ -10,7 +10,7 @@ jobs:
   test:
     name: Code Quality & Testing
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [18, 20]
@@ -52,7 +52,7 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,5 +73,5 @@ jobs:
         run: |
           ls -la dist/
           test -f dist/manifest.json || (echo "manifest.json not found" && exit 1)
-          test -f dist/js/content.js || (echo "content.js not found" && exit 1)
-          test -f dist/js/worker.js || (echo "worker.js not found" && exit 1)
+          test -f dist/content.js || (echo "content.js not found" && exit 1)
+          test -f dist/worker.js || (echo "worker.js not found" && exit 1)
