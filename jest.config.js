@@ -19,5 +19,7 @@ module.exports = {
             tsconfig: 'tsconfig.json'
         }]
     },
-    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json']
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+    // 限制并发workers数量以避免Node.js版本兼容性问题
+    maxWorkers: '50%'
 }
