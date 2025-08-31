@@ -3,11 +3,31 @@ module.exports = {
     plugins: ['@typescript-eslint'],
     extends: [// https://www.npmjs.com/package/eslint-config-airbnb-base
         'airbnb-base/legacy'],
-    ignorePatterns: ['node_modules/', 'dist/', 'public/', 'webpack/', 'res/', 'scripts/', '.eslintrc.js', 'options-help.ts'],
+    ignorePatterns: ['node_modules/', 'dist/', 'public/', 'webpack/', 'res/', 'scripts/', '.eslintrc.js', 'options-help.ts', 'src/test/setup.ts'],
     'globals': {
         'chrome': 'readonly',
         'JQuery': 'readonly'
     },
+    overrides: [
+        {
+            files: ['**/*.test.ts', '**/*.test.js', '**/__tests__/**/*.ts', '**/__tests__/**/*.js'],
+            env: {
+                jest: true,
+                node: true
+            },
+            globals: {
+                jest: 'readonly',
+                describe: 'readonly',
+                it: 'readonly',
+                expect: 'readonly',
+                beforeEach: 'readonly',
+                afterEach: 'readonly',
+                beforeAll: 'readonly',
+                afterAll: 'readonly',
+                test: 'readonly'
+            }
+        }
+    ],
     rules: {
         'no-case-declarations': 'off', // case 语句中声明
         'indent': ['error', 4], // 缩进

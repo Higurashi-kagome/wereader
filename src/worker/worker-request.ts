@@ -9,7 +9,7 @@ import { getCurTab } from './worker-utils'
 import {
     getBookId,
     getBookIds,
-    getChapIdx, getTabs
+    getChapIdx
 } from './worker-vars'
 
 // 监听读书页请求，由请求得到 bookId
@@ -19,7 +19,6 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
     const bookId = url.replace(/(^.*bookId=|&type=1)/g, '')
     getBookIds().then(async bookIds => {
         bookIds = bookIds || {}
-        const tabs = await getTabs()
         bookIds[tabId] = bookId
         // 获取 tabId 对应标签页
         chrome.storage.local.set({ bookIds })

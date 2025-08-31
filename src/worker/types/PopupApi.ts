@@ -62,7 +62,7 @@ export class PopupApi {
         return this.sender.sendToWorker()
     }
 
-    sendAlertMsg (data: SweetAlertOptions) {
+    sendAlertMsg(data: SweetAlertOptions) {
         this.sender.type = 'send-alert-msg'
         this.sender.data = data
         return this.sender.sendAlertMsg()

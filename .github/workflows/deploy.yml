@@ -18,22 +18,49 @@ env:
   PACK_NAME: chrome-extension-${{ github.event_name == 'workflow_dispatch' && format('v{0}', inputs.version) || github.ref_name }}
 
 jobs:
-  build-extension:
-    name: run build
+  pre-deployment-checks:
+    name: Pre-deployment Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.14"
+          node-version: "18"
+          cache: 'npm'
 
-      - name: Install
-        run: npm ci || npm install
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Test production build
+        run: npm run build
+
+  build-extension:
+    name: Build and Package Extension
+    runs-on: ubuntu-latest
+    needs: pre-deployment-checks
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build extension
         run: npm run build
 
       - name: Get version

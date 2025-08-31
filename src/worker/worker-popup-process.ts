@@ -57,7 +57,6 @@ import {
     getBookId,
     ThoughtTxtOptions
 } from './worker-vars'
-import { logger } from '../common/logger'
 
 // 给标题添加前后缀
 export function getTitleAddedPreAndSuf(

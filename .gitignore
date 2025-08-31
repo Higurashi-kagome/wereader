@@ -4,3 +4,4 @@ dist/
 *.pem
 upload.cmd
 .idea
+/coverage/

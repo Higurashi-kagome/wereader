@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import Tab = chrome.tabs.Tab
 import TabChangeInfo = chrome.tabs.TabChangeInfo
 

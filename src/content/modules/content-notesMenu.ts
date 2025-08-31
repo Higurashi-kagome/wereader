@@ -1,7 +1,7 @@
 /* 给标注添加目录 */
 import $ from 'jquery'
-import {getCurrentChapTitle, loadCSS} from './content-utils'
-import {noteBtnClassName} from '../../common/constants'
+import { getCurrentChapTitle, loadCSS } from './content-utils'
+import { noteBtnClassName } from '../../common/constants'
 
 function initNotesMenu() {
     console.log('initNotesMenu')
@@ -55,4 +55,4 @@ function initNotesMenu() {
     })
 }
 
-export {initNotesMenu}
+export { initNotesMenu }

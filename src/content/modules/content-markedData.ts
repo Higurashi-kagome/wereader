@@ -304,7 +304,9 @@ async function getMarkedData(
  */
 // eslint-disable-next-line no-unused-vars
 async function getMarkedDataByTag(
+    // eslint-disable-next-line no-unused-vars
     addThoughts: boolean,
+    // eslint-disable-next-line no-unused-vars
     targetTags: Element[]
 ) {
     const markedData: Array<Img|Footnote|Code> = []
